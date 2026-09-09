@@ -3,7 +3,8 @@
 # 現役球員,印出「10 人對照表」文字報表。跟 scripts/run_priority.py 一樣,是
 # 唯一權威的計算結果(沒有另外的 UI 或即時預覽版本)。
 # 可手動調整的變數：AXIS_LABELS(中文顯示用詞,可依用詞習慣調整,不影響計算)、
-# GENERIC_GROWTH_TEMPLATE(沒有技能對得上差異軸時使用的通用句型文字)。
+# GENERIC_GROWTH_TEMPLATE(沒有技能對得上差異軸時使用的通用句型文字)、
+# D_AXIS_GROWTH_TEMPLATE(D軸無法訓練時使用的專用句型文字)。
 """Renders the 10-player template comparison table.
 
 Usage:
@@ -31,7 +32,8 @@ AXIS_LABELS = {
     "D": "運動能力層級",
 }
 
-GENERIC_GROWTH_TEMPLATE = "差在 {axis} 軸({label}) → 可以多留意這個方向的練習"
+GENERIC_GROWTH_TEMPLATE = "可以多留意 {label} 這個方向的練習"
+D_AXIS_GROWTH_TEMPLATE = "這是身體天賦上的落差,不是能單靠練習補起來的方向,可以把這位球員當作天花板參考,而不是訓練目標"
 
 
 def find_latest_answers_file():
@@ -55,7 +57,9 @@ def describe_growth_recommendation(player, skills_by_id):
     skill_id = matching_skill_id(axis, player.get("signature_skill_id"), skills_by_id)
     if skill_id:
         return skills_by_id[skill_id]["metric"]["action"]
-    return GENERIC_GROWTH_TEMPLATE.format(axis=axis, label=AXIS_LABELS[axis])
+    if axis == "D":
+        return D_AXIS_GROWTH_TEMPLATE
+    return GENERIC_GROWTH_TEMPLATE.format(label=AXIS_LABELS[axis])
 
 
 def main():
