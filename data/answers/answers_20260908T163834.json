@@ -1,0 +1,101 @@
+{
+  "meta": {
+    "exported_at": "2026-09-08T06:38:34.410Z",
+    "tool": "tools/survey.html"
+  },
+  "axis_answers": [
+    {
+      "question_id": "axis_a1",
+      "score": 3
+    },
+    {
+      "question_id": "axis_a2",
+      "score": 4
+    },
+    {
+      "question_id": "axis_a3",
+      "score": 3
+    },
+    {
+      "question_id": "axis_a4",
+      "score": 2
+    },
+    {
+      "question_id": "axis_b1",
+      "score": 2
+    },
+    {
+      "question_id": "axis_b2",
+      "score": 2
+    },
+    {
+      "question_id": "axis_b3",
+      "score": 4
+    },
+    {
+      "question_id": "axis_b4",
+      "score": 4
+    },
+    {
+      "question_id": "axis_c1",
+      "score": 1
+    },
+    {
+      "question_id": "axis_c2",
+      "score": 4
+    },
+    {
+      "question_id": "axis_c3",
+      "score": 4
+    },
+    {
+      "question_id": "axis_c4",
+      "score": 1
+    },
+    {
+      "question_id": "axis_d1",
+      "score": 2
+    },
+    {
+      "question_id": "axis_d2",
+      "score": 2
+    },
+    {
+      "question_id": "axis_d3",
+      "score": 3
+    },
+    {
+      "question_id": "axis_d4",
+      "score": 3
+    }
+  ],
+  "skill_answers": [
+    {
+      "question_id": "skill_perimeter_shooting_1",
+      "score": 2
+    },
+    {
+      "question_id": "skill_face_up_first_step_1",
+      "score": 2
+    },
+    {
+      "question_id": "skill_high_post_playmaking_1",
+      "score": 4
+    },
+    {
+      "question_id": "skill_rim_protection_1",
+      "score": 4
+    },
+    {
+      "question_id": "skill_perimeter_switch_defense_1",
+      "score": 4
+    }
+  ],
+  "env": {
+    "perimeter_shooting": 1.7,
+    "face_up_first_step": 0.8,
+    "high_post_playmaking": 1.6,
+    "rim_protection": 1.2,
+    "perimeter_switch_defense": 0.6
+  }
+}

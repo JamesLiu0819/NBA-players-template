@@ -1,0 +1,86 @@
+{
+  "_description": "技能庫。P1 最小範圍(SPEC.md §12 未決問題 #1)只收錄 5 項關鍵技能：外線投射、面框第一步過人、高位傳導視野、護框、換防跟防。之後要擴充到 SPEC.md §3.3 講的完整 15 項技能時,直接在 skills 陣列裡加新物件即可,格式跟現有的一樣。",
+  "_editable_fields": "每個技能物件裡: cost_C(1-5,習得成本)、axis_relevance(A/B/C/D 四軸相關性,0-1,目前是依常理判斷的暫定值,等 SPEC §12 issue #2 的領域專家校準後應該更新)、court_required/teammate_required(訓練場地與隊友需求,決定球場環節/場外環節)、metric(驗收指標,含 denominator 與 thresholds 三個分層門檻)、video_tags(目前只是佔位標籤,還沒接真正的影片庫)。id 一旦被其他資料檔或程式碼引用(例如 questions.json 的 skill_behavior.skill_id)就不要改,否則會對不起來。",
+  "skills": [
+    {
+      "id": "perimeter_shooting",
+      "name_zh": "外線投射",
+      "category": "offense",
+      "cost_C": 3,
+      "court_required": true,
+      "teammate_required": false,
+      "axis_relevance": { "A": 0.3, "B": 0.9, "C": 0.1, "D": 0.2 },
+      "video_tags": ["shooting_catch_and_shoot", "shooting_mechanics"],
+      "metric": {
+        "action": "定點接球投三分",
+        "denominator": 50,
+        "direction": "makes_at_least",
+        "thresholds": { "entry": 15, "advanced": 20, "mastery": 25 }
+      }
+    },
+    {
+      "id": "face_up_first_step",
+      "name_zh": "面框第一步過人",
+      "category": "offense",
+      "cost_C": 3,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": { "A": 0.9, "B": 0.4, "C": 0.1, "D": 0.5 },
+      "video_tags": ["handles_first_step", "finishing_at_rim"],
+      "metric": {
+        "action": "一對一面框單打過第一步",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": { "entry": 6, "advanced": 10, "mastery": 14 }
+      }
+    },
+    {
+      "id": "high_post_playmaking",
+      "name_zh": "高位傳導視野",
+      "category": "awareness",
+      "cost_C": 4,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": { "A": 0.8, "B": 0.5, "C": 0.1, "D": 0.1 },
+      "video_tags": ["playmaking_high_post", "reading_double_team"],
+      "metric": {
+        "action": "高位接球遭包夾後傳導",
+        "denominator": 30,
+        "direction": "errors_at_most",
+        "thresholds": { "entry": 5, "advanced": 2, "mastery": 1 }
+      }
+    },
+    {
+      "id": "rim_protection",
+      "name_zh": "護框",
+      "category": "defense",
+      "cost_C": 4,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": { "A": 0.1, "B": 0.1, "C": 0.9, "D": 0.6 },
+      "video_tags": ["rim_protection_positioning", "shot_contest"],
+      "metric": {
+        "action": "對手正面攻框的防守回合",
+        "denominator": 30,
+        "direction": "makes_at_least",
+        "thresholds": { "entry": 12, "advanced": 18, "mastery": 22 }
+      }
+    },
+    {
+      "id": "perimeter_switch_defense",
+      "name_zh": "換防跟防",
+      "category": "defense",
+      "cost_C": 3,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": { "A": 0.1, "B": 0.2, "C": 0.9, "D": 0.7 },
+      "video_tags": ["switch_defense_footwork", "closeout_technique"],
+      "metric": {
+        "action": "換防後跟防外線持球者的回合",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": { "entry": 8, "advanced": 13, "mastery": 16 }
+      }
+    }
+  ]
+}
