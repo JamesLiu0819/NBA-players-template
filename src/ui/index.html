@@ -489,17 +489,6 @@
   .card .callout .axis-tag { font-weight: 700; color: var(--ink); }
   .card .callout .growth { color: var(--ink-soft); }
 
-  .anti-template-box {
-    border: 1px solid var(--line);
-    border-left: 3px solid var(--accent-ink);
-    border-radius: var(--radius);
-    background: var(--paper-raised);
-    padding: 1rem 1.1rem;
-  }
-
-  .anti-template-box .who { font-weight: 700; margin-bottom: 0.3rem; }
-  .anti-template-box p { margin: 0.2rem 0 0; font-size: 0.85rem; color: var(--ink-soft); }
-
   footer.disclosure {
     margin-top: 3rem;
     padding-top: 1.25rem;
@@ -722,9 +711,10 @@
   };
 
   const DEEP_TEMPLATE_META = {
+    overall_fit: { label: "整體模板", caption: "打法風格加上身材數值綜合起來,跟你最接近的球員" },
     skill_fit: { label: "技術模板", caption: "排除運動能力,技術層面跟你最接近的球員（打法風格）" },
     body_fit: { label: "身材模板", caption: "身材數值跟你最接近的球員" },
-    ceiling: { label: "天花板", caption: "運動能力差距最大,但同類型裡上限最高的球員" },
+    ceiling: { label: "天花板", caption: "運動能力跟你接近,但技術層面明顯更成熟的球員——一個練得到的目標" },
   };
 
   const state = {
@@ -1037,7 +1027,7 @@
         </div>`
     ).join("");
 
-    const templateCards = ["skill_fit", "body_fit", "ceiling"].map((key) => {
+    const templateCards = ["overall_fit", "skill_fit", "body_fit", "ceiling"].map((key) => {
       const meta = DEEP_TEMPLATE_META[key];
       const m = data.deep_templates[key];
       const who = m ? `${m.name} (${m.team})` : "目前沒有符合條件的球員";
@@ -1054,15 +1044,6 @@
       return `<div class="${cardClass}">${renderMatchCardInner(i + 1, m)}</div>`;
     }).join("");
 
-    const antiHtml = data.anti_template
-      ? `
-        <div class="anti-template-box">
-          <div class="who">${data.anti_template.name} (${data.anti_template.team})</div>
-          <p>你在持球創造、空間位置、防守對位這幾項都跟他很接近,但運動能力層級差距最大,而且他賴以成功的核心特質不可複製。</p>
-          <p>不該把他當模板——那個方向會誘導你去追求很難獲得的身體天賦,而不是可以練出來的技術。</p>
-        </div>`
-      : `<div class="anti-template-box"><p>目前沒有符合條件的反面對照球員。</p></div>`;
-
     el.innerHTML = `
       <section class="block report-fade">
         <div class="section-head"><span class="section-tag">你的定位</span><h2>球風座標</h2></div>
@@ -1070,18 +1051,13 @@
       </section>
 
       <section class="block report-fade" style="animation-delay:.05s">
-        <div class="section-head"><span class="section-tag">SECTION 1</span><h2>3 位深度模板</h2></div>
+        <div class="section-head"><span class="section-tag">SECTION 1</span><h2>4 位深度模板</h2></div>
         <div class="template-grid">${templateCards}</div>
       </section>
 
       <section class="block report-fade" style="animation-delay:.1s">
         <div class="section-head"><span class="section-tag">SECTION 2</span><h2>10 人對照表</h2></div>
         <div class="match-list">${matchListHtml}</div>
-      </section>
-
-      <section class="block report-fade" style="animation-delay:.15s">
-        <div class="section-head"><span class="section-tag">SECTION 3</span><h2>反面對照</h2></div>
-        ${antiHtml}
       </section>
     `;
   }
@@ -1090,7 +1066,7 @@
     const el = document.getElementById("priority-report");
     el.innerHTML = `
       <section class="block report-fade">
-        <div class="section-head"><span class="section-tag">SECTION 4</span><h2>優先訓練順序</h2></div>
+        <div class="section-head"><span class="section-tag">SECTION 3</span><h2>優先訓練順序</h2></div>
         ${data.priorities.map((item, i) => renderPriorityRow(item, i)).join("")}
         ${data.dominant_factor_sentence ? `<p class="dominant-sentence">${data.dominant_factor_sentence}</p>` : ""}
       </section>

@@ -1,13 +1,15 @@
 # 用途：L3 匹配層,把使用者的四軸座標拿去跟球員種子資料算最近鄰,並提供「差異
 # 軸是否剛好對到某個技能」的判斷。rank_similar_players 是純四軸距離,供 3 位
 # 深度模板挑選邏輯使用——技能最貼合(find_skill_fit_template)、身體最貼合
-# (find_body_fit_template)、天花板方向(find_ceiling_template)——以及反面對照
-# (find_anti_template)。天花板方向跟反面對照是一體兩面：都是「A/B/C 軸接近但
-# D 軸差距最大」的球員,差別只在核心優勢可不可複製(learnability_flag)。
+# (find_body_fit_template)、天花板(find_ceiling_template)。
+# 天花板的定義是「D 軸(運動能力)接近,但主導差距在 A/B/C 某個技能軸」——找一個
+# 跟你身體條件差不多、但技術更成熟的球員,代表一個真正練得到的目標。原本的定義
+# 是反過來(A/B/C 接近、D 軸差距最大),但那樣找到的其實是「天賦跟你不一樣的
+# 人」,不是天花板;連帶反面對照(find_anti_template)也一起移除了,因為它用的
+# 是同一套「D 軸差距最大」邏輯,一樣沒有意義(2026-09-11 重新設計討論)。
 # rank_similar_players_by_style_and_body 是另一支「四軸+身材」的混合距離函數,
-# 只給 10 人對照表用,刻意不影響上面 4 個深度模板/反面對照函數(它們的設計就是
-# 要跟身材無關,或刻意找身材差異最大的球員,見 2026-09-11 body-aware matching
-# 討論)。
+# 給 10 人對照表跟「整體模板」用,刻意不影響上面 3 個深度模板函數(它們的設計
+# 就是要跟身材無關,見 2026-09-11 body-aware matching 討論)。
 # 可手動調整的變數：_DISTANCE_STAR_THRESHOLDS(貼合度星級的距離門檻,目前是依
 # 常理暫定的 20/40/60/80,等有真實球員資料庫、知道實際距離分佈後應該重新校準;
 # 這組門檻兩個排序函數共用,沒有另外針對加了身材維度後更大的距離空間校準)。
@@ -148,44 +150,36 @@ def _abc_distance(diff):
     return math.sqrt(sum(diff[axis] ** 2 for axis in ("A", "B", "C")))
 
 
-def find_anti_template(user_coordinates, players):
-    """Find the single best "anti-template" (SPEC.md §3.1): a player whose
-    A/B/C axes are closest to the user but whose D axis is the dominant
-    gap, AND whose core strength is flagged as non-replicable
-    (learnability_flag == "low") -- someone who looks like you but succeeds
-    on something you don't have and can't train.
-
-    Returns None if no player in the given pool qualifies. This is an
-    honest "not found", not relaxed to a looser learnability match -- see
-    the 2026-09-10 anti-template scoping discussion.
-    """
-    ranked = rank_similar_players(user_coordinates, players, k=len(players))
-    candidates = [
-        p for p in ranked
-        if p["dominant_diff_axis"] == "D" and p.get("learnability_flag") == "low"
-    ]
-    if not candidates:
-        return None
-    return min(candidates, key=lambda p: _abc_distance(p["diff"]))
-
-
 def find_ceiling_template(user_coordinates, players):
-    """Find the "ceiling direction" deep template (天花板方向): the mirror
-    image of find_anti_template. Same shape -- A/B/C close, D the dominant
-    gap -- but here the advantage IS flagged as replicable
-    (learnability_flag in {"medium", "high"}), i.e. this is a realistic,
-    trainable direction to grow toward rather than an unreachable outlier.
+    """Find the "ceiling" deep template (天花板): a player with roughly the
+    user's own athletic tools (D axis close) whose game is far more
+    developed -- the dominant gap is a skill axis (A/B/C), not athleticism.
+    This is meant to be a genuinely achievable target: what you could
+    become if you maxed out your technique with the tools you already have
+    (2026-09-11 redesign -- the old definition, "A/B/C close, D the
+    dominant gap", just returned someone with different genetics, which
+    isn't a real ceiling since athletic ability isn't something you train
+    into. That old shape is also why find_anti_template was removed
+    entirely, rather than kept as a separate function: it was the same "D
+    axis is the biggest gap" logic with no real use once ceiling stopped
+    meaning that).
+
+    Candidates must have their overall dominant_diff_axis land on A, B, or
+    C with diff[axis] > 0 -- a genuine skill lead, not just the "least
+    negative" axis when the user actually leads on every axis (see
+    rank_similar_players' documented edge case). Among candidates, picks
+    whichever has the closest D axis to the user's.
 
     Returns None if no player in the given pool qualifies.
     """
     ranked = rank_similar_players(user_coordinates, players, k=len(players))
     candidates = [
         p for p in ranked
-        if p["dominant_diff_axis"] == "D" and p.get("learnability_flag") in ("medium", "high")
+        if p["dominant_diff_axis"] in ("A", "B", "C") and p["diff"][p["dominant_diff_axis"]] > 0
     ]
     if not candidates:
         return None
-    return min(candidates, key=lambda p: _abc_distance(p["diff"]))
+    return min(candidates, key=lambda p: abs(p["diff"]["D"]))
 
 
 def find_skill_fit_template(user_coordinates, players):

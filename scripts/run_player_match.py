@@ -1,22 +1,24 @@
 #!/usr/bin/env python3
-# 用途：讀取匯出的作答檔跟 data/players.json,算出四軸座標後印出「3 位深度模板」
-# (技能最貼合/身體最貼合/天花板方向)、「10 人對照表」、「反面對照」三段文字報表。
-# 10 人對照表用 rank_similar_players_by_style_and_body,四軸+身材一起算距離,
-# 避免推薦身材差異很大的球員當模板(2026-09-11);3 位深度模板跟反面對照維持
-# 用四軸(或純身材)距離,刻意不受這個改動影響。身材裡的身高/體重在比較前會先
-# 用 percentile_normalize_body 換算成百分位(使用者跟球員各自在自己的母體裡
-# 排第幾百分位),不然幾乎所有使用者都會比全部 NBA 球員矮/輕,身材模板永遠是
-# 最矮的後衛(同樣是 2026-09-11 討論)。
+# 用途：讀取匯出的作答檔跟 data/players.json,算出四軸座標後印出「4 位深度模板」
+# (整體模板/技術模板/身材模板/天花板)、「10 人對照表」兩段文字報表。
+# 10 人對照表跟整體模板用 rank_similar_players_by_style_and_body,四軸+身材
+# 一起算距離,避免推薦身材差異很大的球員當模板(2026-09-11);技術模板跟身材
+# 模板維持用純四軸/純身材距離,刻意不受這個改動影響。身材裡的身高/體重在比較
+# 前會先用 percentile_normalize_body 換算成百分位(使用者跟球員各自在自己的
+# 母體裡排第幾百分位),不然幾乎所有使用者都會比全部 NBA 球員矮/輕,身材模板
+# 永遠是最矮的後衛(同樣是 2026-09-11 討論)。
+# 天花板的定義是「D 軸接近、主導差距在 A/B/C 某個技能軸」——一個身體條件跟你
+# 差不多、但技術更成熟的球員,是一個真正練得到的目標,而不是天賦不同的另一個
+# 人;原本的「反面對照」段落用的是「D 軸差距最大」邏輯,找到的其實是後者,所以
+# 直接移除,天花板改用前者的定義(2026-09-11 重新設計討論)。
 # 跟 scripts/run_priority.py 一樣,是唯一權威的計算結果(沒有另外的 UI 或即時預覽
 # 版本)。
 # 可手動調整的變數：AXIS_LABELS(中文顯示用詞,可依用詞習慣調整,不影響計算)、
 # GENERIC_GROWTH_TEMPLATE(沒有技能對得上差異軸時使用的通用句型文字)、
 # D_AXIS_GROWTH_TEMPLATE(D軸無法訓練時使用的專用句型文字)、
-# ANTI_TEMPLATE_NOT_FOUND_MESSAGE / CEILING_NOT_FOUND_MESSAGE(找不到符合條件的
-# 反面對照/天花板方向時顯示的訊息)、BODY_MEASUREMENTS_NOT_ANSWERED_MESSAGE(作答檔
-# 沒有身材數值題時顯示的訊息)。
-"""Renders the 10-player template comparison table plus the 3 deep templates
-and the anti-template.
+# CEILING_NOT_FOUND_MESSAGE(找不到符合條件的天花板時顯示的訊息)、
+# BODY_MEASUREMENTS_NOT_ANSWERED_MESSAGE(作答檔沒有身材數值題時顯示的訊息)。
+"""Renders the 10-player template comparison table plus the 4 deep templates.
 
 Usage:
     python3 scripts/run_player_match.py [answers_file.json]
@@ -36,7 +38,6 @@ sys.path.insert(0, str(ROOT / "src"))
 from engine.axis_position import AXES, score_axis_coordinates  # noqa: E402
 from engine.body_fit import collect_body_measurements, percentile_normalize_body  # noqa: E402
 from engine.player_matching import (  # noqa: E402
-    find_anti_template,
     find_body_fit_template,
     find_ceiling_template,
     find_skill_fit_template,
@@ -53,15 +54,11 @@ AXIS_LABELS = {
 
 GENERIC_GROWTH_TEMPLATE = "可以多留意 {label} 這個方向的練習"
 D_AXIS_GROWTH_TEMPLATE = "這是身體天賦上的落差,不是能單靠練習補起來的方向,可以把這位球員當作天花板參考,而不是訓練目標"
-ANTI_TEMPLATE_NOT_FOUND_MESSAGE = (
-    "目前的球員種子資料裡,找不到符合「A/B/C 軸接近、D 軸差距最大、"
-    "且核心優勢不可複製」條件的球員。"
-)
 CEILING_NOT_FOUND_MESSAGE = (
-    "目前的球員種子資料裡,找不到符合「A/B/C 軸接近、D 軸差距最大、"
-    "且核心優勢可複製」條件的球員。"
+    "目前的球員種子資料裡,找不到符合「運動能力跟你接近、"
+    "但技術層面明顯更成熟」條件的球員。"
 )
-BODY_MEASUREMENTS_NOT_ANSWERED_MESSAGE = "作答檔沒有身材數值題的作答,無法計算身體最貼合。"
+BODY_MEASUREMENTS_NOT_ANSWERED_MESSAGE = "作答檔沒有身材數值題的作答,無法計算身材模板。"
 
 
 def find_latest_answers_file():
@@ -115,19 +112,6 @@ def main():
     for axis in AXES:
         print(f"  {axis}: {coordinates[axis]:.1f}")
 
-    print("\n3 位深度模板:")
-
-    skill_fit = find_skill_fit_template(coordinates, players)
-    print(f"  技術模板：{skill_fit['name']} ({skill_fit['team']})")
-    print("      排除運動能力,技術層面跟你最接近的球員（打法風格）。")
-
-    ceiling = find_ceiling_template(coordinates, players)
-    if ceiling:
-        print(f"  天花板：{ceiling['name']} ({ceiling['team']})")
-        print("      運動能力差距最大,但同類型裡上限最高的球員")
-    else:
-        print(f"  天花板：{CEILING_NOT_FOUND_MESSAGE}")
-
     body_answers = answers.get("body_answers", [])
     user_body = (
         collect_body_measurements(questions["body_measurements"], body_answers)
@@ -136,19 +120,39 @@ def main():
     user_body_pct, players_pct, body_field_ranges_pct = percentile_normalize_body(
         user_body, players, body_field_ranges
     )
-    if user_body:
-        body_fit = find_body_fit_template(user_body_pct, players_pct, body_field_ranges_pct)
-        if body_fit:
-            print(f"  體能模板：{body_fit['name']} ({body_fit['team']})")
-            print("      身材數值跟你最接近的球員。")
-        else:
-            print("  體能模板：目前沒有球員可比對。")
-    else:
-        print(f"  體能模板：{BODY_MEASUREMENTS_NOT_ANSWERED_MESSAGE}")
-
     ranked = rank_similar_players_by_style_and_body(
         coordinates, user_body_pct, players_pct, body_field_ranges_pct, k=10
     )
+
+    print("\n4 位深度模板:")
+
+    if ranked:
+        overall_fit = ranked[0]
+        print(f"  整體模板：{overall_fit['name']} ({overall_fit['team']})")
+        print("      打法風格加上身材數值綜合起來,跟你最接近的球員。")
+    else:
+        print("  整體模板：目前沒有球員可比對。")
+
+    skill_fit = find_skill_fit_template(coordinates, players)
+    print(f"  技術模板：{skill_fit['name']} ({skill_fit['team']})")
+    print("      排除運動能力,技術層面跟你最接近的球員（打法風格）。")
+
+    if user_body:
+        body_fit = find_body_fit_template(user_body_pct, players_pct, body_field_ranges_pct)
+        if body_fit:
+            print(f"  身材模板：{body_fit['name']} ({body_fit['team']})")
+            print("      身材數值跟你最接近的球員。")
+        else:
+            print("  身材模板：目前沒有球員可比對。")
+    else:
+        print(f"  身材模板：{BODY_MEASUREMENTS_NOT_ANSWERED_MESSAGE}")
+
+    ceiling = find_ceiling_template(coordinates, players)
+    if ceiling:
+        print(f"  天花板：{ceiling['name']} ({ceiling['team']})")
+        print("      運動能力跟你接近,但技術層面明顯更成熟的球員——一個練得到的目標。")
+    else:
+        print(f"  天花板：{CEILING_NOT_FOUND_MESSAGE}")
 
     print("\n10 人對照表:")
     for i, player in enumerate(ranked, start=1):
@@ -158,18 +162,6 @@ def main():
         print(f"  #{i}  {player['name']} ({player['team']})  距離={player['distance']:.1f}  貼合度={stars}")
         print(f"      相似處：{'、'.join(player['notable_traits'])}")
         print(f"      差異：{axis} 軸({AXIS_LABELS[axis]})差距最大 → 最值得學的一件事：{growth}")
-
-    anti_template = find_anti_template(coordinates, players)
-    print("\n反面對照:")
-    if anti_template:
-        print(f"  {anti_template['name']} ({anti_template['team']})")
-        print(
-            f"      你的 A/B/C 軸都跟他很接近,但 D 軸(體能條件)差距最大,"
-            "而且他賴以成功的核心特質被標註為「不可複製」。"
-        )
-        print("      不該把他當模板——那個方向會誘導你去追求很難獲得的身體天賦,而不是可以練出來的技術。")
-    else:
-        print(f"  {ANTI_TEMPLATE_NOT_FOUND_MESSAGE}")
 
 
 if __name__ == "__main__":

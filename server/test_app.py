@@ -1,8 +1,8 @@
 # 用途：測試兩支 API endpoint。POST /api/template-results 只吃四軸定位(16題)
-# 跟身材數值(6題,可省略),回傳定位/3位深度模板/10人對照表/反面對照——刻意不
-# 需要技能行為跟環境權重,因為很多使用者沒在打正式比賽,只想知道自己的球員模
-# 板是誰。POST /api/priority-results 才吃技能行為(15題)跟環境權重,回傳優先
-# 訓練順序,是使用者自己選擇要不要看的「進階」分析。
+# 跟身材數值(6題,可省略),回傳定位/4位深度模板/10人對照表——刻意不需要技能
+# 行為跟環境權重,因為很多使用者沒在打正式比賽,只想知道自己的球員模板是誰。
+# POST /api/priority-results 才吃技能行為(15題)跟環境權重,回傳優先訓練順序,
+# 是使用者自己選擇要不要看的「進階」分析。
 # 用 Flask 內建的 test_client,不需要真的啟動伺服器。
 # 執行方式(跟主要的 engine 測試套件分開跑,因為需要 Flask,不是純標準函式庫)：
 #   cd server && ../.venv/bin/python3 -m unittest test_app -v
@@ -58,9 +58,10 @@ class TemplateResultsTest(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         data = response.get_json()
         self.assertEqual(set(data["coordinates"].keys()), {"A", "B", "C", "D"})
-        self.assertEqual(set(data["deep_templates"].keys()), {"skill_fit", "body_fit", "ceiling"})
+        self.assertEqual(
+            set(data["deep_templates"].keys()), {"overall_fit", "skill_fit", "body_fit", "ceiling"}
+        )
         self.assertEqual(len(data["top_10"]), 10)
-        self.assertIn("anti_template", data)
         # this endpoint must NOT require or return priority-analysis fields
         self.assertNotIn("priorities", data)
         self.assertNotIn("dominant_factor_sentence", data)
@@ -141,7 +142,6 @@ class PriorityResultsTest(unittest.TestCase):
         # this endpoint is priority-only -- template/matching fields don't belong here
         self.assertNotIn("top_10", data)
         self.assertNotIn("deep_templates", data)
-        self.assertNotIn("anti_template", data)
 
     def test_missing_skill_answers_returns_400(self):
         payload = self.build_full_payload()

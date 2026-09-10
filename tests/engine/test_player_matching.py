@@ -7,7 +7,6 @@
 import unittest
 
 from engine.player_matching import (
-    find_anti_template,
     find_body_fit_template,
     find_ceiling_template,
     find_skill_fit_template,
@@ -196,80 +195,6 @@ class MatchingSkillIdTest(unittest.TestCase):
         self.assertIsNone(result)
 
 
-class FindAntiTemplateTest(unittest.TestCase):
-    def test_finds_a_d_dominant_non_replicable_player(self):
-        user = {"A": 50, "B": 50, "C": 50, "D": 50}
-        players = [
-            {
-                "id": "athletic_outlier", "name": "Athletic Outlier",
-                "coordinates": {"A": 52, "B": 48, "C": 51, "D": 95},
-                "learnability_flag": "low",
-            },
-        ]
-
-        result = find_anti_template(user, players)
-
-        self.assertEqual(result["id"], "athletic_outlier")
-
-    def test_excludes_candidates_whose_advantage_is_replicable(self):
-        # Same D-dominant profile, but learnability_flag is not "low" --
-        # the core advantage IS considered learnable, so this player is not
-        # a valid anti-template (design doc: "核心優勢不可複製" is required,
-        # not just "D axis is the biggest gap").
-        user = {"A": 50, "B": 50, "C": 50, "D": 50}
-        players = [
-            {
-                "id": "medium_learnable", "name": "Medium Learnable",
-                "coordinates": {"A": 52, "B": 48, "C": 51, "D": 95},
-                "learnability_flag": "medium",
-            },
-        ]
-
-        result = find_anti_template(user, players)
-
-        self.assertIsNone(result)
-
-    def test_excludes_candidates_whose_dominant_gap_is_not_d(self):
-        user = {"A": 50, "B": 50, "C": 50, "D": 50}
-        players = [
-            {
-                "id": "shooter", "name": "Shooter",
-                "coordinates": {"A": 52, "B": 95, "C": 51, "D": 53},
-                "learnability_flag": "low",
-            },
-        ]
-
-        result = find_anti_template(user, players)
-
-        self.assertIsNone(result)
-
-    def test_returns_none_when_no_players_given(self):
-        user = {"A": 50, "B": 50, "C": 50, "D": 50}
-
-        result = find_anti_template(user, [])
-
-        self.assertIsNone(result)
-
-    def test_picks_the_closest_on_a_b_c_among_multiple_candidates(self):
-        user = {"A": 50, "B": 50, "C": 50, "D": 50}
-        players = [
-            {
-                "id": "far_on_abc", "name": "Far on ABC",
-                "coordinates": {"A": 80, "B": 20, "C": 70, "D": 95},
-                "learnability_flag": "low",
-            },
-            {
-                "id": "close_on_abc", "name": "Close on ABC",
-                "coordinates": {"A": 52, "B": 48, "C": 51, "D": 95},
-                "learnability_flag": "low",
-            },
-        ]
-
-        result = find_anti_template(user, players)
-
-        self.assertEqual(result["id"], "close_on_abc")
-
-
 class FindSkillFitTemplateTest(unittest.TestCase):
     def test_picks_the_closest_on_a_b_c_regardless_of_d(self):
         user = {"A": 50, "B": 50, "C": 50, "D": 50}
@@ -291,28 +216,34 @@ class FindSkillFitTemplateTest(unittest.TestCase):
 
 
 class FindCeilingTemplateTest(unittest.TestCase):
-    def test_finds_a_d_dominant_replicable_player(self):
+    # 2026-09-11 redesign: 天花板 used to mean "A/B/C close, D is the
+    # dominant gap" -- but that's just someone with different genetics, not
+    # an achievable target. It now means the mirror image: a player with
+    # roughly the user's own athletic tools (D close) whose game is far
+    # more developed (the dominant gap is a skill axis) -- a ceiling you
+    # could actually grow into.
+
+    def test_finds_a_skill_dominant_close_d_player(self):
         user = {"A": 50, "B": 50, "C": 50, "D": 50}
         players = [
             {
-                "id": "trainable_athlete", "name": "Trainable Athlete",
-                "coordinates": {"A": 52, "B": 48, "C": 51, "D": 95},
-                "learnability_flag": "high",
+                "id": "polished_peer", "name": "Polished Peer",
+                "coordinates": {"A": 90, "B": 50, "C": 50, "D": 52},
             },
         ]
 
         result = find_ceiling_template(user, players)
 
-        self.assertEqual(result["id"], "trainable_athlete")
+        self.assertEqual(result["id"], "polished_peer")
 
-    def test_excludes_non_replicable_advantage(self):
-        # That's exactly what find_anti_template is for instead.
+    def test_excludes_candidates_whose_dominant_gap_is_d(self):
+        # This is exactly the OLD ceiling shape -- different athletic
+        # tools, not different skill -- so it no longer qualifies.
         user = {"A": 50, "B": 50, "C": 50, "D": 50}
         players = [
             {
-                "id": "gifted_outlier", "name": "Gifted Outlier",
+                "id": "athletic_outlier", "name": "Athletic Outlier",
                 "coordinates": {"A": 52, "B": 48, "C": 51, "D": 95},
-                "learnability_flag": "low",
             },
         ]
 
@@ -320,13 +251,15 @@ class FindCeilingTemplateTest(unittest.TestCase):
 
         self.assertIsNone(result)
 
-    def test_excludes_candidates_whose_dominant_gap_is_not_d(self):
+    def test_excludes_candidates_whose_dominant_diff_is_negative(self):
+        # Known rank_similar_players edge case: when the user leads on
+        # every axis, argmax still returns the *least negative* axis, which
+        # can land on A/B/C without representing a real skill lead.
         user = {"A": 50, "B": 50, "C": 50, "D": 50}
         players = [
             {
-                "id": "shooter", "name": "Shooter",
-                "coordinates": {"A": 52, "B": 95, "C": 51, "D": 53},
-                "learnability_flag": "high",
+                "id": "weaker_everywhere", "name": "Weaker Everywhere",
+                "coordinates": {"A": 45, "B": 30, "C": 20, "D": 10},
             },
         ]
 
@@ -341,24 +274,22 @@ class FindCeilingTemplateTest(unittest.TestCase):
 
         self.assertIsNone(result)
 
-    def test_picks_the_closest_on_a_b_c_among_multiple_candidates(self):
+    def test_picks_the_closest_on_d_among_multiple_candidates(self):
         user = {"A": 50, "B": 50, "C": 50, "D": 50}
         players = [
             {
-                "id": "far_on_abc", "name": "Far on ABC",
-                "coordinates": {"A": 80, "B": 20, "C": 70, "D": 95},
-                "learnability_flag": "medium",
+                "id": "far_on_d", "name": "Far on D",
+                "coordinates": {"A": 90, "B": 50, "C": 50, "D": 90},
             },
             {
-                "id": "close_on_abc", "name": "Close on ABC",
-                "coordinates": {"A": 52, "B": 48, "C": 51, "D": 95},
-                "learnability_flag": "high",
+                "id": "close_on_d", "name": "Close on D",
+                "coordinates": {"A": 90, "B": 50, "C": 50, "D": 52},
             },
         ]
 
         result = find_ceiling_template(user, players)
 
-        self.assertEqual(result["id"], "close_on_abc")
+        self.assertEqual(result["id"], "close_on_d")
 
 
 BODY_FIELD_RANGES = {

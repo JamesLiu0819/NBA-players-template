@@ -2,16 +2,21 @@
 #   GET  /api/form-data       給前端渲染問卷用的題庫跟技能名稱,只回傳必要欄位,
 #                             不外洩 axis_relevance/cost_C 等內部校準數字。
 #   POST /api/template-results  只吃球風定位(16題)+ 身材數值(6題,可省略),
-#                             回傳定位座標、3 位深度模板、10 人對照表、反面
-#                             對照——刻意不需要技能行為跟環境權重,因為很多
-#                             使用者沒在打正式比賽,只想知道自己的球員模板。
-#                             10 人對照表用四軸+身材一起算距離(沒填身材數值
-#                             題就自動退化成純四軸),避免推薦身材差異很大的
-#                             球員當模板;3 位深度模板跟反面對照維持原本邏輯,
-#                             刻意不受這個改動影響。身材裡的身高/體重會先用
-#                             percentile_normalize_body 換算成百分位再比,
-#                             不然幾乎所有使用者都比全部 NBA 球員矮/輕,身材
-#                             模板永遠是最矮的後衛。
+#                             回傳定位座標、4 位深度模板、10 人對照表——刻意
+#                             不需要技能行為跟環境權重,因為很多使用者沒在打
+#                             正式比賽,只想知道自己的球員模板。
+#                             10 人對照表跟整體模板(overall_fit)用四軸+身材
+#                             一起算距離(沒填身材數值題就自動退化成純四軸),
+#                             避免推薦身材差異很大的球員當模板;技術模板/身材
+#                             模板維持純四軸/純身材距離,刻意不受這個改動影響。
+#                             身材裡的身高/體重會先用 percentile_normalize_body
+#                             換算成百分位再比,不然幾乎所有使用者都比全部 NBA
+#                             球員矮/輕,身材模板永遠是最矮的後衛。天花板的定義
+#                             是「D 軸接近、主導差距在 A/B/C」,是一個身體條件
+#                             跟你差不多、但技術更成熟的球員(2026-09-11 重新
+#                             設計,原本的反面對照段落因為用同一套「D 軸差距
+#                             最大」邏輯、找到的其實是天賦不同的人而非天花板,
+#                             已經移除)。
 #   POST /api/priority-results  才吃技能行為(15題)+ 環境權重,回傳優先訓練
 #                             順序,是使用者自己選擇要不要看的「進階」分析。
 # 同時把 /src/ui 的靜態前端檔案服務出去。**刻意不**把 data/ 整個目錄當靜態
@@ -48,7 +53,6 @@ from flask import Flask, jsonify, request, send_from_directory  # noqa: E402
 from engine.axis_position import score_axis_coordinates  # noqa: E402
 from engine.body_fit import collect_body_measurements, percentile_normalize_body  # noqa: E402
 from engine.player_matching import (  # noqa: E402
-    find_anti_template,
     find_body_fit_template,
     find_ceiling_template,
     find_skill_fit_template,
@@ -119,6 +123,7 @@ def compute_template_results(payload, questions, players, skills_by_id):
     return {
         "coordinates": coordinates,
         "deep_templates": {
+            "overall_fit": player_brief(ranked_players[0]) if ranked_players else None,
             "skill_fit": player_brief(find_skill_fit_template(coordinates, players)),
             "body_fit": (
                 player_brief(find_body_fit_template(user_body_pct, players_pct, body_field_ranges_pct))
@@ -127,7 +132,6 @@ def compute_template_results(payload, questions, players, skills_by_id):
             "ceiling": player_brief(find_ceiling_template(coordinates, players)),
         },
         "top_10": top_10,
-        "anti_template": player_brief(find_anti_template(coordinates, players)),
     }
 
 
