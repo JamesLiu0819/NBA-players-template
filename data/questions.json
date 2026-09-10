@@ -1,6 +1,6 @@
 {
-  "_description": "問診題庫。axis_positioning 是四軸定位 16 題(A/B/C/D 各 4 題),skill_behavior 是 5 項關鍵技能的行為錨定題(目前每項技能只有 1 題)。這是 SPEC.md §12 未決問題 #1 的最小版本,完整 15 項技能的錨點題組還沒寫。所有題目都是 BARS(行為錨定評分量表,見 SPEC.md §5.1)——問的是具體行為/頻率,不是自評能力高低。",
-  "_editable_fields": "每題的 prompt(題目文字)跟 anchors(1-5 每個分數對應的行為描述)可以照 BARS 精神修改用詞,但改的時候要小心兩件事:(1) id 一旦被其他地方引用(例如 skill_behavior 的 skill_id 對應 skills.json 的技能 id)就不要改,否則資料兜不起來;(2) 每題的 anchors 必須維持 1-5 五個完整的行為描述,不能只改數字不改文字,否則就違背了 BARS 的設計目的。要新增題目就照現有的物件格式加進對應的陣列。",
+  "_description": "問診題庫。axis_positioning 是四軸定位 16 題(A/B/C/D 各 4 題),skill_behavior 是 5 項關鍵技能的行為錨定題(目前每項技能只有 1 題),body_measurements 是 SPEC.md §5.2 身材類的 6 題數值題(給「3 位深度模板」的身體最貼合用)。這是 SPEC.md §12 未決問題 #1 的最小版本,完整 15 項技能的錨點題組跟其餘題庫還沒寫。axis_positioning/skill_behavior 都是 BARS(行為錨定評分量表,見 SPEC.md §5.1)——問的是具體行為/頻率,不是自評能力高低;body_measurements 例外,是直接填數值,不是 BARS。",
+  "_editable_fields": "axis_positioning/skill_behavior 每題的 prompt(題目文字)跟 anchors(1-5 每個分數對應的行為描述)可以照 BARS 精神修改用詞,body_measurements 每題的 prompt/unit/min/max 可以依實際需求調整,但改的時候要小心三件事:(1) id 一旦被其他地方引用(例如 skill_behavior 的 skill_id 對應 skills.json 的技能 id;body_measurements 的 field 對應 players.json 的 body 欄位名)就不要改,否則資料兜不起來;(2) 每題的 anchors 必須維持 1-5 五個完整的行為描述,不能只改數字不改文字,否則就違背了 BARS 的設計目的;(3) body_measurements 的 field 目前只有 height_cm/wingspan_cm 兩項會被拿去跟 players.json 比對(其餘四項球員資料庫還沒有對應欄位),新增題目要小心維持這個對應關係。要新增題目就照現有的物件格式加進對應的陣列。",
   "axis_positioning": [
     {
       "id": "axis_a1",
@@ -255,6 +255,56 @@
         "4": "常常能跟住",
         "5": "幾乎都能跟住,對手很難靠換防打我"
       }
+    }
+  ],
+  "body_measurements": [
+    {
+      "id": "body_height",
+      "field": "height_cm",
+      "prompt": "身高(公分,不穿鞋量測)",
+      "unit": "cm",
+      "min": 140,
+      "max": 230
+    },
+    {
+      "id": "body_weight",
+      "field": "weight_kg",
+      "prompt": "體重(公斤)",
+      "unit": "kg",
+      "min": 40,
+      "max": 160
+    },
+    {
+      "id": "body_wingspan",
+      "field": "wingspan_cm",
+      "prompt": "臂展(公分,雙臂完全張開指尖到指尖的距離)",
+      "unit": "cm",
+      "min": 140,
+      "max": 250
+    },
+    {
+      "id": "body_standing_reach",
+      "field": "standing_reach_cm",
+      "prompt": "立定摸高(公分,雙腳不離地,單手盡量往上摸到的高度)",
+      "unit": "cm",
+      "min": 180,
+      "max": 320
+    },
+    {
+      "id": "body_running_reach",
+      "field": "running_vertical_reach_cm",
+      "prompt": "助跑摸高(公分,助跑起跳單手摸到的最高點)",
+      "unit": "cm",
+      "min": 200,
+      "max": 370
+    },
+    {
+      "id": "body_sprint_20m",
+      "field": "sprint_20m_seconds",
+      "prompt": "20 公尺衝刺(秒,由靜止起跑計時)",
+      "unit": "s",
+      "min": 2.0,
+      "max": 6.0
     }
   ]
 }

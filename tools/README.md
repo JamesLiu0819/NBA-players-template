@@ -22,31 +22,39 @@ python3 -m http.server 8000
 
 ## 填寫流程
 
-1. 依序填完四軸定位 16 題 + 技能行為 5 題（共 21 題）。每題都要選「哪句描述最
-   像我」，不是憑感覺打分數。
+1. 依序填完四軸定位 16 題 + 技能行為 5 題 + 身材數值 6 題（共 27 題）。四軸定位跟
+   技能行為每題都要選「哪句描述最像我」，不是憑感覺打分數；身材數值題直接填
+   實際數字。
 2. 在「環境權重」區塊，用三個預設按鈕之一（或手動拉滑桿）設定 5 個技能的 E
    值。**這些是暫定值**，`data/env_weights.json`（SPEC.md §12 issue #2）還沒
    建立。
 3. 「即時預覽」區塊會隨填答即時重算座標與優先序——這只是預覽，不是正式結
-   果。
-4. 21 題全部填完後，「匯出 answers.json」按鈕才會開啟。
+   果。這個預覽不含身材數值/球員配對/深度模板,那些只有 `run_player_match.py`
+   會算。
+4. 27 題全部填完後，「匯出 answers.json」按鈕才會開啟。
    - 如果瀏覽器支援 File System Access API（Chrome / Edge），會跳出存檔對
      話框，**請手動導覽到 `data/answers/` 目錄**再存檔（瀏覽器不會自己選路
      徑）。
    - 如果瀏覽器不支援（例如 Safari），檔案會下載到瀏覽器預設的下載資料夾，
      **請手動把檔案搬到 `data/answers/`**。
 5. 下次要重測時，用「載入 data/answers/ 最新一份」或「載入指定檔案」把之前的
-   作答讀回來，不用重填 21 題。
+   作答讀回來，不用重填 27 題。舊版(沒有身材數值題)匯出的作答檔也能正常載入,
+   只是身材數值那 6 格會是空的。
 
 ## 取得正式結果
 
 ```bash
-python3 scripts/run_priority.py                       # 讀 data/answers/ 最新一份
+python3 scripts/run_priority.py                       # 優先序:讀 data/answers/ 最新一份
 python3 scripts/run_priority.py data/answers/answers_20260908T153000.json  # 指定檔案
+
+python3 scripts/run_player_match.py                    # 3位深度模板 + 10人對照表 + 反面對照
+python3 scripts/run_player_match.py data/answers/answers_20260908T153000.json
 ```
 
-會印出四軸座標、優先序表格（含 G/E/R/C 分項）、以及第一名為什麼排在第二名前
-面的中文說明句。
+`run_priority.py` 印出四軸座標、優先序表格（含 G/E/R/C 分項）、以及第一名為什麼
+排在第二名前面的中文說明句。`run_player_match.py` 印出四軸座標、3 位深度模板(技
+能最貼合/身體最貼合/天花板方向)、10 人對照表、反面對照——如果作答檔沒有身材數值
+題的作答(例如舊版匯出的檔案),身體最貼合那一項會顯示「無法計算」而不是報錯。
 
 ## 為什麼頁面上有兩套算法，會不會算出不一樣的結果？
 

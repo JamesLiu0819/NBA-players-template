@@ -1,6 +1,9 @@
 <!--
-  用途：本機用的 BARS 問診測試頁,收集 21 題作答、即時預覽排序、匯出 answers.json。
-  不做任何決策——正式結果一律以 scripts/run_priority.py 的輸出為準。
+  用途：本機用的問診測試頁,收集 27 題作答(四軸定位 16 題 + 技能行為 5 題 +
+  身材數值 6 題)、即時預覽排序、匯出 answers.json。不做任何決策——正式結果
+  一律以 scripts/run_priority.py(優先序)跟 scripts/run_player_match.py(球員
+  配對/深度模板)的輸出為準;身材數值題目前只用於匯出,這頁本身沒有身體最貼合
+  的即時預覽(那需要另外載入 players.json,只有 run_player_match.py 會算)。
   可手動調整的變數：ENV_PRESETS(三組「環境權重」預設按鈕的數值,目前是暫定值,
   必須跟 tests/engine/test_env_calibration.py 裡的 ENV_COLLAPSED_NO_SHOOTERS /
   ENV_TIGHT_PERIMETER_OPP_SHOOTERS 手動保持一致)、AXIS_LABELS 跟 FACTOR_LABELS
@@ -72,6 +75,19 @@
   .anchor-option .score-num { font-variant-numeric: tabular-nums; opacity: .6; width: 1.2em; }
   .axis-group { margin-bottom: 1.5rem; }
   .axis-group > h3 { color: var(--accent); }
+  .body-question {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .75rem .9rem;
+    margin-bottom: .75rem;
+    display: flex; align-items: center; gap: .75rem; flex-wrap: wrap;
+  }
+  .body-question .prompt { font-weight: 600; flex: 1 1 auto; min-width: 16em; }
+  .body-question input[type=number] {
+    width: 6em; padding: .3rem .4rem; font-size: 1rem;
+    border: 1px solid var(--border); border-radius: 6px; background: canvas; color: canvastext;
+  }
+  .body-question .unit { color: var(--ink-soft, inherit); opacity: .7; font-size: .85rem; }
   .env-row {
     display: flex; align-items: center; gap: .75rem;
     padding: .35rem 0;
@@ -112,15 +128,15 @@
   code { background: var(--bg-soft); padding: .1em .35em; border-radius: 4px; }
 </style>
 
-<h1>BARS 問診測試頁（本機用）</h1>
+<h1>問診測試頁（本機用）</h1>
 <p>
-  四軸定位 16 題 + 技能行為 5 題，共 21 題。每題請選「哪句描述最像我」，
-  <strong>不是憑感覺打分數</strong>——這是 BARS（行為錨定評分量表）的重點，見
-  <code>SPEC.md §5.1</code>。
+  四軸定位 16 題 + 技能行為 5 題 + 身材數值 6 題，共 27 題。四軸定位跟技能行為題請選
+  「哪句描述最像我」，<strong>不是憑感覺打分數</strong>——這是 BARS（行為錨定評分量表）的
+  重點，見 <code>SPEC.md §5.1</code>。身材數值題例外，直接填實際數字就好。
 </p>
 
 <div class="sticky-progress">
-  <span id="progress-text">已填 0 / 21</span>
+  <span id="progress-text">已填 0 / 27</span>
   <div class="progress-bar"><div class="progress-bar-fill" id="progress-fill"></div></div>
 </div>
 
@@ -134,6 +150,15 @@
 <section id="skill-section" style="display:none">
   <h2>技能行為（5 題）</h2>
   <div id="skill-questions"></div>
+</section>
+
+<section id="body-section" style="display:none">
+  <h2>身材數值（6 題）</h2>
+  <p style="font-size:.9rem;opacity:.75">
+    直接填實際數字，不是量表。這批題目目前只用來算「3 位深度模板」裡的身體最貼合，
+    只有身高、臂展會實際拿去跟球員資料比對，其餘會先收集起來備用。
+  </p>
+  <div id="body-questions"></div>
 </section>
 
 <section id="env-section" style="display:none">
@@ -207,9 +232,11 @@
   const state = {
     axisQuestions: [],
     skillQuestions: [],
+    bodyQuestions: [],
     skills: [],
-    answers: {},   // question_id -> score (1-5)
-    env: {},       // skill_id -> E (0.5-2.0)
+    answers: {},     // question_id -> score (1-5), axis/skill questions only
+    bodyAnswers: {}, // question_id -> numeric value, body_measurements questions only
+    env: {},         // skill_id -> E (0.5-2.0)
   };
 
   // ---- pure math mirrored line-by-line from src/engine (see file headers) ----
@@ -319,6 +346,7 @@
     ]);
     state.axisQuestions = questions.axis_positioning;
     state.skillQuestions = questions.skill_behavior;
+    state.bodyQuestions = questions.body_measurements;
     state.skills = skills.skills;
     for (const skill of state.skills) state.env[skill.id] = 1.0; // neutral until a preset is picked
   }
@@ -388,6 +416,40 @@
     }
   }
 
+  function renderBodyQuestions() {
+    const container = document.getElementById("body-questions");
+    for (const q of state.bodyQuestions) {
+      const div = document.createElement("div");
+      div.className = "body-question";
+      const label = document.createElement("label");
+      label.className = "prompt";
+      label.textContent = q.prompt;
+      label.htmlFor = q.id;
+      const input = document.createElement("input");
+      input.type = "number";
+      input.id = q.id;
+      input.step = "0.1";
+      input.min = String(q.min);
+      input.max = String(q.max);
+      input.addEventListener("input", () => {
+        const value = Number(input.value);
+        if (input.value !== "" && Number.isFinite(value) && value >= q.min && value <= q.max) {
+          state.bodyAnswers[q.id] = value;
+        } else {
+          delete state.bodyAnswers[q.id];
+        }
+        updateProgress();
+      });
+      const unit = document.createElement("span");
+      unit.className = "unit";
+      unit.textContent = q.unit;
+      div.appendChild(label);
+      div.appendChild(input);
+      div.appendChild(unit);
+      container.appendChild(div);
+    }
+  }
+
   // ---- rendering: env weights ----
 
   function renderEnvControls() {
@@ -437,7 +499,7 @@
   // ---- progress ----
 
   function totalQuestionCount() {
-    return state.axisQuestions.length + state.skillQuestions.length;
+    return state.axisQuestions.length + state.skillQuestions.length + state.bodyQuestions.length;
   }
 
   function answeredCount() {
@@ -445,7 +507,11 @@
       ...state.axisQuestions.map((q) => q.id),
       ...state.skillQuestions.map((q) => q.id),
     ]);
-    return [...allIds].filter((id) => state.answers[id] !== undefined).length;
+    const barsAnswered = [...allIds].filter((id) => state.answers[id] !== undefined).length;
+    const bodyAnswered = state.bodyQuestions.filter(
+      (q) => state.bodyAnswers[q.id] !== undefined
+    ).length;
+    return barsAnswered + bodyAnswered;
   }
 
   function updateProgress() {
@@ -545,6 +611,7 @@
       meta: { exported_at: new Date().toISOString(), tool: "tools/survey.html" },
       axis_answers: state.axisQuestions.map((q) => ({ question_id: q.id, score: state.answers[q.id] })),
       skill_answers: state.skillQuestions.map((q) => ({ question_id: q.id, score: state.answers[q.id] })),
+      body_answers: state.bodyQuestions.map((q) => ({ question_id: q.id, value: state.bodyAnswers[q.id] })),
       env: { ...state.env },
     };
   }
@@ -594,12 +661,21 @@
     state.answers = {};
     for (const a of payload.axis_answers || []) state.answers[a.question_id] = a.score;
     for (const a of payload.skill_answers || []) state.answers[a.question_id] = a.score;
+    state.bodyAnswers = {};
+    for (const a of payload.body_answers || []) {
+      if (a.value !== undefined && a.value !== null) state.bodyAnswers[a.question_id] = a.value;
+    }
     state.env = { ...state.env, ...(payload.env || {}) };
 
     // reflect into radio inputs
     for (const id of Object.keys(state.answers)) {
       const input = document.querySelector(`input[name="${CSS.escape(id)}"][value="${state.answers[id]}"]`);
       if (input) input.checked = true;
+    }
+    // reflect into body-measurement number inputs
+    for (const id of Object.keys(state.bodyAnswers)) {
+      const input = document.getElementById(id);
+      if (input) input.value = String(state.bodyAnswers[id]);
     }
     // reflect into env sliders
     for (const skillId of Object.keys(state.env)) {
@@ -665,10 +741,12 @@
     document.getElementById("loading-message").style.display = "none";
     document.getElementById("axis-section").style.display = "";
     document.getElementById("skill-section").style.display = "";
+    document.getElementById("body-section").style.display = "";
     document.getElementById("env-section").style.display = "";
 
     renderAxisQuestions();
     renderSkillQuestions();
+    renderBodyQuestions();
     renderEnvControls();
     updateProgress();
     recomputePreview();

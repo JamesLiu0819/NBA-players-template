@@ -69,6 +69,25 @@ class QuestionsDataTest(unittest.TestCase):
         for q in self.data["skill_behavior"]:
             self.assertEqual(set(q["anchors"].keys()), {"1", "2", "3", "4", "5"})
 
+    def test_body_measurements_has_six_numeric_questions_with_unique_ids_and_fields(self):
+        body_questions = self.data["body_measurements"]
+        self.assertEqual(len(body_questions), 6)
+
+        ids = [q["id"] for q in body_questions]
+        fields = [q["field"] for q in body_questions]
+        self.assertEqual(len(ids), len(set(ids)))
+        self.assertEqual(len(fields), len(set(fields)))
+
+        for q in body_questions:
+            self.assertLess(q["min"], q["max"])
+
+    def test_body_measurements_covers_the_two_fields_players_json_actually_has(self):
+        # See data/players.json's "body" schema (height_cm, wingspan_cm) --
+        # find_body_fit_template can only compare on fields both sides have.
+        fields = {q["field"] for q in self.data["body_measurements"]}
+        self.assertIn("height_cm", fields)
+        self.assertIn("wingspan_cm", fields)
+
 
 class SkillsDataTest(unittest.TestCase):
     def setUp(self):

@@ -8,6 +8,9 @@ import unittest
 
 from engine.player_matching import (
     find_anti_template,
+    find_body_fit_template,
+    find_ceiling_template,
+    find_skill_fit_template,
     fit_stars_for_distance,
     matching_skill_id,
     rank_similar_players,
@@ -188,6 +191,117 @@ class FindAntiTemplateTest(unittest.TestCase):
         result = find_anti_template(user, players)
 
         self.assertEqual(result["id"], "close_on_abc")
+
+
+class FindSkillFitTemplateTest(unittest.TestCase):
+    def test_picks_the_closest_on_a_b_c_regardless_of_d(self):
+        user = {"A": 50, "B": 50, "C": 50, "D": 50}
+        players = [
+            {"id": "far_abc_near_d", "name": "Far ABC", "coordinates": {"A": 90, "B": 90, "C": 90, "D": 50}},
+            {"id": "near_abc_far_d", "name": "Near ABC", "coordinates": {"A": 52, "B": 48, "C": 51, "D": 5}},
+        ]
+
+        result = find_skill_fit_template(user, players)
+
+        self.assertEqual(result["id"], "near_abc_far_d")
+
+    def test_returns_none_when_no_players_given(self):
+        user = {"A": 50, "B": 50, "C": 50, "D": 50}
+
+        result = find_skill_fit_template(user, [])
+
+        self.assertIsNone(result)
+
+
+class FindCeilingTemplateTest(unittest.TestCase):
+    def test_finds_a_d_dominant_replicable_player(self):
+        user = {"A": 50, "B": 50, "C": 50, "D": 50}
+        players = [
+            {
+                "id": "trainable_athlete", "name": "Trainable Athlete",
+                "coordinates": {"A": 52, "B": 48, "C": 51, "D": 95},
+                "learnability_flag": "high",
+            },
+        ]
+
+        result = find_ceiling_template(user, players)
+
+        self.assertEqual(result["id"], "trainable_athlete")
+
+    def test_excludes_non_replicable_advantage(self):
+        # That's exactly what find_anti_template is for instead.
+        user = {"A": 50, "B": 50, "C": 50, "D": 50}
+        players = [
+            {
+                "id": "gifted_outlier", "name": "Gifted Outlier",
+                "coordinates": {"A": 52, "B": 48, "C": 51, "D": 95},
+                "learnability_flag": "low",
+            },
+        ]
+
+        result = find_ceiling_template(user, players)
+
+        self.assertIsNone(result)
+
+    def test_excludes_candidates_whose_dominant_gap_is_not_d(self):
+        user = {"A": 50, "B": 50, "C": 50, "D": 50}
+        players = [
+            {
+                "id": "shooter", "name": "Shooter",
+                "coordinates": {"A": 52, "B": 95, "C": 51, "D": 53},
+                "learnability_flag": "high",
+            },
+        ]
+
+        result = find_ceiling_template(user, players)
+
+        self.assertIsNone(result)
+
+    def test_returns_none_when_no_candidates(self):
+        user = {"A": 50, "B": 50, "C": 50, "D": 50}
+
+        result = find_ceiling_template(user, [])
+
+        self.assertIsNone(result)
+
+    def test_picks_the_closest_on_a_b_c_among_multiple_candidates(self):
+        user = {"A": 50, "B": 50, "C": 50, "D": 50}
+        players = [
+            {
+                "id": "far_on_abc", "name": "Far on ABC",
+                "coordinates": {"A": 80, "B": 20, "C": 70, "D": 95},
+                "learnability_flag": "medium",
+            },
+            {
+                "id": "close_on_abc", "name": "Close on ABC",
+                "coordinates": {"A": 52, "B": 48, "C": 51, "D": 95},
+                "learnability_flag": "high",
+            },
+        ]
+
+        result = find_ceiling_template(user, players)
+
+        self.assertEqual(result["id"], "close_on_abc")
+
+
+class FindBodyFitTemplateTest(unittest.TestCase):
+    def test_picks_the_closest_player_by_body_distance(self):
+        user_body = {"height_cm": 188, "wingspan_cm": 193}
+        players = [
+            {"id": "far", "name": "Far", "body": {"height_cm": 210, "wingspan_cm": 220}},
+            {"id": "near", "name": "Near", "body": {"height_cm": 190, "wingspan_cm": 195}},
+        ]
+
+        result = find_body_fit_template(user_body, players)
+
+        self.assertEqual(result["id"], "near")
+
+    def test_returns_none_when_no_players_given(self):
+        user_body = {"height_cm": 188, "wingspan_cm": 193}
+
+        result = find_body_fit_template(user_body, [])
+
+        self.assertIsNone(result)
 
 
 if __name__ == "__main__":
