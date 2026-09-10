@@ -887,10 +887,56 @@
     state.answers[questionId] = score;
   }
 
+  function randomFloat(min, max) {
+    return min + Math.random() * (max - min);
+  }
+
+  function clampToQuestion(value, q) {
+    return Math.min(q.max, Math.max(q.min, value));
+  }
+
+  function randomBodyValues() {
+    // Independent per-field random draws (the old behavior) can produce
+    // physically impossible bodies -- e.g. wingspan shorter than height, or
+    // a standing reach taller than the running (jumping) reach. Each field
+    // below is derived from the previous one with a randomized but always
+    // non-negative offset, so the physical ordering is guaranteed to hold
+    // even after clamping to each question's own [min, max] (the field
+    // ranges leave enough headroom that clamping never flips the order --
+    // see the 2026-09-11 body-aware-matching / random-fill discussion).
+    const byField = Object.fromEntries(state.bodyQuestions.map((q) => [q.field, q]));
+    const values = {};
+
+    if (byField.height_cm) {
+      values.height_cm = randomFloat(byField.height_cm.min, byField.height_cm.max);
+    }
+    if (byField.weight_kg) {
+      values.weight_kg = randomFloat(byField.weight_kg.min, byField.weight_kg.max);
+    }
+    if (byField.wingspan_cm) {
+      const base = values.height_cm ?? randomFloat(byField.wingspan_cm.min, byField.wingspan_cm.max);
+      values.wingspan_cm = clampToQuestion(base + randomFloat(0, 15), byField.wingspan_cm);
+    }
+    if (byField.standing_reach_cm) {
+      const base = values.wingspan_cm ?? randomFloat(byField.standing_reach_cm.min, byField.standing_reach_cm.max);
+      values.standing_reach_cm = clampToQuestion(base + randomFloat(28, 36), byField.standing_reach_cm);
+    }
+    if (byField.running_vertical_reach_cm) {
+      const base = values.standing_reach_cm ?? randomFloat(byField.running_vertical_reach_cm.min, byField.running_vertical_reach_cm.max);
+      values.running_vertical_reach_cm = clampToQuestion(base + randomFloat(30, 100), byField.running_vertical_reach_cm);
+    }
+    if (byField.sprint_20m_seconds) {
+      values.sprint_20m_seconds = randomFloat(byField.sprint_20m_seconds.min, byField.sprint_20m_seconds.max);
+    }
+
+    return values;
+  }
+
   function randomFillStage1() {
     for (const q of state.axisQuestions) checkRadioAnswer(q.id, randomInt(1, 5));
+    const bodyValues = randomBodyValues();
     for (const q of state.bodyQuestions) {
-      const value = Math.round((q.min + Math.random() * (q.max - q.min)) * 10) / 10;
+      const value = Math.round(bodyValues[q.field] * 10) / 10;
       const input = document.getElementById(q.id);
       if (input) input.value = value;
       state.bodyAnswers[q.id] = value;
