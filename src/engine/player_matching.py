@@ -1,11 +1,16 @@
 # 用途：L3 匹配層,把使用者的四軸座標拿去跟球員種子資料算最近鄰,並提供「差異
-# 軸是否剛好對到某個技能」的判斷,供 scripts/run_player_match.py 產生 10 人對照表;
-# 也提供 3 位深度模板的挑選邏輯——技能最貼合(find_skill_fit_template)、身體最
-# 貼合(find_body_fit_template)、天花板方向(find_ceiling_template)——以及反面
-# 對照(find_anti_template)。天花板方向跟反面對照是一體兩面：都是「A/B/C 軸接
-# 近但 D 軸差距最大」的球員,差別只在核心優勢可不可複製(learnability_flag)。
+# 軸是否剛好對到某個技能」的判斷。rank_similar_players 是純四軸距離,供 3 位
+# 深度模板挑選邏輯使用——技能最貼合(find_skill_fit_template)、身體最貼合
+# (find_body_fit_template)、天花板方向(find_ceiling_template)——以及反面對照
+# (find_anti_template)。天花板方向跟反面對照是一體兩面：都是「A/B/C 軸接近但
+# D 軸差距最大」的球員,差別只在核心優勢可不可複製(learnability_flag)。
+# rank_similar_players_by_style_and_body 是另一支「四軸+身材」的混合距離函數,
+# 只給 10 人對照表用,刻意不影響上面 4 個深度模板/反面對照函數(它們的設計就是
+# 要跟身材無關,或刻意找身材差異最大的球員,見 2026-09-11 body-aware matching
+# 討論)。
 # 可手動調整的變數：_DISTANCE_STAR_THRESHOLDS(貼合度星級的距離門檻,目前是依
-# 常理暫定的 20/40/60/80,等有真實球員資料庫、知道實際距離分佈後應該重新校準)。
+# 常理暫定的 20/40/60/80,等有真實球員資料庫、知道實際距離分佈後應該重新校準;
+# 這組門檻兩個排序函數共用,沒有另外針對加了身材維度後更大的距離空間校準)。
 
 """L3 matching layer: nearest-neighbor player template matching.
 
@@ -54,6 +59,56 @@ def rank_similar_players(user_coordinates, players, k=10):
     for player in players:
         diff = {axis: player["coordinates"][axis] - user_coordinates[axis] for axis in AXES}
         distance = math.sqrt(sum(diff[axis] ** 2 for axis in AXES))
+        dominant_diff_axis = max(AXES, key=lambda axis: diff[axis])
+        ranked.append({
+            **player,
+            "distance": distance,
+            "diff": diff,
+            "dominant_diff_axis": dominant_diff_axis,
+            "fit_stars": fit_stars_for_distance(distance),
+        })
+    ranked.sort(key=lambda item: item["distance"])
+    return ranked[:k]
+
+
+def rank_similar_players_by_style_and_body(user_coordinates, user_body, players, field_ranges, k=10):
+    """Like rank_similar_players, but folds normalized body-measurement
+    fields into the distance alongside the A/B/C/D style axes -- used only
+    for the 10-player comparison table, so a user doesn't see e.g. a tall
+    big and a small agile guard both offered as "your template" just
+    because their style axes happen to be close (2026-09-11 body-aware
+    matching fix).
+
+    user_body: {field: value}, e.g. from body_fit.collect_body_measurements.
+        If empty (user skipped the body questions), every player's common
+        field set with user_body is empty too, so this degrades to a plain
+        style-only distance -- the same numbers rank_similar_players would
+        produce.
+    field_ranges: {field: (min, max)}, passed straight through to
+        body_distance for normalization.
+    players: list of dicts, each with "coordinates" and a "body" dict.
+
+    Returns the k nearest players sorted by ascending combined distance.
+    Each result dict is the original player dict plus:
+        distance: float, combined style+body distance
+        diff: {"A"..."D": player[axis] - user_coordinates[axis]} (signed,
+            style-only -- growth-recommendation text is keyed off this)
+        dominant_diff_axis: axis of the signed max of diff (style-only)
+        fit_stars: int 1-5
+    """
+    ranked = []
+    for player in players:
+        diff = {axis: player["coordinates"][axis] - user_coordinates[axis] for axis in AXES}
+        squared_terms = [diff[axis] ** 2 for axis in AXES]
+
+        common_body_fields = set(user_body) & set(player.get("body", {}))
+        for field in common_body_fields:
+            low, high = field_ranges[field]
+            user_norm = (user_body[field] - low) / (high - low) * 100
+            player_norm = (player["body"][field] - low) / (high - low) * 100
+            squared_terms.append((player_norm - user_norm) ** 2)
+
+        distance = math.sqrt(sum(squared_terms))
         dominant_diff_axis = max(AXES, key=lambda axis: diff[axis])
         ranked.append({
             **player,
@@ -146,12 +201,14 @@ def find_skill_fit_template(user_coordinates, players):
     return min(ranked, key=lambda p: _abc_distance(p["diff"]))
 
 
-def find_body_fit_template(user_body, players):
+def find_body_fit_template(user_body, players, field_ranges):
     """Find the "body best-fit" deep template (身體最貼合): the player whose
     body measurements are closest to the user's, per body_distance.
 
     user_body: {field: value}, e.g. from body_fit.collect_body_measurements.
     players: list of dicts, each with a "body": {field: value} entry.
+    field_ranges: {field: (min, max)}, passed straight through to
+        body_distance for normalization.
 
     Returns None if players is empty. Assumes every player's "body" dict
     shares at least one field with user_body (true for all of today's seed
@@ -159,4 +216,4 @@ def find_body_fit_template(user_body, players):
     """
     if not players:
         return None
-    return min(players, key=lambda p: body_distance(user_body, p["body"]))
+    return min(players, key=lambda p: body_distance(user_body, p["body"], field_ranges))

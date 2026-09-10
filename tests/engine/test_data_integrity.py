@@ -91,12 +91,16 @@ class QuestionsDataTest(unittest.TestCase):
         for q in body_questions:
             self.assertLess(q["min"], q["max"])
 
-    def test_body_measurements_covers_the_two_fields_players_json_actually_has(self):
-        # See data/players.json's "body" schema (height_cm, wingspan_cm) --
-        # find_body_fit_template can only compare on fields both sides have.
+    def test_body_measurements_covers_every_field_players_json_actually_has(self):
+        # See data/players.json's "body" schema -- body_distance/
+        # find_body_fit_template can only compare on fields both sides have,
+        # and every field's [min, max] here is also what
+        # scripts/build_players_seed.py's derived fields must stay inside.
         fields = {q["field"] for q in self.data["body_measurements"]}
-        self.assertIn("height_cm", fields)
-        self.assertIn("wingspan_cm", fields)
+        self.assertEqual(fields, {
+            "height_cm", "weight_kg", "wingspan_cm",
+            "standing_reach_cm", "running_vertical_reach_cm", "sprint_20m_seconds",
+        })
 
 
 class SkillsDataTest(unittest.TestCase):

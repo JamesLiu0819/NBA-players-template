@@ -5,6 +5,10 @@
 #                             回傳定位座標、3 位深度模板、10 人對照表、反面
 #                             對照——刻意不需要技能行為跟環境權重,因為很多
 #                             使用者沒在打正式比賽,只想知道自己的球員模板。
+#                             10 人對照表用四軸+身材一起算距離(沒填身材數值
+#                             題就自動退化成純四軸),避免推薦身材差異很大的
+#                             球員當模板;3 位深度模板跟反面對照維持原本邏輯,
+#                             刻意不受這個改動影響。
 #   POST /api/priority-results  才吃技能行為(15題)+ 環境權重,回傳優先訓練
 #                             順序,是使用者自己選擇要不要看的「進階」分析。
 # 同時把 /src/ui 的靜態前端檔案服務出去。**刻意不**把 data/ 整個目錄當靜態
@@ -45,7 +49,7 @@ from engine.player_matching import (  # noqa: E402
     find_body_fit_template,
     find_ceiling_template,
     find_skill_fit_template,
-    rank_similar_players,
+    rank_similar_players_by_style_and_body,
 )
 from engine.priority import rank_priorities  # noqa: E402
 from scripts.run_player_match import describe_growth_recommendation  # noqa: E402
@@ -88,9 +92,13 @@ def compute_template_results(payload, questions, players, skills_by_id):
         collect_body_measurements(questions["body_measurements"], body_answers)
         if body_answers else {}
     )
+    body_field_ranges = {q["field"]: (q["min"], q["max"]) for q in questions["body_measurements"]}
 
     top_10 = []
-    for rank, player in enumerate(rank_similar_players(coordinates, players, k=10), start=1):
+    ranked_players = rank_similar_players_by_style_and_body(
+        coordinates, user_body, players, body_field_ranges, k=10
+    )
+    for rank, player in enumerate(ranked_players, start=1):
         top_10.append({
             "rank": rank,
             "name": player["name"],
@@ -106,7 +114,10 @@ def compute_template_results(payload, questions, players, skills_by_id):
         "coordinates": coordinates,
         "deep_templates": {
             "skill_fit": player_brief(find_skill_fit_template(coordinates, players)),
-            "body_fit": player_brief(find_body_fit_template(user_body, players)) if user_body else None,
+            "body_fit": (
+                player_brief(find_body_fit_template(user_body, players, body_field_ranges))
+                if user_body else None
+            ),
             "ceiling": player_brief(find_ceiling_template(coordinates, players)),
         },
         "top_10": top_10,

@@ -51,22 +51,50 @@ class CollectBodyMeasurementsTest(unittest.TestCase):
             collect_body_measurements(QUESTIONS, answers)
 
 
+FIELD_RANGES = {
+    "height_cm": (140, 230),
+    "wingspan_cm": (140, 250),
+    "weight_kg": (40, 160),
+}
+
+
 class BodyDistanceTest(unittest.TestCase):
     def test_computes_distance_over_common_fields_only(self):
         user = {"height_cm": 188, "wingspan_cm": 193, "weight_kg": 83}
         player = {"height_cm": 198, "wingspan_cm": 203}
 
-        # only height_cm and wingspan_cm overlap; weight_kg is ignored
-        result = body_distance(user, player)
+        # only height_cm and wingspan_cm overlap; weight_kg is ignored.
+        # each field is min-max normalized to 0-100 before the distance is
+        # taken, so the offset cancels out and only the raw diff / span
+        # ratio matters here.
+        result = body_distance(user, player, FIELD_RANGES)
 
-        self.assertAlmostEqual(result, (10 ** 2 + 10 ** 2) ** 0.5)
+        expected = (
+            (10 / 90 * 100) ** 2 + (10 / 110 * 100) ** 2
+        ) ** 0.5
+        self.assertAlmostEqual(result, expected)
+
+    def test_normalizes_so_a_large_span_field_does_not_dominate(self):
+        # weight_kg has a much smaller numeric span (120) than
+        # running_vertical_reach_cm (170) in the real question set, but here
+        # we use a tiny 2-point span to make the dominance obvious: a 1-unit
+        # raw diff on a 2-point-span field should outweigh a 10-unit raw
+        # diff on a 90-point-span field once both are normalized to 0-100.
+        field_ranges = {"height_cm": (140, 230), "tiny_span_field": (0, 2)}
+        user = {"height_cm": 188, "tiny_span_field": 0}
+        player = {"height_cm": 198, "tiny_span_field": 1}
+
+        result = body_distance(user, player, field_ranges)
+
+        expected = ((10 / 90 * 100) ** 2 + (1 / 2 * 100) ** 2) ** 0.5
+        self.assertAlmostEqual(result, expected)
 
     def test_raises_when_no_fields_overlap(self):
         user = {"height_cm": 188}
         player = {"weight_kg": 83}
 
         with self.assertRaises(ValueError):
-            body_distance(user, player)
+            body_distance(user, player, FIELD_RANGES)
 
 
 if __name__ == "__main__":

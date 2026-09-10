@@ -4,8 +4,14 @@
 # 建置產物、不能手改,所以估算資料放在這支腳本的 PLAYERS 常數裡,不是直接寫進
 # JSON 檔。之後要換成 nba_api / Basketball-Reference 的真數據時,換掉這支腳本
 # 產生 PLAYERS 的方式即可,下游(engine、報表腳本)不用動。
+# PLAYERS 裡每位球員的 body 只手動填 height_cm/wingspan_cm 兩項,其餘 4 項
+# (weight_kg/standing_reach_cm/running_vertical_reach_cm/sprint_20m_seconds)
+# 由 derive_body_measurements() 在 main() 裡公式推算後補上,不是逐一手key的
+# 600 筆數字——公式本身也是手動估算校準過的,不是真實測量值。
 # 可手動調整的變數：PLAYERS(整份球員清單,每位球員的 coordinates/body/
-# notable_traits/signature_skill_id/learnability_flag 都可以直接改)。
+# notable_traits/signature_skill_id/learnability_flag 都可以直接改)、
+# derive_body_measurements() 裡的公式係數(如果覺得推算出來的體重/彈跳不合理,
+# 可以調整這裡的係數,不用改 PLAYERS 本身)。
 """Generates data/players.json from hand-estimated seed data.
 
 Coordinates, body measurements (wingspan especially), and skill/defensive
@@ -1286,12 +1292,55 @@ PLAYERS = [
 ]
 
 
+def derive_body_measurements(height_cm, wingspan_cm, coordinates):
+    """Formula-derive the 4 body-measurement fields not hand-estimated above
+    (weight_kg, standing_reach_cm, running_vertical_reach_cm,
+    sprint_20m_seconds) from each player's existing height/wingspan/D-axis/
+    B-axis, instead of hand-typing ~600 more literal values. See file header
+    -- these are estimates for engine bring-up, not scouted measurements.
+
+    Formulas (hand-validated for plausibility against a few real players --
+    e.g. Curry: 188cm/95 B-axis -> 84kg, close to his listed 84kg):
+      weight_kg: taller players and lower-B (less perimeter-oriented, more
+          interior/physical) players are heavier.
+      standing_reach_cm: wingspan_cm plus a fixed ~32cm offset (an average
+          shoulder-to-fingertip-reach addition).
+      running_vertical_reach_cm: standing reach plus a vertical leap that
+          scales with the D axis (athleticism).
+      sprint_20m_seconds: scales inversely with the D axis.
+    """
+    d_axis = coordinates["D"]
+    b_axis = coordinates["B"]
+    weight_kg = round((height_cm - 105) + (100 - b_axis) * 0.15)
+    standing_reach_cm = round(wingspan_cm + 32)
+    vertical_leap_cm = 45 + (d_axis / 100) * 55
+    running_vertical_reach_cm = round(standing_reach_cm + vertical_leap_cm)
+    sprint_20m_seconds = round(3.6 - (d_axis / 100) * 1.0, 2)
+    return {
+        "weight_kg": weight_kg,
+        "standing_reach_cm": standing_reach_cm,
+        "running_vertical_reach_cm": running_vertical_reach_cm,
+        "sprint_20m_seconds": sprint_20m_seconds,
+    }
+
+
 def main():
+    for player in PLAYERS:
+        player["body"].update(
+            derive_body_measurements(
+                player["body"]["height_cm"], player["body"]["wingspan_cm"], player["coordinates"]
+            )
+        )
+
     payload = {
         "_description": (
             "球員種子資料。P1 最小版本用手動估算的方式產生,只是為了讓最近鄰配對"
             "(src/engine/player_matching.py)有真實資料可以測試,不是真實統計數據"
-            "推導的結果(每位球員的 _estimate_basis 都有說明)。"
+            "推導的結果(每位球員的 _estimate_basis 都有說明)。body 欄位裡的"
+            "height_cm/wingspan_cm 是手動估算,其餘 weight_kg/standing_reach_cm/"
+            "running_vertical_reach_cm/sprint_20m_seconds 是由這兩項加上四軸座標"
+            "公式推算出來的(見 scripts/build_players_seed.py 的"
+            "derive_body_measurements),不是個別球員的真實測量值。"
         ),
         "_editable_fields": (
             "整份 players 清單都可以改——調 coordinates 改變座標,調 notable_traits/"

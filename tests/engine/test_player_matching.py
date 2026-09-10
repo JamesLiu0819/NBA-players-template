@@ -14,6 +14,7 @@ from engine.player_matching import (
     fit_stars_for_distance,
     matching_skill_id,
     rank_similar_players,
+    rank_similar_players_by_style_and_body,
     skill_dominant_axis,
 )
 
@@ -74,6 +75,82 @@ class RankSimilarPlayersTest(unittest.TestCase):
 
         self.assertEqual(ranked[0]["dominant_diff_axis"], "D")
         self.assertEqual(ranked[0]["diff"]["D"], -50)
+
+
+class RankSimilarPlayersByStyleAndBodyTest(unittest.TestCase):
+    FIELD_RANGES = {"height_cm": (140, 230)}
+
+    def test_body_distance_can_change_the_ranking_vs_style_alone(self):
+        # Style-only ranking would put "close_style_far_body" first (0 style
+        # distance beats 40). Once body is folded in, "far_style_close_body"
+        # should win instead -- a large body gap should be able to outweigh
+        # a moderate style gap, which is the whole point of this function
+        # (SPEC change: stop pairing a user with players of a wildly
+        # different body type just because their play style matches).
+        user_coordinates = {"A": 50, "B": 50, "C": 50, "D": 50}
+        user_body = {"height_cm": 188}
+        players = [
+            {
+                "id": "close_style_far_body", "name": "CloseStyleFarBody",
+                "coordinates": {"A": 50, "B": 50, "C": 50, "D": 50},
+                "body": {"height_cm": 230},
+            },
+            {
+                "id": "far_style_close_body", "name": "FarStyleCloseBody",
+                "coordinates": {"A": 90, "B": 50, "C": 50, "D": 50},
+                "body": {"height_cm": 190},
+            },
+        ]
+
+        ranked = rank_similar_players_by_style_and_body(
+            user_coordinates, user_body, players, self.FIELD_RANGES, k=10
+        )
+
+        self.assertEqual([p["id"] for p in ranked], ["far_style_close_body", "close_style_far_body"])
+        # diff/dominant_diff_axis stay style-only (A/B/C/D), since downstream
+        # growth-recommendation text is keyed off the style axes, not body.
+        self.assertEqual(ranked[0]["diff"], {"A": 40, "B": 0, "C": 0, "D": 0})
+        self.assertEqual(ranked[0]["dominant_diff_axis"], "A")
+
+    def test_degrades_to_style_only_distance_when_user_has_no_body_data(self):
+        user_coordinates = {"A": 50, "B": 50, "C": 50, "D": 50}
+        players = [
+            {
+                "id": "p1", "name": "P1",
+                "coordinates": {"A": 60, "B": 50, "C": 50, "D": 50},
+                "body": {"height_cm": 230},
+            },
+        ]
+
+        ranked = rank_similar_players_by_style_and_body(
+            user_coordinates, {}, players, self.FIELD_RANGES, k=10
+        )
+
+        self.assertAlmostEqual(ranked[0]["distance"], 10.0)
+
+    def test_sorts_ascending_and_truncates_to_k(self):
+        user_coordinates = {"A": 0, "B": 0, "C": 0, "D": 0}
+        user_body = {"height_cm": 140}
+        players = [
+            {
+                "id": "far", "name": "Far",
+                "coordinates": {"A": 90, "B": 0, "C": 0, "D": 0}, "body": {"height_cm": 140},
+            },
+            {
+                "id": "near", "name": "Near",
+                "coordinates": {"A": 10, "B": 0, "C": 0, "D": 0}, "body": {"height_cm": 140},
+            },
+            {
+                "id": "mid", "name": "Mid",
+                "coordinates": {"A": 50, "B": 0, "C": 0, "D": 0}, "body": {"height_cm": 140},
+            },
+        ]
+
+        ranked = rank_similar_players_by_style_and_body(
+            user_coordinates, user_body, players, self.FIELD_RANGES, k=2
+        )
+
+        self.assertEqual([p["id"] for p in ranked], ["near", "mid"])
 
 
 class FitStarsForDistanceTest(unittest.TestCase):
@@ -284,6 +361,12 @@ class FindCeilingTemplateTest(unittest.TestCase):
         self.assertEqual(result["id"], "close_on_abc")
 
 
+BODY_FIELD_RANGES = {
+    "height_cm": (140, 230),
+    "wingspan_cm": (140, 250),
+}
+
+
 class FindBodyFitTemplateTest(unittest.TestCase):
     def test_picks_the_closest_player_by_body_distance(self):
         user_body = {"height_cm": 188, "wingspan_cm": 193}
@@ -292,14 +375,14 @@ class FindBodyFitTemplateTest(unittest.TestCase):
             {"id": "near", "name": "Near", "body": {"height_cm": 190, "wingspan_cm": 195}},
         ]
 
-        result = find_body_fit_template(user_body, players)
+        result = find_body_fit_template(user_body, players, BODY_FIELD_RANGES)
 
         self.assertEqual(result["id"], "near")
 
     def test_returns_none_when_no_players_given(self):
         user_body = {"height_cm": 188, "wingspan_cm": 193}
 
-        result = find_body_fit_template(user_body, [])
+        result = find_body_fit_template(user_body, [], BODY_FIELD_RANGES)
 
         self.assertIsNone(result)
 

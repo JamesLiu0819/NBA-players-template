@@ -22,6 +22,10 @@ class PlayersDataTest(unittest.TestCase):
     def setUp(self):
         self.players = load_json("players.json")["players"]
         self.skill_ids = {s["id"] for s in load_json("skills.json")["skills"]}
+        self.body_field_ranges = {
+            q["field"]: (q["min"], q["max"])
+            for q in load_json("questions.json")["body_measurements"]
+        }
 
     def test_has_at_least_min_players(self):
         self.assertGreaterEqual(len(self.players), MIN_PLAYERS)
@@ -61,6 +65,19 @@ class PlayersDataTest(unittest.TestCase):
             skill_id = player["signature_skill_id"]
             if skill_id is not None:
                 self.assertIn(skill_id, self.skill_ids, player["id"])
+
+    def test_every_player_has_all_six_body_fields_within_declared_range(self):
+        # Ensures scripts/build_players_seed.py's derive_body_measurements()
+        # formulas stay inside data/questions.json's own [min, max] for
+        # every field, for every player -- not just the 3 hand-checked in
+        # the script's docstring.
+        for player in self.players:
+            body = player["body"]
+            self.assertEqual(set(body.keys()), set(self.body_field_ranges.keys()), player["id"])
+            for field, (low, high) in self.body_field_ranges.items():
+                value = body[field]
+                self.assertGreaterEqual(value, low, f"{player['id']}.{field}")
+                self.assertLessEqual(value, high, f"{player['id']}.{field}")
 
 
 if __name__ == "__main__":

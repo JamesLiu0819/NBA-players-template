@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # 用途：讀取匯出的作答檔跟 data/players.json,算出四軸座標後印出「3 位深度模板」
 # (技能最貼合/身體最貼合/天花板方向)、「10 人對照表」、「反面對照」三段文字報表。
+# 10 人對照表用 rank_similar_players_by_style_and_body,四軸+身材一起算距離,
+# 避免推薦身材差異很大的球員當模板(2026-09-11);3 位深度模板跟反面對照維持
+# 用四軸(或純身材)距離,刻意不受這個改動影響。
 # 跟 scripts/run_priority.py 一樣,是唯一權威的計算結果(沒有另外的 UI 或即時預覽
 # 版本)。
 # 可手動調整的變數：AXIS_LABELS(中文顯示用詞,可依用詞習慣調整,不影響計算)、
@@ -35,7 +38,7 @@ from engine.player_matching import (  # noqa: E402
     find_ceiling_template,
     find_skill_fit_template,
     matching_skill_id,
-    rank_similar_players,
+    rank_similar_players_by_style_and_body,
 )
 
 AXIS_LABELS = {
@@ -102,6 +105,7 @@ def main():
     players = load_json(ROOT / "data" / "players.json")["players"]
     answers = load_json(answers_path)
     skills_by_id = {s["id"]: s for s in skills}
+    body_field_ranges = {q["field"]: (q["min"], q["max"]) for q in questions["body_measurements"]}
 
     coordinates = score_axis_coordinates(questions["axis_positioning"], answers["axis_answers"])
     print("你的四軸座標:")
@@ -127,7 +131,7 @@ def main():
         if body_answers else {}
     )
     if user_body:
-        body_fit = find_body_fit_template(user_body, players)
+        body_fit = find_body_fit_template(user_body, players, body_field_ranges)
         if body_fit:
             print(f"  體能模板：{body_fit['name']} ({body_fit['team']})")
             print("      身材數值跟你最接近的球員。")
@@ -136,7 +140,9 @@ def main():
     else:
         print(f"  體能模板：{BODY_MEASUREMENTS_NOT_ANSWERED_MESSAGE}")
 
-    ranked = rank_similar_players(coordinates, players, k=10)
+    ranked = rank_similar_players_by_style_and_body(
+        coordinates, user_body, players, body_field_ranges, k=10
+    )
 
     print("\n10 人對照表:")
     for i, player in enumerate(ranked, start=1):

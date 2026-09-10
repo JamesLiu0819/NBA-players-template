@@ -1,5 +1,5 @@
 {
-  "_description": "球員種子資料。P1 最小版本用手動估算的方式產生,只是為了讓最近鄰配對(src/engine/player_matching.py)有真實資料可以測試,不是真實統計數據推導的結果(每位球員的 _estimate_basis 都有說明)。",
+  "_description": "球員種子資料。P1 最小版本用手動估算的方式產生,只是為了讓最近鄰配對(src/engine/player_matching.py)有真實資料可以測試,不是真實統計數據推導的結果(每位球員的 _estimate_basis 都有說明)。body 欄位裡的height_cm/wingspan_cm 是手動估算,其餘 weight_kg/standing_reach_cm/running_vertical_reach_cm/sprint_20m_seconds 是由這兩項加上四軸座標公式推算出來的(見 scripts/build_players_seed.py 的derive_body_measurements),不是個別球員的真實測量值。",
   "_editable_fields": "整份 players 清單都可以改——調 coordinates 改變座標,調 notable_traits/signature_skill_id 改變輸出文案,調 learnability_flag(low/medium/high)留給之後的反面對照功能用。id 一旦被別的地方引用就不要改。",
   "players": [
     {
@@ -14,7 +14,11 @@
       },
       "body": {
         "height_cm": 201,
-        "wingspan_cm": 213
+        "wingspan_cm": 213,
+        "weight_kg": 107,
+        "standing_reach_cm": 245,
+        "running_vertical_reach_cm": 342,
+        "sprint_20m_seconds": 2.65
       },
       "notable_traits": [
         "轉換進攻速度快",
@@ -37,7 +41,11 @@
       },
       "body": {
         "height_cm": 211,
-        "wingspan_cm": 213
+        "wingspan_cm": 213,
+        "weight_kg": 116,
+        "standing_reach_cm": 245,
+        "running_vertical_reach_cm": 306,
+        "sprint_20m_seconds": 3.3
       },
       "notable_traits": [
         "高位傳導視野極佳",
@@ -60,7 +68,11 @@
       },
       "body": {
         "height_cm": 188,
-        "wingspan_cm": 191
+        "wingspan_cm": 191,
+        "weight_kg": 84,
+        "standing_reach_cm": 223,
+        "running_vertical_reach_cm": 290,
+        "sprint_20m_seconds": 3.2
       },
       "notable_traits": [
         "超遠三分出手",
@@ -83,7 +95,11 @@
       },
       "body": {
         "height_cm": 216,
-        "wingspan_cm": 239
+        "wingspan_cm": 239,
+        "weight_kg": 125,
+        "standing_reach_cm": 271,
+        "running_vertical_reach_cm": 346,
+        "sprint_20m_seconds": 3.05
       },
       "notable_traits": [
         "護框覆蓋範圍大",
@@ -106,7 +122,11 @@
       },
       "body": {
         "height_cm": 201,
-        "wingspan_cm": 208
+        "wingspan_cm": 208,
+        "weight_kg": 103,
+        "standing_reach_cm": 240,
+        "running_vertical_reach_cm": 310,
+        "sprint_20m_seconds": 3.15
       },
       "notable_traits": [
         "持球創造能力強",
@@ -129,7 +149,11 @@
       },
       "body": {
         "height_cm": 198,
-        "wingspan_cm": 208
+        "wingspan_cm": 208,
+        "weight_kg": 102,
+        "standing_reach_cm": 240,
+        "running_vertical_reach_cm": 312,
+        "sprint_20m_seconds": 3.1
       },
       "notable_traits": [
         "高位傳導組織進攻",
@@ -152,7 +176,11 @@
       },
       "body": {
         "height_cm": 198,
-        "wingspan_cm": 201
+        "wingspan_cm": 201,
+        "weight_kg": 94,
+        "standing_reach_cm": 233,
+        "running_vertical_reach_cm": 297,
+        "sprint_20m_seconds": 3.25
       },
       "notable_traits": [
         "無球跑動投射效率高",
@@ -175,7 +203,11 @@
       },
       "body": {
         "height_cm": 211,
-        "wingspan_cm": 221
+        "wingspan_cm": 221,
+        "weight_kg": 119,
+        "standing_reach_cm": 253,
+        "running_vertical_reach_cm": 348,
+        "sprint_20m_seconds": 2.7
       },
       "notable_traits": [
         "快攻轉換終結力強",
@@ -198,7 +230,11 @@
       },
       "body": {
         "height_cm": 224,
-        "wingspan_cm": 245
+        "wingspan_cm": 245,
+        "weight_kg": 128,
+        "standing_reach_cm": 277,
+        "running_vertical_reach_cm": 369,
+        "sprint_20m_seconds": 2.75
       },
       "notable_traits": [
         "護框跟外圍換防都能做",
@@ -221,7 +257,11 @@
       },
       "body": {
         "height_cm": 193,
-        "wingspan_cm": 196
+        "wingspan_cm": 196,
+        "weight_kg": 95,
+        "standing_reach_cm": 228,
+        "running_vertical_reach_cm": 303,
+        "sprint_20m_seconds": 3.05
       },
       "notable_traits": [
         "貼身跟防能力強",
@@ -244,7 +284,11 @@
       },
       "body": {
         "height_cm": 211,
-        "wingspan_cm": 221
+        "wingspan_cm": 221,
+        "weight_kg": 120,
+        "standing_reach_cm": 253,
+        "running_vertical_reach_cm": 312,
+        "sprint_20m_seconds": 3.35
       },
       "notable_traits": [
         "高位/低位策應能力強",
@@ -267,7 +311,11 @@
       },
       "body": {
         "height_cm": 198,
-        "wingspan_cm": 206
+        "wingspan_cm": 206,
+        "weight_kg": 99,
+        "standing_reach_cm": 238,
+        "running_vertical_reach_cm": 316,
+        "sprint_20m_seconds": 3.0
       },
       "notable_traits": [
         "3&D 側翼定位清楚",
@@ -290,7 +338,11 @@
       },
       "body": {
         "height_cm": 208,
-        "wingspan_cm": 226
+        "wingspan_cm": 226,
+        "weight_kg": 109,
+        "standing_reach_cm": 258,
+        "running_vertical_reach_cm": 333,
+        "sprint_20m_seconds": 3.05
       },
       "notable_traits": [
         "中距離跳投難防守",
@@ -313,7 +365,11 @@
       },
       "body": {
         "height_cm": 211,
-        "wingspan_cm": 223
+        "wingspan_cm": 223,
+        "weight_kg": 116,
+        "standing_reach_cm": 255,
+        "running_vertical_reach_cm": 308,
+        "sprint_20m_seconds": 3.45
       },
       "notable_traits": [
         "高位傳導組織進攻",
@@ -336,7 +392,11 @@
       },
       "body": {
         "height_cm": 196,
-        "wingspan_cm": 201
+        "wingspan_cm": 201,
+        "weight_kg": 99,
+        "standing_reach_cm": 233,
+        "running_vertical_reach_cm": 306,
+        "sprint_20m_seconds": 3.1
       },
       "notable_traits": [
         "抄截嗅覺強",
@@ -359,7 +419,11 @@
       },
       "body": {
         "height_cm": 206,
-        "wingspan_cm": 216
+        "wingspan_cm": 216,
+        "weight_kg": 114,
+        "standing_reach_cm": 248,
+        "running_vertical_reach_cm": 326,
+        "sprint_20m_seconds": 3.0
       },
       "notable_traits": [
         "護框跟外圍換防都能做",
@@ -382,7 +446,11 @@
       },
       "body": {
         "height_cm": 196,
-        "wingspan_cm": 201
+        "wingspan_cm": 201,
+        "weight_kg": 92,
+        "standing_reach_cm": 233,
+        "running_vertical_reach_cm": 294,
+        "sprint_20m_seconds": 3.3
       },
       "notable_traits": [
         "純射手型側翼",
@@ -405,7 +473,11 @@
       },
       "body": {
         "height_cm": 208,
-        "wingspan_cm": 231
+        "wingspan_cm": 231,
+        "weight_kg": 115,
+        "standing_reach_cm": 263,
+        "running_vertical_reach_cm": 346,
+        "sprint_20m_seconds": 2.9
       },
       "notable_traits": [
         "護框覆蓋範圍大",
@@ -428,7 +500,11 @@
       },
       "body": {
         "height_cm": 183,
-        "wingspan_cm": 188
+        "wingspan_cm": 188,
+        "weight_kg": 86,
+        "standing_reach_cm": 220,
+        "running_vertical_reach_cm": 273,
+        "sprint_20m_seconds": 3.45
       },
       "notable_traits": [
         "持球節奏掌控力強",
@@ -451,7 +527,11 @@
       },
       "body": {
         "height_cm": 191,
-        "wingspan_cm": 193
+        "wingspan_cm": 193,
+        "weight_kg": 96,
+        "standing_reach_cm": 225,
+        "running_vertical_reach_cm": 314,
+        "sprint_20m_seconds": 2.8
       },
       "notable_traits": [
         "轉換速度快",
@@ -474,7 +554,11 @@
       },
       "body": {
         "height_cm": 213,
-        "wingspan_cm": 229
+        "wingspan_cm": 229,
+        "weight_kg": 119,
+        "standing_reach_cm": 261,
+        "running_vertical_reach_cm": 344,
+        "sprint_20m_seconds": 2.9
       },
       "notable_traits": [
         "背框腳步細膩",
@@ -497,7 +581,11 @@
       },
       "body": {
         "height_cm": 213,
-        "wingspan_cm": 224
+        "wingspan_cm": 224,
+        "weight_kg": 115,
+        "standing_reach_cm": 256,
+        "running_vertical_reach_cm": 326,
+        "sprint_20m_seconds": 3.15
       },
       "notable_traits": [
         "背框腳步柔軟",
@@ -520,7 +608,11 @@
       },
       "body": {
         "height_cm": 196,
-        "wingspan_cm": 196
+        "wingspan_cm": 196,
+        "weight_kg": 98,
+        "standing_reach_cm": 228,
+        "running_vertical_reach_cm": 295,
+        "sprint_20m_seconds": 3.2
       },
       "notable_traits": [
         "擋拆傳導視野極佳",
@@ -543,7 +635,11 @@
       },
       "body": {
         "height_cm": 183,
-        "wingspan_cm": 185
+        "wingspan_cm": 185,
+        "weight_kg": 85,
+        "standing_reach_cm": 217,
+        "running_vertical_reach_cm": 281,
+        "sprint_20m_seconds": 3.25
       },
       "notable_traits": [
         "擋拆製造犯規能力強",
@@ -566,7 +662,11 @@
       },
       "body": {
         "height_cm": 196,
-        "wingspan_cm": 203
+        "wingspan_cm": 203,
+        "weight_kg": 95,
+        "standing_reach_cm": 235,
+        "running_vertical_reach_cm": 302,
+        "sprint_20m_seconds": 3.2
       },
       "notable_traits": [
         "無球跑動效率高",
@@ -589,7 +689,11 @@
       },
       "body": {
         "height_cm": 201,
-        "wingspan_cm": 201
+        "wingspan_cm": 201,
+        "weight_kg": 98,
+        "standing_reach_cm": 233,
+        "running_vertical_reach_cm": 289,
+        "sprint_20m_seconds": 3.4
       },
       "notable_traits": [
         "純射手型跑動",
@@ -612,7 +716,11 @@
       },
       "body": {
         "height_cm": 203,
-        "wingspan_cm": 226
+        "wingspan_cm": 226,
+        "weight_kg": 108,
+        "standing_reach_cm": 258,
+        "running_vertical_reach_cm": 344,
+        "sprint_20m_seconds": 2.85
       },
       "notable_traits": [
         "轉換終結能力強",
@@ -635,7 +743,11 @@
       },
       "body": {
         "height_cm": 198,
-        "wingspan_cm": 213
+        "wingspan_cm": 213,
+        "weight_kg": 104,
+        "standing_reach_cm": 245,
+        "running_vertical_reach_cm": 331,
+        "sprint_20m_seconds": 2.85
       },
       "notable_traits": [
         "快攻終結效率高",
@@ -658,7 +770,11 @@
       },
       "body": {
         "height_cm": 188,
-        "wingspan_cm": 196
+        "wingspan_cm": 196,
+        "weight_kg": 88,
+        "standing_reach_cm": 228,
+        "running_vertical_reach_cm": 292,
+        "sprint_20m_seconds": 3.25
       },
       "notable_traits": [
         "罰球穩定",
@@ -681,7 +797,11 @@
       },
       "body": {
         "height_cm": 203,
-        "wingspan_cm": 213
+        "wingspan_cm": 213,
+        "weight_kg": 105,
+        "standing_reach_cm": 245,
+        "running_vertical_reach_cm": 320,
+        "sprint_20m_seconds": 3.05
       },
       "notable_traits": [
         "罰球穩定",
@@ -704,7 +824,11 @@
       },
       "body": {
         "height_cm": 208,
-        "wingspan_cm": 226
+        "wingspan_cm": 226,
+        "weight_kg": 116,
+        "standing_reach_cm": 258,
+        "running_vertical_reach_cm": 339,
+        "sprint_20m_seconds": 2.95
       },
       "notable_traits": [
         "前場籃板嗅覺佳",
@@ -727,7 +851,11 @@
       },
       "body": {
         "height_cm": 211,
-        "wingspan_cm": 226
+        "wingspan_cm": 226,
+        "weight_kg": 120,
+        "standing_reach_cm": 258,
+        "running_vertical_reach_cm": 333,
+        "sprint_20m_seconds": 3.05
       },
       "notable_traits": [
         "前場籃板卡位兇悍",
@@ -750,7 +878,11 @@
       },
       "body": {
         "height_cm": 191,
-        "wingspan_cm": 201
+        "wingspan_cm": 201,
+        "weight_kg": 96,
+        "standing_reach_cm": 233,
+        "running_vertical_reach_cm": 306,
+        "sprint_20m_seconds": 3.1
       },
       "notable_traits": [
         "一對一單防兇悍",
@@ -773,7 +905,11 @@
       },
       "body": {
         "height_cm": 193,
-        "wingspan_cm": 201
+        "wingspan_cm": 201,
+        "weight_kg": 98,
+        "standing_reach_cm": 233,
+        "running_vertical_reach_cm": 308,
+        "sprint_20m_seconds": 3.05
       },
       "notable_traits": [
         "一對一單防強悍",
@@ -796,7 +932,11 @@
       },
       "body": {
         "height_cm": 193,
-        "wingspan_cm": 196
+        "wingspan_cm": 196,
+        "weight_kg": 96,
+        "standing_reach_cm": 228,
+        "running_vertical_reach_cm": 298,
+        "sprint_20m_seconds": 3.15
       },
       "notable_traits": [
         "協防補位判斷好",
@@ -819,7 +959,11 @@
       },
       "body": {
         "height_cm": 198,
-        "wingspan_cm": 211
+        "wingspan_cm": 211,
+        "weight_kg": 100,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 310,
+        "sprint_20m_seconds": 3.2
       },
       "notable_traits": [
         "協防補位到位",
@@ -842,7 +986,11 @@
       },
       "body": {
         "height_cm": 211,
-        "wingspan_cm": 226
+        "wingspan_cm": 226,
+        "weight_kg": 120,
+        "standing_reach_cm": 258,
+        "running_vertical_reach_cm": 333,
+        "sprint_20m_seconds": 3.05
       },
       "notable_traits": [
         "防守籃板卡位扎實",
@@ -865,7 +1013,11 @@
       },
       "body": {
         "height_cm": 211,
-        "wingspan_cm": 224
+        "wingspan_cm": 224,
+        "weight_kg": 120,
+        "standing_reach_cm": 256,
+        "running_vertical_reach_cm": 334,
+        "sprint_20m_seconds": 3.0
       },
       "notable_traits": [
         "防守籃板積極",
@@ -888,7 +1040,11 @@
       },
       "body": {
         "height_cm": 196,
-        "wingspan_cm": 203
+        "wingspan_cm": 203,
+        "weight_kg": 101,
+        "standing_reach_cm": 235,
+        "running_vertical_reach_cm": 305,
+        "sprint_20m_seconds": 3.15
       },
       "notable_traits": [
         "持球推進穩定不失誤",
@@ -911,7 +1067,11 @@
       },
       "body": {
         "height_cm": 185,
-        "wingspan_cm": 191
+        "wingspan_cm": 191,
+        "weight_kg": 88,
+        "standing_reach_cm": 223,
+        "running_vertical_reach_cm": 279,
+        "sprint_20m_seconds": 3.4
       },
       "notable_traits": [
         "持球節奏掌控力強",
@@ -934,7 +1094,11 @@
       },
       "body": {
         "height_cm": 196,
-        "wingspan_cm": 201
+        "wingspan_cm": 201,
+        "weight_kg": 99,
+        "standing_reach_cm": 233,
+        "running_vertical_reach_cm": 325,
+        "sprint_20m_seconds": 2.75
       },
       "notable_traits": [
         "面框第一步爆發力強",
@@ -957,7 +1121,11 @@
       },
       "body": {
         "height_cm": 198,
-        "wingspan_cm": 208
+        "wingspan_cm": 208,
+        "weight_kg": 102,
+        "standing_reach_cm": 240,
+        "running_vertical_reach_cm": 310,
+        "sprint_20m_seconds": 3.15
       },
       "notable_traits": [
         "面框第一步變速變向",
@@ -980,7 +1148,11 @@
       },
       "body": {
         "height_cm": 211,
-        "wingspan_cm": 224
+        "wingspan_cm": 224,
+        "weight_kg": 115,
+        "standing_reach_cm": 256,
+        "running_vertical_reach_cm": 331,
+        "sprint_20m_seconds": 3.05
       },
       "notable_traits": [
         "護框補位效率高",
@@ -1003,7 +1175,11 @@
       },
       "body": {
         "height_cm": 213,
-        "wingspan_cm": 224
+        "wingspan_cm": 224,
+        "weight_kg": 116,
+        "standing_reach_cm": 256,
+        "running_vertical_reach_cm": 320,
+        "sprint_20m_seconds": 3.25
       },
       "notable_traits": [
         "護框覆蓋範圍大",
@@ -1026,7 +1202,11 @@
       },
       "body": {
         "height_cm": 201,
-        "wingspan_cm": 213
+        "wingspan_cm": 213,
+        "weight_kg": 104,
+        "standing_reach_cm": 245,
+        "running_vertical_reach_cm": 323,
+        "sprint_20m_seconds": 3.0
       },
       "notable_traits": [
         "換防跟防能力強",
@@ -1049,7 +1229,11 @@
       },
       "body": {
         "height_cm": 201,
-        "wingspan_cm": 221
+        "wingspan_cm": 221,
+        "weight_kg": 105,
+        "standing_reach_cm": 253,
+        "running_vertical_reach_cm": 334,
+        "sprint_20m_seconds": 2.95
       },
       "notable_traits": [
         "換防彈性大",
@@ -1072,7 +1256,11 @@
       },
       "body": {
         "height_cm": 203,
-        "wingspan_cm": 213
+        "wingspan_cm": 213,
+        "weight_kg": 108,
+        "standing_reach_cm": 245,
+        "running_vertical_reach_cm": 318,
+        "sprint_20m_seconds": 3.1
       },
       "notable_traits": [
         "高位策應視野不錯",
@@ -1095,7 +1283,11 @@
       },
       "body": {
         "height_cm": 211,
-        "wingspan_cm": 224
+        "wingspan_cm": 224,
+        "weight_kg": 116,
+        "standing_reach_cm": 256,
+        "running_vertical_reach_cm": 334,
+        "sprint_20m_seconds": 3.0
       },
       "notable_traits": [
         "高位策應傳導不錯",
@@ -1118,7 +1310,11 @@
       },
       "body": {
         "height_cm": 188,
-        "wingspan_cm": 193
+        "wingspan_cm": 193,
+        "weight_kg": 86,
+        "standing_reach_cm": 225,
+        "running_vertical_reach_cm": 289,
+        "sprint_20m_seconds": 3.25
       },
       "notable_traits": [
         "中距離急停跳投穩定",
@@ -1141,7 +1337,11 @@
       },
       "body": {
         "height_cm": 196,
-        "wingspan_cm": 196
+        "wingspan_cm": 196,
+        "weight_kg": 95,
+        "standing_reach_cm": 228,
+        "running_vertical_reach_cm": 292,
+        "sprint_20m_seconds": 3.25
       },
       "notable_traits": [
         "持球投籃節奏獨特",
@@ -1164,7 +1364,11 @@
       },
       "body": {
         "height_cm": 206,
-        "wingspan_cm": 214
+        "wingspan_cm": 214,
+        "weight_kg": 109,
+        "standing_reach_cm": 246,
+        "running_vertical_reach_cm": 332,
+        "sprint_20m_seconds": 2.85
       },
       "notable_traits": [
         "持球創造能力頂級",
@@ -1187,7 +1391,11 @@
       },
       "body": {
         "height_cm": 201,
-        "wingspan_cm": 224
+        "wingspan_cm": 224,
+        "weight_kg": 104,
+        "standing_reach_cm": 256,
+        "running_vertical_reach_cm": 331,
+        "sprint_20m_seconds": 3.05
       },
       "notable_traits": [
         "中距離跳投穩定",
@@ -1210,7 +1418,11 @@
       },
       "body": {
         "height_cm": 203,
-        "wingspan_cm": 208
+        "wingspan_cm": 208,
+        "weight_kg": 104,
+        "standing_reach_cm": 240,
+        "running_vertical_reach_cm": 315,
+        "sprint_20m_seconds": 3.05
       },
       "notable_traits": [
         "三分出手多樣",
@@ -1233,7 +1445,11 @@
       },
       "body": {
         "height_cm": 196,
-        "wingspan_cm": 196
+        "wingspan_cm": 196,
+        "weight_kg": 96,
+        "standing_reach_cm": 228,
+        "running_vertical_reach_cm": 298,
+        "sprint_20m_seconds": 3.15
       },
       "notable_traits": [
         "中距離急停跳投頂級",
@@ -1256,7 +1472,11 @@
       },
       "body": {
         "height_cm": 188,
-        "wingspan_cm": 196
+        "wingspan_cm": 196,
+        "weight_kg": 90,
+        "standing_reach_cm": 228,
+        "running_vertical_reach_cm": 295,
+        "sprint_20m_seconds": 3.2
       },
       "notable_traits": [
         "持球變向過人頂級",
@@ -1279,7 +1499,11 @@
       },
       "body": {
         "height_cm": 196,
-        "wingspan_cm": 208
+        "wingspan_cm": 208,
+        "weight_kg": 97,
+        "standing_reach_cm": 240,
+        "running_vertical_reach_cm": 302,
+        "sprint_20m_seconds": 3.3
       },
       "notable_traits": [
         "擋拆持球判斷頂級",
@@ -1302,7 +1526,11 @@
       },
       "body": {
         "height_cm": 198,
-        "wingspan_cm": 206
+        "wingspan_cm": 206,
+        "weight_kg": 106,
+        "standing_reach_cm": 238,
+        "running_vertical_reach_cm": 332,
+        "sprint_20m_seconds": 2.7
       },
       "notable_traits": [
         "禁區終結力驚人",
@@ -1325,7 +1553,11 @@
       },
       "body": {
         "height_cm": 191,
-        "wingspan_cm": 201
+        "wingspan_cm": 201,
+        "weight_kg": 96,
+        "standing_reach_cm": 233,
+        "running_vertical_reach_cm": 328,
+        "sprint_20m_seconds": 2.7
       },
       "notable_traits": [
         "轉換終結爆發力強",
@@ -1348,7 +1580,11 @@
       },
       "body": {
         "height_cm": 185,
-        "wingspan_cm": 191
+        "wingspan_cm": 191,
+        "weight_kg": 86,
+        "standing_reach_cm": 223,
+        "running_vertical_reach_cm": 301,
+        "sprint_20m_seconds": 3.0
       },
       "notable_traits": [
         "持球得分效率高",
@@ -1371,7 +1607,11 @@
       },
       "body": {
         "height_cm": 198,
-        "wingspan_cm": 204
+        "wingspan_cm": 204,
+        "weight_kg": 100,
+        "standing_reach_cm": 236,
+        "running_vertical_reach_cm": 320,
+        "sprint_20m_seconds": 2.9
       },
       "notable_traits": [
         "轉換終結力強",
@@ -1394,7 +1634,11 @@
       },
       "body": {
         "height_cm": 193,
-        "wingspan_cm": 196
+        "wingspan_cm": 196,
+        "weight_kg": 93,
+        "standing_reach_cm": 228,
+        "running_vertical_reach_cm": 295,
+        "sprint_20m_seconds": 3.2
       },
       "notable_traits": [
         "中距離跳投穩定",
@@ -1417,7 +1661,11 @@
       },
       "body": {
         "height_cm": 201,
-        "wingspan_cm": 211
+        "wingspan_cm": 211,
+        "weight_kg": 106,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 310,
+        "sprint_20m_seconds": 3.2
       },
       "notable_traits": [
         "罰球穩定",
@@ -1440,7 +1688,11 @@
       },
       "body": {
         "height_cm": 221,
-        "wingspan_cm": 224
+        "wingspan_cm": 224,
+        "weight_kg": 122,
+        "standing_reach_cm": 256,
+        "running_vertical_reach_cm": 326,
+        "sprint_20m_seconds": 3.15
       },
       "notable_traits": [
         "外線出手穩定",
@@ -1463,7 +1715,11 @@
       },
       "body": {
         "height_cm": 208,
-        "wingspan_cm": 214
+        "wingspan_cm": 214,
+        "weight_kg": 115,
+        "standing_reach_cm": 246,
+        "running_vertical_reach_cm": 313,
+        "sprint_20m_seconds": 3.2
       },
       "notable_traits": [
         "高位策應傳導能力好",
@@ -1486,7 +1742,11 @@
       },
       "body": {
         "height_cm": 201,
-        "wingspan_cm": 206
+        "wingspan_cm": 206,
+        "weight_kg": 103,
+        "standing_reach_cm": 238,
+        "running_vertical_reach_cm": 308,
+        "sprint_20m_seconds": 3.15
       },
       "notable_traits": [
         "傳導視野頂級",
@@ -1509,7 +1769,11 @@
       },
       "body": {
         "height_cm": 201,
-        "wingspan_cm": 211
+        "wingspan_cm": 211,
+        "weight_kg": 107,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 324,
+        "sprint_20m_seconds": 2.95
       },
       "notable_traits": [
         "高位策應傳導不錯",
@@ -1532,7 +1796,11 @@
       },
       "body": {
         "height_cm": 198,
-        "wingspan_cm": 206
+        "wingspan_cm": 206,
+        "weight_kg": 102,
+        "standing_reach_cm": 238,
+        "running_vertical_reach_cm": 308,
+        "sprint_20m_seconds": 3.15
       },
       "notable_traits": [
         "持球節奏掌控力強",
@@ -1555,7 +1823,11 @@
       },
       "body": {
         "height_cm": 206,
-        "wingspan_cm": 211
+        "wingspan_cm": 211,
+        "weight_kg": 112,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 321,
+        "sprint_20m_seconds": 3.0
       },
       "notable_traits": [
         "面框單打腳步好",
@@ -1578,7 +1850,11 @@
       },
       "body": {
         "height_cm": 203,
-        "wingspan_cm": 206
+        "wingspan_cm": 206,
+        "weight_kg": 107,
+        "standing_reach_cm": 238,
+        "running_vertical_reach_cm": 310,
+        "sprint_20m_seconds": 3.1
       },
       "notable_traits": [
         "持球推進穩定不失誤",
@@ -1601,7 +1877,11 @@
       },
       "body": {
         "height_cm": 188,
-        "wingspan_cm": 190
+        "wingspan_cm": 190,
+        "weight_kg": 91,
+        "standing_reach_cm": 222,
+        "running_vertical_reach_cm": 284,
+        "sprint_20m_seconds": 3.3
       },
       "notable_traits": [
         "擋拆持球判斷好",
@@ -1624,7 +1904,11 @@
       },
       "body": {
         "height_cm": 185,
-        "wingspan_cm": 191
+        "wingspan_cm": 191,
+        "weight_kg": 87,
+        "standing_reach_cm": 223,
+        "running_vertical_reach_cm": 304,
+        "sprint_20m_seconds": 2.95
       },
       "notable_traits": [
         "轉換終結速度快",
@@ -1647,7 +1931,11 @@
       },
       "body": {
         "height_cm": 196,
-        "wingspan_cm": 196
+        "wingspan_cm": 196,
+        "weight_kg": 96,
+        "standing_reach_cm": 228,
+        "running_vertical_reach_cm": 298,
+        "sprint_20m_seconds": 3.15
       },
       "notable_traits": [
         "持球投籃節奏獨特",
@@ -1670,7 +1958,11 @@
       },
       "body": {
         "height_cm": 196,
-        "wingspan_cm": 201
+        "wingspan_cm": 201,
+        "weight_kg": 97,
+        "standing_reach_cm": 233,
+        "running_vertical_reach_cm": 319,
+        "sprint_20m_seconds": 2.85
       },
       "notable_traits": [
         "轉換終結爆發力強",
@@ -1693,7 +1985,11 @@
       },
       "body": {
         "height_cm": 201,
-        "wingspan_cm": 211
+        "wingspan_cm": 211,
+        "weight_kg": 107,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 310,
+        "sprint_20m_seconds": 3.2
       },
       "notable_traits": [
         "中距離背框單打腳步細膩",
@@ -1716,7 +2012,11 @@
       },
       "body": {
         "height_cm": 183,
-        "wingspan_cm": 185
+        "wingspan_cm": 185,
+        "weight_kg": 84,
+        "standing_reach_cm": 217,
+        "running_vertical_reach_cm": 276,
+        "sprint_20m_seconds": 3.35
       },
       "notable_traits": [
         "持球節奏掌控力強",
@@ -1739,7 +2039,11 @@
       },
       "body": {
         "height_cm": 188,
-        "wingspan_cm": 196
+        "wingspan_cm": 196,
+        "weight_kg": 90,
+        "standing_reach_cm": 228,
+        "running_vertical_reach_cm": 295,
+        "sprint_20m_seconds": 3.2
       },
       "notable_traits": [
         "擋拆持球判斷不錯",
@@ -1762,7 +2066,11 @@
       },
       "body": {
         "height_cm": 198,
-        "wingspan_cm": 201
+        "wingspan_cm": 201,
+        "weight_kg": 102,
+        "standing_reach_cm": 233,
+        "running_vertical_reach_cm": 308,
+        "sprint_20m_seconds": 3.05
       },
       "notable_traits": [
         "轉換終結能力不錯",
@@ -1785,7 +2093,11 @@
       },
       "body": {
         "height_cm": 213,
-        "wingspan_cm": 224
+        "wingspan_cm": 224,
+        "weight_kg": 120,
+        "standing_reach_cm": 256,
+        "running_vertical_reach_cm": 331,
+        "sprint_20m_seconds": 3.05
       },
       "notable_traits": [
         "擋拆順下終結穩定",
@@ -1808,7 +2120,11 @@
       },
       "body": {
         "height_cm": 213,
-        "wingspan_cm": 229
+        "wingspan_cm": 229,
+        "weight_kg": 122,
+        "standing_reach_cm": 261,
+        "running_vertical_reach_cm": 334,
+        "sprint_20m_seconds": 3.1
       },
       "notable_traits": [
         "護框覆蓋範圍大",
@@ -1831,7 +2147,11 @@
       },
       "body": {
         "height_cm": 213,
-        "wingspan_cm": 224
+        "wingspan_cm": 224,
+        "weight_kg": 118,
+        "standing_reach_cm": 256,
+        "running_vertical_reach_cm": 331,
+        "sprint_20m_seconds": 3.05
       },
       "notable_traits": [
         "護框補位效率高",
@@ -1854,7 +2174,11 @@
       },
       "body": {
         "height_cm": 211,
-        "wingspan_cm": 216
+        "wingspan_cm": 216,
+        "weight_kg": 116,
+        "standing_reach_cm": 248,
+        "running_vertical_reach_cm": 329,
+        "sprint_20m_seconds": 2.95
       },
       "notable_traits": [
         "護框覆蓋範圍大",
@@ -1877,7 +2201,11 @@
       },
       "body": {
         "height_cm": 201,
-        "wingspan_cm": 211
+        "wingspan_cm": 211,
+        "weight_kg": 104,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 316,
+        "sprint_20m_seconds": 3.1
       },
       "notable_traits": [
         "換防跟防能力不錯",
@@ -1900,7 +2228,11 @@
       },
       "body": {
         "height_cm": 208,
-        "wingspan_cm": 211
+        "wingspan_cm": 211,
+        "weight_kg": 110,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 313,
+        "sprint_20m_seconds": 3.15
       },
       "notable_traits": [
         "外線出手穩定",
@@ -1923,7 +2255,11 @@
       },
       "body": {
         "height_cm": 213,
-        "wingspan_cm": 224
+        "wingspan_cm": 224,
+        "weight_kg": 122,
+        "standing_reach_cm": 256,
+        "running_vertical_reach_cm": 323,
+        "sprint_20m_seconds": 3.2
       },
       "notable_traits": [
         "高位策應傳導不錯",
@@ -1946,7 +2282,11 @@
       },
       "body": {
         "height_cm": 206,
-        "wingspan_cm": 214
+        "wingspan_cm": 214,
+        "weight_kg": 114,
+        "standing_reach_cm": 246,
+        "running_vertical_reach_cm": 321,
+        "sprint_20m_seconds": 3.05
       },
       "notable_traits": [
         "協防補位效率高",
@@ -1969,7 +2309,11 @@
       },
       "body": {
         "height_cm": 213,
-        "wingspan_cm": 224
+        "wingspan_cm": 224,
+        "weight_kg": 122,
+        "standing_reach_cm": 256,
+        "running_vertical_reach_cm": 323,
+        "sprint_20m_seconds": 3.2
       },
       "notable_traits": [
         "防守籃板卡位扎實",
@@ -1992,7 +2336,11 @@
       },
       "body": {
         "height_cm": 208,
-        "wingspan_cm": 224
+        "wingspan_cm": 224,
+        "weight_kg": 117,
+        "standing_reach_cm": 256,
+        "running_vertical_reach_cm": 337,
+        "sprint_20m_seconds": 2.95
       },
       "notable_traits": [
         "擋拆順下終結效率高",
@@ -2015,7 +2363,11 @@
       },
       "body": {
         "height_cm": 213,
-        "wingspan_cm": 229
+        "wingspan_cm": 229,
+        "weight_kg": 122,
+        "standing_reach_cm": 261,
+        "running_vertical_reach_cm": 339,
+        "sprint_20m_seconds": 3.0
       },
       "notable_traits": [
         "護框覆蓋範圍大",
@@ -2038,7 +2390,11 @@
       },
       "body": {
         "height_cm": 206,
-        "wingspan_cm": 224
+        "wingspan_cm": 224,
+        "weight_kg": 115,
+        "standing_reach_cm": 256,
+        "running_vertical_reach_cm": 334,
+        "sprint_20m_seconds": 3.0
       },
       "notable_traits": [
         "護框補位效率高",
@@ -2061,7 +2417,11 @@
       },
       "body": {
         "height_cm": 206,
-        "wingspan_cm": 211
+        "wingspan_cm": 211,
+        "weight_kg": 109,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 302,
+        "sprint_20m_seconds": 3.35
       },
       "notable_traits": [
         "外線出手穩定",
@@ -2084,7 +2444,11 @@
       },
       "body": {
         "height_cm": 206,
-        "wingspan_cm": 216
+        "wingspan_cm": 216,
+        "weight_kg": 115,
+        "standing_reach_cm": 248,
+        "running_vertical_reach_cm": 310,
+        "sprint_20m_seconds": 3.3
       },
       "notable_traits": [
         "前場籃板卡位兇悍",
@@ -2107,7 +2471,11 @@
       },
       "body": {
         "height_cm": 211,
-        "wingspan_cm": 224
+        "wingspan_cm": 224,
+        "weight_kg": 120,
+        "standing_reach_cm": 256,
+        "running_vertical_reach_cm": 318,
+        "sprint_20m_seconds": 3.3
       },
       "notable_traits": [
         "背框腳步扎實",
@@ -2130,7 +2498,11 @@
       },
       "body": {
         "height_cm": 206,
-        "wingspan_cm": 211
+        "wingspan_cm": 211,
+        "weight_kg": 108,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 313,
+        "sprint_20m_seconds": 3.15
       },
       "notable_traits": [
         "外線出手穩定",
@@ -2153,7 +2525,11 @@
       },
       "body": {
         "height_cm": 208,
-        "wingspan_cm": 224
+        "wingspan_cm": 224,
+        "weight_kg": 117,
+        "standing_reach_cm": 256,
+        "running_vertical_reach_cm": 337,
+        "sprint_20m_seconds": 2.95
       },
       "notable_traits": [
         "擋拆順下終結效率高",
@@ -2176,7 +2552,11 @@
       },
       "body": {
         "height_cm": 203,
-        "wingspan_cm": 216
+        "wingspan_cm": 216,
+        "weight_kg": 108,
+        "standing_reach_cm": 248,
+        "running_vertical_reach_cm": 329,
+        "sprint_20m_seconds": 2.95
       },
       "notable_traits": [
         "協防補位判斷好",
@@ -2199,7 +2579,11 @@
       },
       "body": {
         "height_cm": 196,
-        "wingspan_cm": 211
+        "wingspan_cm": 211,
+        "weight_kg": 102,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 316,
+        "sprint_20m_seconds": 3.1
       },
       "notable_traits": [
         "一對一單防兇悍",
@@ -2222,7 +2606,11 @@
       },
       "body": {
         "height_cm": 198,
-        "wingspan_cm": 213
+        "wingspan_cm": 213,
+        "weight_kg": 105,
+        "standing_reach_cm": 245,
+        "running_vertical_reach_cm": 337,
+        "sprint_20m_seconds": 2.75
       },
       "notable_traits": [
         "轉換終結爆發力強",
@@ -2245,7 +2633,11 @@
       },
       "body": {
         "height_cm": 198,
-        "wingspan_cm": 211
+        "wingspan_cm": 211,
+        "weight_kg": 102,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 316,
+        "sprint_20m_seconds": 3.1
       },
       "notable_traits": [
         "持球推進穩定",
@@ -2268,7 +2660,11 @@
       },
       "body": {
         "height_cm": 201,
-        "wingspan_cm": 211
+        "wingspan_cm": 211,
+        "weight_kg": 106,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 318,
+        "sprint_20m_seconds": 3.05
       },
       "notable_traits": [
         "換防跟防能力強",
@@ -2291,7 +2687,11 @@
       },
       "body": {
         "height_cm": 206,
-        "wingspan_cm": 211
+        "wingspan_cm": 211,
+        "weight_kg": 111,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 318,
+        "sprint_20m_seconds": 3.05
       },
       "notable_traits": [
         "高位策應傳導不錯",
@@ -2314,7 +2714,11 @@
       },
       "body": {
         "height_cm": 201,
-        "wingspan_cm": 206
+        "wingspan_cm": 206,
+        "weight_kg": 100,
+        "standing_reach_cm": 238,
+        "running_vertical_reach_cm": 305,
+        "sprint_20m_seconds": 3.2
       },
       "notable_traits": [
         "無球跑動投射效率高",
@@ -2337,7 +2741,11 @@
       },
       "body": {
         "height_cm": 191,
-        "wingspan_cm": 193
+        "wingspan_cm": 193,
+        "weight_kg": 93,
+        "standing_reach_cm": 225,
+        "running_vertical_reach_cm": 292,
+        "sprint_20m_seconds": 3.2
       },
       "notable_traits": [
         "持球投籃節奏獨特",
@@ -2360,7 +2768,11 @@
       },
       "body": {
         "height_cm": 191,
-        "wingspan_cm": 188
+        "wingspan_cm": 188,
+        "weight_kg": 91,
+        "standing_reach_cm": 220,
+        "running_vertical_reach_cm": 287,
+        "sprint_20m_seconds": 3.2
       },
       "notable_traits": [
         "持球投籃節奏獨特",
@@ -2383,7 +2795,11 @@
       },
       "body": {
         "height_cm": 193,
-        "wingspan_cm": 196
+        "wingspan_cm": 196,
+        "weight_kg": 94,
+        "standing_reach_cm": 228,
+        "running_vertical_reach_cm": 295,
+        "sprint_20m_seconds": 3.2
       },
       "notable_traits": [
         "持球投籃節奏獨特",
@@ -2406,7 +2822,11 @@
       },
       "body": {
         "height_cm": 191,
-        "wingspan_cm": 196
+        "wingspan_cm": 196,
+        "weight_kg": 93,
+        "standing_reach_cm": 228,
+        "running_vertical_reach_cm": 300,
+        "sprint_20m_seconds": 3.1
       },
       "notable_traits": [
         "持球投籃節奏獨特",
@@ -2429,7 +2849,11 @@
       },
       "body": {
         "height_cm": 196,
-        "wingspan_cm": 196
+        "wingspan_cm": 196,
+        "weight_kg": 98,
+        "standing_reach_cm": 228,
+        "running_vertical_reach_cm": 292,
+        "sprint_20m_seconds": 3.25
       },
       "notable_traits": [
         "持球節奏掌控力強",
@@ -2452,7 +2876,11 @@
       },
       "body": {
         "height_cm": 191,
-        "wingspan_cm": 196
+        "wingspan_cm": 196,
+        "weight_kg": 91,
+        "standing_reach_cm": 228,
+        "running_vertical_reach_cm": 300,
+        "sprint_20m_seconds": 3.1
       },
       "notable_traits": [
         "無球跑動投射效率高",
@@ -2475,7 +2903,11 @@
       },
       "body": {
         "height_cm": 196,
-        "wingspan_cm": 196
+        "wingspan_cm": 196,
+        "weight_kg": 96,
+        "standing_reach_cm": 228,
+        "running_vertical_reach_cm": 295,
+        "sprint_20m_seconds": 3.2
       },
       "notable_traits": [
         "無球跑動投射效率高",
@@ -2498,7 +2930,11 @@
       },
       "body": {
         "height_cm": 198,
-        "wingspan_cm": 201
+        "wingspan_cm": 201,
+        "weight_kg": 98,
+        "standing_reach_cm": 233,
+        "running_vertical_reach_cm": 297,
+        "sprint_20m_seconds": 3.25
       },
       "notable_traits": [
         "無球跑動投射效率高",
@@ -2521,7 +2957,11 @@
       },
       "body": {
         "height_cm": 196,
-        "wingspan_cm": 201
+        "wingspan_cm": 201,
+        "weight_kg": 96,
+        "standing_reach_cm": 233,
+        "running_vertical_reach_cm": 303,
+        "sprint_20m_seconds": 3.15
       },
       "notable_traits": [
         "3&D 定位清楚",
@@ -2544,7 +2984,11 @@
       },
       "body": {
         "height_cm": 198,
-        "wingspan_cm": 211
+        "wingspan_cm": 211,
+        "weight_kg": 100,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 310,
+        "sprint_20m_seconds": 3.2
       },
       "notable_traits": [
         "換防跟防能力不錯",
@@ -2567,7 +3011,11 @@
       },
       "body": {
         "height_cm": 203,
-        "wingspan_cm": 211
+        "wingspan_cm": 211,
+        "weight_kg": 108,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 332,
+        "sprint_20m_seconds": 2.8
       },
       "notable_traits": [
         "轉換終結爆發力強",
@@ -2590,7 +3038,11 @@
       },
       "body": {
         "height_cm": 208,
-        "wingspan_cm": 211
+        "wingspan_cm": 211,
+        "weight_kg": 108,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 313,
+        "sprint_20m_seconds": 3.15
       },
       "notable_traits": [
         "定點三分穩定",
@@ -2613,7 +3065,11 @@
       },
       "body": {
         "height_cm": 196,
-        "wingspan_cm": 201
+        "wingspan_cm": 201,
+        "weight_kg": 99,
+        "standing_reach_cm": 233,
+        "running_vertical_reach_cm": 308,
+        "sprint_20m_seconds": 3.05
       },
       "notable_traits": [
         "轉換終結能力不錯",
@@ -2636,7 +3092,11 @@
       },
       "body": {
         "height_cm": 198,
-        "wingspan_cm": 201
+        "wingspan_cm": 201,
+        "weight_kg": 99,
+        "standing_reach_cm": 233,
+        "running_vertical_reach_cm": 300,
+        "sprint_20m_seconds": 3.2
       },
       "notable_traits": [
         "無球跑動投射效率高",
@@ -2659,7 +3119,11 @@
       },
       "body": {
         "height_cm": 203,
-        "wingspan_cm": 211
+        "wingspan_cm": 211,
+        "weight_kg": 109,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 318,
+        "sprint_20m_seconds": 3.05
       },
       "notable_traits": [
         "協防補位判斷好",
@@ -2682,7 +3146,11 @@
       },
       "body": {
         "height_cm": 208,
-        "wingspan_cm": 211
+        "wingspan_cm": 211,
+        "weight_kg": 110,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 316,
+        "sprint_20m_seconds": 3.1
       },
       "notable_traits": [
         "外線出手穩定",
@@ -2705,7 +3173,11 @@
       },
       "body": {
         "height_cm": 185,
-        "wingspan_cm": 188
+        "wingspan_cm": 188,
+        "weight_kg": 90,
+        "standing_reach_cm": 220,
+        "running_vertical_reach_cm": 276,
+        "sprint_20m_seconds": 3.4
       },
       "notable_traits": [
         "持球節奏掌控力強",
@@ -2728,7 +3200,11 @@
       },
       "body": {
         "height_cm": 185,
-        "wingspan_cm": 191
+        "wingspan_cm": 191,
+        "weight_kg": 89,
+        "standing_reach_cm": 223,
+        "running_vertical_reach_cm": 296,
+        "sprint_20m_seconds": 3.1
       },
       "notable_traits": [
         "擋拆持球判斷不錯",
@@ -2751,7 +3227,11 @@
       },
       "body": {
         "height_cm": 193,
-        "wingspan_cm": 196
+        "wingspan_cm": 196,
+        "weight_kg": 95,
+        "standing_reach_cm": 228,
+        "running_vertical_reach_cm": 290,
+        "sprint_20m_seconds": 3.3
       },
       "notable_traits": [
         "擋拆持球判斷不錯",
@@ -2774,7 +3254,11 @@
       },
       "body": {
         "height_cm": 185,
-        "wingspan_cm": 188
+        "wingspan_cm": 188,
+        "weight_kg": 88,
+        "standing_reach_cm": 220,
+        "running_vertical_reach_cm": 295,
+        "sprint_20m_seconds": 3.05
       },
       "notable_traits": [
         "轉換終結能力不錯",
@@ -2797,7 +3281,11 @@
       },
       "body": {
         "height_cm": 185,
-        "wingspan_cm": 188
+        "wingspan_cm": 188,
+        "weight_kg": 87,
+        "standing_reach_cm": 220,
+        "running_vertical_reach_cm": 290,
+        "sprint_20m_seconds": 3.15
       },
       "notable_traits": [
         "持球投籃節奏獨特",
@@ -2820,7 +3308,11 @@
       },
       "body": {
         "height_cm": 193,
-        "wingspan_cm": 196
+        "wingspan_cm": 196,
+        "weight_kg": 96,
+        "standing_reach_cm": 228,
+        "running_vertical_reach_cm": 290,
+        "sprint_20m_seconds": 3.3
       },
       "notable_traits": [
         "持球節奏掌控力強",
@@ -2843,7 +3335,11 @@
       },
       "body": {
         "height_cm": 185,
-        "wingspan_cm": 188
+        "wingspan_cm": 188,
+        "weight_kg": 85,
+        "standing_reach_cm": 220,
+        "running_vertical_reach_cm": 287,
+        "sprint_20m_seconds": 3.2
       },
       "notable_traits": [
         "無球跑動投射效率高",
@@ -2866,7 +3362,11 @@
       },
       "body": {
         "height_cm": 206,
-        "wingspan_cm": 201
+        "wingspan_cm": 201,
+        "weight_kg": 112,
+        "standing_reach_cm": 233,
+        "running_vertical_reach_cm": 303,
+        "sprint_20m_seconds": 3.15
       },
       "notable_traits": [
         "傳導視野好",
@@ -2889,7 +3389,11 @@
       },
       "body": {
         "height_cm": 201,
-        "wingspan_cm": 206
+        "wingspan_cm": 206,
+        "weight_kg": 101,
+        "standing_reach_cm": 238,
+        "running_vertical_reach_cm": 310,
+        "sprint_20m_seconds": 3.1
       },
       "notable_traits": [
         "無球跑動投射效率高",
@@ -2912,7 +3416,11 @@
       },
       "body": {
         "height_cm": 201,
-        "wingspan_cm": 213
+        "wingspan_cm": 213,
+        "weight_kg": 106,
+        "standing_reach_cm": 245,
+        "running_vertical_reach_cm": 323,
+        "sprint_20m_seconds": 3.0
       },
       "notable_traits": [
         "換防跟防能力不錯",
@@ -2935,7 +3443,11 @@
       },
       "body": {
         "height_cm": 206,
-        "wingspan_cm": 211
+        "wingspan_cm": 211,
+        "weight_kg": 108,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 318,
+        "sprint_20m_seconds": 3.05
       },
       "notable_traits": [
         "外線出手穩定",
@@ -2958,7 +3470,11 @@
       },
       "body": {
         "height_cm": 198,
-        "wingspan_cm": 198
+        "wingspan_cm": 198,
+        "weight_kg": 103,
+        "standing_reach_cm": 230,
+        "running_vertical_reach_cm": 297,
+        "sprint_20m_seconds": 3.2
       },
       "notable_traits": [
         "背框腳步細膩",
@@ -2981,7 +3497,11 @@
       },
       "body": {
         "height_cm": 201,
-        "wingspan_cm": 206
+        "wingspan_cm": 206,
+        "weight_kg": 102,
+        "standing_reach_cm": 238,
+        "running_vertical_reach_cm": 310,
+        "sprint_20m_seconds": 3.1
       },
       "notable_traits": [
         "外線出手穩定",
@@ -3004,7 +3524,11 @@
       },
       "body": {
         "height_cm": 196,
-        "wingspan_cm": 208
+        "wingspan_cm": 208,
+        "weight_kg": 102,
+        "standing_reach_cm": 240,
+        "running_vertical_reach_cm": 310,
+        "sprint_20m_seconds": 3.15
       },
       "notable_traits": [
         "傳導視野不錯",
@@ -3027,7 +3551,11 @@
       },
       "body": {
         "height_cm": 201,
-        "wingspan_cm": 206
+        "wingspan_cm": 206,
+        "weight_kg": 107,
+        "standing_reach_cm": 238,
+        "running_vertical_reach_cm": 319,
+        "sprint_20m_seconds": 2.95
       },
       "notable_traits": [
         "轉換終結能力不錯",
@@ -3050,7 +3578,11 @@
       },
       "body": {
         "height_cm": 203,
-        "wingspan_cm": 211
+        "wingspan_cm": 211,
+        "weight_kg": 106,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 313,
+        "sprint_20m_seconds": 3.15
       },
       "notable_traits": [
         "外線出手潛力不錯",
@@ -3073,7 +3605,11 @@
       },
       "body": {
         "height_cm": 224,
-        "wingspan_cm": 226
+        "wingspan_cm": 226,
+        "weight_kg": 133,
+        "standing_reach_cm": 258,
+        "running_vertical_reach_cm": 320,
+        "sprint_20m_seconds": 3.3
       },
       "notable_traits": [
         "禁區終結力強",
@@ -3096,7 +3632,11 @@
       },
       "body": {
         "height_cm": 216,
-        "wingspan_cm": 229
+        "wingspan_cm": 229,
+        "weight_kg": 125,
+        "standing_reach_cm": 261,
+        "running_vertical_reach_cm": 328,
+        "sprint_20m_seconds": 3.2
       },
       "notable_traits": [
         "護框覆蓋範圍大",
@@ -3119,7 +3659,11 @@
       },
       "body": {
         "height_cm": 206,
-        "wingspan_cm": 208
+        "wingspan_cm": 208,
+        "weight_kg": 108,
+        "standing_reach_cm": 240,
+        "running_vertical_reach_cm": 315,
+        "sprint_20m_seconds": 3.05
       },
       "notable_traits": [
         "外線出手潛力不錯",
@@ -3142,7 +3686,11 @@
       },
       "body": {
         "height_cm": 188,
-        "wingspan_cm": 191
+        "wingspan_cm": 191,
+        "weight_kg": 89,
+        "standing_reach_cm": 223,
+        "running_vertical_reach_cm": 287,
+        "sprint_20m_seconds": 3.25
       },
       "notable_traits": [
         "外線出手穩定",
@@ -3165,7 +3713,11 @@
       },
       "body": {
         "height_cm": 208,
-        "wingspan_cm": 211
+        "wingspan_cm": 211,
+        "weight_kg": 111,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 313,
+        "sprint_20m_seconds": 3.15
       },
       "notable_traits": [
         "高位策應傳導不錯",
@@ -3188,7 +3740,11 @@
       },
       "body": {
         "height_cm": 196,
-        "wingspan_cm": 201
+        "wingspan_cm": 201,
+        "weight_kg": 98,
+        "standing_reach_cm": 233,
+        "running_vertical_reach_cm": 314,
+        "sprint_20m_seconds": 2.95
       },
       "notable_traits": [
         "轉換終結爆發力強",
@@ -3211,7 +3767,11 @@
       },
       "body": {
         "height_cm": 193,
-        "wingspan_cm": 198
+        "wingspan_cm": 198,
+        "weight_kg": 97,
+        "standing_reach_cm": 230,
+        "running_vertical_reach_cm": 292,
+        "sprint_20m_seconds": 3.3
       },
       "notable_traits": [
         "持球節奏掌控力強",
@@ -3234,7 +3794,11 @@
       },
       "body": {
         "height_cm": 185,
-        "wingspan_cm": 188
+        "wingspan_cm": 188,
+        "weight_kg": 91,
+        "standing_reach_cm": 220,
+        "running_vertical_reach_cm": 282,
+        "sprint_20m_seconds": 3.3
       },
       "notable_traits": [
         "持球推進穩定不失誤",
@@ -3257,7 +3821,11 @@
       },
       "body": {
         "height_cm": 206,
-        "wingspan_cm": 211
+        "wingspan_cm": 211,
+        "weight_kg": 109,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 329,
+        "sprint_20m_seconds": 2.85
       },
       "notable_traits": [
         "轉換終結爆發力強",
@@ -3280,7 +3848,11 @@
       },
       "body": {
         "height_cm": 198,
-        "wingspan_cm": 201
+        "wingspan_cm": 201,
+        "weight_kg": 99,
+        "standing_reach_cm": 233,
+        "running_vertical_reach_cm": 308,
+        "sprint_20m_seconds": 3.05
       },
       "notable_traits": [
         "無球跑動投射效率高",
@@ -3303,7 +3875,11 @@
       },
       "body": {
         "height_cm": 196,
-        "wingspan_cm": 201
+        "wingspan_cm": 201,
+        "weight_kg": 98,
+        "standing_reach_cm": 233,
+        "running_vertical_reach_cm": 316,
+        "sprint_20m_seconds": 2.9
       },
       "notable_traits": [
         "轉換終結爆發力強",
@@ -3326,7 +3902,11 @@
       },
       "body": {
         "height_cm": 201,
-        "wingspan_cm": 211
+        "wingspan_cm": 211,
+        "weight_kg": 103,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 324,
+        "sprint_20m_seconds": 2.95
       },
       "notable_traits": [
         "轉換終結能力不錯",
@@ -3349,7 +3929,11 @@
       },
       "body": {
         "height_cm": 196,
-        "wingspan_cm": 206
+        "wingspan_cm": 206,
+        "weight_kg": 98,
+        "standing_reach_cm": 238,
+        "running_vertical_reach_cm": 310,
+        "sprint_20m_seconds": 3.1
       },
       "notable_traits": [
         "換防跟防能力不錯",
@@ -3372,7 +3956,11 @@
       },
       "body": {
         "height_cm": 206,
-        "wingspan_cm": 211
+        "wingspan_cm": 211,
+        "weight_kg": 110,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 304,
+        "sprint_20m_seconds": 3.3
       },
       "notable_traits": [
         "高位策應傳導不錯",
@@ -3395,7 +3983,11 @@
       },
       "body": {
         "height_cm": 188,
-        "wingspan_cm": 196
+        "wingspan_cm": 196,
+        "weight_kg": 88,
+        "standing_reach_cm": 228,
+        "running_vertical_reach_cm": 292,
+        "sprint_20m_seconds": 3.25
       },
       "notable_traits": [
         "無球跑動投射效率高",
@@ -3418,7 +4010,11 @@
       },
       "body": {
         "height_cm": 193,
-        "wingspan_cm": 201
+        "wingspan_cm": 201,
+        "weight_kg": 97,
+        "standing_reach_cm": 233,
+        "running_vertical_reach_cm": 306,
+        "sprint_20m_seconds": 3.1
       },
       "notable_traits": [
         "換防跟防能力不錯",
@@ -3441,7 +4037,11 @@
       },
       "body": {
         "height_cm": 203,
-        "wingspan_cm": 211
+        "wingspan_cm": 211,
+        "weight_kg": 108,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 326,
+        "sprint_20m_seconds": 2.9
       },
       "notable_traits": [
         "轉換終結爆發力強",
