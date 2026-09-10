@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
-# 用途：讀取匯出的作答檔跟 data/players.json,算出四軸座標後印出「4 位深度模板」
-# (整體模板/技術模板/身材模板/天花板)、「10 人對照表」兩段文字報表。
-# 10 人對照表跟整體模板用 rank_similar_players_by_style_and_body,四軸+身材
-# 一起算距離,避免推薦身材差異很大的球員當模板(2026-09-11);技術模板跟身材
-# 模板維持用純四軸/純身材距離,刻意不受這個改動影響。身材裡的身高/體重在比較
-# 前會先用 percentile_normalize_body 換算成百分位(使用者跟球員各自在自己的
-# 母體裡排第幾百分位),不然幾乎所有使用者都會比全部 NBA 球員矮/輕,身材模板
-# 永遠是最矮的後衛(同樣是 2026-09-11 討論)。
+# 用途：讀取匯出的作答檔跟 data/players.json,算出四軸座標後印出「3 位深度模板」
+# (技術模板/身材模板/天花板)、「10 人對照表」兩段文字報表。
+# 10 人對照表用 rank_similar_players_by_style_and_body,四軸+身材一起算距離,
+# 避免推薦身材差異很大的球員當模板(2026-09-11);技術模板跟身材模板維持用
+# 純四軸/純身材距離,刻意不受這個改動影響。身材裡的身高/體重在比較前會先用
+# percentile_normalize_body 換算成百分位(使用者跟球員各自在自己的母體裡排
+# 第幾百分位),不然幾乎所有使用者都會比全部 NBA 球員矮/輕,身材模板永遠是
+# 最矮的後衛(同樣是 2026-09-11 討論)。
 # 天花板的定義是「D 軸接近、主導差距在 A/B/C 某個技能軸」——一個身體條件跟你
 # 差不多、但技術更成熟的球員,是一個真正練得到的目標,而不是天賦不同的另一個
 # 人;原本的「反面對照」段落用的是「D 軸差距最大」邏輯,找到的其實是後者,所以
-# 直接移除,天花板改用前者的定義(2026-09-11 重新設計討論)。
+# 直接移除,天花板改用前者的定義。曾經多加過一個跟 10 人對照表#1 相同的「整體
+# 模板」,但根本是重複資訊,也移除了(以上都是 2026-09-11 討論)。
 # 跟 scripts/run_priority.py 一樣,是唯一權威的計算結果(沒有另外的 UI 或即時預覽
 # 版本)。
 # 可手動調整的變數：AXIS_LABELS(中文顯示用詞,可依用詞習慣調整,不影響計算)、
@@ -18,7 +19,7 @@
 # D_AXIS_GROWTH_TEMPLATE(D軸無法訓練時使用的專用句型文字)、
 # CEILING_NOT_FOUND_MESSAGE(找不到符合條件的天花板時顯示的訊息)、
 # BODY_MEASUREMENTS_NOT_ANSWERED_MESSAGE(作答檔沒有身材數值題時顯示的訊息)。
-"""Renders the 10-player template comparison table plus the 4 deep templates.
+"""Renders the 10-player template comparison table plus the 3 deep templates.
 
 Usage:
     python3 scripts/run_player_match.py [answers_file.json]
@@ -124,14 +125,7 @@ def main():
         coordinates, user_body_pct, players_pct, body_field_ranges_pct, k=10
     )
 
-    print("\n4 位深度模板:")
-
-    if ranked:
-        overall_fit = ranked[0]
-        print(f"  整體模板：{overall_fit['name']} ({overall_fit['team']})")
-        print("      打法風格加上身材數值綜合起來,跟你最接近的球員。")
-    else:
-        print("  整體模板：目前沒有球員可比對。")
+    print("\n3 位深度模板:")
 
     skill_fit = find_skill_fit_template(coordinates, players)
     print(f"  技術模板：{skill_fit['name']} ({skill_fit['team']})")

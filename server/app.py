@@ -2,13 +2,15 @@
 #   GET  /api/form-data       給前端渲染問卷用的題庫跟技能名稱,只回傳必要欄位,
 #                             不外洩 axis_relevance/cost_C 等內部校準數字。
 #   POST /api/template-results  只吃球風定位(16題)+ 身材數值(6題,可省略),
-#                             回傳定位座標、4 位深度模板、10 人對照表——刻意
+#                             回傳定位座標、3 位深度模板、10 人對照表——刻意
 #                             不需要技能行為跟環境權重,因為很多使用者沒在打
 #                             正式比賽,只想知道自己的球員模板。
-#                             10 人對照表跟整體模板(overall_fit)用四軸+身材
-#                             一起算距離(沒填身材數值題就自動退化成純四軸),
-#                             避免推薦身材差異很大的球員當模板;技術模板/身材
-#                             模板維持純四軸/純身材距離,刻意不受這個改動影響。
+#                             10 人對照表用四軸+身材一起算距離(沒填身材數值
+#                             題就自動退化成純四軸),避免推薦身材差異很大的
+#                             球員當模板;3 位深度模板維持純四軸/純身材距離,
+#                             刻意不受這個改動影響(第一版本來多加了一張跟 10
+#                             人對照表#1 相同的「整體模板」卡,但根本就是重複
+#                             資訊,2026-09-11 移除)。
 #                             身材裡的身高/體重會先用 percentile_normalize_body
 #                             換算成百分位再比,不然幾乎所有使用者都比全部 NBA
 #                             球員矮/輕,身材模板永遠是最矮的後衛。天花板的定義
@@ -123,7 +125,6 @@ def compute_template_results(payload, questions, players, skills_by_id):
     return {
         "coordinates": coordinates,
         "deep_templates": {
-            "overall_fit": player_brief(ranked_players[0]) if ranked_players else None,
             "skill_fit": player_brief(find_skill_fit_template(coordinates, players)),
             "body_fit": (
                 player_brief(find_body_fit_template(user_body_pct, players_pct, body_field_ranges_pct))

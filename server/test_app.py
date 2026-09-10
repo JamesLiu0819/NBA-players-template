@@ -1,5 +1,5 @@
 # 用途：測試兩支 API endpoint。POST /api/template-results 只吃四軸定位(16題)
-# 跟身材數值(6題,可省略),回傳定位/4位深度模板/10人對照表——刻意不需要技能
+# 跟身材數值(6題,可省略),回傳定位/3位深度模板/10人對照表——刻意不需要技能
 # 行為跟環境權重,因為很多使用者沒在打正式比賽,只想知道自己的球員模板是誰。
 # POST /api/priority-results 才吃技能行為(15題)跟環境權重,回傳優先訓練順序,
 # 是使用者自己選擇要不要看的「進階」分析。
@@ -59,7 +59,7 @@ class TemplateResultsTest(unittest.TestCase):
         data = response.get_json()
         self.assertEqual(set(data["coordinates"].keys()), {"A", "B", "C", "D"})
         self.assertEqual(
-            set(data["deep_templates"].keys()), {"overall_fit", "skill_fit", "body_fit", "ceiling"}
+            set(data["deep_templates"].keys()), {"skill_fit", "body_fit", "ceiling"}
         )
         self.assertEqual(len(data["top_10"]), 10)
         # this endpoint must NOT require or return priority-analysis fields
