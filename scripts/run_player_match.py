@@ -3,7 +3,10 @@
 # (技能最貼合/身體最貼合/天花板方向)、「10 人對照表」、「反面對照」三段文字報表。
 # 10 人對照表用 rank_similar_players_by_style_and_body,四軸+身材一起算距離,
 # 避免推薦身材差異很大的球員當模板(2026-09-11);3 位深度模板跟反面對照維持
-# 用四軸(或純身材)距離,刻意不受這個改動影響。
+# 用四軸(或純身材)距離,刻意不受這個改動影響。身材裡的身高/體重在比較前會先
+# 用 percentile_normalize_body 換算成百分位(使用者跟球員各自在自己的母體裡
+# 排第幾百分位),不然幾乎所有使用者都會比全部 NBA 球員矮/輕,身材模板永遠是
+# 最矮的後衛(同樣是 2026-09-11 討論)。
 # 跟 scripts/run_priority.py 一樣,是唯一權威的計算結果(沒有另外的 UI 或即時預覽
 # 版本)。
 # 可手動調整的變數：AXIS_LABELS(中文顯示用詞,可依用詞習慣調整,不影響計算)、
@@ -31,7 +34,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from engine.axis_position import AXES, score_axis_coordinates  # noqa: E402
-from engine.body_fit import collect_body_measurements  # noqa: E402
+from engine.body_fit import collect_body_measurements, percentile_normalize_body  # noqa: E402
 from engine.player_matching import (  # noqa: E402
     find_anti_template,
     find_body_fit_template,
@@ -130,8 +133,11 @@ def main():
         collect_body_measurements(questions["body_measurements"], body_answers)
         if body_answers else {}
     )
+    user_body_pct, players_pct, body_field_ranges_pct = percentile_normalize_body(
+        user_body, players, body_field_ranges
+    )
     if user_body:
-        body_fit = find_body_fit_template(user_body, players, body_field_ranges)
+        body_fit = find_body_fit_template(user_body_pct, players_pct, body_field_ranges_pct)
         if body_fit:
             print(f"  體能模板：{body_fit['name']} ({body_fit['team']})")
             print("      身材數值跟你最接近的球員。")
@@ -141,7 +147,7 @@ def main():
         print(f"  體能模板：{BODY_MEASUREMENTS_NOT_ANSWERED_MESSAGE}")
 
     ranked = rank_similar_players_by_style_and_body(
-        coordinates, user_body, players, body_field_ranges, k=10
+        coordinates, user_body_pct, players_pct, body_field_ranges_pct, k=10
     )
 
     print("\n10 人對照表:")
@@ -158,7 +164,7 @@ def main():
     if anti_template:
         print(f"  {anti_template['name']} ({anti_template['team']})")
         print(
-            f"      你的 A/B/C 軸都跟他很接近,但 D 軸(運動能力層級)差距最大,"
+            f"      你的 A/B/C 軸都跟他很接近,但 D 軸(體能條件)差距最大,"
             "而且他賴以成功的核心特質被標註為「不可複製」。"
         )
         print("      不該把他當模板——那個方向會誘導你去追求很難獲得的身體天賦,而不是可以練出來的技術。")

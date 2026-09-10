@@ -8,7 +8,10 @@
 #                             10 人對照表用四軸+身材一起算距離(沒填身材數值
 #                             題就自動退化成純四軸),避免推薦身材差異很大的
 #                             球員當模板;3 位深度模板跟反面對照維持原本邏輯,
-#                             刻意不受這個改動影響。
+#                             刻意不受這個改動影響。身材裡的身高/體重會先用
+#                             percentile_normalize_body 換算成百分位再比,
+#                             不然幾乎所有使用者都比全部 NBA 球員矮/輕,身材
+#                             模板永遠是最矮的後衛。
 #   POST /api/priority-results  才吃技能行為(15題)+ 環境權重,回傳優先訓練
 #                             順序,是使用者自己選擇要不要看的「進階」分析。
 # 同時把 /src/ui 的靜態前端檔案服務出去。**刻意不**把 data/ 整個目錄當靜態
@@ -43,7 +46,7 @@ sys.path.insert(0, str(ROOT))
 from flask import Flask, jsonify, request, send_from_directory  # noqa: E402
 
 from engine.axis_position import score_axis_coordinates  # noqa: E402
-from engine.body_fit import collect_body_measurements  # noqa: E402
+from engine.body_fit import collect_body_measurements, percentile_normalize_body  # noqa: E402
 from engine.player_matching import (  # noqa: E402
     find_anti_template,
     find_body_fit_template,
@@ -93,10 +96,13 @@ def compute_template_results(payload, questions, players, skills_by_id):
         if body_answers else {}
     )
     body_field_ranges = {q["field"]: (q["min"], q["max"]) for q in questions["body_measurements"]}
+    user_body_pct, players_pct, body_field_ranges_pct = percentile_normalize_body(
+        user_body, players, body_field_ranges
+    )
 
     top_10 = []
     ranked_players = rank_similar_players_by_style_and_body(
-        coordinates, user_body, players, body_field_ranges, k=10
+        coordinates, user_body_pct, players_pct, body_field_ranges_pct, k=10
     )
     for rank, player in enumerate(ranked_players, start=1):
         top_10.append({
@@ -115,7 +121,7 @@ def compute_template_results(payload, questions, players, skills_by_id):
         "deep_templates": {
             "skill_fit": player_brief(find_skill_fit_template(coordinates, players)),
             "body_fit": (
-                player_brief(find_body_fit_template(user_body, players, body_field_ranges))
+                player_brief(find_body_fit_template(user_body_pct, players_pct, body_field_ranges_pct))
                 if user_body else None
             ),
             "ceiling": player_brief(find_ceiling_template(coordinates, players)),
