@@ -1,5 +1,7 @@
 # 用途：L3 匹配層,把使用者的四軸座標拿去跟球員種子資料算最近鄰,並提供「差異
-# 軸是否剛好對到某個技能」的判斷,供 scripts/run_player_match.py 產生 10 人對照表。
+# 軸是否剛好對到某個技能」的判斷,供 scripts/run_player_match.py 產生 10 人對照表;
+# 也提供反面對照(find_anti_template)——A/B/C 軸接近但 D 軸差距最大、且核心優勢
+# 不可複製的球員,不該被當模板。
 # 可手動調整的變數：_DISTANCE_STAR_THRESHOLDS(貼合度星級的距離門檻,目前是依
 # 常理暫定的 20/40/60/80,等有真實球員資料庫、知道實際距離分佈後應該重新校準)。
 
@@ -77,3 +79,28 @@ def matching_skill_id(dominant_diff_axis, signature_skill_id, skills_by_id):
     if skill_dominant_axis(skill["axis_relevance"]) == dominant_diff_axis:
         return signature_skill_id
     return None
+
+
+def find_anti_template(user_coordinates, players):
+    """Find the single best "anti-template" (SPEC.md §3.1): a player whose
+    A/B/C axes are closest to the user but whose D axis is the dominant
+    gap, AND whose core strength is flagged as non-replicable
+    (learnability_flag == "low") -- someone who looks like you but succeeds
+    on something you don't have and can't train.
+
+    Returns None if no player in the given pool qualifies. This is an
+    honest "not found", not relaxed to a looser learnability match -- see
+    the 2026-09-10 anti-template scoping discussion.
+    """
+    ranked = rank_similar_players(user_coordinates, players, k=len(players))
+    candidates = [
+        p for p in ranked
+        if p["dominant_diff_axis"] == "D" and p.get("learnability_flag") == "low"
+    ]
+    if not candidates:
+        return None
+
+    def abc_distance(player):
+        return math.sqrt(sum(player["diff"][axis] ** 2 for axis in ("A", "B", "C")))
+
+    return min(candidates, key=abc_distance)

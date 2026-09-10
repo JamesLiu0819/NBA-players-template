@@ -7,6 +7,7 @@
 import unittest
 
 from engine.player_matching import (
+    find_anti_template,
     fit_stars_for_distance,
     matching_skill_id,
     rank_similar_players,
@@ -113,6 +114,80 @@ class MatchingSkillIdTest(unittest.TestCase):
     def test_returns_none_when_signature_skill_not_in_skills_by_id(self):
         result = matching_skill_id("B", "does_not_exist", self.skills_by_id)
         self.assertIsNone(result)
+
+
+class FindAntiTemplateTest(unittest.TestCase):
+    def test_finds_a_d_dominant_non_replicable_player(self):
+        user = {"A": 50, "B": 50, "C": 50, "D": 50}
+        players = [
+            {
+                "id": "athletic_outlier", "name": "Athletic Outlier",
+                "coordinates": {"A": 52, "B": 48, "C": 51, "D": 95},
+                "learnability_flag": "low",
+            },
+        ]
+
+        result = find_anti_template(user, players)
+
+        self.assertEqual(result["id"], "athletic_outlier")
+
+    def test_excludes_candidates_whose_advantage_is_replicable(self):
+        # Same D-dominant profile, but learnability_flag is not "low" --
+        # the core advantage IS considered learnable, so this player is not
+        # a valid anti-template (design doc: "核心優勢不可複製" is required,
+        # not just "D axis is the biggest gap").
+        user = {"A": 50, "B": 50, "C": 50, "D": 50}
+        players = [
+            {
+                "id": "medium_learnable", "name": "Medium Learnable",
+                "coordinates": {"A": 52, "B": 48, "C": 51, "D": 95},
+                "learnability_flag": "medium",
+            },
+        ]
+
+        result = find_anti_template(user, players)
+
+        self.assertIsNone(result)
+
+    def test_excludes_candidates_whose_dominant_gap_is_not_d(self):
+        user = {"A": 50, "B": 50, "C": 50, "D": 50}
+        players = [
+            {
+                "id": "shooter", "name": "Shooter",
+                "coordinates": {"A": 52, "B": 95, "C": 51, "D": 53},
+                "learnability_flag": "low",
+            },
+        ]
+
+        result = find_anti_template(user, players)
+
+        self.assertIsNone(result)
+
+    def test_returns_none_when_no_players_given(self):
+        user = {"A": 50, "B": 50, "C": 50, "D": 50}
+
+        result = find_anti_template(user, [])
+
+        self.assertIsNone(result)
+
+    def test_picks_the_closest_on_a_b_c_among_multiple_candidates(self):
+        user = {"A": 50, "B": 50, "C": 50, "D": 50}
+        players = [
+            {
+                "id": "far_on_abc", "name": "Far on ABC",
+                "coordinates": {"A": 80, "B": 20, "C": 70, "D": 95},
+                "learnability_flag": "low",
+            },
+            {
+                "id": "close_on_abc", "name": "Close on ABC",
+                "coordinates": {"A": 52, "B": 48, "C": 51, "D": 95},
+                "learnability_flag": "low",
+            },
+        ]
+
+        result = find_anti_template(user, players)
+
+        self.assertEqual(result["id"], "close_on_abc")
 
 
 if __name__ == "__main__":

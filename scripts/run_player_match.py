@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 # 用途：讀取匯出的作答檔跟 data/players.json,算出四軸座標後找出最近的 10 位
-# 現役球員,印出「10 人對照表」文字報表。跟 scripts/run_priority.py 一樣,是
-# 唯一權威的計算結果(沒有另外的 UI 或即時預覽版本)。
+# 現役球員,印出「10 人對照表」文字報表,後面接著印反面對照(A/B/C 軸接近但 D
+# 軸差距最大、且核心優勢不可複製的球員——不該被當模板)。跟 scripts/run_priority.py
+# 一樣,是唯一權威的計算結果(沒有另外的 UI 或即時預覽版本)。
 # 可手動調整的變數：AXIS_LABELS(中文顯示用詞,可依用詞習慣調整,不影響計算)、
 # GENERIC_GROWTH_TEMPLATE(沒有技能對得上差異軸時使用的通用句型文字)、
-# D_AXIS_GROWTH_TEMPLATE(D軸無法訓練時使用的專用句型文字)。
+# D_AXIS_GROWTH_TEMPLATE(D軸無法訓練時使用的專用句型文字)、
+# ANTI_TEMPLATE_NOT_FOUND_MESSAGE(找不到符合條件的反面對照時顯示的訊息)。
 """Renders the 10-player template comparison table.
 
 Usage:
@@ -23,7 +25,11 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from engine.axis_position import AXES, score_axis_coordinates  # noqa: E402
-from engine.player_matching import matching_skill_id, rank_similar_players  # noqa: E402
+from engine.player_matching import (  # noqa: E402
+    find_anti_template,
+    matching_skill_id,
+    rank_similar_players,
+)
 
 AXIS_LABELS = {
     "A": "持球創造",
@@ -34,6 +40,10 @@ AXIS_LABELS = {
 
 GENERIC_GROWTH_TEMPLATE = "可以多留意 {label} 這個方向的練習"
 D_AXIS_GROWTH_TEMPLATE = "這是身體天賦上的落差,不是能單靠練習補起來的方向,可以把這位球員當作天花板參考,而不是訓練目標"
+ANTI_TEMPLATE_NOT_FOUND_MESSAGE = (
+    "目前的球員種子資料裡,找不到符合「A/B/C 軸接近、D 軸差距最大、"
+    "且核心優勢不可複製」條件的球員。"
+)
 
 
 def find_latest_answers_file():
@@ -96,6 +106,18 @@ def main():
         print(f"  #{i}  {player['name']} ({player['team']})  距離={player['distance']:.1f}  貼合度={stars}")
         print(f"      相似處：{'、'.join(player['notable_traits'])}")
         print(f"      差異：{axis} 軸({AXIS_LABELS[axis]})差距最大 → 最值得學的一件事：{growth}")
+
+    anti_template = find_anti_template(coordinates, players)
+    print("\n反面對照:")
+    if anti_template:
+        print(f"  {anti_template['name']} ({anti_template['team']})")
+        print(
+            f"      你的 A/B/C 軸都跟他很接近,但 D 軸(運動能力層級)差距最大,"
+            "而且他賴以成功的核心特質被標註為「不可複製」。"
+        )
+        print("      不該把他當模板——那個方向會誘導你去追求很難獲得的身體天賦,而不是可以練出來的技術。")
+    else:
+        print(f"  {ANTI_TEMPLATE_NOT_FOUND_MESSAGE}")
 
 
 if __name__ == "__main__":
