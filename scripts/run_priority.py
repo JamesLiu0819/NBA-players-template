@@ -79,6 +79,8 @@ def format_dominant_factor_sentence(ranked):
     if len(ranked) < 2:
         return None
     higher, lower = ranked[0], ranked[1]
+    if higher["P"] == lower["P"]:
+        return f"{higher['name_zh']}跟{lower['name_zh']}的優先序完全打平(P 值相同)。"
     result = explain_dominant_factor(higher, lower)
     dominant = result["factor"]
     others = [FACTOR_LABELS[f] for f in ("G", "E", "R", "C") if f != dominant]

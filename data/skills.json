@@ -1,5 +1,5 @@
 {
-  "_description": "技能庫。P1 最小範圍(SPEC.md §12 未決問題 #1)只收錄 5 項關鍵技能：外線投射、面框第一步過人、高位傳導視野、護框、換防跟防。之後要擴充到 SPEC.md §3.3 講的完整 15 項技能時,直接在 skills 陣列裡加新物件即可,格式跟現有的一樣。",
+  "_description": "技能庫,完整 15 項(SPEC.md §3.3)。最早的 P1 最小範圍(SPEC.md §12 未決問題 #1)只收錄 5 項關鍵技能：外線投射、面框第一步過人、高位傳導視野、護框、換防跟防;2026-09-10 擴充加了另外 10 項(背框單打、擋拆持球判斷、無球跑動/利用掩護、轉換快攻終結、罰球、前場籃板/二次進攻、一對一外圍單防、協防補位輪轉、防守籃板卡位、決策效率/失誤控制)。要再加技能就直接在 skills 陣列裡加新物件,格式跟現有的一樣。",
   "_editable_fields": "每個技能物件裡: cost_C(1-5,習得成本)、axis_relevance(A/B/C/D 四軸相關性,0-1,目前是依常理判斷的暫定值,等 SPEC §12 issue #2 的領域專家校準後應該更新)、court_required/teammate_required(訓練場地與隊友需求,決定球場環節/場外環節)、metric(驗收指標,含 denominator 與 thresholds 三個分層門檻)、video_tags(目前只是佔位標籤,還沒接真正的影片庫)。id 一旦被其他資料檔或程式碼引用(例如 questions.json 的 skill_behavior.skill_id)就不要改,否則會對不起來。",
   "skills": [
     {
@@ -80,6 +80,166 @@
         "denominator": 20,
         "direction": "makes_at_least",
         "thresholds": { "entry": 8, "advanced": 13, "mastery": 16 }
+      }
+    },
+    {
+      "id": "post_up",
+      "name_zh": "背框單打",
+      "category": "offense",
+      "cost_C": 4,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": { "A": 0.3, "B": 0.9, "C": 0.1, "D": 0.3 },
+      "video_tags": ["post_up_footwork", "post_up_reads"],
+      "metric": {
+        "action": "背框單打強攻得分或造犯規",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": { "entry": 6, "advanced": 10, "mastery": 14 }
+      }
+    },
+    {
+      "id": "pick_and_roll_ball_handling",
+      "name_zh": "擋拆持球判斷",
+      "category": "offense",
+      "cost_C": 3,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": { "A": 0.9, "B": 0.4, "C": 0.1, "D": 0.3 },
+      "video_tags": ["pick_and_roll_reads", "ball_handler_reads"],
+      "metric": {
+        "action": "擋拆後做出正確的傳/投/切判斷",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": { "entry": 8, "advanced": 13, "mastery": 17 }
+      }
+    },
+    {
+      "id": "off_ball_movement",
+      "name_zh": "無球跑動/利用掩護",
+      "category": "offense",
+      "cost_C": 2,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": { "A": 0.2, "B": 0.8, "C": 0.1, "D": 0.4 },
+      "video_tags": ["off_ball_cuts", "screen_usage"],
+      "metric": {
+        "action": "利用掩護跑出空檔接球出手",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": { "entry": 8, "advanced": 13, "mastery": 17 }
+      }
+    },
+    {
+      "id": "transition_finishing",
+      "name_zh": "轉換快攻終結",
+      "category": "offense",
+      "cost_C": 2,
+      "court_required": true,
+      "teammate_required": false,
+      "axis_relevance": { "A": 0.3, "B": 0.2, "C": 0.1, "D": 0.8 },
+      "video_tags": ["transition_finishing", "fast_break_reads"],
+      "metric": {
+        "action": "快攻中完成終結",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": { "entry": 10, "advanced": 15, "mastery": 18 }
+      }
+    },
+    {
+      "id": "free_throw_shooting",
+      "name_zh": "罰球",
+      "category": "offense",
+      "cost_C": 2,
+      "court_required": true,
+      "teammate_required": false,
+      "axis_relevance": { "A": 0.2, "B": 0.2, "C": 0.2, "D": 0.2 },
+      "video_tags": ["free_throw_routine", "free_throw_mechanics"],
+      "metric": {
+        "action": "罰球",
+        "denominator": 50,
+        "direction": "makes_at_least",
+        "thresholds": { "entry": 35, "advanced": 40, "mastery": 45 }
+      }
+    },
+    {
+      "id": "offensive_rebounding",
+      "name_zh": "前場籃板/二次進攻",
+      "category": "awareness",
+      "cost_C": 3,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": { "A": 0.1, "B": 0.3, "C": 0.1, "D": 0.7 },
+      "video_tags": ["offensive_rebounding", "putback_finishing"],
+      "metric": {
+        "action": "前場籃板轉換成得分機會",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": { "entry": 6, "advanced": 10, "mastery": 14 }
+      }
+    },
+    {
+      "id": "on_ball_perimeter_defense",
+      "name_zh": "一對一外圍單防",
+      "category": "defense",
+      "cost_C": 3,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": { "A": 0.1, "B": 0.2, "C": 0.8, "D": 0.5 },
+      "video_tags": ["on_ball_defense_stance", "containing_dribble_penetration"],
+      "metric": {
+        "action": "一對一單防持球者不被輕易突破",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": { "entry": 8, "advanced": 13, "mastery": 17 }
+      }
+    },
+    {
+      "id": "help_defense_rotation",
+      "name_zh": "協防補位輪轉",
+      "category": "defense",
+      "cost_C": 4,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": { "A": 0.1, "B": 0.1, "C": 0.7, "D": 0.3 },
+      "video_tags": ["help_defense_rotation", "team_defense_positioning"],
+      "metric": {
+        "action": "協防補位到位、不漏人",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": { "entry": 8, "advanced": 13, "mastery": 17 }
+      }
+    },
+    {
+      "id": "defensive_rebounding_boxout",
+      "name_zh": "防守籃板卡位",
+      "category": "defense",
+      "cost_C": 2,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": { "A": 0.1, "B": 0.2, "C": 0.5, "D": 0.6 },
+      "video_tags": ["boxing_out", "defensive_rebounding"],
+      "metric": {
+        "action": "防守籃板卡位成功拿板",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": { "entry": 10, "advanced": 15, "mastery": 18 }
+      }
+    },
+    {
+      "id": "decision_making_turnover_control",
+      "name_zh": "決策效率/失誤控制",
+      "category": "awareness",
+      "cost_C": 3,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": { "A": 0.7, "B": 0.2, "C": 0.1, "D": 0.2 },
+      "video_tags": ["decision_making", "turnover_avoidance"],
+      "metric": {
+        "action": "持球推進或做決策時不失誤",
+        "denominator": 30,
+        "direction": "errors_at_most",
+        "thresholds": { "entry": 6, "advanced": 3, "mastery": 1 }
       }
     }
   ]

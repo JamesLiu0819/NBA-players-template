@@ -1,5 +1,5 @@
 {
-  "_description": "問診題庫。axis_positioning 是四軸定位 16 題(A/B/C/D 各 4 題),skill_behavior 是 5 項關鍵技能的行為錨定題(目前每項技能只有 1 題),body_measurements 是 SPEC.md §5.2 身材類的 6 題數值題(給「3 位深度模板」的身體最貼合用)。這是 SPEC.md §12 未決問題 #1 的最小版本,完整 15 項技能的錨點題組跟其餘題庫還沒寫。axis_positioning/skill_behavior 都是 BARS(行為錨定評分量表,見 SPEC.md §5.1)——問的是具體行為/頻率,不是自評能力高低;body_measurements 例外,是直接填數值,不是 BARS。",
+  "_description": "問診題庫。axis_positioning 是四軸定位 16 題(A/B/C/D 各 4 題),skill_behavior 是完整 15 項技能(SPEC.md §3.3)的行為錨定題(目前每項技能 1 題,共 15 題),body_measurements 是 SPEC.md §5.2 身材類的 6 題數值題(給「3 位深度模板」的身體最貼合用)。目前合計 37 題;SPEC §5.5 的完整題數預算是 45-51 題,還缺聯賽環境(5題)、目標/限制/困擾(6題)兩塊(SPEC.md §12 未決問題 #1 的擴充範圍)。axis_positioning/skill_behavior 都是 BARS(行為錨定評分量表,見 SPEC.md §5.1)——問的是具體行為/頻率,不是自評能力高低;body_measurements 例外,是直接填數值,不是 BARS。",
   "_editable_fields": "axis_positioning/skill_behavior 每題的 prompt(題目文字)跟 anchors(1-5 每個分數對應的行為描述)可以照 BARS 精神修改用詞,body_measurements 每題的 prompt/unit/min/max 可以依實際需求調整,但改的時候要小心三件事:(1) id 一旦被其他地方引用(例如 skill_behavior 的 skill_id 對應 skills.json 的技能 id;body_measurements 的 field 對應 players.json 的 body 欄位名)就不要改,否則資料兜不起來;(2) 每題的 anchors 必須維持 1-5 五個完整的行為描述,不能只改數字不改文字,否則就違背了 BARS 的設計目的;(3) body_measurements 的 field 目前只有 height_cm/wingspan_cm 兩項會被拿去跟 players.json 比對(其餘四項球員資料庫還沒有對應欄位),新增題目要小心維持這個對應關係。要新增題目就照現有的物件格式加進對應的陣列。",
   "axis_positioning": [
     {
@@ -254,6 +254,126 @@
         "3": "一半時間能跟住",
         "4": "常常能跟住",
         "5": "幾乎都能跟住,對手很難靠換防打我"
+      }
+    },
+    {
+      "id": "skill_post_up_1",
+      "skill_id": "post_up",
+      "prompt": "背框拿球,防守者卡在你跟籃框中間時,你會怎麼做?",
+      "anchors": {
+        "1": "直接傳出去或放棄背框,不會嘗試強攻",
+        "2": "很少強攻,而且大多以失敗收場",
+        "3": "偶爾強攻,成功率大約一半",
+        "4": "常常強攻,而且大多能完成或造犯規",
+        "5": "一定強攻,對手很難單防守住我"
+      }
+    },
+    {
+      "id": "skill_pick_and_roll_ball_handling_1",
+      "skill_id": "pick_and_roll_ball_handling",
+      "prompt": "擋拆掩護掀開、防守者換防或延誤的瞬間,你通常會?",
+      "anchors": {
+        "1": "反應不過來,常常運球撞人或直接被抄截",
+        "2": "只會固定做一種選擇(例如永遠只會硬切或永遠只會投),不看防守方式",
+        "3": "能看情況二選一,但常常慢半拍",
+        "4": "能依防守方式在傳/投/切之間做出正確選擇",
+        "5": "幾乎每次都能立刻讀出防守破綻,做出最有利的選擇"
+      }
+    },
+    {
+      "id": "skill_off_ball_movement_1",
+      "skill_id": "off_ball_movement",
+      "prompt": "隊友幫你做掩護、想幫你製造空檔時,你會?",
+      "anchors": {
+        "1": "常常站著不動或跑錯方向,浪費掩護",
+        "2": "很少能跑出真正的空檔",
+        "3": "一半時間能利用掩護跑出空檔",
+        "4": "常常能利用掩護跑出空檔接球",
+        "5": "幾乎每次都能讀懂防守,跑到最有利的空檔"
+      }
+    },
+    {
+      "id": "skill_transition_finishing_1",
+      "skill_id": "transition_finishing",
+      "prompt": "快攻中你是第一個衝到籃下的人時,你能穩定完成終結的比例是?",
+      "anchors": {
+        "1": "幾乎都會失誤或被封蓋",
+        "2": "很少能穩定完成",
+        "3": "一半時間能完成",
+        "4": "常常能完成",
+        "5": "幾乎都能完成,而且常常造成額外犯規"
+      }
+    },
+    {
+      "id": "skill_free_throw_shooting_1",
+      "skill_id": "free_throw_shooting",
+      "prompt": "罰球線站上去,你對罰進的把握是?",
+      "anchors": {
+        "1": "很沒把握,常常不進",
+        "2": "把握不大,進球率偏低",
+        "3": "大概一半一半",
+        "4": "有把握,大多能罰進",
+        "5": "幾乎穩進,壓力大的關鍵罰球也不例外"
+      }
+    },
+    {
+      "id": "skill_offensive_rebounding_1",
+      "skill_id": "offensive_rebounding",
+      "prompt": "隊友投籃沒進的瞬間,你會?",
+      "anchors": {
+        "1": "很少會衝進禁區搶前場籃板",
+        "2": "偶爾會衝,但大多搶不到",
+        "3": "一半時間會衝進去,也常常能搶到",
+        "4": "常常主動衝搶前場籃板,而且成功率不錯",
+        "5": "幾乎每次都會主動卡位搶前場籃板,並且能穩定拿到球"
+      }
+    },
+    {
+      "id": "skill_on_ball_perimeter_defense_1",
+      "skill_id": "on_ball_perimeter_defense",
+      "prompt": "一對一防守持球者、對方想運球突破時,你能守住不被輕易過人的比例是?",
+      "anchors": {
+        "1": "幾乎守不住,第一步就被過",
+        "2": "很少能守住",
+        "3": "一半時間能守住",
+        "4": "常常能守住",
+        "5": "幾乎都能守住,對手很難靠一對一過我"
+      }
+    },
+    {
+      "id": "skill_help_defense_rotation_1",
+      "skill_id": "help_defense_rotation",
+      "prompt": "隊友被突破、需要你協防補位時,你能即時補到正確位置的比例是?",
+      "anchors": {
+        "1": "幾乎都補位不及或補錯位置",
+        "2": "很少能即時補到正確位置",
+        "3": "一半時間能補到位",
+        "4": "常常能即時補到正確位置",
+        "5": "幾乎每次都能即時補位,還能兼顧原本防守的人"
+      }
+    },
+    {
+      "id": "skill_defensive_rebounding_boxout_1",
+      "skill_id": "defensive_rebounding_boxout",
+      "prompt": "對手投籃出手的瞬間,你會?",
+      "anchors": {
+        "1": "很少會先卡位,常常被對手繞到後面搶板",
+        "2": "偶爾會卡位,但常常卡輸",
+        "3": "一半時間會卡位,也常常卡贏",
+        "4": "常常主動卡位,而且大多卡贏",
+        "5": "幾乎每次都會卡好位置,對手很難越過我搶到前場籃板"
+      }
+    },
+    {
+      "id": "skill_decision_making_turnover_control_1",
+      "skill_id": "decision_making_turnover_control",
+      "prompt": "持球被包夾或面對高強度壓迫防守時,你多常直接失誤?",
+      "anchors": {
+        "1": "一定失誤",
+        "2": "常常勉強運球或傳出壞球",
+        "3": "能穩住球,但常常要花很久才找到出路",
+        "4": "能快速穩住球,大多能安全處理",
+        "5": "幾乎不失誤,還能在壓迫下維持進攻效率"
       }
     }
   ],

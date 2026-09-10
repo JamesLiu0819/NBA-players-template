@@ -27,12 +27,22 @@ REQUIRED_SKILL_FIELDS = {
     "metric",
 }
 
-FIVE_KEY_SKILLS = {
+ALL_SKILL_IDS = {
     "perimeter_shooting",
     "face_up_first_step",
     "high_post_playmaking",
     "rim_protection",
     "perimeter_switch_defense",
+    "post_up",
+    "pick_and_roll_ball_handling",
+    "off_ball_movement",
+    "transition_finishing",
+    "free_throw_shooting",
+    "offensive_rebounding",
+    "on_ball_perimeter_defense",
+    "help_defense_rotation",
+    "defensive_rebounding_boxout",
+    "decision_making_turnover_control",
 }
 
 
@@ -61,9 +71,9 @@ class QuestionsDataTest(unittest.TestCase):
             seen_ids.add(q["id"])
             self.assertEqual(set(q["anchors"].keys()), {"1", "2", "3", "4", "5"})
 
-    def test_skill_behavior_covers_exactly_the_five_key_skills(self):
+    def test_skill_behavior_covers_all_fifteen_skills(self):
         skill_ids = {q["skill_id"] for q in self.data["skill_behavior"]}
-        self.assertEqual(skill_ids, FIVE_KEY_SKILLS)
+        self.assertEqual(skill_ids, ALL_SKILL_IDS)
 
     def test_every_skill_behavior_question_has_five_bars_anchors(self):
         for q in self.data["skill_behavior"]:
@@ -93,8 +103,8 @@ class SkillsDataTest(unittest.TestCase):
     def setUp(self):
         self.skills = load_json("skills.json")["skills"]
 
-    def test_exactly_five_key_skills(self):
-        self.assertEqual({s["id"] for s in self.skills}, FIVE_KEY_SKILLS)
+    def test_covers_all_fifteen_skills(self):
+        self.assertEqual({s["id"] for s in self.skills}, ALL_SKILL_IDS)
 
     def test_every_skill_has_the_required_fields(self):
         for skill in self.skills:
@@ -141,13 +151,17 @@ class FullPipelineIntegrationTest(unittest.TestCase):
         # Simulate an environment vector (SPEC §3.2) that hugely favors
         # perimeter shooting and suppresses rim protection, e.g. a
         # collapsed-defense, loose-whistle league like SPEC.md §11's fixture.
-        env_multiplier = {
+        # Every other skill defaults to a neutral 1.0 -- this test only
+        # cares that the pipeline plumbs E through correctly end to end for
+        # all 15 skills, not that every skill has a hand-tuned value here.
+        env_multiplier = {skill["id"]: 1.0 for skill in self.skills}
+        env_multiplier.update({
             "perimeter_shooting": 1.8,
             "face_up_first_step": 1.4,
             "high_post_playmaking": 1.5,
             "rim_protection": 0.6,
             "perimeter_switch_defense": 1.0,
-        }
+        })
 
         priority_inputs = []
         for skill in self.skills:
@@ -166,7 +180,7 @@ class FullPipelineIntegrationTest(unittest.TestCase):
 
         ranked = rank_priorities(priority_inputs)
 
-        self.assertEqual(len(ranked), 5)
+        self.assertEqual(len(ranked), 15)
         for item in ranked:
             self.assertGreaterEqual(item["P"], 0)
         priorities = [item["P"] for item in ranked]

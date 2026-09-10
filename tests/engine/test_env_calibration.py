@@ -31,6 +31,16 @@ ENV_COLLAPSED_NO_SHOOTERS = {
     "high_post_playmaking": 1.4,
     "rim_protection": 0.6,
     "perimeter_switch_defense": 0.9,
+    "post_up": 0.7,
+    "pick_and_roll_ball_handling": 1.3,
+    "off_ball_movement": 1.1,
+    "transition_finishing": 1.0,
+    "free_throw_shooting": 1.0,
+    "offensive_rebounding": 0.9,
+    "on_ball_perimeter_defense": 0.7,
+    "help_defense_rotation": 1.5,
+    "defensive_rebounding_boxout": 1.1,
+    "decision_making_turnover_control": 1.0,
 }
 
 ENV_TIGHT_PERIMETER_OPP_SHOOTERS = {
@@ -39,6 +49,16 @@ ENV_TIGHT_PERIMETER_OPP_SHOOTERS = {
     "high_post_playmaking": 1.1,
     "rim_protection": 1.2,
     "perimeter_switch_defense": 1.6,
+    "post_up": 1.3,
+    "pick_and_roll_ball_handling": 1.8,
+    "off_ball_movement": 1.4,
+    "transition_finishing": 1.0,
+    "free_throw_shooting": 1.0,
+    "offensive_rebounding": 1.3,
+    "on_ball_perimeter_defense": 1.7,
+    "help_defense_rotation": 1.6,
+    "defensive_rebounding_boxout": 1.1,
+    "decision_making_turnover_control": 1.0,
 }
 
 
@@ -63,14 +83,22 @@ class EnvCalibrationTest(unittest.TestCase):
         }
         self.axis_answers = [{"question_id": qid, "score": s} for qid, s in axis_scores.items()]
 
-        skill_scores = {
-            "skill_perimeter_shooting_1": 3,
-            "skill_face_up_first_step_1": 1,
-            "skill_high_post_playmaking_1": 1,
-            "skill_rim_protection_1": 5,
-            "skill_perimeter_switch_defense_1": 3,
-        }
-        self.skill_answers = [{"question_id": qid, "score": s} for qid, s in skill_scores.items()]
+        # Every other skill (the 10 added in the 2026-09-10 skill-library
+        # expansion) defaults to a neutral score of 3 -- this fixture is
+        # specifically about the original 5-skill narrative, not about
+        # hand-crafting a behavior for every skill in the library.
+        skill_scores = {q["skill_id"]: 3 for q in self.questions["skill_behavior"]}
+        skill_scores.update({
+            "perimeter_shooting": 3,
+            "face_up_first_step": 1,
+            "high_post_playmaking": 1,
+            "rim_protection": 5,
+            "perimeter_switch_defense": 3,
+        })
+        self.skill_answers = [
+            {"question_id": q["id"], "score": skill_scores[q["skill_id"]]}
+            for q in self.questions["skill_behavior"]
+        ]
 
     def _rank_with_env(self, env):
         coordinates = score_axis_coordinates(self.questions["axis_positioning"], self.axis_answers)
