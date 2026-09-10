@@ -419,12 +419,12 @@
       "max": 370
     },
     {
-      "id": "body_sprint_20m",
-      "field": "sprint_20m_seconds",
-      "prompt": "20 公尺衝刺(秒,由靜止起跑計時)",
+      "id": "body_sprint_100m",
+      "field": "sprint_100m_seconds",
+      "prompt": "100 公尺衝刺(秒,由靜止起跑計時)",
       "unit": "s",
-      "min": 2.0,
-      "max": 6.0
+      "min": 10.0,
+      "max": 22.0
     }
   ]
 }

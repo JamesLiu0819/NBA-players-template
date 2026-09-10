@@ -32,7 +32,7 @@ BODY_SANITY_RANGES = {
     "wingspan_cm": (150, 280),
     "standing_reach_cm": (180, 340),
     "running_vertical_reach_cm": (200, 400),
-    "sprint_20m_seconds": (1.5, 7.0),
+    "sprint_100m_seconds": (8.0, 25.0),
 }
 
 

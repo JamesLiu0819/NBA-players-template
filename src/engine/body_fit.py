@@ -2,7 +2,7 @@
 # 字典,再提供跟球員 body 欄位比對距離的函數,供「身體最貼合」深度模板跟 10 人
 # 對照表(含身材加權)使用。body_distance 會用 field_ranges 把每個欄位正規化
 # 到 0-100 再算距離,避免公分級的欄位(如 running_vertical_reach_cm)蓋過秒數
-# 級的欄位(如 sprint_20m_seconds)。
+# 級的欄位(如 sprint_100m_seconds)。
 # 可手動調整的變數：無——這裡是通用計算規則,不含需要人工校準的參數。
 # field_ranges 的實際數值來自 data/questions.json 的 body_measurements 題組
 # (每題自己的 min/max),不在這支檔案裡另外定義一套。
@@ -59,7 +59,7 @@ def body_distance(user_body, player_body, field_ranges):
     to a 0-100 scale before taking the distance. Without this, fields with
     a larger raw numeric span (e.g. running_vertical_reach_cm, spanning
     hundreds of cm) would silently dominate fields with a smaller span
-    (e.g. sprint_20m_seconds, spanning a handful of seconds).
+    (e.g. sprint_100m_seconds, spanning a dozen or so seconds).
 
     Raises ValueError if the two dicts share no fields at all.
     """

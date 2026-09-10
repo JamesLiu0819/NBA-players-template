@@ -99,7 +99,7 @@ class QuestionsDataTest(unittest.TestCase):
         fields = {q["field"] for q in self.data["body_measurements"]}
         self.assertEqual(fields, {
             "height_cm", "weight_kg", "wingspan_cm",
-            "standing_reach_cm", "running_vertical_reach_cm", "sprint_20m_seconds",
+            "standing_reach_cm", "running_vertical_reach_cm", "sprint_100m_seconds",
         })
 
 

@@ -723,7 +723,7 @@
 
   const DEEP_TEMPLATE_META = {
     skill_fit: { label: "技術模板", caption: "排除運動能力,技術層面跟你最接近的球員（打法風格）" },
-    body_fit: { label: "體能模板", caption: "身材數值跟你最接近的球員" },
+    body_fit: { label: "身材模板", caption: "身材數值跟你最接近的球員" },
     ceiling: { label: "天花板", caption: "運動能力差距最大,但同類型裡上限最高的球員" },
   };
 
@@ -925,8 +925,8 @@
       const base = values.standing_reach_cm ?? randomFloat(byField.running_vertical_reach_cm.min, byField.running_vertical_reach_cm.max);
       values.running_vertical_reach_cm = clampToQuestion(base + randomFloat(30, 100), byField.running_vertical_reach_cm);
     }
-    if (byField.sprint_20m_seconds) {
-      values.sprint_20m_seconds = randomFloat(byField.sprint_20m_seconds.min, byField.sprint_20m_seconds.max);
+    if (byField.sprint_100m_seconds) {
+      values.sprint_100m_seconds = randomFloat(byField.sprint_100m_seconds.min, byField.sprint_100m_seconds.max);
     }
 
     return values;

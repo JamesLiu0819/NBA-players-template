@@ -5,7 +5,7 @@
 # JSON 檔。之後要換成 nba_api / Basketball-Reference 的真數據時,換掉這支腳本
 # 產生 PLAYERS 的方式即可,下游(engine、報表腳本)不用動。
 # PLAYERS 裡每位球員的 body 只手動填 height_cm/wingspan_cm 兩項,其餘 4 項
-# (weight_kg/standing_reach_cm/running_vertical_reach_cm/sprint_20m_seconds)
+# (weight_kg/standing_reach_cm/running_vertical_reach_cm/sprint_100m_seconds)
 # 由 derive_body_measurements() 在 main() 裡公式推算後補上,不是逐一手key的
 # 600 筆數字——公式本身也是手動估算校準過的,不是真實測量值。
 # 可手動調整的變數：PLAYERS(整份球員清單,每位球員的 coordinates/body/
@@ -1295,7 +1295,7 @@ PLAYERS = [
 def derive_body_measurements(height_cm, wingspan_cm, coordinates):
     """Formula-derive the 4 body-measurement fields not hand-estimated above
     (weight_kg, standing_reach_cm, running_vertical_reach_cm,
-    sprint_20m_seconds) from each player's existing height/wingspan/D-axis/
+    sprint_100m_seconds) from each player's existing height/wingspan/D-axis/
     B-axis, instead of hand-typing ~600 more literal values. See file header
     -- these are estimates for engine bring-up, not scouted measurements.
 
@@ -1307,7 +1307,9 @@ def derive_body_measurements(height_cm, wingspan_cm, coordinates):
           shoulder-to-fingertip-reach addition).
       running_vertical_reach_cm: standing reach plus a vertical leap that
           scales with the D axis (athleticism).
-      sprint_20m_seconds: scales inversely with the D axis.
+      sprint_100m_seconds: scales inversely with the D axis (2026-09-11:
+          switched from a 20m sprint field to 100m, since far fewer people
+          have ever actually timed a 20m sprint on themselves).
     """
     d_axis = coordinates["D"]
     b_axis = coordinates["B"]
@@ -1315,12 +1317,12 @@ def derive_body_measurements(height_cm, wingspan_cm, coordinates):
     standing_reach_cm = round(wingspan_cm + 32)
     vertical_leap_cm = 45 + (d_axis / 100) * 55
     running_vertical_reach_cm = round(standing_reach_cm + vertical_leap_cm)
-    sprint_20m_seconds = round(3.6 - (d_axis / 100) * 1.0, 2)
+    sprint_100m_seconds = round(17.0 - (d_axis / 100) * 6.0, 2)
     return {
         "weight_kg": weight_kg,
         "standing_reach_cm": standing_reach_cm,
         "running_vertical_reach_cm": running_vertical_reach_cm,
-        "sprint_20m_seconds": sprint_20m_seconds,
+        "sprint_100m_seconds": sprint_100m_seconds,
     }
 
 
@@ -1338,7 +1340,7 @@ def main():
             "(src/engine/player_matching.py)有真實資料可以測試,不是真實統計數據"
             "推導的結果(每位球員的 _estimate_basis 都有說明)。body 欄位裡的"
             "height_cm/wingspan_cm 是手動估算,其餘 weight_kg/standing_reach_cm/"
-            "running_vertical_reach_cm/sprint_20m_seconds 是由這兩項加上四軸座標"
+            "running_vertical_reach_cm/sprint_100m_seconds 是由這兩項加上四軸座標"
             "公式推算出來的(見 scripts/build_players_seed.py 的"
             "derive_body_measurements),不是個別球員的真實測量值。"
         ),
