@@ -1,0 +1,14 @@
+# 用途：Render 的 Blueprint 部署設定,讓 Render 自動讀這份檔案建立後端 Web
+# Service,不用在網頁介面手動填 build/start command。細節見 server/README.md。
+# 可手動調整的變數：plan(目前是免費方案 free,流量大了要付費升級就改這裡)、
+# PYTHON_VERSION(要跟本機開發用的 Python 版本一致,避免行為不一致)。
+services:
+  - type: web
+    name: nba-player-template
+    runtime: python
+    plan: free
+    buildCommand: pip install -r server/requirements.txt
+    startCommand: gunicorn --chdir server app:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.13.0"
