@@ -111,16 +111,15 @@ def main():
     print("\n3 位深度模板:")
 
     skill_fit = find_skill_fit_template(coordinates, players)
-    print(f"  技能最貼合：{skill_fit['name']} ({skill_fit['team']})")
-    print("      A/B/C 三軸(排除運動能力)跟你最接近的球員,不看身體天賦,純看打法風格。")
+    print(f"  技術模板：{skill_fit['name']} ({skill_fit['team']})")
+    print("      排除運動能力,技術層面跟你最接近的球員（打法風格）。")
 
     ceiling = find_ceiling_template(coordinates, players)
     if ceiling:
-        print(f"  天花板方向：{ceiling['name']} ({ceiling['team']})")
-        print("      A/B/C 軸跟你接近,D 軸(運動能力層級)差距最大,但他的核心優勢被標註為")
-        print("      「可複製」——是一個實際上有機會往上衝的方向。")
+        print(f"  天花板：{ceiling['name']} ({ceiling['team']})")
+        print("      運動能力差距最大,但同類型裡上限最高的球員")
     else:
-        print(f"  天花板方向：{CEILING_NOT_FOUND_MESSAGE}")
+        print(f"  天花板：{CEILING_NOT_FOUND_MESSAGE}")
 
     body_answers = answers.get("body_answers", [])
     user_body = (
@@ -130,12 +129,12 @@ def main():
     if user_body:
         body_fit = find_body_fit_template(user_body, players)
         if body_fit:
-            print(f"  身體最貼合：{body_fit['name']} ({body_fit['team']})")
-            print("      身材數值(目前是身高、臂展)跟你最接近的球員。")
+            print(f"  體能模板：{body_fit['name']} ({body_fit['team']})")
+            print("      身材數值跟你最接近的球員。")
         else:
-            print("  身體最貼合：目前沒有球員可比對。")
+            print("  體能模板：目前沒有球員可比對。")
     else:
-        print(f"  身體最貼合：{BODY_MEASUREMENTS_NOT_ANSWERED_MESSAGE}")
+        print(f"  體能模板：{BODY_MEASUREMENTS_NOT_ANSWERED_MESSAGE}")
 
     ranked = rank_similar_players(coordinates, players, k=10)
 
