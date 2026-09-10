@@ -43,9 +43,9 @@ from engine.player_matching import (  # noqa: E402
 
 AXIS_LABELS = {
     "A": "持球創造",
-    "B": "空間位置",
+    "B": "投射能力",
     "C": "防守對位",
-    "D": "運動能力層級",
+    "D": "運動表現",
 }
 
 GENERIC_GROWTH_TEMPLATE = "可以多留意 {label} 這個方向的練習"

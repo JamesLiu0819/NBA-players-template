@@ -18,14 +18,28 @@ def load_json(name):
         return json.load(f)
 
 
+
+# Sanity bounds on derived player body data -- deliberately WIDER than
+# data/questions.json's body_measurements [min, max], which is the input
+# range for a *user* self-reporting their own body (see the 2026-09-11
+# narrowing to 165-220cm / 50-120kg). A handful of real players (e.g.
+# Victor Wembanyama at 224cm/128kg) legitimately fall outside that
+# self-report range -- these bounds only catch a broken/blown-up formula
+# output, not "does this fit what a typical user could type in".
+BODY_SANITY_RANGES = {
+    "height_cm": (150, 260),
+    "weight_kg": (50, 160),
+    "wingspan_cm": (150, 280),
+    "standing_reach_cm": (180, 340),
+    "running_vertical_reach_cm": (200, 400),
+    "sprint_20m_seconds": (1.5, 7.0),
+}
+
+
 class PlayersDataTest(unittest.TestCase):
     def setUp(self):
         self.players = load_json("players.json")["players"]
         self.skill_ids = {s["id"] for s in load_json("skills.json")["skills"]}
-        self.body_field_ranges = {
-            q["field"]: (q["min"], q["max"])
-            for q in load_json("questions.json")["body_measurements"]
-        }
 
     def test_has_at_least_min_players(self):
         self.assertGreaterEqual(len(self.players), MIN_PLAYERS)
@@ -66,15 +80,16 @@ class PlayersDataTest(unittest.TestCase):
             if skill_id is not None:
                 self.assertIn(skill_id, self.skill_ids, player["id"])
 
-    def test_every_player_has_all_six_body_fields_within_declared_range(self):
+    def test_every_player_has_all_six_body_fields_within_sane_bounds(self):
         # Ensures scripts/build_players_seed.py's derive_body_measurements()
-        # formulas stay inside data/questions.json's own [min, max] for
-        # every field, for every player -- not just the 3 hand-checked in
-        # the script's docstring.
+        # formulas produce plausible output for every field, for every
+        # player -- not just the 3 hand-checked in the script's docstring.
+        # See BODY_SANITY_RANGES for why this is wider than the user-facing
+        # question range.
         for player in self.players:
             body = player["body"]
-            self.assertEqual(set(body.keys()), set(self.body_field_ranges.keys()), player["id"])
-            for field, (low, high) in self.body_field_ranges.items():
+            self.assertEqual(set(body.keys()), set(BODY_SANITY_RANGES.keys()), player["id"])
+            for field, (low, high) in BODY_SANITY_RANGES.items():
                 value = body[field]
                 self.assertGreaterEqual(value, low, f"{player['id']}.{field}")
                 self.assertLessEqual(value, high, f"{player['id']}.{field}")

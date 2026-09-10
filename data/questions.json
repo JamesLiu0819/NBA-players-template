@@ -383,16 +383,16 @@
       "field": "height_cm",
       "prompt": "身高(公分,不穿鞋量測)",
       "unit": "cm",
-      "min": 140,
-      "max": 230
+      "min": 165,
+      "max": 220
     },
     {
       "id": "body_weight",
       "field": "weight_kg",
       "prompt": "體重(公斤)",
       "unit": "kg",
-      "min": 40,
-      "max": 160
+      "min": 50,
+      "max": 120
     },
     {
       "id": "body_wingspan",
