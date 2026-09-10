@@ -377,8 +377,7 @@
     text-align: center;
   }
 
-  .axis-cell .value { font-size: 1.4rem; font-weight: 700; }
-  .axis-cell .value .letter { color: var(--accent); }
+  .axis-cell .value { font-size: 1.4rem; font-weight: 700; color: var(--accent); }
   .axis-cell .label { margin-top: 0.15rem; font-size: 0.68rem; color: var(--ink-soft); }
 
   .priority-row {
@@ -510,6 +509,40 @@
     color: var(--ink-soft);
     line-height: 1.6;
   }
+
+  .cta-card {
+    margin-top: 2.5rem;
+    border: 1px dashed var(--accent);
+    border-radius: var(--radius);
+    background: var(--accent-wash);
+    padding: 1.25rem 1.4rem;
+    text-align: center;
+  }
+
+  .cta-card h3 {
+    margin: 0 0 0.4rem;
+    font-size: 1.05rem;
+    font-weight: 800;
+  }
+
+  .cta-card p {
+    margin: 0 0 1rem;
+    font-size: 0.86rem;
+    color: var(--ink-soft);
+  }
+
+  button.secondary-cta {
+    background: transparent;
+    color: var(--accent-ink);
+    border: 1px solid var(--accent);
+    padding: 0.7rem 1.4rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  #stage2-block { display: none; }
 </style>
 </head>
 <body>
@@ -520,29 +553,29 @@
     <div class="eyebrow">Self-Scouting Report</div>
     <h1>幫自己寫一份球探報告</h1>
     <p>
-      37 題,每題選「哪句描述最像我」——這是行為錨定量表(BARS),問的是具體行為跟頻率,
-      不是憑感覺打分數。填完直接在這頁看到你的定位、優先該練的技能,還有跟你最像的
-      10 位現役球員。
+      先花幾分鐘填 22 題,每題選「哪句描述最像我」——這是行為錨定量表(BARS),問的是具體
+      行為跟頻率,不是憑感覺打分數。填完直接看到你的球風定位、跟你最像的球員模板。
+      想不想知道自己該優先練什麼,最後可以自己決定要不要繼續填。
     </p>
   </header>
 
-  <div class="ledger" id="ledger" style="display:none">
+  <div class="ledger" id="stage1-ledger" style="display:none">
     <div class="ledger-row">
       <span>作答進度</span>
-      <span class="count mono"><span id="progress-count">0</span> / <span id="progress-total">37</span></span>
+      <span class="count mono"><span id="stage1-progress-count">0</span> / <span id="stage1-progress-total">22</span></span>
     </div>
-    <div class="ledger-rule" id="ledger-rule"></div>
+    <div class="ledger-rule" id="stage1-ledger-rule"></div>
   </div>
 
   <div id="loading">載入題庫中…</div>
   <div id="load-error" style="display:none; color:var(--accent-ink)"></div>
 
-  <form id="survey-form" style="display:none">
+  <form id="stage1-form" style="display:none">
 
     <section class="block">
       <div class="section-head">
         <span class="section-tag">SECTION A</span>
-        <h2>四軸定位(16 題)</h2>
+        <h2>球風定位(16 題)</h2>
       </div>
       <div id="axis-questions"></div>
     </section>
@@ -550,50 +583,84 @@
     <section class="block">
       <div class="section-head">
         <span class="section-tag">SECTION B</span>
-        <h2>技能行為(15 題)</h2>
-      </div>
-      <div id="skill-questions"></div>
-    </section>
-
-    <section class="block">
-      <div class="section-head">
-        <span class="section-tag">SECTION C</span>
         <h2>身材數值(6 題)</h2>
       </div>
       <p class="section-note">直接填實際數字,不是量表。只有身高、臂展會實際用來比對球員,其餘先收集備用。</p>
       <div id="body-questions"></div>
     </section>
 
-    <section class="block">
-      <div class="section-head">
-        <span class="section-tag">SECTION D</span>
-        <h2>聯賽環境(暫定值)</h2>
-      </div>
-      <div class="env-note">
-        正式的環境倍率表還沒建立,需要領域專家填寫完整的 5 維 × 3 檔倍率表。下面三個選項是暫定值,
-        只用來測試「環境會不會影響訓練優先序」這個機制,不是精準數字。
-      </div>
-      <div class="preset-row" id="preset-row">
-        <button type="button" data-preset="collapsed_no_shooters">內縮防守 / 缺乏射手</button>
-        <button type="button" data-preset="tight_perimeter_opp_shooters">貼外線 / 對手有射手</button>
-        <button type="button" data-preset="zone_defense">區域防守為主</button>
-      </div>
-    </section>
-
     <div class="submit-block">
-      <button type="submit" class="primary" id="submit-btn" disabled>產生球探報告</button>
-      <span id="submit-hint">還差 <span id="remaining-count" class="mono">37</span> 題</span>
-      <span id="submit-error"></span>
+      <button type="submit" class="primary" id="stage1-submit-btn" disabled>查看我的球員模板</button>
+      <span id="stage1-submit-hint">還差 <span id="stage1-remaining-count" class="mono">22</span> 題</span>
+      <span id="stage1-submit-error"></span>
     </div>
 
   </form>
 
-  <div id="processing">
+  <div id="stage1-processing" style="display:none">
     <div class="eyebrow">整理報告中</div>
     <div class="scan-line"></div>
   </div>
 
-  <div id="report"></div>
+  <div id="template-report"></div>
+
+  <div class="cta-card" id="cta-card" style="display:none">
+    <h3>想知道自己該優先練什麼嗎？</h3>
+    <p>這需要再多填 15 題技能行為題,並且選擇你的聯賽防守環境——不想看訓練建議的話,到這裡就結束了。</p>
+    <button type="button" class="secondary-cta" id="cta-btn">分析我的訓練優先序</button>
+  </div>
+
+  <div id="stage2-block">
+    <div class="ledger" id="stage2-ledger">
+      <div class="ledger-row">
+        <span>作答進度</span>
+        <span class="count mono"><span id="stage2-progress-count">0</span> / <span id="stage2-progress-total">15</span></span>
+      </div>
+      <div class="ledger-rule" id="stage2-ledger-rule"></div>
+    </div>
+
+    <form id="stage2-form">
+
+      <section class="block">
+        <div class="section-head">
+          <span class="section-tag">SECTION C</span>
+          <h2>技能行為(15 題)</h2>
+        </div>
+        <div id="skill-questions"></div>
+      </section>
+
+      <section class="block">
+        <div class="section-head">
+          <span class="section-tag">SECTION D</span>
+          <h2>聯賽環境(暫定值)</h2>
+        </div>
+        <div class="env-note">
+          正式的環境倍率表還沒建立,需要領域專家填寫完整的 5 維 × 3 檔倍率表。下面三個選項是暫定值,
+          只用來測試「環境會不會影響訓練優先序」這個機制,不是精準數字。如果你沒在打正式比賽,
+          隨便選一個都可以——這一區本來就是給有固定聯賽環境的人用的。
+        </div>
+        <div class="preset-row" id="preset-row">
+          <button type="button" data-preset="collapsed_no_shooters">內縮防守 / 缺乏射手</button>
+          <button type="button" data-preset="tight_perimeter_opp_shooters">貼外線 / 對手有射手</button>
+          <button type="button" data-preset="zone_defense">區域防守為主</button>
+        </div>
+      </section>
+
+      <div class="submit-block">
+        <button type="submit" class="primary" id="stage2-submit-btn" disabled>產生訓練優先序</button>
+        <span id="stage2-submit-hint">還差 <span id="stage2-remaining-count" class="mono">15</span> 題</span>
+        <span id="stage2-submit-error"></span>
+      </div>
+
+    </form>
+
+    <div id="stage2-processing" style="display:none">
+      <div class="eyebrow">整理報告中</div>
+      <div class="scan-line"></div>
+    </div>
+  </div>
+
+  <div id="priority-report"></div>
 
   <footer class="disclosure">
     球員資料是手動估算的種子資料集,不是真實統計數據推導的結果;環境權重是暫定值;貼合度星級門檻也是暫定值。
@@ -638,9 +705,9 @@
   };
 
   const DEEP_TEMPLATE_META = {
-    skill_fit: { label: "技能最貼合", caption: "A/B/C 三軸(排除運動能力)跟你最接近的球員,純看打法風格。" },
+    skill_fit: { label: "技能最貼合", caption: "持球創造、空間位置、防守對位這幾項(不看運動能力)跟你最接近的球員,純看打法風格。" },
     body_fit: { label: "身體最貼合", caption: "身材數值(目前是身高、臂展)跟你最接近的球員。" },
-    ceiling: { label: "天花板方向", caption: "D 軸差距最大,但核心優勢可複製——一個實際上有機會往上衝的方向。" },
+    ceiling: { label: "天花板方向", caption: "運動能力層級差距最大,但核心優勢可複製——一個實際上有機會往上衝的方向。" },
   };
 
   const state = {
@@ -654,29 +721,51 @@
     selectedPreset: null,
   };
 
-  function totalRequired() {
-    return state.axisQuestions.length + state.skillQuestions.length + state.bodyQuestions.length;
+  // ---- stage 1 progress: 球風定位(16) + 身材數值(6) = 22 ----
+
+  function stage1Total() {
+    return state.axisQuestions.length + state.bodyQuestions.length;
   }
 
-  function answeredCount() {
-    const barsIds = [...state.axisQuestions, ...state.skillQuestions].map((q) => q.id);
-    const barsDone = barsIds.filter((id) => state.answers[id] !== undefined).length;
+  function stage1Answered() {
+    const axisDone = state.axisQuestions.filter((q) => state.answers[q.id] !== undefined).length;
     const bodyDone = state.bodyQuestions.filter((q) => state.bodyAnswers[q.id] !== undefined).length;
-    return barsDone + bodyDone;
+    return axisDone + bodyDone;
   }
 
-  function updateProgress() {
-    const total = totalRequired();
-    const done = answeredCount();
-    document.getElementById("progress-count").textContent = done;
-    document.getElementById("progress-total").textContent = total;
-    document.getElementById("ledger-rule").style.setProperty("--progress", `${(done / total) * 100}%`);
-    document.getElementById("remaining-count").textContent = total - done;
-    document.getElementById("submit-btn").disabled = done < total;
-    document.getElementById("submit-hint").style.display = done < total ? "" : "none";
+  function updateStage1Progress() {
+    const total = stage1Total();
+    const done = stage1Answered();
+    document.getElementById("stage1-progress-count").textContent = done;
+    document.getElementById("stage1-progress-total").textContent = total;
+    document.getElementById("stage1-ledger-rule").style.setProperty("--progress", `${(done / total) * 100}%`);
+    document.getElementById("stage1-remaining-count").textContent = total - done;
+    document.getElementById("stage1-submit-btn").disabled = done < total;
+    document.getElementById("stage1-submit-hint").style.display = done < total ? "" : "none";
   }
 
-  function renderQuestionCard(q) {
+  // ---- stage 2 progress: 技能行為(15) only -- 聯賽環境用預設值,不列入計數 ----
+
+  function stage2Total() {
+    return state.skillQuestions.length;
+  }
+
+  function stage2Answered() {
+    return state.skillQuestions.filter((q) => state.answers[q.id] !== undefined).length;
+  }
+
+  function updateStage2Progress() {
+    const total = stage2Total();
+    const done = stage2Answered();
+    document.getElementById("stage2-progress-count").textContent = done;
+    document.getElementById("stage2-progress-total").textContent = total;
+    document.getElementById("stage2-ledger-rule").style.setProperty("--progress", `${(done / total) * 100}%`);
+    document.getElementById("stage2-remaining-count").textContent = total - done;
+    document.getElementById("stage2-submit-btn").disabled = done < total;
+    document.getElementById("stage2-submit-hint").style.display = done < total ? "" : "none";
+  }
+
+  function renderQuestionCard(q, onAnswer) {
     const div = document.createElement("div");
     div.className = "field-note";
     const p = document.createElement("p");
@@ -694,7 +783,7 @@
       input.required = true;
       input.addEventListener("change", () => {
         state.answers[q.id] = score;
-        updateProgress();
+        onAnswer();
       });
       const num = document.createElement("span");
       num.className = "score-num";
@@ -714,10 +803,10 @@
       const group = document.createElement("div");
       group.className = "axis-group";
       const h3 = document.createElement("h3");
-      h3.textContent = `${axis} · ${AXIS_LABELS[axis]}`;
+      h3.textContent = AXIS_LABELS[axis];
       group.appendChild(h3);
       for (const q of state.axisQuestions.filter((q) => q.axis === axis)) {
-        group.appendChild(renderQuestionCard(q));
+        group.appendChild(renderQuestionCard(q, updateStage1Progress));
       }
       container.appendChild(group);
     }
@@ -732,7 +821,7 @@
       const h3 = document.createElement("h3");
       h3.textContent = skillById[q.skill_id] ? skillById[q.skill_id].name_zh : q.skill_id;
       group.appendChild(h3);
-      group.appendChild(renderQuestionCard(q));
+      group.appendChild(renderQuestionCard(q, updateStage2Progress));
       container.appendChild(group);
     }
   }
@@ -759,7 +848,7 @@
         } else {
           delete state.bodyAnswers[q.id];
         }
-        updateProgress();
+        updateStage1Progress();
       });
       const unit = document.createElement("span");
       unit.className = "unit";
@@ -777,11 +866,17 @@
     });
   }
 
-  function buildPayload() {
+  function buildTemplatePayload() {
+    return {
+      axis_answers: state.axisQuestions.map((q) => ({ question_id: q.id, score: state.answers[q.id] })),
+      body_answers: state.bodyQuestions.map((q) => ({ question_id: q.id, value: state.bodyAnswers[q.id] })),
+    };
+  }
+
+  function buildPriorityPayload() {
     return {
       axis_answers: state.axisQuestions.map((q) => ({ question_id: q.id, score: state.answers[q.id] })),
       skill_answers: state.skillQuestions.map((q) => ({ question_id: q.id, score: state.answers[q.id] })),
-      body_answers: state.bodyQuestions.map((q) => ({ question_id: q.id, value: state.bodyAnswers[q.id] })),
       env: state.env,
     };
   }
@@ -807,7 +902,7 @@
       </div>
       <div class="traits">${m.notable_traits.map((t) => `<span class="trait">${t}</span>`).join("")}</div>
       <div class="callout">
-        <span class="axis-tag">${m.dominant_diff_axis} 軸(${AXIS_LABELS[m.dominant_diff_axis]})差距最大</span>
+        <span class="axis-tag">${AXIS_LABELS[m.dominant_diff_axis]}差距最大</span>
         <span class="growth"> → 最值得學：${m.growth_recommendation}</span>
       </div>`;
   }
@@ -831,13 +926,13 @@
       </div>`;
   }
 
-  function renderReport(data) {
-    const el = document.getElementById("report");
+  function renderTemplateReport(data) {
+    const el = document.getElementById("template-report");
 
     const axisStrip = ["A", "B", "C", "D"].map(
       (axis) => `
         <div class="axis-cell">
-          <div class="value mono"><span class="letter">${axis}</span> ${data.coordinates[axis].toFixed(1)}</div>
+          <div class="value mono">${data.coordinates[axis].toFixed(1)}</div>
           <div class="label">${AXIS_LABELS[axis]}</div>
         </div>`
     ).join("");
@@ -862,71 +957,117 @@
       ? `
         <div class="anti-template-box">
           <div class="who">${data.anti_template.name} (${data.anti_template.team})</div>
-          <p>你的 A/B/C 軸都跟他很接近,但 D 軸(運動能力層級)差距最大,而且他賴以成功的核心特質不可複製。</p>
+          <p>你在持球創造、空間位置、防守對位這幾項都跟他很接近,但運動能力層級差距最大,而且他賴以成功的核心特質不可複製。</p>
           <p>不該把他當模板——那個方向會誘導你去追求很難獲得的身體天賦,而不是可以練出來的技術。</p>
         </div>`
       : `<div class="anti-template-box"><p>目前沒有符合條件的反面對照球員。</p></div>`;
 
     el.innerHTML = `
       <section class="block report-fade">
-        <div class="section-head"><span class="section-tag">你的定位</span><h2>四軸座標</h2></div>
+        <div class="section-head"><span class="section-tag">你的定位</span><h2>球風座標</h2></div>
         <div class="axis-strip">${axisStrip}</div>
       </section>
 
       <section class="block report-fade" style="animation-delay:.05s">
-        <div class="section-head"><span class="section-tag">SECTION 1</span><h2>優先訓練順序</h2></div>
-        ${data.priorities.map((item, i) => renderPriorityRow(item, i)).join("")}
-        ${data.dominant_factor_sentence ? `<p class="dominant-sentence">${data.dominant_factor_sentence}</p>` : ""}
-      </section>
-
-      <section class="block report-fade" style="animation-delay:.1s">
-        <div class="section-head"><span class="section-tag">SECTION 2</span><h2>3 位深度模板</h2></div>
+        <div class="section-head"><span class="section-tag">SECTION 1</span><h2>3 位深度模板</h2></div>
         <div class="template-grid">${templateCards}</div>
       </section>
 
-      <section class="block report-fade" style="animation-delay:.15s">
-        <div class="section-head"><span class="section-tag">SECTION 3</span><h2>10 人對照表</h2></div>
+      <section class="block report-fade" style="animation-delay:.1s">
+        <div class="section-head"><span class="section-tag">SECTION 2</span><h2>10 人對照表</h2></div>
         ${topMatchHtml}
         <div class="match-grid">${restHtml}</div>
       </section>
 
-      <section class="block report-fade" style="animation-delay:.2s">
-        <div class="section-head"><span class="section-tag">SECTION 4</span><h2>反面對照</h2></div>
+      <section class="block report-fade" style="animation-delay:.15s">
+        <div class="section-head"><span class="section-tag">SECTION 3</span><h2>反面對照</h2></div>
         ${antiHtml}
       </section>
     `;
   }
 
-  async function handleSubmit(e) {
+  function renderPriorityReport(data) {
+    const el = document.getElementById("priority-report");
+    el.innerHTML = `
+      <section class="block report-fade">
+        <div class="section-head"><span class="section-tag">SECTION 4</span><h2>優先訓練順序</h2></div>
+        ${data.priorities.map((item, i) => renderPriorityRow(item, i)).join("")}
+        ${data.dominant_factor_sentence ? `<p class="dominant-sentence">${data.dominant_factor_sentence}</p>` : ""}
+      </section>
+    `;
+  }
+
+  async function handleStage1Submit(e) {
     e.preventDefault();
-    const errorEl = document.getElementById("submit-error");
+    const errorEl = document.getElementById("stage1-submit-error");
     errorEl.style.display = "none";
 
-    document.getElementById("survey-form").style.display = "none";
-    document.getElementById("ledger").style.display = "none";
-    document.getElementById("processing").style.display = "block";
+    document.getElementById("stage1-form").style.display = "none";
+    document.getElementById("stage1-ledger").style.display = "none";
+    document.getElementById("stage1-processing").style.display = "block";
 
     try {
-      const res = await fetch("/api/results", {
+      const res = await fetch("/api/template-results", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(buildPayload()),
+        body: JSON.stringify(buildTemplatePayload()),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
 
-      document.getElementById("processing").style.display = "none";
-      renderReport(data);
-      document.getElementById("report").style.display = "block";
+      document.getElementById("stage1-processing").style.display = "none";
+      renderTemplateReport(data);
+      document.getElementById("template-report").style.display = "block";
+      document.getElementById("cta-card").style.display = "block";
       document.getElementById("restart-link").style.display = "inline";
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
-      document.getElementById("processing").style.display = "none";
-      document.getElementById("survey-form").style.display = "block";
-      document.getElementById("ledger").style.display = "block";
+      document.getElementById("stage1-processing").style.display = "none";
+      document.getElementById("stage1-form").style.display = "block";
+      document.getElementById("stage1-ledger").style.display = "block";
       errorEl.textContent = `送出失敗：${err.message}`;
       errorEl.style.display = "block";
     }
+  }
+
+  async function handleStage2Submit(e) {
+    e.preventDefault();
+    const errorEl = document.getElementById("stage2-submit-error");
+    errorEl.style.display = "none";
+
+    document.getElementById("stage2-form").style.display = "none";
+    document.getElementById("stage2-ledger").style.display = "none";
+    document.getElementById("stage2-processing").style.display = "block";
+
+    try {
+      const res = await fetch("/api/priority-results", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(buildPriorityPayload()),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+
+      document.getElementById("stage2-processing").style.display = "none";
+      document.getElementById("stage2-block").style.display = "none";
+      renderPriorityReport(data);
+      document.getElementById("priority-report").style.display = "block";
+      document.getElementById("priority-report").scrollIntoView({ behavior: "smooth", block: "start" });
+    } catch (err) {
+      document.getElementById("stage2-processing").style.display = "none";
+      document.getElementById("stage2-form").style.display = "block";
+      document.getElementById("stage2-ledger").style.display = "block";
+      errorEl.textContent = `送出失敗：${err.message}`;
+      errorEl.style.display = "block";
+    }
+  }
+
+  function revealStage2() {
+    document.getElementById("cta-card").style.display = "none";
+    document.getElementById("stage2-block").style.display = "block";
+    renderSkillQuestions();
+    updateStage2Progress();
+    document.getElementById("stage2-block").scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   async function main() {
@@ -950,18 +1091,19 @@
     applyPreset("collapsed_no_shooters");
 
     document.getElementById("loading").style.display = "none";
-    document.getElementById("ledger").style.display = "block";
-    document.getElementById("survey-form").style.display = "block";
+    document.getElementById("stage1-ledger").style.display = "block";
+    document.getElementById("stage1-form").style.display = "block";
 
     renderAxisQuestions();
-    renderSkillQuestions();
     renderBodyQuestions();
-    updateProgress();
+    updateStage1Progress();
 
     document.querySelectorAll("#preset-row button").forEach((btn) => {
       btn.addEventListener("click", () => applyPreset(btn.dataset.preset));
     });
-    document.getElementById("survey-form").addEventListener("submit", handleSubmit);
+    document.getElementById("stage1-form").addEventListener("submit", handleStage1Submit);
+    document.getElementById("stage2-form").addEventListener("submit", handleStage2Submit);
+    document.getElementById("cta-btn").addEventListener("click", revealStage2);
     document.getElementById("restart-link").addEventListener("click", (e) => {
       e.preventDefault();
       window.location.reload();

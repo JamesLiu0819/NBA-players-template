@@ -1,14 +1,21 @@
-# 用途：Flask 後端,兩支 API：GET /api/form-data(給前端渲染問卷用的題庫跟技能
-# 名稱,只回傳必要欄位,不外洩 axis_relevance/cost_C 等內部校準數字)、
-# POST /api/results(把作答轉成完整結果 JSON：四軸座標、優先序、3 位深度模板、
-# 10 人對照表、反面對照)。同時把 /src/ui 的靜態前端檔案服務出去。**刻意不**
-# 把 data/ 整個目錄當靜態檔案服務——data/answers/ 裡面是真實使用者的個人作答
-# 資料,不能公開存取。計算邏輯全部重用 src/engine 跟 scripts/run_priority.py、
+# 用途：Flask 後端,三支 API：
+#   GET  /api/form-data       給前端渲染問卷用的題庫跟技能名稱,只回傳必要欄位,
+#                             不外洩 axis_relevance/cost_C 等內部校準數字。
+#   POST /api/template-results  只吃球風定位(16題)+ 身材數值(6題,可省略),
+#                             回傳定位座標、3 位深度模板、10 人對照表、反面
+#                             對照——刻意不需要技能行為跟環境權重,因為很多
+#                             使用者沒在打正式比賽,只想知道自己的球員模板。
+#   POST /api/priority-results  才吃技能行為(15題)+ 環境權重,回傳優先訓練
+#                             順序,是使用者自己選擇要不要看的「進階」分析。
+# 同時把 /src/ui 的靜態前端檔案服務出去。**刻意不**把 data/ 整個目錄當靜態
+# 檔案服務——data/answers/ 裡面是真實使用者的個人作答資料,不能公開存取。
+# 計算邏輯全部重用 src/engine 跟 scripts/run_priority.py、
 # scripts/run_player_match.py 已經拆出來的函數,這支檔案只做請求解析、資料載入、
 # 呼叫、組裝回應,不重寫任何計算規則。
 # 可手動調整的變數：無——欄位驗證規則來自 src/engine 各函數本來就有的
 # ValueError,不在這裡另外定義一套。
-"""Flask app: GET /api/form-data, POST /api/results, static file serving for /src/ui.
+"""Flask app: GET /api/form-data, POST /api/template-results,
+POST /api/priority-results, static file serving for /src/ui.
 
 Local dev:
     source .venv/bin/activate
@@ -31,6 +38,7 @@ sys.path.insert(0, str(ROOT))
 
 from flask import Flask, jsonify, request, send_from_directory  # noqa: E402
 
+from engine.axis_position import score_axis_coordinates  # noqa: E402
 from engine.body_fit import collect_body_measurements  # noqa: E402
 from engine.player_matching import (  # noqa: E402
     find_anti_template,
@@ -44,7 +52,8 @@ from scripts.run_player_match import describe_growth_recommendation  # noqa: E40
 from scripts.run_priority import build_priority_items, format_dominant_factor_sentence  # noqa: E402
 
 UI_DIR = ROOT / "src" / "ui"
-REQUIRED_FIELDS = ("axis_answers", "skill_answers", "env")
+TEMPLATE_REQUIRED_FIELDS = ("axis_answers",)
+PRIORITY_REQUIRED_FIELDS = ("axis_answers", "skill_answers", "env")
 
 app = Flask(__name__, static_folder=None)
 
@@ -67,13 +76,12 @@ def player_brief(player):
     return {"name": player["name"], "team": player["team"]}
 
 
-def compute_results(payload, questions, skills, players):
-    coordinates, items = build_priority_items(
-        questions, skills, payload["axis_answers"], payload["skill_answers"], payload["env"]
-    )
-    ranked_priorities = rank_priorities(items)
+def missing_fields(payload, required):
+    return [field for field in required if field not in payload]
 
-    skills_by_id = {s["id"]: s for s in skills}
+
+def compute_template_results(payload, questions, players, skills_by_id):
+    coordinates = score_axis_coordinates(questions["axis_positioning"], payload["axis_answers"])
 
     body_answers = payload.get("body_answers") or []
     user_body = (
@@ -96,6 +104,24 @@ def compute_results(payload, questions, skills, players):
 
     return {
         "coordinates": coordinates,
+        "deep_templates": {
+            "skill_fit": player_brief(find_skill_fit_template(coordinates, players)),
+            "body_fit": player_brief(find_body_fit_template(user_body, players)) if user_body else None,
+            "ceiling": player_brief(find_ceiling_template(coordinates, players)),
+        },
+        "top_10": top_10,
+        "anti_template": player_brief(find_anti_template(coordinates, players)),
+    }
+
+
+def compute_priority_results(payload, questions, skills):
+    coordinates, items = build_priority_items(
+        questions, skills, payload["axis_answers"], payload["skill_answers"], payload["env"]
+    )
+    ranked_priorities = rank_priorities(items)
+
+    return {
+        "coordinates": coordinates,
         "priorities": [
             {
                 "skill_id": item["skill_id"], "name_zh": item["name_zh"], "P": item["P"],
@@ -104,13 +130,6 @@ def compute_results(payload, questions, skills, players):
             for item in ranked_priorities
         ],
         "dominant_factor_sentence": format_dominant_factor_sentence(ranked_priorities),
-        "deep_templates": {
-            "skill_fit": player_brief(find_skill_fit_template(coordinates, players)),
-            "body_fit": player_brief(find_body_fit_template(user_body, players)) if user_body else None,
-            "ceiling": player_brief(find_ceiling_template(coordinates, players)),
-        },
-        "top_10": top_10,
-        "anti_template": player_brief(find_anti_template(coordinates, players)),
     }
 
 
@@ -127,19 +146,39 @@ def api_form_data():
     })
 
 
-@app.route("/api/results", methods=["POST"])
-def api_results():
+@app.route("/api/template-results", methods=["POST"])
+def api_template_results():
     payload = request.get_json(silent=True)
     if payload is None:
         return jsonify({"error": "request body must be JSON"}), 400
 
-    missing = [field for field in REQUIRED_FIELDS if field not in payload]
+    missing = missing_fields(payload, TEMPLATE_REQUIRED_FIELDS)
     if missing:
         return jsonify({"error": f"missing required field(s): {', '.join(missing)}"}), 400
 
     questions, skills, players = load_data()
+    skills_by_id = {s["id"]: s for s in skills}
     try:
-        results = compute_results(payload, questions, skills, players)
+        results = compute_template_results(payload, questions, players, skills_by_id)
+    except (ValueError, KeyError) as e:
+        return jsonify({"error": str(e)}), 400
+
+    return jsonify(results)
+
+
+@app.route("/api/priority-results", methods=["POST"])
+def api_priority_results():
+    payload = request.get_json(silent=True)
+    if payload is None:
+        return jsonify({"error": "request body must be JSON"}), 400
+
+    missing = missing_fields(payload, PRIORITY_REQUIRED_FIELDS)
+    if missing:
+        return jsonify({"error": f"missing required field(s): {', '.join(missing)}"}), 400
+
+    questions, skills, _players = load_data()
+    try:
+        results = compute_priority_results(payload, questions, skills)
     except (ValueError, KeyError) as e:
         return jsonify({"error": str(e)}), 400
 
