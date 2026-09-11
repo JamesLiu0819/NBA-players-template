@@ -145,6 +145,93 @@
     margin-bottom: 0;
   }
 
+  .mode-select {
+    display: flex;
+    gap: 0.9rem;
+    margin-top: 1.75rem;
+    flex-wrap: wrap;
+  }
+
+  .mode-btn {
+    flex: 1 1 200px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--paper-raised);
+    color: var(--ink);
+    padding: 1.1rem 1.2rem;
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    font-family: inherit;
+  }
+
+  .mode-btn:hover:not(:disabled) {
+    border-color: var(--accent);
+  }
+
+  .mode-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .mode-btn .mode-title {
+    font-weight: 800;
+    font-size: 1.05rem;
+  }
+
+  .mode-btn .mode-sub {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .mode-note {
+    margin-top: 0.8rem;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+  }
+
+  .numeric-stepper {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .numeric-stepper .step-btn {
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    flex: none;
+    font-family: inherit;
+  }
+
+  .numeric-stepper .step-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .numeric-stepper input[type=number]::-webkit-outer-spin-button,
+  .numeric-stepper input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .numeric-stepper input[type=number] {
+    appearance: textfield;
+    -moz-appearance: textfield;
+  }
+
   .ledger {
     position: sticky;
     top: 0;
@@ -280,7 +367,8 @@
   .body-question .prompt { font-weight: 600; flex: 1 1 auto; min-width: 14em; font-size: 0.92rem; }
 
   .body-question input[type=number] {
-    width: 6.5em;
+    width: 5em;
+    text-align: center;
     padding: 0.4rem 0.5rem;
     font-size: 1rem;
     font-family: var(--mono);
@@ -611,7 +699,7 @@
   <div class="rules-box">
     <h2>📋 作答說明</h2>
     <p>每一題都是 5 句具體的行為描述，不是自評強弱——請選出最符合你平常實際表現的那一句。</p>
-    <p>身材數值裡，身高、體重為必填；臂展、立定摸高、助跑摸高、衝刺速度為選填，但填寫越完整，身材模板與運動能力的比對就越準確。</p>
+    <p>身材數值皆為選填，但填寫越完整，身材模板與運動能力的比對就越準確；完全不填也可以送出。</p>
     <p class="rules-notes-label">注意事項：</p>
     <ol class="rules-notes">
       <li>請誠實作答——選你「實際上會怎麼做」，不是「希望自己能做到」的程度。</li>
@@ -620,16 +708,28 @@
     </ol>
   </div>
 
-  <div class="ledger" id="stage1-ledger" style="display:none">
-    <div class="ledger-row">
-      <span>作答進度</span>
-      <span class="count mono"><span id="stage1-progress-count">0</span> / <span id="stage1-progress-total">22</span></span>
-    </div>
-    <div class="ledger-rule" id="stage1-ledger-rule"></div>
+  <div class="mode-select" id="mode-select">
+    <button type="button" class="mode-btn" id="mode-current-btn" disabled>
+      <span class="mode-title">現役球員模板</span>
+      <span class="mode-sub">Current</span>
+    </button>
+    <button type="button" class="mode-btn" id="mode-alltime-btn">
+      <span class="mode-title">歷史球員模板</span>
+      <span class="mode-sub">All-time</span>
+    </button>
   </div>
+  <p class="mode-note" id="mode-alltime-note" style="display:none">歷史球員模板尚未開放，敬請期待。</p>
 
   <div id="loading">載入題庫中…</div>
   <div id="load-error" style="display:none; color:var(--accent-ink)"></div>
+
+  <div class="ledger" id="stage1-ledger" style="display:none">
+    <div class="ledger-row">
+      <span>作答進度</span>
+      <span class="count mono"><span id="stage1-progress-count">0</span> / <span id="stage1-progress-total">16</span></span>
+    </div>
+    <div class="ledger-rule" id="stage1-ledger-rule"></div>
+  </div>
 
   <form id="stage1-form" style="display:none">
 
@@ -638,7 +738,7 @@
         <span class="section-tag">SECTION A</span>
         <h2>身材數值</h2>
       </div>
-      <p class="section-note">身高、體重為必填，其餘選填(可讓運動能力比對更準確)。</p>
+      <p class="section-note">身材數值皆為選填，填寫越完整，身材模板與運動能力比對會越準確。</p>
       <div id="body-questions"></div>
     </section>
 
@@ -653,7 +753,7 @@
 
     <div class="submit-block">
       <button type="submit" class="primary" id="stage1-submit-btn" disabled>查看我的球員模板</button>
-      <span id="stage1-submit-hint">還差 <span id="stage1-remaining-count" class="mono">22</span> 題</span>
+      <span id="stage1-submit-hint">還差 <span id="stage1-remaining-count" class="mono">16</span> 題</span>
       <span id="stage1-submit-error"></span>
     </div>
 
@@ -783,24 +883,15 @@
     selectedPreset: null,
   };
 
-  // ---- stage 1 progress: 球風定位(16) + 身材數值必填(身高/體重) = 18 ----
-  // 其餘 4 題身材數值(臂展/立定摸高/助跑摸高/衝刺)是選填,不列入必填進度,
-  // 但填了可以讓身材模板/運動能力比對更準確(2026-09-11 討論)。
-
-  const REQUIRED_BODY_FIELDS = ["height_cm", "weight_kg"];
-
-  function requiredBodyQuestions() {
-    return state.bodyQuestions.filter((q) => REQUIRED_BODY_FIELDS.includes(q.field));
-  }
+  // ---- stage 1 progress: 只算球風定位(16 題)——身材數值全部選填,不是
+  // BARS 問題,完全不列入作答進度/送出門檻(2026-09-11 討論)。
 
   function stage1Total() {
-    return state.axisQuestions.length + requiredBodyQuestions().length;
+    return state.axisQuestions.length;
   }
 
   function stage1Answered() {
-    const axisDone = state.axisQuestions.filter((q) => state.answers[q.id] !== undefined).length;
-    const bodyDone = requiredBodyQuestions().filter((q) => state.bodyAnswers[q.id] !== undefined).length;
-    return axisDone + bodyDone;
+    return state.axisQuestions.filter((q) => state.answers[q.id] !== undefined).length;
   }
 
   function updateStage1Progress() {
@@ -899,28 +990,27 @@
   function renderBodyQuestions() {
     const container = document.getElementById("body-questions");
     for (const q of state.bodyQuestions) {
-      const isRequired = REQUIRED_BODY_FIELDS.includes(q.field);
-      const isDecimal = q.field === "sprint_100m_seconds";
       const div = document.createElement("div");
       div.className = "body-question";
       const label = document.createElement("label");
       label.className = "prompt";
-      label.textContent = isRequired ? q.prompt : `${q.prompt}(選填)`;
+      label.textContent = q.prompt;
       label.htmlFor = q.id;
+
       const input = document.createElement("input");
       input.type = "number";
       input.id = q.id;
-      // 從範圍中間值起跳,+/-1(衝刺是秒數,維持 0.1 步進更合理)——不用從空白
-      // 或 0 開始按加減鍵(2026-09-11 討論)。
-      input.step = isDecimal ? "0.1" : "1";
+      // 欄位本身允許任意小數(step="any",不會被瀏覽器 snap 成整數)；+/- 按鈕
+      // 每次固定調整 1,不管欄位本身是不是整數單位(2026-09-11 討論)。
+      input.step = "any";
       input.min = String(q.min);
       input.max = String(q.max);
-      const midpoint = isDecimal
-        ? Math.round(((q.min + q.max) / 2) * 10) / 10
-        : Math.round((q.min + q.max) / 2);
+
+      const midpoint = Math.round(((q.min + q.max) / 2) * 10) / 10;
       input.value = String(midpoint);
       state.bodyAnswers[q.id] = midpoint;
-      input.addEventListener("input", () => {
+
+      const commit = () => {
         const value = Number(input.value);
         if (input.value !== "" && Number.isFinite(value) && value >= q.min && value <= q.max) {
           state.bodyAnswers[q.id] = value;
@@ -928,11 +1018,37 @@
           delete state.bodyAnswers[q.id];
         }
         updateStage1Progress();
-      });
+      };
+      input.addEventListener("input", commit);
+
+      const step = (delta) => {
+        const current = Number.isFinite(Number(input.value)) && input.value !== "" ? Number(input.value) : midpoint;
+        const next = Math.min(q.max, Math.max(q.min, current + delta));
+        input.value = String(Math.round(next * 10) / 10);
+        commit();
+      };
+      const minusBtn = document.createElement("button");
+      minusBtn.type = "button";
+      minusBtn.className = "step-btn";
+      minusBtn.textContent = "−";
+      minusBtn.setAttribute("aria-label", `${q.prompt}減 1`);
+      minusBtn.addEventListener("click", () => step(-1));
+
+      const plusBtn = document.createElement("button");
+      plusBtn.type = "button";
+      plusBtn.className = "step-btn";
+      plusBtn.textContent = "+";
+      plusBtn.setAttribute("aria-label", `${q.prompt}加 1`);
+      plusBtn.addEventListener("click", () => step(1));
+
+      const stepper = document.createElement("div");
+      stepper.className = "numeric-stepper";
+      stepper.append(minusBtn, input, plusBtn);
+
       const unit = document.createElement("span");
       unit.className = "unit";
       unit.textContent = q.unit;
-      div.append(label, input, unit);
+      div.append(label, stepper, unit);
       container.appendChild(div);
     }
   }
@@ -1223,6 +1339,20 @@
     document.getElementById("stage2-block").scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
+  function revealCurrentQuiz() {
+    document.getElementById("mode-select").style.display = "none";
+    document.getElementById("mode-alltime-note").style.display = "none";
+    document.getElementById("stage1-ledger").style.display = "block";
+    document.getElementById("stage1-form").style.display = "block";
+    document.getElementById("random-fill-btn").style.display = "block";
+
+    renderAxisQuestions();
+    renderBodyQuestions();
+    updateStage1Progress();
+
+    document.getElementById("stage1-form").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   async function main() {
     let payload;
     try {
@@ -1244,13 +1374,7 @@
     applyPreset("collapsed_no_shooters");
 
     document.getElementById("loading").style.display = "none";
-    document.getElementById("stage1-ledger").style.display = "block";
-    document.getElementById("stage1-form").style.display = "block";
-    document.getElementById("random-fill-btn").style.display = "block";
-
-    renderAxisQuestions();
-    renderBodyQuestions();
-    updateStage1Progress();
+    document.getElementById("mode-current-btn").disabled = false;
 
     document.querySelectorAll("#preset-row button").forEach((btn) => {
       btn.addEventListener("click", () => applyPreset(btn.dataset.preset));
@@ -1262,6 +1386,10 @@
     document.getElementById("restart-link").addEventListener("click", (e) => {
       e.preventDefault();
       window.location.reload();
+    });
+    document.getElementById("mode-current-btn").addEventListener("click", revealCurrentQuiz);
+    document.getElementById("mode-alltime-btn").addEventListener("click", () => {
+      document.getElementById("mode-alltime-note").style.display = "block";
     });
   }
 
