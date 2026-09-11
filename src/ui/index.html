@@ -32,6 +32,119 @@
 
   html { scrollbar-gutter: stable; }
 
+  /* ---------- top nav bar ---------- */
+  /* 樣式先做好,內容之後再擴充——目前 首頁/我的模板/訓練計劃 三個分頁都是
+     佔位連結,登入/選單按鈕也還沒接功能。之後的登入記錄/分享模板/計分等
+     功能規劃好了再回來把這裡接上真正的邏輯(2026-09-11 討論)。 */
+
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: var(--paper-sunken);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .topnav-inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .topnav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 0.95rem;
+    flex: none;
+  }
+
+  .topnav-logo {
+    font-size: 1.2rem;
+    line-height: 1;
+  }
+
+  .topnav-tabs {
+    display: flex;
+    gap: 1.2rem;
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-x: auto;
+  }
+
+  .topnav-tab {
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    padding: 0.3rem 0;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+  }
+
+  .topnav-tab:hover {
+    color: var(--ink);
+  }
+
+  .topnav-tab.active {
+    color: var(--accent-ink);
+    border-bottom-color: var(--accent);
+  }
+
+  .topnav-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex: none;
+  }
+
+  .topnav-login {
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--accent-ink);
+    padding: 0.4rem 0.9rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .topnav-login:hover {
+    background: var(--accent-wash);
+  }
+
+  .topnav-menu {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper-raised);
+    color: var(--ink);
+    width: 2.2rem;
+    height: 2.2rem;
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1rem;
+    font-family: inherit;
+  }
+
+  @media (max-width: 560px) {
+    .topnav-inner { gap: 0.75rem; }
+    .topnav-name { display: none; }
+    .topnav-tabs { gap: 0.7rem; }
+    .topnav-tab { font-size: 0.78rem; }
+  }
+
   body {
     margin: 0;
     background: var(--paper);
@@ -239,7 +352,7 @@
 
   .ledger {
     position: sticky;
-    top: 0;
+    top: 56px;
     z-index: 20;
     background: var(--paper);
     padding: 0.75rem 0 0.6rem;
@@ -250,7 +363,7 @@
      .ledger 一樣高的空間,不然 SECTION A 標題會被浮動的作答進度條蓋住
      (2026-09-11 討論)。 */
   #stage1-form {
-    scroll-margin-top: 64px;
+    scroll-margin-top: 120px;
   }
 
   .ledger-row {
@@ -681,7 +794,7 @@
 
   .random-fill-btn {
     position: fixed;
-    top: 1rem;
+    top: 68px;
     right: 1rem;
     z-index: 40;
     padding: 0.5rem 0.9rem;
@@ -699,6 +812,24 @@
 </head>
 <body>
 
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a class="topnav-brand" href="#">
+      <span class="topnav-logo">🏀</span>
+      <span class="topnav-name">球探報告</span>
+    </a>
+    <div class="topnav-tabs">
+      <a href="#" class="topnav-tab active">首頁</a>
+      <a href="#" class="topnav-tab">我的模板</a>
+      <a href="#" class="topnav-tab">訓練計劃</a>
+    </div>
+    <div class="topnav-actions">
+      <button type="button" class="topnav-login">登入</button>
+      <button type="button" class="topnav-menu" aria-label="選單">☰</button>
+    </div>
+  </div>
+</nav>
+
 <button type="button" id="random-fill-btn" class="random-fill-btn" title="隨機填答,測試用" style="display:none">🎲 隨機填答(測試用)</button>
 
 <div class="page">
@@ -715,12 +846,10 @@
     <h2>📋 作答說明</h2>
     <p>每一題都是 5 句具體的行為描述，請選出最符合你實際表現的那一句</p>
     <p>身材數值皆為選填，但填寫越完整，身材模板與運動能力的比對就越準確</p>
-    <p class="rules-notes-label">⚠️ 注意事項：</p>
-    <ol class="rules-notes">
-      <li>請誠實作答 - 選擇「實際上會怎麼做」，而不是「希望自己能做到的」。</li>
-      <li>沒填的身材數值不會納入比對，身材模板可能因此比較不準。</li>
-      <li>所有配對結果都是座標距離的最近鄰計算，不是真人球探評測，僅供參考。</li>
-    </ol>
+    <h2>⚠️ 注意事項<h2>
+    <p>選擇「實際上會怎麼做」，而不是「希望自己能做到的」。</p>
+    <p>沒填的身材數值不會納入比對，身材模板可能因此比較不準。</p>
+    <p>所有配對結果都是座標距離的最近鄰計算，不是真人球探評測，僅供參考。</p>
   </div>
 
   <div class="mode-select" id="mode-select">
@@ -1415,6 +1544,12 @@
       document.getElementById("mode-alltime-note").style.display = "block";
     });
   }
+
+  // 上方導覽列目前只有樣式,分頁/登入/選單都還沒接功能——擋掉 <a href="#">
+  // 的預設跳轉行為,避免點了頁面跳來跳去卻什麼都沒發生(2026-09-11 討論)。
+  document.querySelectorAll(".topnav-tab").forEach((tab) => {
+    tab.addEventListener("click", (e) => e.preventDefault());
+  });
 
   main();
 })();
