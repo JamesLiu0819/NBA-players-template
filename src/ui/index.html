@@ -235,6 +235,13 @@
     border-bottom: 1px solid var(--line);
   }
 
+  /* 點「現役球員模板」後 scrollIntoView 的捲動目標——留出跟 sticky
+     .ledger 一樣高的空間,不然 SECTION A 標題會被浮動的作答進度條蓋住
+     (2026-09-11 討論)。 */
+  #stage1-form {
+    scroll-margin-top: 64px;
+  }
+
   .ledger-row {
     display: flex;
     align-items: baseline;
