@@ -195,19 +195,30 @@
     gap: 0.35rem;
   }
 
+  /* 加減按鈕都疊在輸入格右側(模仿原生 number input 上下箭頭的位置),
+     不是分在輸入格兩側(2026-09-11 討論)。 */
+  .numeric-stepper .step-btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
   .numeric-stepper .step-btn {
-    width: 2rem;
-    height: 2rem;
+    width: 1.5rem;
+    height: 1.05rem;
+    padding: 0;
     border: 1px solid var(--line);
-    border-radius: 6px;
+    border-radius: 4px;
     background: var(--paper);
     color: var(--ink);
-    font-size: 1.1rem;
-    font-weight: 700;
+    font-size: 0.6rem;
     line-height: 1;
     cursor: pointer;
     flex: none;
     font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .numeric-stepper .step-btn:hover {
@@ -359,16 +370,19 @@
     background: var(--paper-raised);
     padding: 0.85rem 1rem;
     margin-bottom: 0.7rem;
-    display: flex;
+    display: grid;
+    /* 固定 label 以外兩欄的寬度,讓輸入格跟單位在每一列都對齊在同一個
+       水平位置,不會因為題目文字長短而跑位(2026-09-11 討論)。 */
+    grid-template-columns: 1fr auto 2.4em;
     align-items: center;
-    gap: 0.75rem;
-    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
   }
 
-  .body-question .prompt { font-weight: 600; flex: 1 1 auto; min-width: 14em; font-size: 0.92rem; }
+  .body-question .prompt { font-weight: 600; font-size: 0.92rem; }
 
   .body-question input[type=number] {
     width: 5em;
+    height: 2.3rem;
     text-align: center;
     padding: 0.4rem 0.5rem;
     font-size: 1rem;
@@ -1028,23 +1042,27 @@
         input.value = String(Math.round(next * 10) / 10);
         commit();
       };
-      const minusBtn = document.createElement("button");
-      minusBtn.type = "button";
-      minusBtn.className = "step-btn";
-      minusBtn.textContent = "−";
-      minusBtn.setAttribute("aria-label", `${q.prompt}減 1`);
-      minusBtn.addEventListener("click", () => step(-1));
-
       const plusBtn = document.createElement("button");
       plusBtn.type = "button";
       plusBtn.className = "step-btn";
-      plusBtn.textContent = "+";
+      plusBtn.textContent = "▲";
       plusBtn.setAttribute("aria-label", `${q.prompt}加 1`);
       plusBtn.addEventListener("click", () => step(1));
 
+      const minusBtn = document.createElement("button");
+      minusBtn.type = "button";
+      minusBtn.className = "step-btn";
+      minusBtn.textContent = "▼";
+      minusBtn.setAttribute("aria-label", `${q.prompt}減 1`);
+      minusBtn.addEventListener("click", () => step(-1));
+
+      const btnGroup = document.createElement("div");
+      btnGroup.className = "step-btn-group";
+      btnGroup.append(plusBtn, minusBtn);
+
       const stepper = document.createElement("div");
       stepper.className = "numeric-stepper";
-      stepper.append(minusBtn, input, plusBtn);
+      stepper.append(input, btnGroup);
 
       const unit = document.createElement("span");
       unit.className = "unit";
