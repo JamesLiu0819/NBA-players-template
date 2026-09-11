@@ -76,6 +76,7 @@
 
   header.masthead {
     padding: 2.5rem 0 1.5rem;
+    text-align: center;
   }
 
   .eyebrow {
@@ -96,10 +97,52 @@
   }
 
   .masthead p {
-    margin: 0;
+    margin: 0 auto;
     max-width: 58ch;
     color: var(--ink-soft);
     font-size: 0.95rem;
+  }
+
+  .rules-box {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--paper-raised);
+    padding: 1.1rem 1.3rem 1.3rem;
+    margin-top: 1.75rem;
+  }
+
+  .rules-box h2 {
+    margin: 0 0 0.7rem;
+    font-size: 1rem;
+    font-weight: 800;
+  }
+
+  .rules-box p {
+    margin: 0 0 0.6rem;
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+  }
+
+  .rules-box .rules-notes-label {
+    margin: 0.9rem 0 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .rules-box ol.rules-notes {
+    margin: 0;
+    padding-left: 1.2rem;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+  }
+
+  .rules-box ol.rules-notes li {
+    margin-bottom: 0.35rem;
+  }
+
+  .rules-box ol.rules-notes li:last-child {
+    margin-bottom: 0;
   }
 
   .ledger {
@@ -559,11 +602,23 @@
 
   <header class="masthead">
     <div class="eyebrow">Self-Scouting Report</div>
-    <h1>幫自己寫一份球探報告</h1>
+    <h1>球探報告</h1>
     <p>
       行為錨定量表(BARS), 每題請選擇「哪句描述最符合我」
     </p>
   </header>
+
+  <div class="rules-box">
+    <h2>📋 作答說明</h2>
+    <p>每一題都是 5 句具體的行為描述，不是自評強弱——請選出最符合你平常實際表現的那一句。</p>
+    <p>身材數值裡，身高、體重為必填；臂展、立定摸高、助跑摸高、衝刺速度為選填，但填寫越完整，身材模板與運動能力的比對就越準確。</p>
+    <p class="rules-notes-label">注意事項：</p>
+    <ol class="rules-notes">
+      <li>請誠實作答——選你「實際上會怎麼做」，不是「希望自己能做到」的程度。</li>
+      <li>沒填的身材數值不會納入比對，身材模板可能因此比較不準。</li>
+      <li>所有配對結果都是座標距離的最近鄰計算，不是真人球探評測，僅供參考。</li>
+    </ol>
+  </div>
 
   <div class="ledger" id="stage1-ledger" style="display:none">
     <div class="ledger-row">
@@ -581,9 +636,9 @@
     <section class="block">
       <div class="section-head">
         <span class="section-tag">SECTION A</span>
-        <h2>身材數值(6 題)</h2>
+        <h2>身材數值</h2>
       </div>
-      <p class="section-note">請直接填入對應的身材數值。</p>
+      <p class="section-note">身高、體重為必填，其餘選填(可讓運動能力比對更準確)。</p>
       <div id="body-questions"></div>
     </section>
 
@@ -728,15 +783,23 @@
     selectedPreset: null,
   };
 
-  // ---- stage 1 progress: 球風定位(16) + 身材數值(6) = 22 ----
+  // ---- stage 1 progress: 球風定位(16) + 身材數值必填(身高/體重) = 18 ----
+  // 其餘 4 題身材數值(臂展/立定摸高/助跑摸高/衝刺)是選填,不列入必填進度,
+  // 但填了可以讓身材模板/運動能力比對更準確(2026-09-11 討論)。
+
+  const REQUIRED_BODY_FIELDS = ["height_cm", "weight_kg"];
+
+  function requiredBodyQuestions() {
+    return state.bodyQuestions.filter((q) => REQUIRED_BODY_FIELDS.includes(q.field));
+  }
 
   function stage1Total() {
-    return state.axisQuestions.length + state.bodyQuestions.length;
+    return state.axisQuestions.length + requiredBodyQuestions().length;
   }
 
   function stage1Answered() {
     const axisDone = state.axisQuestions.filter((q) => state.answers[q.id] !== undefined).length;
-    const bodyDone = state.bodyQuestions.filter((q) => state.bodyAnswers[q.id] !== undefined).length;
+    const bodyDone = requiredBodyQuestions().filter((q) => state.bodyAnswers[q.id] !== undefined).length;
     return axisDone + bodyDone;
   }
 
@@ -836,18 +899,27 @@
   function renderBodyQuestions() {
     const container = document.getElementById("body-questions");
     for (const q of state.bodyQuestions) {
+      const isRequired = REQUIRED_BODY_FIELDS.includes(q.field);
+      const isDecimal = q.field === "sprint_100m_seconds";
       const div = document.createElement("div");
       div.className = "body-question";
       const label = document.createElement("label");
       label.className = "prompt";
-      label.textContent = q.prompt;
+      label.textContent = isRequired ? q.prompt : `${q.prompt}(選填)`;
       label.htmlFor = q.id;
       const input = document.createElement("input");
       input.type = "number";
       input.id = q.id;
-      input.step = "0.1";
+      // 從範圍中間值起跳,+/-1(衝刺是秒數,維持 0.1 步進更合理)——不用從空白
+      // 或 0 開始按加減鍵(2026-09-11 討論)。
+      input.step = isDecimal ? "0.1" : "1";
       input.min = String(q.min);
       input.max = String(q.max);
+      const midpoint = isDecimal
+        ? Math.round(((q.min + q.max) / 2) * 10) / 10
+        : Math.round((q.min + q.max) / 2);
+      input.value = String(midpoint);
+      state.bodyAnswers[q.id] = midpoint;
       input.addEventListener("input", () => {
         const value = Number(input.value);
         if (input.value !== "" && Number.isFinite(value) && value >= q.min && value <= q.max) {
@@ -959,7 +1031,12 @@
   function buildTemplatePayload() {
     return {
       axis_answers: state.axisQuestions.map((q) => ({ question_id: q.id, score: state.answers[q.id] })),
-      body_answers: state.bodyQuestions.map((q) => ({ question_id: q.id, value: state.bodyAnswers[q.id] })),
+      // 選填欄位可能被清空,只送有作答的欄位——不然沒填的欄位會帶 value:
+      // undefined 送到後端,collect_body_measurements 拿到 None 會直接噴錯,
+      // 而不是照設計「沒填就略過」(2026-09-11 討論發現的既有 bug)。
+      body_answers: state.bodyQuestions
+        .filter((q) => state.bodyAnswers[q.id] !== undefined)
+        .map((q) => ({ question_id: q.id, value: state.bodyAnswers[q.id] })),
     };
   }
 
