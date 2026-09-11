@@ -1021,9 +1021,9 @@
       input.min = String(q.min);
       input.max = String(q.max);
 
+      // 欄位保持空白,不預填任何值;第一次按上/下鍵才從中間值開始,之後才
+      // 真的是 +/-1(2026-09-11 討論)。
       const midpoint = Math.round(((q.min + q.max) / 2) * 10) / 10;
-      input.value = String(midpoint);
-      state.bodyAnswers[q.id] = midpoint;
 
       const commit = () => {
         const value = Number(input.value);
@@ -1037,9 +1037,13 @@
       input.addEventListener("input", commit);
 
       const step = (delta) => {
-        const current = Number.isFinite(Number(input.value)) && input.value !== "" ? Number(input.value) : midpoint;
-        const next = Math.min(q.max, Math.max(q.min, current + delta));
-        input.value = String(Math.round(next * 10) / 10);
+        if (input.value === "") {
+          input.value = String(midpoint);
+        } else {
+          const current = Number(input.value);
+          const next = Math.min(q.max, Math.max(q.min, current + delta));
+          input.value = String(Math.round(next * 10) / 10);
+        }
         commit();
       };
       const plusBtn = document.createElement("button");
