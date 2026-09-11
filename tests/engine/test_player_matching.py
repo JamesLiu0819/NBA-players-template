@@ -7,6 +7,7 @@
 import unittest
 
 from engine.player_matching import (
+    D_AXIS_WEIGHT,
     find_body_fit_template,
     find_ceiling_template,
     find_skill_fit_template,
@@ -153,10 +154,13 @@ class RankSimilarPlayersByStyleAndBodyTest(unittest.TestCase):
         self.assertEqual([p["id"] for p in ranked], ["near", "mid"])
 
     def test_d_axis_gap_is_weighted_more_than_other_axes(self):
-        # D_AXIS_WEIGHT=2 (2026-09-11 discussion: athletic differences matter
-        # more than skill differences, exact ratio still being tuned) means a
-        # 10-point D gap should now outweigh a 12-point A gap, even though
-        # 10 < 12 unweighted -- this would rank the other way with weight 1.
+        # D_AXIS_WEIGHT > 1 (2026-09-11 discussion: athletic differences
+        # matter more than skill differences, exact ratio still being
+        # tuned -- currently 1.5) means a 10-point D gap should outweigh a
+        # 12-point A gap, even though 10 < 12 unweighted -- this would rank
+        # the other way with weight 1. Values reference D_AXIS_WEIGHT
+        # directly so this test doesn't need editing every time the ratio
+        # is retuned, only if it's tuned down to <= 1.2 (12^2 / 10^2).
         user_coordinates = {"A": 50, "B": 50, "C": 50, "D": 50}
         players = [
             {
@@ -175,19 +179,20 @@ class RankSimilarPlayersByStyleAndBodyTest(unittest.TestCase):
 
         self.assertEqual([p["id"] for p in ranked], ["big_a_gap", "big_d_gap"])
         self.assertAlmostEqual(ranked[0]["distance"], 12.0)
-        self.assertAlmostEqual(ranked[1]["distance"], (2 * 10 ** 2) ** 0.5)
+        self.assertAlmostEqual(ranked[1]["distance"], (D_AXIS_WEIGHT * 10 ** 2) ** 0.5)
 
 
 class FitStarsForDistanceTest(unittest.TestCase):
     def test_boundary_values(self):
-        self.assertEqual(fit_stars_for_distance(20), 5)
-        self.assertEqual(fit_stars_for_distance(21), 4)
-        self.assertEqual(fit_stars_for_distance(40), 4)
-        self.assertEqual(fit_stars_for_distance(41), 3)
-        self.assertEqual(fit_stars_for_distance(60), 3)
-        self.assertEqual(fit_stars_for_distance(61), 2)
-        self.assertEqual(fit_stars_for_distance(80), 2)
-        self.assertEqual(fit_stars_for_distance(81), 1)
+        # 2026-09-11: thresholds recalibrated to 0-15-35-55-75-100.
+        self.assertEqual(fit_stars_for_distance(15), 5)
+        self.assertEqual(fit_stars_for_distance(16), 4)
+        self.assertEqual(fit_stars_for_distance(35), 4)
+        self.assertEqual(fit_stars_for_distance(36), 3)
+        self.assertEqual(fit_stars_for_distance(55), 3)
+        self.assertEqual(fit_stars_for_distance(56), 2)
+        self.assertEqual(fit_stars_for_distance(75), 2)
+        self.assertEqual(fit_stars_for_distance(76), 1)
 
 
 class SkillDominantAxisTest(unittest.TestCase):
