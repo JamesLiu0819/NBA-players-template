@@ -2,18 +2,23 @@
 # 用途：手動估算歷史知名球員(已退役、跨 1960s-2010s)的四軸座標跟其他資料,
 # 產生 data/players_alltime.json,給「歷史球員模板(All-time)」模式用。跟
 # scripts/build_players_seed.py(現役球員池)是同一套 schema、同一套
-# derive_body_measurements 公式(直接 import 重用,不重複定義),差別只有：
-# (1) 球員名單換成退役傳奇球星,不跟現役池重複;(2) "team" 欄位放的是代表
-# 年份(字串,例如球員巔峰球季),不是球隊縮寫——因為歷史球員橫跨多支球隊、
-# 用球隊代碼意義不大,用年份標示「這個座標估算大概對應他生涯哪個階段」比較
-# 有參考價值。下游(engine、server、前端)完全不用改,因為程式邏輯本來就只
-# 是把 "team" 欄位原樣印出來,不管裡面放的是字串還是年份。
+# derive_body_measurements/mock_axis_answers/mock_skill_answers 邏輯(直接
+# import 重用,不重複定義),差別只有：(1) 球員名單換成退役傳奇球星,不跟
+# 現役池重複;(2) "team" 欄位放的是代表年份(字串,例如球員巔峰球季),不是
+# 球隊縮寫——因為歷史球員橫跨多支球隊、用球隊代碼意義不大,用年份標示「這個
+# 座標估算大概對應他生涯哪個階段」比較有參考價值。下游(engine、server、
+# 前端)完全不用改,因為程式邏輯本來就只是把 "team" 欄位原樣印出來,不管裡面
+# 放的是字串還是年份。
 # 這是第一批,先收錄約 65 位廣為人知的歷史球星,涵蓋 1960s-2010s 各年代跟
 # 各種打法原型;不是詳盡的歷史球員資料庫,之後可以再擴充(參照現役球員池
 # 20→50→150 的擴充模式)。
+# v2(2026-09-11)：跟現役球員池同步改成 mock-answer 驅動——PLAYERS 常數裡
+# 手寫的 coordinates 只是目標座標,main() 會反推成模擬作答再用
+# score_axis_coordinates 算出真正的座標,同時補上 15 題技能行為模擬作答,
+# 詳見 scripts/build_players_seed.py 檔頭說明。
 # 可手動調整的變數：PLAYERS(整份球員清單,每位球員的 coordinates/body/
 # notable_traits/signature_skill_id/learnability_flag/team(年份) 都可以
-# 直接改)。
+# 直接改,coordinates 現在的意義是「目標座標」,不是最終值)。
 """Generates data/players_alltime.json from hand-estimated seed data for
 retired, widely-known historical players.
 
@@ -31,9 +36,12 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT))
 
+from engine.axis_position import score_axis_coordinates  # noqa: E402
 from scripts.build_players_seed import derive_body_measurements  # noqa: E402
+from scripts.mock_answers import mock_axis_answers, mock_skill_answers  # noqa: E402
 
 _BASIS = "公開球評印象,手動估算,非真實數據推導"
 
@@ -627,7 +635,21 @@ PLAYERS = [
 
 
 def main():
+    questions = json.load(open(ROOT / "data" / "questions.json", encoding="utf-8"))
+    axis_questions = questions["axis_positioning"]
+    skill_questions = questions["skill_behavior"]
+    skills_by_id = {
+        s["id"]: s for s in json.load(open(ROOT / "data" / "skills.json", encoding="utf-8"))["skills"]
+    }
+
     for player in PLAYERS:
+        target_coordinates = player["coordinates"]
+        mock_axis = mock_axis_answers(axis_questions, target_coordinates)
+        player["coordinates"] = score_axis_coordinates(axis_questions, mock_axis)
+        player["mock_axis_answers"] = mock_axis
+        player["mock_skill_answers"] = mock_skill_answers(
+            skill_questions, skills_by_id, player["coordinates"], player["signature_skill_id"]
+        )
         player["body"].update(
             derive_body_measurements(
                 player["body"]["height_cm"], player["body"]["wingspan_cm"], player["coordinates"]
@@ -640,16 +662,21 @@ def main():
             "data/players.json(現役球員池)同一套 schema,是「歷史球員模板"
             "(All-time)」模式用的資料來源。同樣是手動估算,不是真實數據推導"
             "的結果(每位球員的 _estimate_basis 都有說明)。\"team\" 欄位放的"
-            "是代表年份(字串),不是球隊縮寫。body 欄位裡的 height_cm/"
-            "wingspan_cm 是手動估算,其餘四項是用跟現役球員池一樣的公式"
-            "(scripts/build_players_seed.py 的 derive_body_measurements)"
-            "推算出來的。"
+            "是代表年份(字串),不是球隊縮寫。v2(2026-09-11)：coordinates 是用"
+            "PLAYERS 常數裡的目標座標反推成模擬作答(mock_axis_answers)、再用"
+            "score_axis_coordinates 算出來的,不是直接手打的座標;"
+            "mock_skill_answers 是同樣邏輯推算的 15 題技能行為模擬作答。body"
+            "欄位裡的 height_cm/wingspan_cm 是手動估算,其餘四項是用跟現役球員"
+            "池一樣的公式(scripts/build_players_seed.py 的"
+            "derive_body_measurements)推算出來的。"
         ),
         "_editable_fields": (
             "整份 players 清單都可以改,規則跟 data/players.json 一樣——調"
             "coordinates 改變座標,調 notable_traits/signature_skill_id 改變"
             "輸出文案,調 learnability_flag(low/medium/high)。id 一旦被別的"
-            "地方引用就不要改。"
+            "地方引用就不要改。coordinates/mock_axis_answers/mock_skill_"
+            "answers 是 build 產物,不要手改——要調整就改 PLAYERS 常數裡的"
+            "目標座標,重跑腳本重新產生。"
         ),
         "players": PLAYERS,
     }
