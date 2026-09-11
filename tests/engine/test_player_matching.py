@@ -14,6 +14,7 @@ from engine.player_matching import (
     matching_skill_id,
     rank_similar_players,
     rank_similar_players_by_style_and_body,
+    representative_skill_id_for_axis,
     skill_dominant_axis,
 )
 
@@ -193,6 +194,24 @@ class MatchingSkillIdTest(unittest.TestCase):
     def test_returns_none_when_signature_skill_not_in_skills_by_id(self):
         result = matching_skill_id("B", "does_not_exist", self.skills_by_id)
         self.assertIsNone(result)
+
+
+class RepresentativeSkillIdForAxisTest(unittest.TestCase):
+    def test_returns_the_skill_with_highest_relevance_for_the_axis(self):
+        skills_by_id = {
+            "perimeter_shooting": {"axis_relevance": {"A": 0.3, "B": 0.9, "C": 0.1, "D": 0.2}},
+            "rim_protection": {"axis_relevance": {"A": 0.1, "B": 0.1, "C": 0.9, "D": 0.6}},
+        }
+        result = representative_skill_id_for_axis("B", skills_by_id)
+        self.assertEqual(result, "perimeter_shooting")
+
+    def test_ties_break_by_ascending_skill_id(self):
+        skills_by_id = {
+            "zebra_skill": {"axis_relevance": {"A": 0.5, "B": 0.1, "C": 0.1, "D": 0.1}},
+            "apple_skill": {"axis_relevance": {"A": 0.5, "B": 0.1, "C": 0.1, "D": 0.1}},
+        }
+        result = representative_skill_id_for_axis("A", skills_by_id)
+        self.assertEqual(result, "apple_skill")
 
 
 class FindSkillFitTemplateTest(unittest.TestCase):

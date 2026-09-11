@@ -142,6 +142,23 @@ def matching_skill_id(dominant_diff_axis, signature_skill_id, skills_by_id):
     return None
 
 
+def representative_skill_id_for_axis(axis, skills_by_id):
+    """Return the skill_id most associated with the given axis (highest
+    axis_relevance[axis] across every skill in skills_by_id) -- a fallback
+    for when a template player's own signature_skill_id doesn't target the
+    differentiation axis (matching_skill_id returns None), so the growth
+    recommendation can still name a concrete, practicable action instead of
+    a generic "practice this axis" sentence.
+
+    Ties break on ascending skill_id for determinism. skills_by_id must be
+    non-empty.
+    """
+    return min(
+        skills_by_id,
+        key=lambda skill_id: (-skills_by_id[skill_id]["axis_relevance"][axis], skill_id),
+    )
+
+
 def _abc_distance(diff):
     """Euclidean distance over just the A/B/C axes of a diff dict -- the
     axes SPEC.md treats as learnable; D is deliberately excluded, since the

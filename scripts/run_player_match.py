@@ -15,10 +15,13 @@
 # 跟 scripts/run_priority.py 一樣,是唯一權威的計算結果(沒有另外的 UI 或即時預覽
 # 版本)。
 # 可手動調整的變數：AXIS_LABELS(中文顯示用詞,可依用詞習慣調整,不影響計算)、
-# GENERIC_GROWTH_TEMPLATE(沒有技能對得上差異軸時使用的通用句型文字)、
 # D_AXIS_GROWTH_TEMPLATE(D軸無法訓練時使用的專用句型文字)、
 # CEILING_NOT_FOUND_MESSAGE(找不到符合條件的天花板時顯示的訊息)、
 # BODY_MEASUREMENTS_NOT_ANSWERED_MESSAGE(作答檔沒有身材數值題時顯示的訊息)。
+# describe_growth_recommendation 現在一定會回傳一個具體 action(A/B/C 差距軸
+# 找不到球員自己的招牌技能對得上時,改用 representative_skill_id_for_axis 找
+# 該軸相關性最高的技能頂替,不再回退成「XX 的練習」這種空泛句型,見 2026-09-11
+# 討論)。
 """Renders the 10-player template comparison table plus the 3 deep templates.
 
 Usage:
@@ -44,6 +47,7 @@ from engine.player_matching import (  # noqa: E402
     find_skill_fit_template,
     matching_skill_id,
     rank_similar_players_by_style_and_body,
+    representative_skill_id_for_axis,
 )
 
 AXIS_LABELS = {
@@ -53,7 +57,6 @@ AXIS_LABELS = {
     "D": "運動表現",
 }
 
-GENERIC_GROWTH_TEMPLATE = "可以多留意 {label} 這個方向的練習"
 D_AXIS_GROWTH_TEMPLATE = "身體天賦上有落差,不能單靠練習籃球技能"
 CEILING_NOT_FOUND_MESSAGE = (
     "目前的球員種子資料裡,找不到符合「運動能力跟你接近、"
@@ -80,12 +83,12 @@ def load_json(path):
 
 def describe_growth_recommendation(player, skills_by_id):
     axis = player["dominant_diff_axis"]
-    skill_id = matching_skill_id(axis, player.get("signature_skill_id"), skills_by_id)
-    if skill_id:
-        return skills_by_id[skill_id]["metric"]["action"]
     if axis == "D":
         return D_AXIS_GROWTH_TEMPLATE
-    return GENERIC_GROWTH_TEMPLATE.format(label=AXIS_LABELS[axis])
+    skill_id = matching_skill_id(axis, player.get("signature_skill_id"), skills_by_id)
+    if not skill_id:
+        skill_id = representative_skill_id_for_axis(axis, skills_by_id)
+    return skills_by_id[skill_id]["metric"]["action"]
 
 
 def main():
