@@ -88,7 +88,7 @@ def describe_growth_recommendation(player, skills_by_id):
     skill_id = matching_skill_id(axis, player.get("signature_skill_id"), skills_by_id)
     if not skill_id:
         skill_id = representative_skill_id_for_axis(axis, skills_by_id)
-    return skills_by_id[skill_id]["metric"]["action"]
+    return f"{skills_by_id[skill_id]['metric']['action']}的練習"
 
 
 def main():
