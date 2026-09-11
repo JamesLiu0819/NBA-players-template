@@ -436,6 +436,9 @@
     border-radius: var(--radius);
     padding: 1.1rem 1.3rem 1.3rem;
     margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
   }
 
   .top-match::before {
@@ -473,21 +476,19 @@
 
   .card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; }
   .card-head .who { display: flex; align-items: baseline; gap: 0.45rem; min-width: 0; }
-  .card .rank { font-family: var(--mono); font-weight: 800; color: var(--accent-ink); font-size: 0.78rem; }
-  .top-match .rank { font-size: 0.92rem; }
-  .card .name { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .top-match .name { font-size: 1.15rem; }
-  .card .team { font-family: var(--mono); font-size: 0.72rem; color: var(--ink-soft); flex: none; }
-  .card .stat-line { display: flex; align-items: center; gap: 0.55rem; flex: none; }
+  .card .rank, .top-match .rank { font-family: var(--mono); font-weight: 800; color: var(--accent-ink); font-size: 0.78rem; }
+  .card .name, .top-match .name { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card .team, .top-match .team { font-family: var(--mono); font-size: 0.72rem; color: var(--ink-soft); flex: none; }
+  .card .stat-line, .top-match .stat-line { display: flex; align-items: center; gap: 0.55rem; flex: none; }
   .stars { color: var(--accent); font-size: 0.85rem; }
   .stars .empty { color: var(--line); }
-  .card .distance { font-family: var(--mono); font-size: 0.76rem; color: var(--ink-soft); }
-  .card .distance b { color: var(--ink); }
-  .card .traits { display: flex; flex-wrap: wrap; gap: 0.3rem; }
-  .card .trait { font-size: 0.72rem; color: var(--ink-soft); background: var(--paper-sunken); border-radius: 999px; padding: 0.18rem 0.55rem; }
-  .card .callout { border-left: 2px solid var(--accent); padding-left: 0.65rem; font-size: 0.8rem; }
-  .card .callout .axis-tag { font-weight: 700; color: var(--ink); }
-  .card .callout .growth { color: var(--ink-soft); }
+  .card .distance, .top-match .distance { font-family: var(--mono); font-size: 0.76rem; color: var(--ink-soft); }
+  .card .distance b, .top-match .distance b { color: var(--ink); }
+  .card .traits, .top-match .traits { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+  .card .trait, .top-match .trait { font-size: 0.72rem; color: var(--ink-soft); background: var(--paper-sunken); border-radius: 999px; padding: 0.18rem 0.55rem; }
+  .card .callout, .top-match .callout { border-left: 2px solid var(--accent); padding-left: 0.65rem; font-size: 0.8rem; }
+  .card .callout .axis-tag, .top-match .callout .axis-tag { font-weight: 700; color: var(--ink); }
+  .card .callout .growth, .top-match .callout .growth { color: var(--ink-soft); }
 
   footer.disclosure {
     margin-top: 3rem;
@@ -713,7 +714,7 @@
   const DEEP_TEMPLATE_META = {
     skill_fit: { label: "技術模板", caption: "排除運動能力,技術層面跟你最接近的球員（打法風格）" },
     body_fit: { label: "身材模板", caption: "身材數值跟你最接近的球員" },
-    ceiling: { label: "天花板", caption: "運動能力跟你接近,但技術層面明顯更成熟的球員——一個練得到的目標" },
+    ceiling: { label: "天花板", caption: "運動能力跟你接近,但技術層面更成熟的球員" },
   };
 
   const state = {
@@ -992,7 +993,7 @@
       <div class="traits">${m.notable_traits.map((t) => `<span class="trait">${t}</span>`).join("")}</div>
       <div class="callout">
         <span class="axis-tag">${AXIS_LABELS[m.dominant_diff_axis]}差距最大</span>
-        <span class="growth"> → 最值得學：${m.growth_recommendation}</span>
+        <span class="growth"> → 可以注意：${m.growth_recommendation}</span>
       </div>`;
   }
 
