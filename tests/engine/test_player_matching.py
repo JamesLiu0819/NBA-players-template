@@ -184,20 +184,30 @@ class RankSimilarPlayersByStyleAndBodyTest(unittest.TestCase):
 
 class FitStarsForDistanceTest(unittest.TestCase):
     def test_boundary_values(self):
-        # 2026-09-11: thresholds recalibrated to the 20/40/60/80th
-        # percentiles of 200 real distances (20 random trials x top-10
-        # rank_similar_players_by_style_and_body results, using the same
-        # fully-random-per-axis/per-field methodology as the site's own
-        # 隨機填答 test button) -- see player_matching.py's header comment
-        # for the raw percentile values this rounds from.
-        self.assertEqual(fit_stars_for_distance(73), 5)
-        self.assertEqual(fit_stars_for_distance(74), 4)
-        self.assertEqual(fit_stars_for_distance(81), 4)
-        self.assertEqual(fit_stars_for_distance(82), 3)
-        self.assertEqual(fit_stars_for_distance(94), 3)
-        self.assertEqual(fit_stars_for_distance(95), 2)
-        self.assertEqual(fit_stars_for_distance(108), 2)
-        self.assertEqual(fit_stars_for_distance(109), 1)
+        # 2026-09-11: thresholds recalibrated a second time. The first pass
+        # sampled axis coordinates as raw uniform(0, 100) per axis, which
+        # does NOT match how the site's own 隨機填答 button (or a real user
+        # answering somewhat-average-ish on everything) actually behaves:
+        # each axis is the average of 4 independently random 1-5 Likert
+        # answers, which regresses toward the middle (~50) -- much lower
+        # spread than raw uniform(0, 100). That mismatch produced far larger
+        # distances than real usage ever hits, so every real distance fell
+        # under the old thresholds -- everything rated 5 stars. Redid the
+        # sampling to average 4 random 1-5 draws per axis (matching
+        # score_axis_coordinates' own math) and body fields via the site's
+        # actual randomBodyValues() derivation (height/weight independent,
+        # wingspan/reach chained off each other). 20 trials x top-10
+        # rank_similar_players_by_style_and_body distances = 200 samples,
+        # sorted ascending; thresholds are the values at rank 40/80/120/160
+        # (57.92/68.32/74.25/79.37, rounded to 58/68/74/79).
+        self.assertEqual(fit_stars_for_distance(58), 5)
+        self.assertEqual(fit_stars_for_distance(59), 4)
+        self.assertEqual(fit_stars_for_distance(68), 4)
+        self.assertEqual(fit_stars_for_distance(69), 3)
+        self.assertEqual(fit_stars_for_distance(74), 3)
+        self.assertEqual(fit_stars_for_distance(75), 2)
+        self.assertEqual(fit_stars_for_distance(79), 2)
+        self.assertEqual(fit_stars_for_distance(80), 1)
 
 
 class SkillDominantAxisTest(unittest.TestCase):
