@@ -21,13 +21,18 @@
 #                             已經移除)。
 #   POST /api/priority-results  才吃技能行為(15題)+ 環境權重,回傳優先訓練
 #                             順序,是使用者自己選擇要不要看的「進階」分析。
+# /api/template-results 吃一個選填的 "pool" 欄位("current"預設值 或
+# "alltime"),決定球員池要用 data/players.json(現役)還是
+# data/players_alltime.json(歷史,2026-09-11 新增)。兩份資料同一套 schema,
+# 差別只有歷史池的 "team" 欄位放代表年份而不是球隊縮寫,所以 compute_
+# template_results 完全不用改,只有 load_data 多一個參數決定讀哪個檔案。
 # 同時把 /src/ui 的靜態前端檔案服務出去。**刻意不**把 data/ 整個目錄當靜態
 # 檔案服務——data/answers/ 裡面是真實使用者的個人作答資料,不能公開存取。
 # 計算邏輯全部重用 src/engine 跟 scripts/run_priority.py、
 # scripts/run_player_match.py 已經拆出來的函數,這支檔案只做請求解析、資料載入、
 # 呼叫、組裝回應,不重寫任何計算規則。
-# 可手動調整的變數：無——欄位驗證規則來自 src/engine 各函數本來就有的
-# ValueError,不在這裡另外定義一套。
+# 可手動調整的變數：PLAYER_POOL_FILES(pool 名稱對應的球員資料檔名,要再加
+# 新的球員池就在這裡加一筆)。
 """Flask app: GET /api/form-data, POST /api/template-results,
 POST /api/priority-results, static file serving for /src/ui.
 
@@ -67,6 +72,10 @@ from scripts.run_priority import build_priority_items, format_dominant_factor_se
 UI_DIR = ROOT / "src" / "ui"
 TEMPLATE_REQUIRED_FIELDS = ("axis_answers",)
 PRIORITY_REQUIRED_FIELDS = ("axis_answers", "skill_answers", "env")
+PLAYER_POOL_FILES = {
+    "current": "players.json",
+    "alltime": "players_alltime.json",
+}
 
 app = Flask(__name__, static_folder=None)
 
@@ -76,10 +85,10 @@ def load_json(path):
         return json.load(f)
 
 
-def load_data():
+def load_data(pool="current"):
     questions = load_json(ROOT / "data" / "questions.json")
     skills = load_json(ROOT / "data" / "skills.json")["skills"]
-    players = load_json(ROOT / "data" / "players.json")["players"]
+    players = load_json(ROOT / "data" / PLAYER_POOL_FILES[pool])["players"]
     return questions, skills, players
 
 
@@ -178,7 +187,11 @@ def api_template_results():
     if missing:
         return jsonify({"error": f"missing required field(s): {', '.join(missing)}"}), 400
 
-    questions, skills, players = load_data()
+    pool = payload.get("pool", "current")
+    if pool not in PLAYER_POOL_FILES:
+        return jsonify({"error": f"invalid pool: {pool}"}), 400
+
+    questions, skills, players = load_data(pool)
     skills_by_id = {s["id"]: s for s in skills}
     try:
         results = compute_template_results(payload, questions, players, skills_by_id)

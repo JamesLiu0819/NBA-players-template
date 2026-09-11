@@ -117,6 +117,34 @@ class TemplateResultsTest(unittest.TestCase):
         )
         self.assertEqual(top_player["rank"], 1)
 
+    def test_missing_pool_defaults_to_current_players(self):
+        payload = {"axis_answers": build_axis_answers(self.questions)}
+
+        response = self.client.post("/api/template-results", json=payload)
+
+        self.assertEqual(response.status_code, 200)
+        current_names = {p["name"] for p in load_json(ROOT / "data" / "players.json")["players"]}
+        top_10_names = {row["name"] for row in response.get_json()["top_10"]}
+        self.assertTrue(top_10_names.issubset(current_names))
+
+    def test_pool_alltime_uses_historical_players(self):
+        payload = {"axis_answers": build_axis_answers(self.questions), "pool": "alltime"}
+
+        response = self.client.post("/api/template-results", json=payload)
+
+        self.assertEqual(response.status_code, 200)
+        alltime_names = {p["name"] for p in load_json(ROOT / "data" / "players_alltime.json")["players"]}
+        top_10_names = {row["name"] for row in response.get_json()["top_10"]}
+        self.assertTrue(top_10_names.issubset(alltime_names))
+
+    def test_invalid_pool_returns_400(self):
+        payload = {"axis_answers": build_axis_answers(self.questions), "pool": "does_not_exist"}
+
+        response = self.client.post("/api/template-results", json=payload)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("error", response.get_json())
+
 
 class PriorityResultsTest(unittest.TestCase):
     def setUp(self):

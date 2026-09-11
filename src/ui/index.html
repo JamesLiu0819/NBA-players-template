@@ -857,19 +857,18 @@
       <span class="mode-title">現役球員模板</span>
       <span class="mode-sub">Current</span>
     </button>
-    <button type="button" class="mode-btn" id="mode-alltime-btn">
+    <button type="button" class="mode-btn" id="mode-alltime-btn" disabled>
       <span class="mode-title">歷史球員模板</span>
       <span class="mode-sub">All-time</span>
     </button>
   </div>
-  <p class="mode-note" id="mode-alltime-note" style="display:none">歷史球員模板尚未開放，敬請期待。</p>
 
   <div id="loading">載入題庫中…</div>
   <div id="load-error" style="display:none; color:var(--accent-ink)"></div>
 
   <div class="ledger" id="stage1-ledger" style="display:none">
     <div class="ledger-row">
-      <span>作答進度</span>
+      <span id="active-pool-label">作答進度</span>
       <span class="count mono"><span id="stage1-progress-count">0</span> / <span id="stage1-progress-total">16</span></span>
     </div>
     <div class="ledger-rule" id="stage1-ledger-rule"></div>
@@ -1025,7 +1024,10 @@
     bodyAnswers: {},
     env: {},
     selectedPreset: null,
+    pool: "current",
   };
+
+  const POOL_LABELS = { current: "現役球員模板", alltime: "歷史球員模板(All-time)" };
 
   // ---- stage 1 progress: 只算球風定位(16 題)——身材數值全部選填,不是
   // BARS 問題,完全不列入作答進度/送出門檻(2026-09-11 討論)。
@@ -1305,6 +1307,7 @@
       body_answers: state.bodyQuestions
         .filter((q) => state.bodyAnswers[q.id] !== undefined)
         .map((q) => ({ question_id: q.id, value: state.bodyAnswers[q.id] })),
+      pool: state.pool,
     };
   }
 
@@ -1491,9 +1494,11 @@
     document.getElementById("stage2-block").scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
-  function revealCurrentQuiz() {
+  function revealQuiz(pool) {
+    state.pool = pool;
+    document.getElementById("active-pool-label").textContent = `${POOL_LABELS[pool]} · 作答進度`;
+
     document.getElementById("mode-select").style.display = "none";
-    document.getElementById("mode-alltime-note").style.display = "none";
     document.getElementById("stage1-ledger").style.display = "block";
     document.getElementById("stage1-form").style.display = "block";
     document.getElementById("random-fill-btn").style.display = "block";
@@ -1527,6 +1532,7 @@
 
     document.getElementById("loading").style.display = "none";
     document.getElementById("mode-current-btn").disabled = false;
+    document.getElementById("mode-alltime-btn").disabled = false;
 
     document.querySelectorAll("#preset-row button").forEach((btn) => {
       btn.addEventListener("click", () => applyPreset(btn.dataset.preset));
@@ -1539,10 +1545,8 @@
       e.preventDefault();
       window.location.reload();
     });
-    document.getElementById("mode-current-btn").addEventListener("click", revealCurrentQuiz);
-    document.getElementById("mode-alltime-btn").addEventListener("click", () => {
-      document.getElementById("mode-alltime-note").style.display = "block";
-    });
+    document.getElementById("mode-current-btn").addEventListener("click", () => revealQuiz("current"));
+    document.getElementById("mode-alltime-btn").addEventListener("click", () => revealQuiz("alltime"));
   }
 
   // 上方導覽列目前只有樣式,分頁/登入/選單都還沒接功能——擋掉 <a href="#">
