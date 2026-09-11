@@ -6,33 +6,21 @@
 <title>幫自己寫一份球探報告</title>
 <style>
   :root {
-    color-scheme: light dark;
-    --paper: #eef1f4;
-    --paper-raised: #ffffff;
-    --paper-sunken: #e2e6ea;
-    --ink: #1b2028;
-    --ink-soft: #565f6b;
-    --line: rgba(27, 32, 40, 0.14);
-    --accent: #b8791f;
-    --accent-ink: #7a5215;
-    --accent-wash: rgba(184, 121, 31, 0.12);
+    color-scheme: light;
+    /* 米白色偏暖色調,取代原本偏冷、偏暗的配色(2026-09-11 討論)——不跟隨
+       系統深色模式,固定用這組暖色調,眼睛比較不吃力也不會太刺眼。 */
+    --paper: #f2ecdd;
+    --paper-raised: #faf6ec;
+    --paper-sunken: #e8dfc9;
+    --ink: #332b1e;
+    --ink-soft: #6f6350;
+    --line: rgba(51, 43, 30, 0.16);
+    --accent: #a8671f;
+    --accent-ink: #7a4f15;
+    --accent-wash: rgba(168, 103, 31, 0.12);
     --radius: 10px;
     --sans: -apple-system, "Segoe UI", "PingFang TC", "Noto Sans TC", system-ui, sans-serif;
     --mono: "SF Mono", "JetBrains Mono", Menlo, ui-monospace, "Noto Sans Mono", monospace;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --paper: #14171c;
-      --paper-raised: #1c2027;
-      --paper-sunken: #101317;
-      --ink: #e9e7e0;
-      --ink-soft: #9aa1ab;
-      --line: rgba(255, 255, 255, 0.12);
-      --accent: #d9a03f;
-      --accent-ink: #f0c76e;
-      --accent-wash: rgba(217, 160, 63, 0.16);
-    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -109,6 +97,7 @@
     background: var(--paper-raised);
     padding: 1.1rem 1.3rem 1.3rem;
     margin-top: 1.75rem;
+    text-align: center;
   }
 
   .rules-box h2 {
@@ -148,7 +137,7 @@
   .mode-select {
     display: flex;
     gap: 0.9rem;
-    margin-top: 1.75rem;
+    margin-top: 2.75rem;
     flex-wrap: wrap;
   }
 
@@ -160,9 +149,10 @@
     color: var(--ink);
     padding: 1.1rem 1.2rem;
     cursor: pointer;
-    text-align: left;
+    text-align: center;
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 0.2rem;
     font-family: inherit;
   }
