@@ -381,7 +381,7 @@
     {
       "id": "body_height",
       "field": "height_cm",
-      "prompt": "身高(公分,不穿鞋量測)",
+      "prompt": "身高(不穿鞋量測)",
       "unit": "cm",
       "min": 165,
       "max": 220
@@ -389,7 +389,7 @@
     {
       "id": "body_weight",
       "field": "weight_kg",
-      "prompt": "體重(公斤)",
+      "prompt": "體重",
       "unit": "kg",
       "min": 50,
       "max": 120
@@ -397,15 +397,15 @@
     {
       "id": "body_wingspan",
       "field": "wingspan_cm",
-      "prompt": "臂展(公分,雙臂完全張開指尖到指尖的距離)",
+      "prompt": "臂展(雙臂完全張開指尖到指尖的距離)",
       "unit": "cm",
-      "min": 140,
-      "max": 250
+      "min": 160,
+      "max": 235
     },
     {
       "id": "body_standing_reach",
       "field": "standing_reach_cm",
-      "prompt": "立定摸高(公分,雙腳不離地,單手盡量往上摸到的高度)",
+      "prompt": "立定摸高(雙腳不離地,單手往上摸到的高度)",
       "unit": "cm",
       "min": 180,
       "max": 320
@@ -413,7 +413,7 @@
     {
       "id": "body_running_reach",
       "field": "running_vertical_reach_cm",
-      "prompt": "助跑摸高(公分,助跑起跳單手摸到的最高點)",
+      "prompt": "助跑摸高(助跑起跳單手摸到的最高點)",
       "unit": "cm",
       "min": 200,
       "max": 370
@@ -421,7 +421,7 @@
     {
       "id": "body_sprint_100m",
       "field": "sprint_100m_seconds",
-      "prompt": "100 公尺衝刺(秒,由靜止起跑計時)",
+      "prompt": "100 公尺衝刺",
       "unit": "s",
       "min": 10.0,
       "max": 22.0

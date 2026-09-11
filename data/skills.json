@@ -12,7 +12,7 @@
       "axis_relevance": { "A": 0.3, "B": 0.9, "C": 0.1, "D": 0.2 },
       "video_tags": ["shooting_catch_and_shoot", "shooting_mechanics"],
       "metric": {
-        "action": "定點接球投三分",
+        "action": "定點投射三分",
         "denominator": 50,
         "direction": "makes_at_least",
         "thresholds": { "entry": 15, "advanced": 20, "mastery": 25 }
@@ -28,7 +28,7 @@
       "axis_relevance": { "A": 0.9, "B": 0.4, "C": 0.1, "D": 0.5 },
       "video_tags": ["handles_first_step", "finishing_at_rim"],
       "metric": {
-        "action": "一對一面框單打過第一步",
+        "action": "一對一面框單打",
         "denominator": 20,
         "direction": "makes_at_least",
         "thresholds": { "entry": 6, "advanced": 10, "mastery": 14 }
@@ -44,7 +44,7 @@
       "axis_relevance": { "A": 0.8, "B": 0.5, "C": 0.1, "D": 0.1 },
       "video_tags": ["playmaking_high_post", "reading_double_team"],
       "metric": {
-        "action": "高位接球遭包夾後傳導",
+        "action": "高位接球後傳導",
         "denominator": 30,
         "direction": "errors_at_most",
         "thresholds": { "entry": 5, "advanced": 2, "mastery": 1 }
@@ -60,7 +60,7 @@
       "axis_relevance": { "A": 0.1, "B": 0.1, "C": 0.9, "D": 0.6 },
       "video_tags": ["rim_protection_positioning", "shot_contest"],
       "metric": {
-        "action": "對手正面攻框的防守回合",
+        "action": "對手正面攻框的防守",
         "denominator": 30,
         "direction": "makes_at_least",
         "thresholds": { "entry": 12, "advanced": 18, "mastery": 22 }
@@ -76,7 +76,7 @@
       "axis_relevance": { "A": 0.1, "B": 0.2, "C": 0.9, "D": 0.7 },
       "video_tags": ["switch_defense_footwork", "closeout_technique"],
       "metric": {
-        "action": "換防後跟防外線持球者的回合",
+        "action": "跟防外線持球者",
         "denominator": 20,
         "direction": "makes_at_least",
         "thresholds": { "entry": 8, "advanced": 13, "mastery": 16 }
@@ -92,7 +92,7 @@
       "axis_relevance": { "A": 0.3, "B": 0.9, "C": 0.1, "D": 0.3 },
       "video_tags": ["post_up_footwork", "post_up_reads"],
       "metric": {
-        "action": "背框單打強攻得分或造犯規",
+        "action": "背框單打強攻得分",
         "denominator": 20,
         "direction": "makes_at_least",
         "thresholds": { "entry": 6, "advanced": 10, "mastery": 14 }
@@ -108,7 +108,7 @@
       "axis_relevance": { "A": 0.9, "B": 0.4, "C": 0.1, "D": 0.3 },
       "video_tags": ["pick_and_roll_reads", "ball_handler_reads"],
       "metric": {
-        "action": "擋拆後做出正確的傳/投/切判斷",
+        "action": "擋拆後正確的傳/投/切判斷",
         "denominator": 20,
         "direction": "makes_at_least",
         "thresholds": { "entry": 8, "advanced": 13, "mastery": 17 }
@@ -124,7 +124,7 @@
       "axis_relevance": { "A": 0.2, "B": 0.8, "C": 0.1, "D": 0.4 },
       "video_tags": ["off_ball_cuts", "screen_usage"],
       "metric": {
-        "action": "利用掩護跑出空檔接球出手",
+        "action": "利用掩護跑出空檔",
         "denominator": 20,
         "direction": "makes_at_least",
         "thresholds": { "entry": 8, "advanced": 13, "mastery": 17 }
@@ -188,7 +188,7 @@
       "axis_relevance": { "A": 0.1, "B": 0.2, "C": 0.8, "D": 0.5 },
       "video_tags": ["on_ball_defense_stance", "containing_dribble_penetration"],
       "metric": {
-        "action": "一對一單防持球者不被輕易突破",
+        "action": "一對一單防持球者",
         "denominator": 20,
         "direction": "makes_at_least",
         "thresholds": { "entry": 8, "advanced": 13, "mastery": 17 }
@@ -204,7 +204,7 @@
       "axis_relevance": { "A": 0.1, "B": 0.1, "C": 0.7, "D": 0.3 },
       "video_tags": ["help_defense_rotation", "team_defense_positioning"],
       "metric": {
-        "action": "協防補位到位、不漏人",
+        "action": "協防補位",
         "denominator": 20,
         "direction": "makes_at_least",
         "thresholds": { "entry": 8, "advanced": 13, "mastery": 17 }

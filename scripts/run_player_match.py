@@ -54,7 +54,7 @@ AXIS_LABELS = {
 }
 
 GENERIC_GROWTH_TEMPLATE = "可以多留意 {label} 這個方向的練習"
-D_AXIS_GROWTH_TEMPLATE = "這是身體天賦上的落差,不是能單靠練習補起來的方向,可以把這位球員當作天花板參考,而不是訓練目標"
+D_AXIS_GROWTH_TEMPLATE = "身體天賦上有落差,不能單靠練習籃球技能"
 CEILING_NOT_FOUND_MESSAGE = (
     "目前的球員種子資料裡,找不到符合「運動能力跟你接近、"
     "但技術層面明顯更成熟」條件的球員。"
@@ -144,7 +144,7 @@ def main():
     ceiling = find_ceiling_template(coordinates, players)
     if ceiling:
         print(f"  天花板：{ceiling['name']} ({ceiling['team']})")
-        print("      運動能力跟你接近,但技術層面明顯更成熟的球員——一個練得到的目標。")
+        print("      運動能力跟你接近,但技術層面更成熟的球員")
     else:
         print(f"  天花板：{CEILING_NOT_FOUND_MESSAGE}")
 
@@ -155,7 +155,7 @@ def main():
         growth = describe_growth_recommendation(player, skills_by_id)
         print(f"  #{i}  {player['name']} ({player['team']})  距離={player['distance']:.1f}  貼合度={stars}")
         print(f"      相似處：{'、'.join(player['notable_traits'])}")
-        print(f"      差異：{axis} 軸({AXIS_LABELS[axis]})差距最大 → 最值得學的一件事：{growth}")
+        print(f"      差異：{axis} 軸({AXIS_LABELS[axis]})差距最大 → 可以注意：{growth}")
 
 
 if __name__ == "__main__":
