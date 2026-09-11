@@ -9,15 +9,16 @@
     color-scheme: light;
     /* 米白色偏暖色調,取代原本偏冷、偏暗的配色(2026-09-11 討論)——不跟隨
        系統深色模式,固定用這組暖色調,眼睛比較不吃力也不會太刺眼。 */
-    --paper: #f2ecdd;
-    --paper-raised: #faf6ec;
-    --paper-sunken: #e8dfc9;
-    --ink: #332b1e;
-    --ink-soft: #6f6350;
-    --line: rgba(51, 43, 30, 0.16);
-    --accent: #a8671f;
-    --accent-ink: #7a4f15;
-    --accent-wash: rgba(168, 103, 31, 0.12);
+    --paper: #e6dcc3;
+    --paper-raised: #efe6d0;
+    --paper-sunken: #d9cca8;
+    --ink: #2b2416;
+    --ink-soft: #5c503f;
+    --line: rgba(43, 36, 22, 0.2);
+    --accent: #96591a;
+    --accent-ink: #6b4512;
+    --accent-wash: rgba(150, 89, 26, 0.14);
+    --shadow: 0 2px 7px rgba(43, 36, 22, 0.14), 0 1px 2px rgba(43, 36, 22, 0.09);
     --radius: 10px;
     --sans: -apple-system, "Segoe UI", "PingFang TC", "Noto Sans TC", system-ui, sans-serif;
     --mono: "SF Mono", "JetBrains Mono", Menlo, ui-monospace, "Noto Sans Mono", monospace;
@@ -98,6 +99,7 @@
     padding: 1.1rem 1.3rem 1.3rem;
     margin-top: 1.75rem;
     text-align: center;
+    box-shadow: var(--shadow);
   }
 
   .rules-box h2 {
@@ -142,12 +144,12 @@
   }
 
   .mode-btn {
-    flex: 1 1 200px;
+    flex: 0 1 160px;
     border: 1px solid var(--line);
-    border-radius: var(--radius);
+    border-radius: 18px;
     background: var(--paper-raised);
     color: var(--ink);
-    padding: 1.1rem 1.2rem;
+    padding: 0.8rem 0.9rem;
     cursor: pointer;
     text-align: center;
     display: flex;
@@ -155,6 +157,7 @@
     align-items: center;
     gap: 0.2rem;
     font-family: inherit;
+    box-shadow: var(--shadow);
   }
 
   .mode-btn:hover:not(:disabled) {
@@ -164,11 +167,12 @@
   .mode-btn:disabled {
     opacity: 0.45;
     cursor: not-allowed;
+    box-shadow: none;
   }
 
   .mode-btn .mode-title {
     font-weight: 800;
-    font-size: 1.05rem;
+    font-size: 0.95rem;
   }
 
   .mode-btn .mode-sub {
@@ -688,11 +692,11 @@
 
   <div class="rules-box">
     <h2>📋 作答說明</h2>
-    <p>每一題都是 5 句具體的行為描述，不是自評強弱——請選出最符合你平常實際表現的那一句。</p>
-    <p>身材數值皆為選填，但填寫越完整，身材模板與運動能力的比對就越準確；完全不填也可以送出。</p>
-    <p class="rules-notes-label">注意事項：</p>
+    <p>每一題都是 5 句具體的行為描述，請選出最符合你實際表現的那一句</p>
+    <p>身材數值皆為選填，但填寫越完整，身材模板與運動能力的比對就越準確</p>
+    <p class="rules-notes-label">⚠️ 注意事項：</p>
     <ol class="rules-notes">
-      <li>請誠實作答——選你「實際上會怎麼做」，不是「希望自己能做到」的程度。</li>
+      <li>請誠實作答 - 選擇「實際上會怎麼做」，而不是「希望自己能做到的」。</li>
       <li>沒填的身材數值不會納入比對，身材模板可能因此比較不準。</li>
       <li>所有配對結果都是座標距離的最近鄰計算，不是真人球探評測，僅供參考。</li>
     </ol>
