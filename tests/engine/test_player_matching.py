@@ -152,6 +152,31 @@ class RankSimilarPlayersByStyleAndBodyTest(unittest.TestCase):
 
         self.assertEqual([p["id"] for p in ranked], ["near", "mid"])
 
+    def test_d_axis_gap_is_weighted_more_than_other_axes(self):
+        # D_AXIS_WEIGHT=2 (2026-09-11 discussion: athletic differences matter
+        # more than skill differences, exact ratio still being tuned) means a
+        # 10-point D gap should now outweigh a 12-point A gap, even though
+        # 10 < 12 unweighted -- this would rank the other way with weight 1.
+        user_coordinates = {"A": 50, "B": 50, "C": 50, "D": 50}
+        players = [
+            {
+                "id": "big_d_gap", "name": "Big D Gap",
+                "coordinates": {"A": 50, "B": 50, "C": 50, "D": 60},
+            },
+            {
+                "id": "big_a_gap", "name": "Big A Gap",
+                "coordinates": {"A": 62, "B": 50, "C": 50, "D": 50},
+            },
+        ]
+
+        ranked = rank_similar_players_by_style_and_body(
+            user_coordinates, {}, players, self.FIELD_RANGES, k=10
+        )
+
+        self.assertEqual([p["id"] for p in ranked], ["big_a_gap", "big_d_gap"])
+        self.assertAlmostEqual(ranked[0]["distance"], 12.0)
+        self.assertAlmostEqual(ranked[1]["distance"], (2 * 10 ** 2) ** 0.5)
+
 
 class FitStarsForDistanceTest(unittest.TestCase):
     def test_boundary_values(self):

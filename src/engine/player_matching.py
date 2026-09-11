@@ -9,10 +9,16 @@
 # 是同一套「D 軸差距最大」邏輯,一樣沒有意義(2026-09-11 重新設計討論)。
 # rank_similar_players_by_style_and_body 是另一支「四軸+身材」的混合距離函數,
 # 給 10 人對照表跟「整體模板」用,刻意不影響上面 3 個深度模板函數(它們的設計
-# 就是要跟身材無關,見 2026-09-11 body-aware matching 討論)。
-# 可手動調整的變數：_DISTANCE_STAR_THRESHOLDS(貼合度星級的距離門檻,目前是依
-# 常理暫定的 20/40/60/80,等有真實球員資料庫、知道實際距離分佈後應該重新校準;
-# 這組門檻兩個排序函數共用,沒有另外針對加了身材維度後更大的距離空間校準)。
+# 就是要跟身材無關,見 2026-09-11 body-aware matching 討論)。這支函數裡 D 軸
+# (運動能力)的平方項會乘上 D_AXIS_WEIGHT——身體條件的差距被認為比技巧差距
+# 影響大更多,所以刻意讓 D 軸差距在距離裡佔比更重,不是四軸平權(2026-09-11
+# 討論,倍率先抓 2,之後看效果再調)。技能最貼合/天花板刻意不受影響,因為它們
+# 本來就不是「四軸平權距離」的結構。
+# 可手動調整的變數：D_AXIS_WEIGHT(D 軸平方項的權重倍率,目前先抓 2,之後要調
+# 整就直接改這個數字)、_DISTANCE_STAR_THRESHOLDS(貼合度星級的距離門檻,目前
+# 是依常理暫定的 20/40/60/80,等有真實球員資料庫、知道實際距離分佈後應該重新
+# 校準;這組門檻兩個排序函數共用,沒有另外針對加了身材維度或 D 軸加權後更大的
+# 距離空間校準)。
 
 """L3 matching layer: nearest-neighbor player template matching.
 
@@ -25,6 +31,8 @@ import math
 from engine.body_fit import body_distance
 
 AXES = ("A", "B", "C", "D")
+
+D_AXIS_WEIGHT = 2
 
 _DISTANCE_STAR_THRESHOLDS = (
     (20, 5),
@@ -92,7 +100,8 @@ def rank_similar_players_by_style_and_body(user_coordinates, user_body, players,
 
     Returns the k nearest players sorted by ascending combined distance.
     Each result dict is the original player dict plus:
-        distance: float, combined style+body distance
+        distance: float, combined style+body distance (D axis weighted
+            D_AXIS_WEIGHT times more heavily than A/B/C/body fields)
         diff: {"A"..."D": player[axis] - user_coordinates[axis]} (signed,
             style-only -- growth-recommendation text is keyed off this)
         dominant_diff_axis: axis of the signed max of diff (style-only)
@@ -101,7 +110,10 @@ def rank_similar_players_by_style_and_body(user_coordinates, user_body, players,
     ranked = []
     for player in players:
         diff = {axis: player["coordinates"][axis] - user_coordinates[axis] for axis in AXES}
-        squared_terms = [diff[axis] ** 2 for axis in AXES]
+        squared_terms = [
+            (diff[axis] ** 2) * (D_AXIS_WEIGHT if axis == "D" else 1)
+            for axis in AXES
+        ]
 
         common_body_fields = set(user_body) & set(player.get("body", {}))
         for field in common_body_fields:
