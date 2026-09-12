@@ -93,13 +93,13 @@ def describe_growth_recommendation(player, skills_by_id):
 
 
 def build_scouting_report(archetype, top_match, skills_by_id):
-    """One-line "scouting report": archetype identity + a growth-focused
-    clause from the #1 overall match (ranked[0] of the 10-table) -- the
+    """One-line "scouting report": the archetype's flavor text -- the
     shareable headline the results page leads with instead of four bare
-    numbers (2026-09-13 UX review discussion).
+    numbers (2026-09-13 UX review discussion). The archetype name itself is
+    shown separately in the headline card, so this doesn't repeat it.
     """
     growth = describe_growth_recommendation(top_match, skills_by_id)
-    return f"你是{archetype['name_zh']}: {archetype['flavor']}"
+    return f"{archetype['flavor']}"
 
 
 def main():

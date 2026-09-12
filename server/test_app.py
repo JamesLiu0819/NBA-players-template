@@ -126,7 +126,7 @@ class TemplateResultsTest(unittest.TestCase):
 
         self.assertEqual(set(data["archetype"].keys()), {"name_zh", "flavor"})
         self.assertIsInstance(data["scouting_report"], str)
-        self.assertIn(data["archetype"]["name_zh"], data["scouting_report"])
+        self.assertEqual(data["scouting_report"], data["archetype"]["flavor"])
 
     def test_missing_pool_defaults_to_current_players(self):
         payload = {"axis_answers": build_axis_answers(self.questions)}
