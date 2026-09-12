@@ -1392,9 +1392,9 @@
   }
 
   function buildRadarSvg(userCoords, matchCoords, matchLabel) {
-    const size = 240;
+    const size = 300;
     const center = size / 2;
-    const maxRadius = size / 2 - 34;
+    const maxRadius = size / 2 - 75;
 
     const polygonPoints = (coords) =>
       RADAR_AXES.map((axis) => radarPoint(center, center, maxRadius, coords, axis).join(",")).join(" ");
@@ -1417,7 +1417,7 @@
 
     const axisLabels = RADAR_AXES.map((axis, i) => {
       const angle = radarAngle(i);
-      const labelR = maxRadius + 20;
+      const labelR = maxRadius + 25;
       const x = center + labelR * Math.cos(angle);
       const y = center + labelR * Math.sin(angle);
       return `<text x="${x}" y="${y}" class="radar-axis-label" text-anchor="middle" dominant-baseline="middle">${AXIS_LABELS[axis]}</text>`;
