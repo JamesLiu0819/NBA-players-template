@@ -99,7 +99,7 @@ def build_scouting_report(archetype, top_match, skills_by_id):
     numbers (2026-09-13 UX review discussion).
     """
     growth = describe_growth_recommendation(top_match, skills_by_id)
-    return f"你是{archetype['name_zh']}——{archetype['flavor']}"
+    return f"你是{archetype['name_zh']}: {archetype['flavor']}"
 
 
 def main():
