@@ -99,6 +99,27 @@ class ScoreAxisCoordinatesTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             score_axis_coordinates(QUESTIONS, answers)
 
+    def test_reverse_scored_question_flips_its_raw_score_before_averaging(self):
+        # b3 is flagged reverse_scored: a raw score of 1 should contribute
+        # like a 5 (and vice versa) so anchor text can read "1 = least, 5 =
+        # most" of the literal described behaviour while still counting
+        # toward the axis in the intended direction (2026-09-13 fix).
+        questions = [q.copy() for q in QUESTIONS]
+        for q in questions:
+            if q["id"] == "b3":
+                q["reverse_scored"] = True
+
+        answers = answers_with_scores({
+            "A": [3, 3, 3, 3],
+            "B": [5, 5, 1, 5],  # b3=1, reverse-scored -> counts as 5
+            "C": [3, 3, 3, 3],
+            "D": [3, 3, 3, 3],
+        })
+
+        coords = score_axis_coordinates(questions, answers)
+
+        self.assertEqual(coords["B"], 100.0)
+
 
 if __name__ == "__main__":
     unittest.main()

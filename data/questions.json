@@ -1,6 +1,6 @@
 {
   "_description": "問診題庫。axis_positioning 是四軸定位 16 題(A/B/C/D 各 4 題),skill_behavior 是完整 15 項技能(SPEC.md §3.3)的行為錨定題(目前每項技能 1 題,共 15 題),body_measurements 是 SPEC.md §5.2 身材類的 6 題數值題(給「3 位深度模板」的身體最貼合用)。目前合計 37 題;SPEC §5.5 的完整題數預算是 45-51 題,還缺聯賽環境(5題)、目標/限制/困擾(6題)兩塊(SPEC.md §12 未決問題 #1 的擴充範圍)。axis_positioning/skill_behavior 都是 BARS(行為錨定評分量表,見 SPEC.md §5.1)——問的是具體行為/頻率,不是自評能力高低;body_measurements 例外,是直接填數值,不是 BARS。",
-  "_editable_fields": "axis_positioning/skill_behavior 每題的 prompt(題目文字)跟 anchors(1-5 每個分數對應的行為描述)可以照 BARS 精神修改用詞,body_measurements 每題的 prompt/unit/min/max 可以依實際需求調整,但改的時候要小心三件事:(1) id 一旦被其他地方引用(例如 skill_behavior 的 skill_id 對應 skills.json 的技能 id;body_measurements 的 field 對應 players.json 的 body 欄位名)就不要改,否則資料兜不起來;(2) 每題的 anchors 必須維持 1-5 五個完整的行為描述,不能只改數字不改文字,否則就違背了 BARS 的設計目的;(3) body_measurements 的 field 目前只有 height_cm/wingspan_cm 兩項會被拿去跟 players.json 比對(其餘四項球員資料庫還沒有對應欄位),新增題目要小心維持這個對應關係。要新增題目就照現有的物件格式加進對應的陣列。",
+  "_editable_fields": "axis_positioning/skill_behavior 每題的 prompt(題目文字)跟 anchors(1-5 每個分數對應的行為描述)可以照 BARS 精神修改用詞,body_measurements 每題的 prompt/unit/min/max 可以依實際需求調整,但改的時候要小心三件事:(1) id 一旦被其他地方引用(例如 skill_behavior 的 skill_id 對應 skills.json 的技能 id;body_measurements 的 field 對應 players.json 的 body 欄位名)就不要改,否則資料兜不起來;(2) 每題的 anchors 必須維持 1-5 五個完整的行為描述,不能只改數字不改文字,否則就違背了 BARS 的設計目的;(3) body_measurements 的 field 目前只有 height_cm/wingspan_cm 兩項會被拿去跟 players.json 比對(其餘四項球員資料庫還沒有對應欄位),新增題目要小心維持這個對應關係。要新增題目就照現有的物件格式加進對應的陣列。axis_positioning 題目若加上 \"reverse_scored\": true(目前 axis_b3、axis_c1),代表這題錨點刻意照「1=最少,5=最多」描述的字面頻率排列,但該行為本身跟軸的方向相反(例如常卡在禁區反而扣空間分),engine/axis_position.py 的 score_axis_coordinates 會自動把這題的分數反轉(6-score)再平均——改這種題的用詞時要連 reverse_scored 一起確認方向是否還成立,不能只改文字。",
   "axis_positioning": [
     {
       "id": "axis_a1",
@@ -78,12 +78,13 @@
       "id": "axis_b3",
       "axis": "B",
       "prompt": "進攻回合中,你在禁區要位、卡位的頻率是?",
+      "reverse_scored": true,
       "anchors": {
-        "1": "幾乎每個回合都在禁區卡位",
-        "2": "常常在禁區卡位",
+        "1": "幾乎不會去禁區卡位",
+        "2": "很少在禁區卡位",
         "3": "一半時間",
-        "4": "很少在禁區卡位",
-        "5": "幾乎不會去禁區卡位"
+        "4": "常常在禁區卡位",
+        "5": "幾乎每個回合都在禁區卡位"
       }
     },
     {
@@ -102,12 +103,13 @@
       "id": "axis_c1",
       "axis": "C",
       "prompt": "防守時,教練多常把你安排在禁區協防、卡位、補防的角色?",
+      "reverse_scored": true,
       "anchors": {
-        "1": "幾乎每次都是我",
-        "2": "常常是我",
+        "1": "幾乎不會是我",
+        "2": "很少是我",
         "3": "一半時間",
-        "4": "很少是我",
-        "5": "幾乎不會是我"
+        "4": "常常是我",
+        "5": "幾乎每次都是我"
       }
     },
     {

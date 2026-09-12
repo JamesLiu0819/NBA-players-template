@@ -34,6 +34,12 @@ def mock_axis_answers(axis_positioning_questions, target_coordinates):
 
     Returns a list of {"question_id", "score"} in axis_positioning_questions
     order.
+
+    A question with "reverse_scored": true gets its computed score inverted
+    (6-score) before being stored -- mirrors the 6-score flip
+    score_axis_coordinates applies to those questions when re-scoring real
+    answers, so the stored raw answer round-trips back to the same target
+    (2026-09-13 fix, see engine/axis_position.py).
     """
     answers_by_id = {}
     for axis in AXES:
@@ -45,7 +51,10 @@ def mock_axis_answers(axis_positioning_questions, target_coordinates):
         base, remainder = divmod(sum_target, n)
         for i, q in enumerate(axis_questions):
             score = base + 1 if i < remainder else base
-            answers_by_id[q["id"]] = min(5, max(1, score))
+            score = min(5, max(1, score))
+            if q.get("reverse_scored"):
+                score = 6 - score
+            answers_by_id[q["id"]] = score
 
     return [{"question_id": q["id"], "score": answers_by_id[q["id"]]} for q in axis_positioning_questions]
 

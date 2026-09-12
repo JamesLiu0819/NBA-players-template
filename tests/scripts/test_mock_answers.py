@@ -71,6 +71,38 @@ class MockAxisAnswersTest(unittest.TestCase):
         for axis in "ABCD":
             self.assertAlmostEqual(recomputed[axis], target[axis], delta=15)
 
+    def test_reverse_scored_question_gets_an_inverted_raw_score(self):
+        # axis_b3 is reverse_scored in the real data/questions.json: its
+        # anchor text reads "1 = least, 5 = most" of the literal described
+        # behaviour, but that behaviour runs opposite to the axis, so
+        # score_axis_coordinates flips it (6-score) before averaging. The
+        # mock answer must store the pre-flip raw value, not the target
+        # effective score, or a high B target would end up looking like a
+        # low raw answer on this question for no reason a human could guess.
+        questions = [q.copy() for q in AXIS_QUESTIONS]
+        for q in questions:
+            if q["id"] == "axis_b3":
+                q["reverse_scored"] = True
+
+        answers = mock_axis_answers(questions, {"A": 50, "B": 100, "C": 50, "D": 50})
+
+        b3 = next(a for a in answers if a["question_id"] == "axis_b3")
+        self.assertEqual(b3["score"], 1)
+
+    def test_reverse_scored_question_still_round_trips_correctly(self):
+        from engine.axis_position import score_axis_coordinates
+
+        questions = [q.copy() for q in AXIS_QUESTIONS]
+        for q in questions:
+            if q["id"] == "axis_b3":
+                q["reverse_scored"] = True
+
+        target = {"A": 50, "B": 70, "C": 50, "D": 50}
+        answers = mock_axis_answers(questions, target)
+        recomputed = score_axis_coordinates(questions, answers)
+
+        self.assertAlmostEqual(recomputed["B"], target["B"], delta=15)
+
 
 SKILL_QUESTIONS = [
     {"id": "skill_post_up_1", "skill_id": "post_up"},
