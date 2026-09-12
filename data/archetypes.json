@@ -1,0 +1,78 @@
+{
+  "_description": "球場定位原型(archetype)清單,給「一句話球探報告」跟結果頁的原型標籤用。每個原型是四軸空間裡的一個錨點座標,使用者座標用最近鄰(Euclidean distance)分類到最接近的原型——跟 src/engine/player_matching.py 找最像球員的邏輯是同一套精神,只是比對的對象換成手動設計的原型錨點,不是球員。12 個原型盡量平均分布在 A/B/C/D 四軸空間裡,不是窮舉所有座標組合,涵蓋常見的球風輪廓即可。",
+  "_editable_fields": "整份 archetypes 清單都可以改——調 coordinates 改變分類邊界,調 name_zh/flavor 改變文案。id 一旦被別的地方引用就不要改。新增原型時盡量選跟現有錨點距離夠遠的座標,不然會很少被分到。",
+  "archetypes": [
+    {
+      "id": "floor_general",
+      "name_zh": "控場指揮官",
+      "coordinates": { "A": 90, "B": 40, "C": 40, "D": 45 },
+      "flavor": "球在你手上,進攻節奏跟隊友的出手機會都由你決定。"
+    },
+    {
+      "id": "combo_scorer",
+      "name_zh": "雙能得分後衛",
+      "coordinates": { "A": 70, "B": 65, "C": 40, "D": 55 },
+      "flavor": "自己創造機會也能接球就投,得分手段不只一種。"
+    },
+    {
+      "id": "offball_shooter",
+      "name_zh": "無球射手",
+      "coordinates": { "A": 20, "B": 90, "C": 30, "D": 40 },
+      "flavor": "靠跑動甩開防守拿到空檔,出手是你最大的價值。"
+    },
+    {
+      "id": "three_and_d_wing",
+      "name_zh": "3D 側翼",
+      "coordinates": { "A": 35, "B": 70, "C": 75, "D": 60 },
+      "flavor": "防得住人也能穩定站在三分線外,球隊最放心的拼圖。"
+    },
+    {
+      "id": "lockdown_defender",
+      "name_zh": "鎖鏈防守者",
+      "coordinates": { "A": 30, "B": 30, "C": 90, "D": 65 },
+      "flavor": "對方最怕被你對位,你在場上先想的是怎麼守死人。"
+    },
+    {
+      "id": "do_it_all_forward",
+      "name_zh": "全能鋒線",
+      "coordinates": { "A": 55, "B": 50, "C": 55, "D": 60 },
+      "flavor": "什麼都會一點,球隊缺什麼你就補什麼。"
+    },
+    {
+      "id": "stretch_big",
+      "name_zh": "空間型內線",
+      "coordinates": { "A": 30, "B": 75, "C": 30, "D": 35 },
+      "flavor": "拉到外線也能出手,把禁區空間讓給隊友。"
+    },
+    {
+      "id": "back_to_basket_center",
+      "name_zh": "背框中鋒",
+      "coordinates": { "A": 25, "B": 15, "C": 25, "D": 35 },
+      "flavor": "禁區單打腳步紮實,低位就是你的主場。"
+    },
+    {
+      "id": "rim_protector",
+      "name_zh": "護框長人",
+      "coordinates": { "A": 15, "B": 10, "C": 25, "D": 75 },
+      "flavor": "只要你站在禁區,對手上籃前都要多想一秒。"
+    },
+    {
+      "id": "cutting_finisher",
+      "name_zh": "空切終結者",
+      "coordinates": { "A": 20, "B": 40, "C": 30, "D": 85 },
+      "flavor": "沒球在手也很危險,找到空檔就是你進攻的方式。"
+    },
+    {
+      "id": "explosive_slasher",
+      "name_zh": "爆發突破手",
+      "coordinates": { "A": 80, "B": 35, "C": 40, "D": 85 },
+      "flavor": "持球一步就能過人,轉換攻防的速度就是你的武器。"
+    },
+    {
+      "id": "blue_collar_energy",
+      "name_zh": "藍領工兵",
+      "coordinates": { "A": 15, "B": 25, "C": 55, "D": 70 },
+      "flavor": "籃板卡位、補防、拼搶,場上的髒活你都不閃。"
+    }
+  ]
+}

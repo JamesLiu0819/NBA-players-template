@@ -664,6 +664,78 @@
     margin: 0.75rem 0 0;
   }
 
+  /* ---------- headline card: archetype + one-line report + radar + share ---------- */
+  /* 2026-09-13 UX 檢討：結果頁原本開場就是四個裸數字,沒有可以截圖分享的東西。
+     這個卡片放在報告最上面,是新的門面——原型名稱、一句話球探報告、雷達圖
+     (使用者 vs 最佳配對球員疊圖)、下載分享圖按鈕。 */
+
+  .headline-card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--paper-raised);
+    padding: 1.3rem 1.4rem 1.5rem;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+
+  .headline-card .archetype-name {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--accent-ink);
+    margin: 0 0 0.5rem;
+  }
+
+  .headline-card .scouting-report {
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+    max-width: 44ch;
+    margin: 0 auto 1.2rem;
+    line-height: 1.7;
+  }
+
+  .radar-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.7rem;
+    margin: 0 auto 1.3rem;
+    max-width: 280px;
+  }
+
+  .radar-svg { width: 100%; height: auto; }
+  .radar-grid { fill: none; stroke: var(--line); stroke-width: 1; }
+  .radar-axis-line { stroke: var(--line); stroke-width: 1; }
+  .radar-axis-label { fill: var(--ink-soft); font-size: 10px; font-family: var(--sans); }
+  .radar-poly { stroke-width: 2; }
+  .radar-poly-user { fill: rgba(217, 160, 63, 0.35); stroke: var(--accent); }
+  .radar-poly-match { fill: rgba(91, 155, 213, 0.25); stroke: #5b9bd5; }
+
+  .radar-legend {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+  }
+
+  .legend-item { display: flex; align-items: center; gap: 0.35rem; }
+  .legend-swatch { width: 0.7rem; height: 0.7rem; border-radius: 3px; display: inline-block; flex: none; }
+  .legend-swatch-user { background: var(--accent); }
+  .legend-swatch-match { background: #5b9bd5; }
+
+  .share-btn {
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--accent-ink);
+    padding: 0.55rem 1.1rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .share-btn:hover { background: var(--accent-wash); }
+
   .template-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -1325,6 +1397,190 @@
     return out;
   }
 
+  // ---- headline card: radar chart (SVG for on-page, canvas for the
+  // downloadable share image) -- 2026-09-13 UX 檢討討論。四軸固定畫在
+  // 上/右/下/左(順時針),兩個函數共用同一套角度數學,確保畫面上看到的
+  // 雷達圖跟下載下來的分享圖是同一個形狀。
+
+  const RADAR_AXES = ["A", "B", "C", "D"];
+
+  function radarAngle(i) {
+    return -Math.PI / 2 + i * (Math.PI / 2);
+  }
+
+  function radarPoint(centerX, centerY, maxRadius, coords, axis) {
+    const value = Math.max(0, Math.min(100, coords[axis]));
+    const r = (value / 100) * maxRadius;
+    const angle = radarAngle(RADAR_AXES.indexOf(axis));
+    return [centerX + r * Math.cos(angle), centerY + r * Math.sin(angle)];
+  }
+
+  function buildRadarSvg(userCoords, matchCoords, matchLabel) {
+    const size = 240;
+    const center = size / 2;
+    const maxRadius = size / 2 - 34;
+
+    const polygonPoints = (coords) =>
+      RADAR_AXES.map((axis) => radarPoint(center, center, maxRadius, coords, axis).join(",")).join(" ");
+
+    const gridRings = [0.25, 0.5, 0.75, 1].map((frac) => {
+      const pts = RADAR_AXES.map((_, i) => {
+        const angle = radarAngle(i);
+        const r = frac * maxRadius;
+        return `${center + r * Math.cos(angle)},${center + r * Math.sin(angle)}`;
+      }).join(" ");
+      return `<polygon points="${pts}" class="radar-grid" />`;
+    }).join("");
+
+    const axisLines = RADAR_AXES.map((_, i) => {
+      const angle = radarAngle(i);
+      const x = center + maxRadius * Math.cos(angle);
+      const y = center + maxRadius * Math.sin(angle);
+      return `<line x1="${center}" y1="${center}" x2="${x}" y2="${y}" class="radar-axis-line" />`;
+    }).join("");
+
+    const axisLabels = RADAR_AXES.map((axis, i) => {
+      const angle = radarAngle(i);
+      const labelR = maxRadius + 20;
+      const x = center + labelR * Math.cos(angle);
+      const y = center + labelR * Math.sin(angle);
+      return `<text x="${x}" y="${y}" class="radar-axis-label" text-anchor="middle" dominant-baseline="middle">${AXIS_LABELS[axis]}</text>`;
+    }).join("");
+
+    return `
+      <svg viewBox="0 0 ${size} ${size}" class="radar-svg" role="img" aria-label="四軸雷達圖：你跟${matchLabel}的比較">
+        ${gridRings}
+        ${axisLines}
+        <polygon points="${polygonPoints(matchCoords)}" class="radar-poly radar-poly-match"></polygon>
+        <polygon points="${polygonPoints(userCoords)}" class="radar-poly radar-poly-user"></polygon>
+        ${axisLabels}
+      </svg>
+      <div class="radar-legend">
+        <span class="legend-item"><span class="legend-swatch legend-swatch-user"></span>你</span>
+        <span class="legend-item"><span class="legend-swatch legend-swatch-match"></span>${matchLabel}</span>
+      </div>`;
+  }
+
+  function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight) {
+    const chars = Array.from(text || "");
+    let line = "";
+    let curY = y;
+    for (const ch of chars) {
+      const testLine = line + ch;
+      if (line !== "" && ctx.measureText(testLine).width > maxWidth) {
+        ctx.fillText(line, x, curY);
+        line = ch;
+        curY += lineHeight;
+      } else {
+        line = testLine;
+      }
+    }
+    if (line) ctx.fillText(line, x, curY);
+    return curY + lineHeight;
+  }
+
+  function drawRadarOnCanvas(ctx, centerX, centerY, maxRadius, userCoords, matchCoords) {
+    ctx.strokeStyle = "rgba(154, 161, 171, 0.35)";
+    ctx.lineWidth = 1;
+    [0.25, 0.5, 0.75, 1].forEach((frac) => {
+      ctx.beginPath();
+      RADAR_AXES.forEach((_, i) => {
+        const angle = radarAngle(i);
+        const r = frac * maxRadius;
+        const x = centerX + r * Math.cos(angle);
+        const y = centerY + r * Math.sin(angle);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+      ctx.closePath();
+      ctx.stroke();
+    });
+
+    ctx.fillStyle = "#9aa1ab";
+    ctx.font = "22px sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    RADAR_AXES.forEach((axis, i) => {
+      const angle = radarAngle(i);
+      const x = centerX + maxRadius * Math.cos(angle);
+      const y = centerY + maxRadius * Math.sin(angle);
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      const lx = centerX + (maxRadius + 34) * Math.cos(angle);
+      const ly = centerY + (maxRadius + 34) * Math.sin(angle);
+      ctx.fillText(AXIS_LABELS[axis], lx, ly);
+    });
+
+    const drawPolygon = (coords, fillStyle, strokeStyle) => {
+      ctx.beginPath();
+      RADAR_AXES.forEach((axis, i) => {
+        const [x, y] = radarPoint(centerX, centerY, maxRadius, coords, axis);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+      ctx.closePath();
+      ctx.fillStyle = fillStyle;
+      ctx.fill();
+      ctx.strokeStyle = strokeStyle;
+      ctx.lineWidth = 3;
+      ctx.stroke();
+    };
+
+    drawPolygon(matchCoords, "rgba(91, 155, 213, 0.25)", "#5b9bd5");
+    drawPolygon(userCoords, "rgba(217, 160, 63, 0.35)", "#d9a03f");
+  }
+
+  function downloadShareImage(data, topMatch) {
+    const canvas = document.createElement("canvas");
+    canvas.width = 900;
+    canvas.height = 1150;
+    const ctx = canvas.getContext("2d");
+
+    ctx.fillStyle = "#1c2027";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "#9aa1ab";
+    ctx.font = "bold 24px sans-serif";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillText("🏀 球探報告", 60, 80);
+
+    ctx.fillStyle = "#f0c76e";
+    ctx.font = "bold 56px sans-serif";
+    ctx.fillText(data.archetype.name_zh, 60, 170);
+
+    ctx.fillStyle = "#e9e7e0";
+    ctx.font = "26px sans-serif";
+    wrapCanvasText(ctx, data.scouting_report, 60, 230, canvas.width - 120, 38);
+
+    if (topMatch) {
+      drawRadarOnCanvas(ctx, canvas.width / 2, 620, 220, data.coordinates, topMatch.coordinates);
+
+      ctx.textAlign = "left";
+      ctx.font = "22px sans-serif";
+      ctx.fillStyle = "#d9a03f";
+      ctx.fillText("■ 你", 60, 900);
+      ctx.fillStyle = "#5b9bd5";
+      ctx.fillText(`■ ${topMatch.name}`, 200, 900);
+    }
+
+    ctx.fillStyle = "#6f6350";
+    ctx.font = "18px sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("非真人球探評測，僅供參考", canvas.width / 2, canvas.height - 40);
+
+    canvas.toBlob((blob) => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `球探報告-${data.archetype.name_zh}.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+  }
+
   function renderMatchCardInner(rank, m) {
     return `
       <div class="card-head">
@@ -1392,22 +1648,39 @@
       return `<div class="${cardClass}">${renderMatchCardInner(i + 1, m)}</div>`;
     }).join("");
 
+    const topMatch = data.top_10[0] || null;
+    const radarHtml = topMatch ? buildRadarSvg(data.coordinates, topMatch.coordinates, topMatch.name) : "";
+
     el.innerHTML = `
       <section class="block report-fade">
+        <div class="headline-card">
+          <div class="archetype-name">${data.archetype.name_zh}</div>
+          <p class="scouting-report">${data.scouting_report || ""}</p>
+          <div class="radar-wrap">${radarHtml}</div>
+          <button type="button" class="share-btn" id="share-btn">📥 下載分享圖</button>
+        </div>
+      </section>
+
+      <section class="block report-fade" style="animation-delay:.05s">
         <div class="section-head"><span class="section-tag">你的定位</span><h2>球風座標</h2></div>
         <div class="axis-strip">${axisStrip}</div>
       </section>
 
-      <section class="block report-fade" style="animation-delay:.05s">
+      <section class="block report-fade" style="animation-delay:.1s">
         <div class="section-head"><span class="section-tag">SECTION 1</span><h2>3 位深度模板</h2></div>
         <div class="template-grid">${templateCards}</div>
       </section>
 
-      <section class="block report-fade" style="animation-delay:.1s">
+      <section class="block report-fade" style="animation-delay:.15s">
         <div class="section-head"><span class="section-tag">SECTION 2</span><h2>10 人對照表</h2></div>
         <div class="match-list">${matchListHtml}</div>
       </section>
     `;
+
+    const shareBtn = document.getElementById("share-btn");
+    if (shareBtn) {
+      shareBtn.addEventListener("click", () => downloadShareImage(data, topMatch));
+    }
   }
 
   function renderPriorityReport(data) {

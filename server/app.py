@@ -2,9 +2,15 @@
 #   GET  /api/form-data       給前端渲染問卷用的題庫跟技能名稱,只回傳必要欄位,
 #                             不外洩 axis_relevance/cost_C 等內部校準數字。
 #   POST /api/template-results  只吃球風定位(16題)+ 身材數值(6題,可省略),
-#                             回傳定位座標、3 位深度模板、10 人對照表——刻意
-#                             不需要技能行為跟環境權重,因為很多使用者沒在打
-#                             正式比賽,只想知道自己的球員模板。
+#                             回傳定位座標、球場定位原型+一句話球探報告、
+#                             3 位深度模板、10 人對照表(每筆也帶球員自己的
+#                             座標,給前端畫雷達圖疊圖用)——刻意不需要技能
+#                             行為跟環境權重,因為很多使用者沒在打正式比賽,
+#                             只想知道自己的球員模板。原型是從
+#                             data/archetypes.json 用最近鄰分類出來的
+#                             (engine/archetype.py),一句話球探報告是原型
+#                             文案+10人表#1的成長建議組出來的(2026-09-13
+#                             UX 檢討討論)。
 #                             10 人對照表用四軸+身材一起算距離(沒填身材數值
 #                             題就自動退化成純四軸),避免推薦身材差異很大的
 #                             球員當模板;3 位深度模板維持純四軸/純身材距離,
@@ -57,6 +63,7 @@ sys.path.insert(0, str(ROOT))
 
 from flask import Flask, jsonify, request, send_from_directory  # noqa: E402
 
+from engine.archetype import classify_archetype  # noqa: E402
 from engine.axis_position import score_axis_coordinates  # noqa: E402
 from engine.body_fit import collect_body_measurements, percentile_normalize_body  # noqa: E402
 from engine.player_matching import (  # noqa: E402
@@ -66,7 +73,7 @@ from engine.player_matching import (  # noqa: E402
     rank_similar_players_by_style_and_body,
 )
 from engine.priority import rank_priorities  # noqa: E402
-from scripts.run_player_match import describe_growth_recommendation  # noqa: E402
+from scripts.run_player_match import build_scouting_report, describe_growth_recommendation  # noqa: E402
 from scripts.run_priority import build_priority_items, format_dominant_factor_sentence  # noqa: E402
 
 UI_DIR = ROOT / "src" / "ui"
@@ -92,6 +99,10 @@ def load_data(pool="current"):
     return questions, skills, players
 
 
+def load_archetypes():
+    return load_json(ROOT / "data" / "archetypes.json")["archetypes"]
+
+
 def player_brief(player):
     if not player:
         return None
@@ -102,7 +113,7 @@ def missing_fields(payload, required):
     return [field for field in required if field not in payload]
 
 
-def compute_template_results(payload, questions, players, skills_by_id):
+def compute_template_results(payload, questions, players, skills_by_id, archetypes):
     coordinates = score_axis_coordinates(questions["axis_positioning"], payload["axis_answers"])
 
     body_answers = payload.get("body_answers") or []
@@ -124,6 +135,7 @@ def compute_template_results(payload, questions, players, skills_by_id):
             "rank": rank,
             "name": player["name"],
             "team": player["team"],
+            "coordinates": player["coordinates"],
             "distance": player["distance"],
             "fit_stars": player["fit_stars"],
             "notable_traits": player["notable_traits"],
@@ -131,8 +143,14 @@ def compute_template_results(payload, questions, players, skills_by_id):
             "growth_recommendation": describe_growth_recommendation(player, skills_by_id),
         })
 
+    archetype = classify_archetype(coordinates, archetypes)
+
     return {
         "coordinates": coordinates,
+        "archetype": {"name_zh": archetype["name_zh"], "flavor": archetype["flavor"]},
+        "scouting_report": (
+            build_scouting_report(archetype, ranked_players[0], skills_by_id) if ranked_players else None
+        ),
         "deep_templates": {
             "skill_fit": player_brief(find_skill_fit_template(coordinates, players)),
             "body_fit": (
@@ -193,8 +211,9 @@ def api_template_results():
 
     questions, skills, players = load_data(pool)
     skills_by_id = {s["id"]: s for s in skills}
+    archetypes = load_archetypes()
     try:
-        results = compute_template_results(payload, questions, players, skills_by_id)
+        results = compute_template_results(payload, questions, players, skills_by_id, archetypes)
     except (ValueError, KeyError) as e:
         return jsonify({"error": str(e)}), 400
 

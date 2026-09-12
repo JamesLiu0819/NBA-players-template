@@ -111,11 +111,22 @@ class TemplateResultsTest(unittest.TestCase):
         self.assertEqual(
             set(top_player.keys()),
             {
-                "rank", "name", "team", "distance", "fit_stars",
+                "rank", "name", "team", "coordinates", "distance", "fit_stars",
                 "notable_traits", "dominant_diff_axis", "growth_recommendation",
             },
         )
         self.assertEqual(top_player["rank"], 1)
+        self.assertEqual(set(top_player["coordinates"].keys()), {"A", "B", "C", "D"})
+
+    def test_response_includes_archetype_and_scouting_report(self):
+        payload = {"axis_answers": build_axis_answers(self.questions)}
+
+        response = self.client.post("/api/template-results", json=payload)
+        data = response.get_json()
+
+        self.assertEqual(set(data["archetype"].keys()), {"name_zh", "flavor"})
+        self.assertIsInstance(data["scouting_report"], str)
+        self.assertIn(data["archetype"]["name_zh"], data["scouting_report"])
 
     def test_missing_pool_defaults_to_current_players(self):
         payload = {"axis_answers": build_axis_answers(self.questions)}

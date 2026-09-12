@@ -39,6 +39,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
+from engine.archetype import classify_archetype  # noqa: E402
 from engine.axis_position import AXES, score_axis_coordinates  # noqa: E402
 from engine.body_fit import collect_body_measurements, percentile_normalize_body  # noqa: E402
 from engine.player_matching import (  # noqa: E402
@@ -91,6 +92,16 @@ def describe_growth_recommendation(player, skills_by_id):
     return f"{skills_by_id[skill_id]['metric']['action']}的練習"
 
 
+def build_scouting_report(archetype, top_match, skills_by_id):
+    """One-line "scouting report": archetype identity + a growth-focused
+    clause from the #1 overall match (ranked[0] of the 10-table) -- the
+    shareable headline the results page leads with instead of four bare
+    numbers (2026-09-13 UX review discussion).
+    """
+    growth = describe_growth_recommendation(top_match, skills_by_id)
+    return f"你是{archetype['name_zh']}——{archetype['flavor']}下一步可以注意：{growth}"
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -107,6 +118,7 @@ def main():
     questions = load_json(ROOT / "data" / "questions.json")
     skills = load_json(ROOT / "data" / "skills.json")["skills"]
     players = load_json(ROOT / "data" / "players.json")["players"]
+    archetypes = load_json(ROOT / "data" / "archetypes.json")["archetypes"]
     answers = load_json(answers_path)
     skills_by_id = {s["id"]: s for s in skills}
     body_field_ranges = {q["field"]: (q["min"], q["max"]) for q in questions["body_measurements"]}
@@ -127,6 +139,11 @@ def main():
     ranked = rank_similar_players_by_style_and_body(
         coordinates, user_body_pct, players_pct, body_field_ranges_pct, k=10
     )
+
+    archetype = classify_archetype(coordinates, archetypes)
+    print(f"\n球場定位原型：{archetype['name_zh']}")
+    if ranked:
+        print(f"一句話球探報告：{build_scouting_report(archetype, ranked[0], skills_by_id)}")
 
     print("\n3 位深度模板:")
 
