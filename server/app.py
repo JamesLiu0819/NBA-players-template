@@ -6,11 +6,14 @@
 #                             3 位深度模板、10 人對照表(每筆也帶球員自己的
 #                             座標,給前端畫雷達圖疊圖用)——刻意不需要技能
 #                             行為跟環境權重,因為很多使用者沒在打正式比賽,
-#                             只想知道自己的球員模板。原型是從
-#                             data/archetypes.json 用最近鄰分類出來的
-#                             (engine/archetype.py),一句話球探報告是原型
-#                             文案+10人表#1的成長建議組出來的(2026-09-13
-#                             UX 檢討討論)。
+#                             只想知道自己的球員模板。原型不是直接拿使用者
+#                             座標比對 data/archetypes.json 的原型錨點,而是
+#                             把 10 人對照表前 5 位最相似的真人球員各自分類到
+#                             最近的原型後投票多數決(engine/archetype.py 的
+#                             classify_archetype_by_majority),確保原型標籤
+#                             一定跟畫面上顯示的球員一致,不會各算各的
+#                             (2026-09-13 討論)。一句話球探報告是原型文案+
+#                             10人表#1的成長建議組出來的。
 #                             10 人對照表用四軸+身材一起算距離(沒填身材數值
 #                             題就自動退化成純四軸),避免推薦身材差異很大的
 #                             球員當模板;3 位深度模板維持純四軸/純身材距離,
@@ -63,7 +66,7 @@ sys.path.insert(0, str(ROOT))
 
 from flask import Flask, jsonify, request, send_from_directory  # noqa: E402
 
-from engine.archetype import classify_archetype  # noqa: E402
+from engine.archetype import classify_archetype_by_majority  # noqa: E402
 from engine.axis_position import score_axis_coordinates  # noqa: E402
 from engine.body_fit import collect_body_measurements, percentile_normalize_body  # noqa: E402
 from engine.player_matching import (  # noqa: E402
@@ -143,7 +146,7 @@ def compute_template_results(payload, questions, players, skills_by_id, archetyp
             "growth_recommendation": describe_growth_recommendation(player, skills_by_id),
         })
 
-    archetype = classify_archetype(coordinates, archetypes)
+    archetype = classify_archetype_by_majority(ranked_players, archetypes)
 
     return {
         "coordinates": coordinates,

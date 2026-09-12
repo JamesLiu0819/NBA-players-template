@@ -39,7 +39,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from engine.archetype import classify_archetype  # noqa: E402
+from engine.archetype import classify_archetype_by_majority  # noqa: E402
 from engine.axis_position import AXES, score_axis_coordinates  # noqa: E402
 from engine.body_fit import collect_body_measurements, percentile_normalize_body  # noqa: E402
 from engine.player_matching import (  # noqa: E402
@@ -140,7 +140,7 @@ def main():
         coordinates, user_body_pct, players_pct, body_field_ranges_pct, k=10
     )
 
-    archetype = classify_archetype(coordinates, archetypes)
+    archetype = classify_archetype_by_majority(ranked, archetypes)
     print(f"\n球場定位原型：{archetype['name_zh']}")
     if ranked:
         print(f"一句話球探報告：{build_scouting_report(archetype, ranked[0], skills_by_id)}")
