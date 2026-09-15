@@ -232,5 +232,23 @@ class FormDataAndStaticTest(unittest.TestCase):
             response.close()
 
 
+class SiteVisitTest(unittest.TestCase):
+    def setUp(self):
+        self.client = app.test_client()
+
+    def test_returns_200_with_visit_count_field(self):
+        response = self.client.post("/api/site-visit")
+
+        self.assertEqual(response.status_code, 200)
+        data = response.get_json()
+        self.assertIsInstance(data["visit_count"], int)
+
+    def test_visit_count_increments_across_calls(self):
+        first = self.client.post("/api/site-visit").get_json()["visit_count"]
+        second = self.client.post("/api/site-visit").get_json()["visit_count"]
+
+        self.assertEqual(second, first + 1)
+
+
 if __name__ == "__main__":
     unittest.main()

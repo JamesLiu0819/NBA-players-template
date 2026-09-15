@@ -30,6 +30,11 @@
 #                             已經移除)。
 #   POST /api/priority-results  才吃技能行為(15題)+ 環境權重,回傳優先訓練
 #                             順序,是使用者自己選擇要不要看的「進階」分析。
+#   POST /api/site-visit         每次呼叫讓瀏覽人次計數器 +1,回傳遞增後的
+#                             總數,給首頁右上角顯示用(2026-09-15 新增,見
+#                             docs/superpowers/specs/2026-09-15-visit-counter-design.md)。
+#                             計數邏輯在 db.py,沒有 DATABASE_URL 環境變數
+#                             時退化成記憶體計數器(本機開發/測試)。
 # /api/template-results 吃一個選填的 "pool" 欄位("current"預設值 或
 # "alltime"),決定球員池要用 data/players.json(現役)還是
 # data/players_alltime.json(歷史,2026-09-11 新增)。兩份資料同一套 schema,
@@ -66,6 +71,7 @@ sys.path.insert(0, str(ROOT))
 
 from flask import Flask, jsonify, request, send_from_directory  # noqa: E402
 
+from db import increment_visit_count, init_db  # noqa: E402
 from engine.archetype import classify_archetype_by_majority  # noqa: E402
 from engine.axis_position import score_axis_coordinates  # noqa: E402
 from engine.body_fit import collect_body_measurements, percentile_normalize_body  # noqa: E402
@@ -88,6 +94,7 @@ PLAYER_POOL_FILES = {
 }
 
 app = Flask(__name__, static_folder=None)
+init_db()
 
 
 def load_json(path):
@@ -240,6 +247,11 @@ def api_priority_results():
         return jsonify({"error": str(e)}), 400
 
     return jsonify(results)
+
+
+@app.route("/api/site-visit", methods=["POST"])
+def api_site_visit():
+    return jsonify({"visit_count": increment_visit_count()})
 
 
 @app.route("/", defaults={"path": "index.html"})
