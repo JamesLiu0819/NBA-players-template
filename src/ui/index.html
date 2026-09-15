@@ -450,6 +450,15 @@
      下一題(2026-09-13 討論)。身材數值題移到球風定位 16 題之後,跟軸定位題
      共用同一套逐題流程。 */
 
+  .wizard-phase-title {
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    margin: 0 0 0.7rem;
+  }
+
   .wizard-card {
     border: 1px solid var(--line);
     border-radius: var(--radius);
@@ -978,6 +987,7 @@
 
   <form id="stage1-form" style="display:none">
 
+    <div class="wizard-phase-title" id="stage1-phase-title"></div>
     <div id="stage1-wizard"></div>
 
     <div class="submit-block" id="stage1-submit-block" style="display:none">
@@ -1012,6 +1022,7 @@
 
     <form id="stage2-form">
 
+      <div class="wizard-phase-title" id="stage2-phase-title"></div>
       <div id="stage2-wizard"></div>
 
       <section class="block" id="stage2-env-section" style="display:none">
@@ -1170,10 +1181,13 @@
     const tag = document.createElement("span");
     tag.className = "wizard-step-tag mono";
     tag.textContent = `第 ${index + 1} / ${total} 題`;
-    const eb = document.createElement("span");
-    eb.className = "wizard-eyebrow";
-    eb.textContent = eyebrow;
-    meta.append(tag, eb);
+    meta.appendChild(tag);
+    if (eyebrow) {
+      const eb = document.createElement("span");
+      eb.className = "wizard-eyebrow";
+      eb.textContent = eyebrow;
+      meta.appendChild(eb);
+    }
     card.appendChild(meta);
 
     const nav = document.createElement("div");
@@ -1312,7 +1326,7 @@
 
   function renderBodyStep(mountId, q, index, total, isFirstBodyStep, onBack, onAdvance) {
     renderWizardStep(mountId, {
-      eyebrow: "身材數值(選填)", index, total, onBack,
+      index, total, onBack,
       buildBody: (card, nav) => {
         if (isFirstBodyStep) {
           const note = document.createElement("p");
@@ -1344,6 +1358,7 @@
     const idx = state.stage1StepIndex;
 
     if (idx >= total) {
+      document.getElementById("stage1-phase-title").textContent = "";
       document.getElementById("stage1-wizard").innerHTML = "";
       document.getElementById("stage1-submit-block").style.display = "block";
       updateStage1Progress();
@@ -1363,8 +1378,10 @@
     };
 
     if (step.kind === "axis") {
-      renderRadioStep("stage1-wizard", step.q, `球風定位 · ${AXIS_LABELS[step.q.axis]}`, idx, total, back, advance);
+      document.getElementById("stage1-phase-title").textContent = "球風定位";
+      renderRadioStep("stage1-wizard", step.q, AXIS_LABELS[step.q.axis], idx, total, back, advance);
     } else {
+      document.getElementById("stage1-phase-title").textContent = "身材數值(選填)";
       const isFirstBodyStep = idx === state.axisQuestions.length;
       renderBodyStep("stage1-wizard", step.q, idx, total, isFirstBodyStep, back, advance);
     }
@@ -1376,6 +1393,7 @@
     const idx = state.stage2StepIndex;
 
     if (idx >= total) {
+      document.getElementById("stage2-phase-title").textContent = "";
       document.getElementById("stage2-wizard").innerHTML = "";
       document.getElementById("stage2-env-section").style.display = "block";
       document.getElementById("stage2-submit-block").style.display = "block";
@@ -1385,10 +1403,11 @@
     }
     document.getElementById("stage2-env-section").style.display = "none";
     document.getElementById("stage2-submit-block").style.display = "none";
+    document.getElementById("stage2-phase-title").textContent = "技能行為";
 
     const q = steps[idx];
     const skillById = Object.fromEntries(state.skills.map((s) => [s.id, s]));
-    const eyebrow = `技能行為 · ${skillById[q.skill_id] ? skillById[q.skill_id].name_zh : q.skill_id}`;
+    const eyebrow = skillById[q.skill_id] ? skillById[q.skill_id].name_zh : q.skill_id;
     const back = () => {
       state.stage2StepIndex = Math.max(0, idx - 1);
       renderStage2Wizard();
