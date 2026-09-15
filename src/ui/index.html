@@ -105,6 +105,13 @@
     flex: none;
   }
 
+  .visit-counter {
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    font-family: var(--mono);
+    white-space: nowrap;
+  }
+
   .topnav-login {
     border: 1px solid var(--accent);
     border-radius: 999px;
@@ -935,6 +942,7 @@
       <a href="#" class="topnav-tab" id="topnav-tab-priority">訓練計劃</a>
     </div>
     <div class="topnav-actions">
+      <span class="visit-counter" id="visit-counter" style="display:none"></span>
       <button type="button" class="topnav-login">登入</button>
       <button type="button" class="topnav-menu" aria-label="選單">☰</button>
     </div>
@@ -2008,7 +2016,21 @@
     }
   });
 
+  function recordSiteVisit() {
+    fetch("/api/site-visit", { method: "POST" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && typeof data.visit_count === "number") {
+          const el = document.getElementById("visit-counter");
+          el.textContent = `👁 ${data.visit_count.toLocaleString()}`;
+          el.style.display = "inline";
+        }
+      })
+      .catch(() => {}); // 裝飾性數字,失敗就不顯示,不打斷任何流程
+  }
+
   main();
+  recordSiteVisit();
 })();
 </script>
 </body>
