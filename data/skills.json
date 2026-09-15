@@ -220,7 +220,7 @@
       "axis_relevance": { "A": 0.1, "B": 0.2, "C": 0.5, "D": 0.6 },
       "video_tags": ["boxing_out", "defensive_rebounding"],
       "metric": {
-        "action": "防守籃板卡位成功拿板",
+        "action": "防守籃板卡位",
         "denominator": 20,
         "direction": "makes_at_least",
         "thresholds": { "entry": 10, "advanced": 15, "mastery": 18 }
