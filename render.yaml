@@ -1,5 +1,8 @@
 # 用途：Render 的 Blueprint 部署設定,讓 Render 自動讀這份檔案建立後端 Web
 # Service,不用在網頁介面手動填 build/start command。細節見 server/README.md。
+# databases 區塊是瀏覽人次計數器用的 Postgres(2026-09-15 新增,見
+# docs/superpowers/specs/2026-09-15-visit-counter-design.md)——免費方案 90
+# 天後會過期,到期需要手動續約或升級成付費方案,這是已知、接受的限制。
 # 可手動調整的變數：plan(目前是免費方案 free,流量大了要付費升級就改這裡)、
 # PYTHON_VERSION(要跟本機開發用的 Python 版本一致,避免行為不一致)。
 services:
@@ -12,3 +15,11 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: "3.13.0"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: nba-player-template-db
+          property: connectionString
+
+databases:
+  - name: nba-player-template-db
+    plan: free
