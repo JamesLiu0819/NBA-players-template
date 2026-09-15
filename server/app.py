@@ -1,4 +1,4 @@
-# 用途：Flask 後端,三支 API：
+# 用途：Flask 後端,四支 API：
 #   GET  /api/form-data       給前端渲染問卷用的題庫跟技能名稱,只回傳必要欄位,
 #                             不外洩 axis_relevance/cost_C 等內部校準數字。
 #   POST /api/template-results  只吃球風定位(16題)+ 身材數值(6題,可省略),
@@ -30,7 +30,7 @@
 #                             已經移除)。
 #   POST /api/priority-results  才吃技能行為(15題)+ 環境權重,回傳優先訓練
 #                             順序,是使用者自己選擇要不要看的「進階」分析。
-#   POST /api/site-visit         每次呼叫讓瀏覽人次計數器 +1,回傳遞增後的
+#   POST /api/site-visit        每次呼叫讓瀏覽人次計數器 +1,回傳遞增後的
 #                             總數,給首頁右上角顯示用(2026-09-15 新增,見
 #                             docs/superpowers/specs/2026-09-15-visit-counter-design.md)。
 #                             計數邏輯在 db.py,沒有 DATABASE_URL 環境變數

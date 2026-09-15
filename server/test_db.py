@@ -34,6 +34,17 @@ class InMemoryVisitCounterTest(unittest.TestCase):
         self.db.init_db()
         self.assertEqual(self.db.increment_visit_count(), 1)
 
+    def test_init_db_does_not_raise_when_connection_fails(self):
+        def broken_connection():
+            raise ConnectionError("simulated failure")
+
+        self.db._get_connection = broken_connection
+
+        try:
+            self.db.init_db()
+        except Exception as e:
+            self.fail(f"init_db() should not raise, but raised: {e}")
+
 
 if __name__ == "__main__":
     unittest.main()

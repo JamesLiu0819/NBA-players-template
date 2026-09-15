@@ -7,6 +7,7 @@
 in-memory counter otherwise (local dev / tests).
 """
 import os
+import sys
 
 _memory_visit_count = 0
 
@@ -22,26 +23,34 @@ def _get_connection():
 def init_db():
     """Idempotently ensure the site_stats table and its single row exist.
     No-op when DATABASE_URL isn't set. Call once at process startup.
+
+    Connection/schema errors are caught and logged, not raised -- a DB
+    outage at startup (e.g. the Render free-tier Postgres expiring after
+    90 days, see the 2026-09-15 design doc) should degrade to "no visit
+    counter", not take the entire site down.
     """
-    conn = _get_connection()
-    if conn is None:
-        return
     try:
-        with conn.cursor() as cur:
-            cur.execute(
-                """
-                CREATE TABLE IF NOT EXISTS site_stats (
-                    id INTEGER PRIMARY KEY,
-                    visit_count BIGINT NOT NULL DEFAULT 0
+        conn = _get_connection()
+        if conn is None:
+            return
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS site_stats (
+                        id INTEGER PRIMARY KEY,
+                        visit_count BIGINT NOT NULL DEFAULT 0
+                    )
+                    """
                 )
-                """
-            )
-            cur.execute(
-                "INSERT INTO site_stats (id, visit_count) VALUES (1, 0) ON CONFLICT (id) DO NOTHING"
-            )
-        conn.commit()
-    finally:
-        conn.close()
+                cur.execute(
+                    "INSERT INTO site_stats (id, visit_count) VALUES (1, 0) ON CONFLICT (id) DO NOTHING"
+                )
+            conn.commit()
+        finally:
+            conn.close()
+    except Exception as e:
+        print(f"init_db: visit counter unavailable ({e})", file=sys.stderr)
 
 
 def increment_visit_count():
