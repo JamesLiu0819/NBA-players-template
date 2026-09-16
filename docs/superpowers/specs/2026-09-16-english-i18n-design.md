@@ -23,11 +23,12 @@
 - Stage 1(球員模板)跟 Stage 2(技能行為問卷 + 訓練優先序)**都要**做,不是只做 Stage 1
 - 後端程式碼裡少量寫死的中文字串模板(見 §3.4)
 - 前端所有靜態文案(按鈕、標題、規則說明、找不到符合條件時的預設文字等)
-- topnav 一個中/EN 切換按鈕,選擇記在 `localStorage`
+- topnav 語言選項(目前是中/EN 兩個),選擇記在 `localStorage`
+- 語言相關的查找一律用 §3.6 訂的「以 `lang` 為 key 的字典」寫法,不寫死二選一的判斷式,確保之後加第三個語言不用回頭改邏輯(使用者 2026-09-16 提出的明確要求)
 
 **這次不做(明確排除)：**
 - 不做瀏覽器語言自動偵測——使用者自己手動切換,理由跟 2026-09-13 topnav 導覽的決策一致(明確的使用者動作優於自動猜測)
-- 不做除了中/英以外的第三種語言
+- 不實際新增中/英以外的第三種語言——這次只做中跟英,但架構要禁得起之後加語言,不需要回頭重寫(見 §3.6)
 - 不改 `/src/engine` 任何一行(見上方核心原則)
 - 不重新設計球員資料庫的內容本身(座標、身材數值、招牌技能等)——這些是語言無關的結構性資料,英文版直接沿用中文版算好的值,不重新跑一次 `mock_axis_answers`/`score_axis_coordinates` 推導(見 §3.2)
 
@@ -61,7 +62,7 @@
 
 ### 3.3 後端 `lang` 參數,跟現有 `pool` 參數同一套模式
 
-**決策**：`load_data(pool="current", lang="zh")`、`load_archetypes(lang="zh")`——`lang` 只有 `"zh"`/`"en"` 兩個合法值,不合法回傳 400(跟現有 `pool` 驗證邏輯一樣)。`POST /api/template-results`、`POST /api/priority-results`、`GET /api/form-data` 都多接受一個選填的 `"lang"` 欄位,預設 `"zh"`(維持向後相容,舊的前端呼叫不用改就能繼續動)。
+**決策**：`load_data(pool="current", lang="zh")`、`load_archetypes(lang="zh")`——合法值來自單一常數 `SUPPORTED_LANGUAGES = ("zh", "en")`(位置見 §3.6),不合法回傳 400(跟現有 `pool` 驗證邏輯一樣)。`POST /api/template-results`、`POST /api/priority-results`、`GET /api/form-data` 都多接受一個選填的 `"lang"` 欄位,預設 `"zh"`(維持向後相容,舊的前端呼叫不用改就能繼續動)。
 
 ### 3.4 後端程式碼裡的字串模板也要 lang-aware
 
@@ -70,15 +71,33 @@
 1. `scripts/run_player_match.py` 的 `describe_growth_recommendation()`——`D_AXIS_GROWTH_TEMPLATE`(D 軸差距時的固定句子)跟 `f"{action}的練習"` 這個組句方式,都要有對應的英文版本。
 2. `scripts/run_priority.py` 的 `format_dominant_factor_sentence()`——`FACTOR_LABELS`(G/E/R/C 的顯示名稱)跟组句模板,也要有英文版本。
 
-兩個函式都新增一個 `lang="zh"` 參數,依語言選對應的字典/模板。`build_scouting_report()` 不用改——它現在已經只是直接回傳 `archetype['flavor']`,只要 `archetype` 是從正確語言的資料夾讀出來的,這裡自動就是對的語言,不需要額外的模板。
+兩個函式都新增一個 `lang="zh"` 參數,依語言選對應的字典/模板(實作方式見 §3.6 的擴充原則,不能寫成 `if lang == "zh"` 這種二選一判斷式)。`build_scouting_report()` 不用改——它現在已經只是直接回傳 `archetype['flavor']`,只要 `archetype` 是從正確語言的資料夾讀出來的,這裡自動就是對的語言,不需要額外的模板。
 
 `main()` 函式(CLI 專用的終端機輸出,不是網站 API 會呼叫的路徑)裡其餘的中文 `print()` 字串(例如「你的四軸座標:」)維持原樣不用翻——這些只有開發者本機下指令測試時會看到,不是使用者會接觸到的介面。
 
-### 3.5 前端：topnav 切換鈕 + `UI_STRINGS` 字典 + `localStorage`
+### 3.5 前端：topnav 語言選項 + `UI_STRINGS` 字典 + `localStorage`
 
-**決策**：`src/ui/index.html` 新增一個 `UI_STRINGS = { zh: {...}, en: {...} }` 物件,涵蓋所有寫死在 HTML/JS 裡的靜態文案(標題、按鈕文字、規則說明、「目前沒有符合條件的球員」這類預設訊息)。topnav 新增一個中/EN 切換鈕,點擊後：(1) 把 `state.lang` 換成另一個語言、寫進 `localStorage`,(2) 把畫面上目前看得到的 `UI_STRINGS` 文字換成新語言,(3) 如果使用者已經在作答中,重新渲染當前這一題(沿用 2026-09-13 做的單題精靈架構,只重繪目前這張卡片,不用整頁重整),(4) 之後每一次呼叫後端 API 都帶上目前的 `lang`。
+**決策**：`src/ui/index.html` 新增一個 `UI_STRINGS = { zh: {...}, en: {...} }` 物件,涵蓋所有寫死在 HTML/JS 裡的靜態文案(標題、按鈕文字、規則說明、「目前沒有符合條件的球員」這類預設訊息,包含目前寫死中文的 `AXIS_LABELS`)。topnav 依 `SUPPORTED_LANGUAGES`(定義見 §3.6)動態渲染對應數量的語言選項按鈕,目前陣列長度是 2,畫面上就是「中/EN 兩個按鈕」的效果。點擊其中一個後：(1) 把 `state.lang` 設成被點的那個值、寫進 `localStorage`,(2) 把畫面上目前看得到的 `UI_STRINGS` 文字換成新語言,(3) 如果使用者已經在作答中,重新渲染當前這一題(沿用 2026-09-13 做的單題精靈架構,只重繪目前這張卡片,不用整頁重整),(4) 之後每一次呼叫後端 API 都帶上目前的 `lang`。
 
 作答中途切換語言不會清空已經填的答案——答案是用題目 `id` 存的,`id` 在兩個語言版本裡完全一樣,只有畫面上顯示的文字語言不同。
+
+### 3.6 多語言擴充原則(2026-09-16 使用者提出：網站之後會加更多語言)
+
+使用者明確提出這次不是只做中英兩語,之後還會加其他語言,所以這次翻譯過程中發現的「輸出裡有寫死、不會自動依語言調整」的地方,要在這次一併修正,不要只是暫時繞過中英兩語就算了。具體要求：
+
+**決策**：所有語言相關的查找,一律用「以 `lang` 字串為 key 的字典查找」,禁止用 `if lang == "zh": ... else: ...` 或 `elif` 這種只考慮兩種語言的判斷式——不管是 §3.4 的 Python 字串模板,還是 §3.5 前端的 `UI_STRINGS`,都要是 `TEMPLATE[lang]` 這種形狀。這樣以後加第三個語言,永遠只需要「新增資料」(新的 `data/<lang>/` 資料夾、字典裡多一組 key),不需要「修改邏輯」——不會有任何一段程式碼的 if/else 分支數量要跟著語言數量調整。§3.5 的 topnav 語言選項已經是照這個原則設計(迴圈產生按鈕,不是寫死的二選一切換)。
+
+新增一個單一的合法語言清單常數(後端 `server/app.py` 一份、前端 `index.html` 一份,兩邊值要一致),所有驗證(`lang` 參數合不合法)、UI 產生語言選項的地方都讀這個清單,不要在多個檔案各自寫死 `("zh", "en")`：
+
+```python
+# server/app.py
+SUPPORTED_LANGUAGES = ("zh", "en")
+```
+
+```js
+// src/ui/index.html
+const SUPPORTED_LANGUAGES = ["zh", "en"];
+```
 
 ## 4. 資料完整性測試(新增)
 
