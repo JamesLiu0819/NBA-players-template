@@ -10,7 +10,7 @@ import json
 import unittest
 from pathlib import Path
 
-DATA_DIR = Path(__file__).resolve().parents[2] / "data"
+DATA_DIR = Path(__file__).resolve().parents[2] / "data" / "zh"
 AXES = ("A", "B", "C", "D")
 VALID_LEARNABILITY_FLAGS = {"low", "medium", "high"}
 MIN_PLAYERS = 10
@@ -44,7 +44,7 @@ class PlayersDataTestBase:
 
     def setUp(self):
         self.players = load_json(self.FILENAME)["players"]
-        self.skill_ids = {s["id"] for s in load_json("skills.json")["skills"]}
+        self.skill_ids = {s["id"] for s in load_json("技能.json")["skills"]}
 
     def test_has_at_least_min_players(self):
         self.assertGreaterEqual(len(self.players), MIN_PLAYERS)
@@ -101,11 +101,11 @@ class PlayersDataTestBase:
 
 
 class CurrentPlayersDataTest(PlayersDataTestBase, unittest.TestCase):
-    FILENAME = "players.json"
+    FILENAME = "球員.json"
 
 
 class AlltimePlayersDataTest(PlayersDataTestBase, unittest.TestCase):
-    FILENAME = "players_alltime.json"
+    FILENAME = "歷史球員.json"
 
     def test_team_field_looks_like_a_year_not_a_team_code(self):
         # 歷史球員池的 "team" 欄位放的是代表年份(字串),不是球隊縮寫——

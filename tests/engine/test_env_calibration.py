@@ -23,7 +23,7 @@ from engine.priority import rank_priorities
 from engine.relevance import compute_relevance
 from engine.skill_level import compute_gap, score_skill_current_level
 
-DATA_DIR = Path(__file__).resolve().parents[2] / "data"
+DATA_DIR = Path(__file__).resolve().parents[2] / "data" / "zh"
 
 ENV_COLLAPSED_NO_SHOOTERS = {
     "perimeter_shooting": 1.8,
@@ -69,8 +69,8 @@ def load_json(name):
 
 class EnvCalibrationTest(unittest.TestCase):
     def setUp(self):
-        self.questions = load_json("questions.json")
-        self.skills = load_json("skills.json")["skills"]
+        self.questions = load_json("題庫.json")
+        self.skills = load_json("技能.json")["skills"]
 
         # "護框接近滿分、外線投射中等、自主進攻偏低": high rim-protection
         # current level (-> near-zero gap), mid shooting, low on-ball

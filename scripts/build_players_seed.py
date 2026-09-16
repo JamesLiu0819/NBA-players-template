@@ -1343,11 +1343,11 @@ def derive_body_measurements(height_cm, wingspan_cm, coordinates):
 
 
 def main():
-    questions = json.load(open(ROOT / "data" / "questions.json", encoding="utf-8"))
+    questions = json.load(open(ROOT / "data" / "zh" / "題庫.json", encoding="utf-8"))
     axis_questions = questions["axis_positioning"]
     skill_questions = questions["skill_behavior"]
     skills_by_id = {
-        s["id"]: s for s in json.load(open(ROOT / "data" / "skills.json", encoding="utf-8"))["skills"]
+        s["id"]: s for s in json.load(open(ROOT / "data" / "zh" / "技能.json", encoding="utf-8"))["skills"]
     }
 
     for player in PLAYERS:
@@ -1390,7 +1390,7 @@ def main():
         ),
         "players": PLAYERS,
     }
-    output_path = ROOT / "data" / "players.json"
+    output_path = ROOT / "data" / "zh" / "球員.json"
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
         f.write("\n")

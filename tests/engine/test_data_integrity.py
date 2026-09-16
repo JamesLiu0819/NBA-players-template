@@ -13,7 +13,7 @@ from engine.priority import rank_priorities
 from engine.relevance import compute_relevance
 from engine.skill_level import compute_gap, score_skill_current_level
 
-DATA_DIR = Path(__file__).resolve().parents[2] / "data"
+DATA_DIR = Path(__file__).resolve().parents[2] / "data" / "zh"
 
 REQUIRED_SKILL_FIELDS = {
     "id",
@@ -53,7 +53,7 @@ def load_json(name):
 
 class QuestionsDataTest(unittest.TestCase):
     def setUp(self):
-        self.data = load_json("questions.json")
+        self.data = load_json("題庫.json")
 
     def test_axis_positioning_has_four_questions_per_axis(self):
         axis_questions = self.data["axis_positioning"]
@@ -105,7 +105,7 @@ class QuestionsDataTest(unittest.TestCase):
 
 class SkillsDataTest(unittest.TestCase):
     def setUp(self):
-        self.skills = load_json("skills.json")["skills"]
+        self.skills = load_json("技能.json")["skills"]
 
     def test_covers_all_fifteen_skills(self):
         self.assertEqual({s["id"] for s in self.skills}, ALL_SKILL_IDS)
@@ -134,8 +134,8 @@ class FullPipelineIntegrationTest(unittest.TestCase):
     modules actually fit together end to end."""
 
     def setUp(self):
-        self.questions = load_json("questions.json")
-        self.skills = load_json("skills.json")["skills"]
+        self.questions = load_json("題庫.json")
+        self.skills = load_json("技能.json")["skills"]
 
     def test_produces_a_ranked_priority_list_with_dominant_env_effect(self):
         axis_answers = [

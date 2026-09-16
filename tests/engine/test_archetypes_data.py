@@ -12,7 +12,7 @@ AXES = ("A", "B", "C", "D")
 
 class ArchetypesDataTest(unittest.TestCase):
     def setUp(self):
-        with open(DATA_DIR / "archetypes.json", encoding="utf-8") as f:
+        with open(DATA_DIR / "zh" / "原型.json", encoding="utf-8") as f:
             self.archetypes = json.load(f)["archetypes"]
 
     def test_has_at_least_two_archetypes(self):

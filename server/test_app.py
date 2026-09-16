@@ -45,7 +45,7 @@ def build_env(skills):
 class TemplateResultsTest(unittest.TestCase):
     def setUp(self):
         self.client = app.test_client()
-        self.questions = load_json(ROOT / "data" / "questions.json")
+        self.questions = load_json(ROOT / "data" / "zh" / "題庫.json")
 
     def test_full_payload_returns_200_with_expected_shape(self):
         payload = {
@@ -134,7 +134,7 @@ class TemplateResultsTest(unittest.TestCase):
         response = self.client.post("/api/template-results", json=payload)
 
         self.assertEqual(response.status_code, 200)
-        current_names = {p["name"] for p in load_json(ROOT / "data" / "players.json")["players"]}
+        current_names = {p["name"] for p in load_json(ROOT / "data" / "zh" / "球員.json")["players"]}
         top_10_names = {row["name"] for row in response.get_json()["top_10"]}
         self.assertTrue(top_10_names.issubset(current_names))
 
@@ -144,7 +144,7 @@ class TemplateResultsTest(unittest.TestCase):
         response = self.client.post("/api/template-results", json=payload)
 
         self.assertEqual(response.status_code, 200)
-        alltime_names = {p["name"] for p in load_json(ROOT / "data" / "players_alltime.json")["players"]}
+        alltime_names = {p["name"] for p in load_json(ROOT / "data" / "zh" / "歷史球員.json")["players"]}
         top_10_names = {row["name"] for row in response.get_json()["top_10"]}
         self.assertTrue(top_10_names.issubset(alltime_names))
 
@@ -160,8 +160,8 @@ class TemplateResultsTest(unittest.TestCase):
 class PriorityResultsTest(unittest.TestCase):
     def setUp(self):
         self.client = app.test_client()
-        self.questions = load_json(ROOT / "data" / "questions.json")
-        self.skills = load_json(ROOT / "data" / "skills.json")["skills"]
+        self.questions = load_json(ROOT / "data" / "zh" / "題庫.json")
+        self.skills = load_json(ROOT / "data" / "zh" / "技能.json")["skills"]
 
     def build_full_payload(self):
         return {

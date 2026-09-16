@@ -104,8 +104,8 @@ def main():
     answers_path = Path(args.answers_file) if args.answers_file else find_latest_answers_file()
     print(f"作答檔: {answers_path}\n")
 
-    questions = load_json(ROOT / "data" / "questions.json")
-    skills = load_json(ROOT / "data" / "skills.json")["skills"]
+    questions = load_json(ROOT / "data" / "zh" / "題庫.json")
+    skills = load_json(ROOT / "data" / "zh" / "技能.json")["skills"]
     answers = load_json(answers_path)
 
     coordinates, items = build_priority_items(

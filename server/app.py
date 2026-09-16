@@ -88,9 +88,17 @@ from scripts.run_priority import build_priority_items, format_dominant_factor_se
 UI_DIR = ROOT / "src" / "ui"
 TEMPLATE_REQUIRED_FIELDS = ("axis_answers",)
 PRIORITY_REQUIRED_FIELDS = ("axis_answers", "skill_answers", "env")
-PLAYER_POOL_FILES = {
-    "current": "players.json",
-    "alltime": "players_alltime.json",
+SUPPORTED_LANGUAGES = ("zh", "en")
+POOLS = ("current", "alltime")
+
+DATA_FILENAMES = {
+    "zh": {
+        "questions": "題庫.json",
+        "skills": "技能.json",
+        "archetypes": "原型.json",
+        "players_current": "球員.json",
+        "players_alltime": "歷史球員.json",
+    },
 }
 
 app = Flask(__name__, static_folder=None)
@@ -103,14 +111,15 @@ def load_json(path):
 
 
 def load_data(pool="current"):
-    questions = load_json(ROOT / "data" / "questions.json")
-    skills = load_json(ROOT / "data" / "skills.json")["skills"]
-    players = load_json(ROOT / "data" / PLAYER_POOL_FILES[pool])["players"]
+    files = DATA_FILENAMES["zh"]
+    questions = load_json(ROOT / "data" / "zh" / files["questions"])
+    skills = load_json(ROOT / "data" / "zh" / files["skills"])["skills"]
+    players = load_json(ROOT / "data" / "zh" / files[f"players_{pool}"])["players"]
     return questions, skills, players
 
 
 def load_archetypes():
-    return load_json(ROOT / "data" / "archetypes.json")["archetypes"]
+    return load_json(ROOT / "data" / "zh" / DATA_FILENAMES["zh"]["archetypes"])["archetypes"]
 
 
 def player_brief(player):
@@ -216,7 +225,7 @@ def api_template_results():
         return jsonify({"error": f"missing required field(s): {', '.join(missing)}"}), 400
 
     pool = payload.get("pool", "current")
-    if pool not in PLAYER_POOL_FILES:
+    if pool not in POOLS:
         return jsonify({"error": f"invalid pool: {pool}"}), 400
 
     questions, skills, players = load_data(pool)

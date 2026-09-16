@@ -115,10 +115,10 @@ def main():
     answers_path = Path(args.answers_file) if args.answers_file else find_latest_answers_file()
     print(f"作答檔: {answers_path}\n")
 
-    questions = load_json(ROOT / "data" / "questions.json")
-    skills = load_json(ROOT / "data" / "skills.json")["skills"]
-    players = load_json(ROOT / "data" / "players.json")["players"]
-    archetypes = load_json(ROOT / "data" / "archetypes.json")["archetypes"]
+    questions = load_json(ROOT / "data" / "zh" / "題庫.json")
+    skills = load_json(ROOT / "data" / "zh" / "技能.json")["skills"]
+    players = load_json(ROOT / "data" / "zh" / "球員.json")["players"]
+    archetypes = load_json(ROOT / "data" / "zh" / "原型.json")["archetypes"]
     answers = load_json(answers_path)
     skills_by_id = {s["id"]: s for s in skills}
     body_field_ranges = {q["field"]: (q["min"], q["max"]) for q in questions["body_measurements"]}
