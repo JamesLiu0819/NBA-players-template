@@ -347,12 +347,12 @@
 
   async function loadData() {
     const [questions, skills] = await Promise.all([
-      fetch("../data/questions.json").then((r) => {
-        if (!r.ok) throw new Error(`questions.json: HTTP ${r.status}`);
+      fetch("../data/zh/題庫.json").then((r) => {
+        if (!r.ok) throw new Error(`題庫.json: HTTP ${r.status}`);
         return r.json();
       }),
-      fetch("../data/skills.json").then((r) => {
-        if (!r.ok) throw new Error(`skills.json: HTTP ${r.status}`);
+      fetch("../data/zh/技能.json").then((r) => {
+        if (!r.ok) throw new Error(`技能.json: HTTP ${r.status}`);
         return r.json();
       }),
     ]);
