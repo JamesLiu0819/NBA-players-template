@@ -1,0 +1,432 @@
+{
+  "_description": "問診題庫。axis_positioning 是四軸定位 16 題(A/B/C/D 各 4 題),skill_behavior 是完整 15 項技能(SPEC.md §3.3)的行為錨定題(目前每項技能 1 題,共 15 題),body_measurements 是 SPEC.md §5.2 身材類的 6 題數值題(給「3 位深度模板」的身體最貼合用)。目前合計 37 題;SPEC §5.5 的完整題數預算是 45-51 題,還缺聯賽環境(5題)、目標/限制/困擾(6題)兩塊(SPEC.md §12 未決問題 #1 的擴充範圍)。axis_positioning/skill_behavior 都是 BARS(行為錨定評分量表,見 SPEC.md §5.1)——問的是具體行為/頻率,不是自評能力高低;body_measurements 例外,是直接填數值,不是 BARS。",
+  "_editable_fields": "axis_positioning/skill_behavior 每題的 prompt(題目文字)跟 anchors(1-5 每個分數對應的行為描述)可以照 BARS 精神修改用詞,body_measurements 每題的 prompt/unit/min/max 可以依實際需求調整,但改的時候要小心三件事:(1) id 一旦被其他地方引用(例如 skill_behavior 的 skill_id 對應 skills.json 的技能 id;body_measurements 的 field 對應 players.json 的 body 欄位名)就不要改,否則資料兜不起來;(2) 每題的 anchors 必須維持 1-5 五個完整的行為描述,不能只改數字不改文字,否則就違背了 BARS 的設計目的;(3) body_measurements 的 field 全部六項(height_cm/wingspan_cm/weight_kg/standing_reach_cm/running_vertical_reach_cm/sprint_100m_seconds)都已經對應到 players.json 每個球員的 body 欄位,新增題目要小心維持這個對應關係。要新增題目就照現有的物件格式加進對應的陣列。axis_positioning 題目若加上 \"reverse_scored\": true(目前 axis_b3、axis_c1),代表這題錨點刻意照「1=最少,5=最多」描述的字面頻率排列,但該行為本身跟軸的方向相反(例如常卡在禁區反而扣空間分),engine/axis_position.py 的 score_axis_coordinates 會自動把這題的分數反轉(6-score)再平均——改這種題的用詞時要連 reverse_scored 一起確認方向是否還成立,不能只改文字。",
+  "axis_positioning": [
+    {
+      "id": "axis_a1",
+      "axis": "A",
+      "prompt": "After passing, do you actively cut and relocate to get the ball back?",
+      "anchors": {
+        "1": "Never -- once I pass, I just set a screen or stand still",
+        "2": "Rarely -- I usually wait for teammates to find me",
+        "3": "About half the time, depends on the flow of the game",
+        "4": "Often -- I actively move toward the ball-handler",
+        "5": "Always -- I'm the team's go-to second option"
+      }
+    },
+    {
+      "id": "axis_a2",
+      "axis": "A",
+      "prompt": "When the defense traps you, what's your first reaction?",
+      "anchors": {
+        "1": "I freeze up completely and get stripped or turn it over",
+        "2": "I barely squeeze the ball out, but usually lose my rhythm",
+        "3": "I can get the pass out, but a bit slowly",
+        "4": "I consistently find the open teammate",
+        "5": "I read the trap coming and find the next open man ahead of time"
+      }
+    },
+    {
+      "id": "axis_a3",
+      "axis": "A",
+      "prompt": "In a single game, about how many times do you drive off the dribble to score or set up a teammate?",
+      "anchors": {
+        "1": "0 times -- I almost never dribble more than two steps",
+        "2": "1-2 times, only occasionally",
+        "3": "3-5 times, a moderate amount",
+        "4": "6-9 times -- I'm one of the main initiators",
+        "5": "10+ times -- the team runs its offense through me"
+      }
+    },
+    {
+      "id": "axis_a4",
+      "axis": "A",
+      "prompt": "When the coach calls for a \"get a bucket\" isolation play, does the ball come to you first?",
+      "anchors": {
+        "1": "Never me",
+        "2": "Rarely me",
+        "3": "Occasionally me",
+        "4": "Often me",
+        "5": "Almost always me"
+      }
+    },
+    {
+      "id": "axis_b1",
+      "axis": "B",
+      "prompt": "Off the ball, how often do you actively relocate beyond the three-point line?",
+      "anchors": {
+        "1": "Never -- I stay near the paint almost the whole time",
+        "2": "Rarely",
+        "3": "About half the time",
+        "4": "Often",
+        "5": "Almost every possession, I spot up on the perimeter"
+      }
+    },
+    {
+      "id": "axis_b2",
+      "axis": "B",
+      "prompt": "Where do most of your shot attempts come from during a game?",
+      "anchors": {
+        "1": "Almost all in the paint (at the rim / low post)",
+        "2": "Mostly between the paint and mid-range",
+        "3": "Evenly spread across paint, mid-range, and three-point line",
+        "4": "Mostly mid-range to three-point range",
+        "5": "Almost entirely beyond the three-point line"
+      }
+    },
+    {
+      "id": "axis_b3",
+      "axis": "B",
+      "prompt": "On offensive possessions, how often do you post up or camp in the paint?",
+      "reverse_scored": true,
+      "anchors": {
+        "1": "Almost never post up in the paint",
+        "2": "Rarely post up in the paint",
+        "3": "About half the time",
+        "4": "Often post up in the paint",
+        "5": "Post up in the paint almost every possession"
+      }
+    },
+    {
+      "id": "axis_b4",
+      "axis": "B",
+      "prompt": "After setting a pick-and-roll, which direction do you naturally move?",
+      "anchors": {
+        "1": "Always roll to the basket (pick & roll)",
+        "2": "Mostly roll to the basket",
+        "3": "Depends on the situation, roll and pop about evenly",
+        "4": "Mostly pop out to mid-range or three-point range",
+        "5": "Always pop out beyond the three-point line (pick & pop)"
+      }
+    },
+    {
+      "id": "axis_c1",
+      "axis": "C",
+      "prompt": "On defense, how often does the coach assign you to help-defend, box out, or protect the paint?",
+      "reverse_scored": true,
+      "anchors": {
+        "1": "Almost never me",
+        "2": "Rarely me",
+        "3": "About half the time",
+        "4": "Often me",
+        "5": "Almost always me"
+      }
+    },
+    {
+      "id": "axis_c2",
+      "axis": "C",
+      "prompt": "When guarding a perimeter ball-handler, what portion of the time can you stay glued to them for the full possession without losing contact?",
+      "anchors": {
+        "1": "I can barely hold on -- they create separation immediately",
+        "2": "I can rarely keep up",
+        "3": "I can keep up about half the time",
+        "4": "I can keep up most of the time",
+        "5": "I can stay locked on for almost the whole possession"
+      }
+    },
+    {
+      "id": "axis_c3",
+      "axis": "C",
+      "prompt": "After switching onto a perimeter shooter, what portion of the time can you prevent them from getting an easy open look?",
+      "anchors": {
+        "1": "They almost always get separation easily",
+        "2": "I can rarely contain them",
+        "3": "About half the time",
+        "4": "I can contain them most of the time",
+        "5": "I can contain them almost every time -- they struggle to get a shot off"
+      }
+    },
+    {
+      "id": "axis_c4",
+      "axis": "C",
+      "prompt": "When the opponent pushes the break, what role do you tend to take?",
+      "anchors": {
+        "1": "I always retreat to protect the paint",
+        "2": "I mostly retreat to the paint",
+        "3": "Depends on the situation -- I do both paint protection and chasing back",
+        "4": "I mostly chase back to pressure the ball-handler",
+        "5": "I always chase back to pressure the ball-handler, rarely dropping to the paint"
+      }
+    },
+    {
+      "id": "axis_d1",
+      "axis": "D",
+      "prompt": "On fast breaks, how often are you the first one down the floor to finish (layup / dunk)?",
+      "anchors": {
+        "1": "Almost never me",
+        "2": "Rarely me",
+        "3": "About half the time",
+        "4": "Often me",
+        "5": "Almost always the first one down the floor"
+      }
+    },
+    {
+      "id": "axis_d2",
+      "axis": "D",
+      "prompt": "After taking real contact, what portion of the time can you still finish the play you started (layup / pass)?",
+      "anchors": {
+        "1": "I almost always lose my balance or the play falls apart",
+        "2": "I can rarely hold my form",
+        "3": "About half the time",
+        "4": "I can hold my form and finish most of the time",
+        "5": "Contact barely affects me at all"
+      }
+    },
+    {
+      "id": "axis_d3",
+      "axis": "D",
+      "prompt": "In a single game, about how many times can you elevate high enough to finish a put-back dunk or a block?",
+      "anchors": {
+        "1": "0 times -- I can barely get above my opponent",
+        "2": "1 time, only occasionally",
+        "3": "2-3 times",
+        "4": "4-5 times",
+        "5": "6+ times -- it's one of my regular weapons"
+      }
+    },
+    {
+      "id": "axis_d4",
+      "axis": "D",
+      "prompt": "Guarding a speedy perimeter player (a guard) one-on-one, what portion of the time can you stay in front of their first step?",
+      "anchors": {
+        "1": "I can barely keep up -- I get beaten on the first step almost every time",
+        "2": "I can rarely stay in front",
+        "3": "About half the time",
+        "4": "I can stay in front most of the time",
+        "5": "I can stay in front almost every time -- hard to beat off the first step"
+      }
+    }
+  ],
+  "skill_behavior": [
+    {
+      "id": "skill_perimeter_shooting_1",
+      "skill_id": "perimeter_shooting",
+      "prompt": "When the defender sags off and leaves you open beyond the three-point line, do you take the shot?",
+      "anchors": {
+        "1": "Never -- I'll take one more dribble or pass instead",
+        "2": "Rarely take the shot",
+        "3": "Take the shot about half the time",
+        "4": "Often take the shot, and with real confidence",
+        "5": "Always take the shot -- if I see the rim, I feel it's going in"
+      }
+    },
+    {
+      "id": "skill_face_up_first_step_1",
+      "skill_id": "face_up_first_step",
+      "prompt": "Facing up with the ball against a defender in a set stance, do you actively try to beat them off the first step?",
+      "anchors": {
+        "1": "Never -- I'll pass or pull up for a mid-range shot instead",
+        "2": "Rarely try, and mostly fail when I do",
+        "3": "Occasionally try, with roughly a fifty-fifty success rate",
+        "4": "Often try, and usually get by or draw a foul",
+        "5": "Always try, and defenders struggle to stay in front of me with positioning alone"
+      }
+    },
+    {
+      "id": "skill_high_post_playmaking_1",
+      "skill_id": "high_post_playmaking",
+      "prompt": "When you catch the ball at the high post and get trapped, what's your first reaction?",
+      "anchors": {
+        "1": "I always turn it over",
+        "2": "I usually barely squeeze out a dribble",
+        "3": "I can get a pass out, but slowly",
+        "4": "I can find the open man",
+        "5": "I can find the next open man down the line"
+      }
+    },
+    {
+      "id": "skill_rim_protection_1",
+      "skill_id": "rim_protection",
+      "prompt": "When you're the primary defender and the ball-handler attacks the paint head-on, what portion of the time do you stop them (steal / block / force a miss)?",
+      "anchors": {
+        "1": "Never -- they almost always score or draw a foul",
+        "2": "Rarely stop them",
+        "3": "Stop them about half the time",
+        "4": "Often stop them",
+        "5": "Almost always stop them -- they rarely score easily"
+      }
+    },
+    {
+      "id": "skill_perimeter_switch_defense_1",
+      "skill_id": "perimeter_switch_defense",
+      "prompt": "After switching onto a perimeter ball-handler, what portion of the time can you stay glued to them the whole way without giving up separation?",
+      "anchors": {
+        "1": "Never -- they get separation immediately after the switch",
+        "2": "I can rarely keep up",
+        "3": "I can keep up about half the time",
+        "4": "I can often keep up",
+        "5": "I can almost always keep up -- opponents struggle to hunt me on switches"
+      }
+    },
+    {
+      "id": "skill_post_up_1",
+      "skill_id": "post_up",
+      "prompt": "Catching the ball with your back to the basket and the defender sealed between you and the rim, what do you do?",
+      "anchors": {
+        "1": "I pass right back out or give up the post-up -- I won't try to force it",
+        "2": "I rarely force it, and it mostly ends in failure",
+        "3": "I occasionally force it, with about a fifty-fifty success rate",
+        "4": "I often force it, and usually finish or draw a foul",
+        "5": "I always force it -- opponents struggle to guard me one-on-one"
+      }
+    },
+    {
+      "id": "skill_pick_and_roll_ball_handling_1",
+      "skill_id": "pick_and_roll_ball_handling",
+      "prompt": "The moment a ball-screen opens up and the defense switches or hedges, what do you usually do?",
+      "anchors": {
+        "1": "I can't react in time -- I often dribble into a body or get stripped",
+        "2": "I only have one go-to option (always drive, or always shoot), regardless of the coverage",
+        "3": "I can pick between two options depending on the situation, but I'm often a beat slow",
+        "4": "I can make the right choice among pass / shoot / drive based on the coverage",
+        "5": "I can read the defensive gap and make the best choice almost instantly, nearly every time"
+      }
+    },
+    {
+      "id": "skill_off_ball_movement_1",
+      "skill_id": "off_ball_movement",
+      "prompt": "When a teammate sets a screen to try to spring you open, what do you do?",
+      "anchors": {
+        "1": "I often stand still or cut the wrong way, wasting the screen",
+        "2": "I rarely come out of it truly open",
+        "3": "I use the screen to get open about half the time",
+        "4": "I often use the screen well and get open for the catch",
+        "5": "I almost always read the defense and get to the best possible spot"
+      }
+    },
+    {
+      "id": "skill_transition_finishing_1",
+      "skill_id": "transition_finishing",
+      "prompt": "When you're the first one to the rim on a fast break, what portion of the time do you finish cleanly?",
+      "anchors": {
+        "1": "I almost always turn it over or get blocked",
+        "2": "I can rarely finish cleanly",
+        "3": "I finish about half the time",
+        "4": "I often finish",
+        "5": "I almost always finish, and often draw an extra foul doing it"
+      }
+    },
+    {
+      "id": "skill_free_throw_shooting_1",
+      "skill_id": "free_throw_shooting",
+      "prompt": "Standing at the free-throw line, how confident are you that it's going in?",
+      "anchors": {
+        "1": "Not confident at all -- I miss often",
+        "2": "Not very confident -- my percentage is on the low side",
+        "3": "Roughly fifty-fifty",
+        "4": "Confident -- I usually make it",
+        "5": "Practically automatic, even in high-pressure clutch situations"
+      }
+    },
+    {
+      "id": "skill_offensive_rebounding_1",
+      "skill_id": "offensive_rebounding",
+      "prompt": "The instant a teammate's shot misses, what do you do?",
+      "anchors": {
+        "1": "I rarely crash the paint for the offensive board",
+        "2": "I occasionally crash, but mostly come up empty",
+        "3": "I crash in about half the time, and often come away with it",
+        "4": "I often crash the offensive glass on purpose, with a decent success rate",
+        "5": "I almost always box out and crash on purpose, and consistently come away with the ball"
+      }
+    },
+    {
+      "id": "skill_on_ball_perimeter_defense_1",
+      "skill_id": "on_ball_perimeter_defense",
+      "prompt": "Guarding the ball-handler one-on-one as they try to drive past you, what portion of the time do you keep them in front of you without getting beaten easily?",
+      "anchors": {
+        "1": "I can barely hold my ground -- beaten on the first step almost every time",
+        "2": "I can rarely hold my ground",
+        "3": "I can hold my ground about half the time",
+        "4": "I can often hold my ground",
+        "5": "I can almost always hold my ground -- opponents struggle to beat me one-on-one"
+      }
+    },
+    {
+      "id": "skill_help_defense_rotation_1",
+      "skill_id": "help_defense_rotation",
+      "prompt": "When a teammate gets beaten and needs your help defense, what portion of the time do you rotate to the right spot in time?",
+      "anchors": {
+        "1": "I'm almost always late or rotate to the wrong spot",
+        "2": "I can rarely rotate to the right spot in time",
+        "3": "I rotate correctly about half the time",
+        "4": "I often rotate to the right spot in time",
+        "5": "I almost always rotate correctly in time, and can still recover to my own man"
+      }
+    },
+    {
+      "id": "skill_defensive_rebounding_boxout_1",
+      "skill_id": "defensive_rebounding_boxout",
+      "prompt": "The instant the opponent takes a shot, what do you do?",
+      "anchors": {
+        "1": "I rarely box out first -- opponents often slip behind me for the rebound",
+        "2": "I occasionally box out, but often lose the position battle",
+        "3": "I box out about half the time, and often win the position battle",
+        "4": "I often box out on purpose, and usually win the position battle",
+        "5": "I almost always seal good position -- opponents struggle to get around me for the board"
+      }
+    },
+    {
+      "id": "skill_decision_making_turnover_control_1",
+      "skill_id": "decision_making_turnover_control",
+      "prompt": "When you're trapped with the ball or facing high-pressure defense, how often do you turn it over on the spot?",
+      "anchors": {
+        "1": "I always turn it over",
+        "2": "I often barely squeeze out a dribble or force a bad pass",
+        "3": "I can hold onto the ball, but it often takes a long time to find a way out",
+        "4": "I can settle the ball quickly and usually handle it safely",
+        "5": "I almost never turn it over, and can even keep the offense efficient under pressure"
+      }
+    }
+  ],
+  "body_measurements": [
+    {
+      "id": "body_height",
+      "field": "height_cm",
+      "prompt": "Height (measured barefoot)",
+      "unit": "cm",
+      "min": 165,
+      "max": 220
+    },
+    {
+      "id": "body_weight",
+      "field": "weight_kg",
+      "prompt": "Weight",
+      "unit": "kg",
+      "min": 50,
+      "max": 120
+    },
+    {
+      "id": "body_wingspan",
+      "field": "wingspan_cm",
+      "prompt": "Wingspan (fingertip-to-fingertip with both arms fully extended)",
+      "unit": "cm",
+      "min": 160,
+      "max": 235
+    },
+    {
+      "id": "body_standing_reach",
+      "field": "standing_reach_cm",
+      "prompt": "Standing reach (feet flat on the ground, highest point one hand can reach)",
+      "unit": "cm",
+      "min": 180,
+      "max": 320
+    },
+    {
+      "id": "body_running_reach",
+      "field": "running_vertical_reach_cm",
+      "prompt": "Running vertical reach (highest point one hand can touch off a running jump)",
+      "unit": "cm",
+      "min": 200,
+      "max": 370
+    },
+    {
+      "id": "body_sprint_100m",
+      "field": "sprint_100m_seconds",
+      "prompt": "100-meter sprint",
+      "unit": "s",
+      "min": 10.0,
+      "max": 22.0
+    }
+  ]
+}
