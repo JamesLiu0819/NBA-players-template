@@ -88,5 +88,40 @@ class QuestionsParityTest(unittest.TestCase):
                     )
 
 
+class SkillsParityTest(unittest.TestCase):
+    def setUp(self):
+        self.zh = load_json("zh", "技能.json")["skills"]
+        self.en = load_json("en", "skills.json")["skills"]
+
+    def _by_id(self, skills):
+        return {s["id"]: s for s in skills}
+
+    def test_ids_match(self):
+        self.assertEqual(
+            {s["id"] for s in self.zh}, {s["id"] for s in self.en}
+        )
+
+    def test_non_text_fields_match(self):
+        zh_by_id, en_by_id = self._by_id(self.zh), self._by_id(self.en)
+        for sid, zh_s in zh_by_id.items():
+            en_s = en_by_id[sid]
+            for field in ("category", "cost_C", "court_required", "teammate_required",
+                          "axis_relevance", "video_tags"):
+                self.assertEqual(zh_s[field], en_s[field], f"{sid}.{field}")
+            for field in ("denominator", "direction", "thresholds"):
+                self.assertEqual(
+                    zh_s["metric"][field], en_s["metric"][field], f"{sid}.metric.{field}"
+                )
+
+    def test_text_fields_are_translated_not_copied(self):
+        zh_by_id, en_by_id = self._by_id(self.zh), self._by_id(self.en)
+        for sid, zh_s in zh_by_id.items():
+            en_s = en_by_id[sid]
+            self.assertTrue(en_s["name_zh"].strip(), sid)
+            self.assertNotEqual(zh_s["name_zh"], en_s["name_zh"], sid)
+            self.assertTrue(en_s["metric"]["action"].strip(), sid)
+            self.assertNotEqual(zh_s["metric"]["action"], en_s["metric"]["action"], sid)
+
+
 if __name__ == "__main__":
     unittest.main()

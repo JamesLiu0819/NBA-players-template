@@ -1,0 +1,245 @@
+{
+  "_description": "English translation of data/zh/技能.json. Structure and all non-text fields are copied verbatim; only name_zh and metric.action are translated. See CLAUDE.md and docs/superpowers/specs/2026-09-16-english-i18n-design.md.",
+  "skills": [
+    {
+      "id": "perimeter_shooting",
+      "name_zh": "Perimeter Shooting",
+      "category": "offense",
+      "cost_C": 3,
+      "court_required": true,
+      "teammate_required": false,
+      "axis_relevance": { "A": 0.3, "B": 0.9, "C": 0.1, "D": 0.2 },
+      "video_tags": ["shooting_catch_and_shoot", "shooting_mechanics"],
+      "metric": {
+        "action": "spot-up three-point shooting",
+        "denominator": 50,
+        "direction": "makes_at_least",
+        "thresholds": { "entry": 15, "advanced": 20, "mastery": 25 }
+      }
+    },
+    {
+      "id": "face_up_first_step",
+      "name_zh": "Face-Up First Step",
+      "category": "offense",
+      "cost_C": 3,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": { "A": 0.9, "B": 0.4, "C": 0.1, "D": 0.5 },
+      "video_tags": ["handles_first_step", "finishing_at_rim"],
+      "metric": {
+        "action": "one-on-one face-up isolation",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": { "entry": 6, "advanced": 10, "mastery": 14 }
+      }
+    },
+    {
+      "id": "high_post_playmaking",
+      "name_zh": "High-Post Playmaking Vision",
+      "category": "awareness",
+      "cost_C": 4,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": { "A": 0.8, "B": 0.5, "C": 0.1, "D": 0.1 },
+      "video_tags": ["playmaking_high_post", "reading_double_team"],
+      "metric": {
+        "action": "playmaking off a high-post catch",
+        "denominator": 30,
+        "direction": "errors_at_most",
+        "thresholds": { "entry": 5, "advanced": 2, "mastery": 1 }
+      }
+    },
+    {
+      "id": "rim_protection",
+      "name_zh": "Rim Protection",
+      "category": "defense",
+      "cost_C": 4,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": { "A": 0.1, "B": 0.1, "C": 0.9, "D": 0.6 },
+      "video_tags": ["rim_protection_positioning", "shot_contest"],
+      "metric": {
+        "action": "defending a direct rim attack",
+        "denominator": 30,
+        "direction": "makes_at_least",
+        "thresholds": { "entry": 12, "advanced": 18, "mastery": 22 }
+      }
+    },
+    {
+      "id": "perimeter_switch_defense",
+      "name_zh": "Switch Defense",
+      "category": "defense",
+      "cost_C": 3,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": { "A": 0.1, "B": 0.2, "C": 0.9, "D": 0.7 },
+      "video_tags": ["switch_defense_footwork", "closeout_technique"],
+      "metric": {
+        "action": "staying in front of a perimeter ball handler after a switch",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": { "entry": 8, "advanced": 13, "mastery": 16 }
+      }
+    },
+    {
+      "id": "post_up",
+      "name_zh": "Post-Up Scoring",
+      "category": "offense",
+      "cost_C": 4,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": { "A": 0.3, "B": 0.9, "C": 0.1, "D": 0.3 },
+      "video_tags": ["post_up_footwork", "post_up_reads"],
+      "metric": {
+        "action": "post-up scoring moves",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": { "entry": 6, "advanced": 10, "mastery": 14 }
+      }
+    },
+    {
+      "id": "pick_and_roll_ball_handling",
+      "name_zh": "Pick-and-Roll Ball Handling",
+      "category": "offense",
+      "cost_C": 3,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": { "A": 0.9, "B": 0.4, "C": 0.1, "D": 0.3 },
+      "video_tags": ["pick_and_roll_reads", "ball_handler_reads"],
+      "metric": {
+        "action": "correct pass/shoot/drive reads off a pick-and-roll",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": { "entry": 8, "advanced": 13, "mastery": 17 }
+      }
+    },
+    {
+      "id": "off_ball_movement",
+      "name_zh": "Off-Ball Movement / Screen Usage",
+      "category": "offense",
+      "cost_C": 2,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": { "A": 0.2, "B": 0.8, "C": 0.1, "D": 0.4 },
+      "video_tags": ["off_ball_cuts", "screen_usage"],
+      "metric": {
+        "action": "using screens to get open",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": { "entry": 8, "advanced": 13, "mastery": 17 }
+      }
+    },
+    {
+      "id": "transition_finishing",
+      "name_zh": "Transition Finishing",
+      "category": "offense",
+      "cost_C": 2,
+      "court_required": true,
+      "teammate_required": false,
+      "axis_relevance": { "A": 0.3, "B": 0.2, "C": 0.1, "D": 0.8 },
+      "video_tags": ["transition_finishing", "fast_break_reads"],
+      "metric": {
+        "action": "finishing in transition",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": { "entry": 10, "advanced": 15, "mastery": 18 }
+      }
+    },
+    {
+      "id": "free_throw_shooting",
+      "name_zh": "Free Throw Shooting",
+      "category": "offense",
+      "cost_C": 2,
+      "court_required": true,
+      "teammate_required": false,
+      "axis_relevance": { "A": 0.2, "B": 0.2, "C": 0.2, "D": 0.2 },
+      "video_tags": ["free_throw_routine", "free_throw_mechanics"],
+      "metric": {
+        "action": "free throw shooting",
+        "denominator": 50,
+        "direction": "makes_at_least",
+        "thresholds": { "entry": 35, "advanced": 40, "mastery": 45 }
+      }
+    },
+    {
+      "id": "offensive_rebounding",
+      "name_zh": "Offensive Rebounding / Putbacks",
+      "category": "awareness",
+      "cost_C": 3,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": { "A": 0.1, "B": 0.3, "C": 0.1, "D": 0.7 },
+      "video_tags": ["offensive_rebounding", "putback_finishing"],
+      "metric": {
+        "action": "converting offensive rebounds into scoring chances",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": { "entry": 6, "advanced": 10, "mastery": 14 }
+      }
+    },
+    {
+      "id": "on_ball_perimeter_defense",
+      "name_zh": "On-Ball Perimeter Defense",
+      "category": "defense",
+      "cost_C": 3,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": { "A": 0.1, "B": 0.2, "C": 0.8, "D": 0.5 },
+      "video_tags": ["on_ball_defense_stance", "containing_dribble_penetration"],
+      "metric": {
+        "action": "one-on-one on-ball defense",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": { "entry": 8, "advanced": 13, "mastery": 17 }
+      }
+    },
+    {
+      "id": "help_defense_rotation",
+      "name_zh": "Help Defense Rotation",
+      "category": "defense",
+      "cost_C": 4,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": { "A": 0.1, "B": 0.1, "C": 0.7, "D": 0.3 },
+      "video_tags": ["help_defense_rotation", "team_defense_positioning"],
+      "metric": {
+        "action": "help defense rotations",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": { "entry": 8, "advanced": 13, "mastery": 17 }
+      }
+    },
+    {
+      "id": "defensive_rebounding_boxout",
+      "name_zh": "Defensive Rebounding / Box-Out",
+      "category": "defense",
+      "cost_C": 2,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": { "A": 0.1, "B": 0.2, "C": 0.5, "D": 0.6 },
+      "video_tags": ["boxing_out", "defensive_rebounding"],
+      "metric": {
+        "action": "boxing out for defensive rebounds",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": { "entry": 10, "advanced": 15, "mastery": 18 }
+      }
+    },
+    {
+      "id": "decision_making_turnover_control",
+      "name_zh": "Decision Making / Turnover Control",
+      "category": "awareness",
+      "cost_C": 3,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": { "A": 0.7, "B": 0.2, "C": 0.1, "D": 0.2 },
+      "video_tags": ["decision_making", "turnover_avoidance"],
+      "metric": {
+        "action": "advancing the ball or making decisions without turning it over",
+        "denominator": 30,
+        "direction": "errors_at_most",
+        "thresholds": { "entry": 6, "advanced": 3, "mastery": 1 }
+      }
+    }
+  ]
+}
