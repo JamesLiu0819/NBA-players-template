@@ -1,5 +1,6 @@
 {
-  "_description": "English translation of data/zh/技能.json. Structure and all non-text fields are copied verbatim; only name_zh and metric.action are translated. See CLAUDE.md and docs/superpowers/specs/2026-09-16-english-i18n-design.md.",
+  "_description": "技能庫,完整 15 項(SPEC.md §3.3)。最早的 P1 最小範圍(SPEC.md §12 未決問題 #1)只收錄 5 項關鍵技能：外線投射、面框第一步過人、高位傳導視野、護框、換防跟防;2026-09-10 擴充加了另外 10 項(背框單打、擋拆持球判斷、無球跑動/利用掩護、轉換快攻終結、罰球、前場籃板/二次進攻、一對一外圍單防、協防補位輪轉、防守籃板卡位、決策效率/失誤控制)。要再加技能就直接在 skills 陣列裡加新物件,格式跟現有的一樣。",
+  "_editable_fields": "每個技能物件裡: cost_C(1-5,習得成本)、axis_relevance(A/B/C/D 四軸相關性,0-1,目前是依常理判斷的暫定值,等 SPEC §12 issue #2 的領域專家校準後應該更新)、court_required/teammate_required(訓練場地與隊友需求,決定球場環節/場外環節)、metric(驗收指標,含 denominator 與 thresholds 三個分層門檻)、video_tags(目前只是佔位標籤,還沒接真正的影片庫)。id 一旦被其他資料檔或程式碼引用(例如 questions.json 的 skill_behavior.skill_id)就不要改,否則會對不起來。",
   "skills": [
     {
       "id": "perimeter_shooting",
