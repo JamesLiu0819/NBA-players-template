@@ -58,7 +58,16 @@ AXIS_LABELS = {
     "D": "運動表現",
 }
 
-D_AXIS_GROWTH_TEMPLATE = "身體天賦上有落差,不能單靠練習籃球技能"
+D_AXIS_GROWTH_TEMPLATE = {
+    "zh": "身體天賦上有落差,不能單靠練習籃球技能",
+    "en": "There's an athletic gap here that practice alone can't close",
+}
+
+GROWTH_ACTION_TEMPLATE = {
+    "zh": "{action}的練習",
+    "en": "Practice: {action}",
+}
+
 CEILING_NOT_FOUND_MESSAGE = (
     "目前的球員種子資料裡,找不到符合「運動能力跟你接近、"
     "但技術層面明顯更成熟」條件的球員。"
@@ -85,11 +94,12 @@ def load_json(path):
 def describe_growth_recommendation(player, skills_by_id, lang="zh"):
     axis = player["dominant_diff_axis"]
     if axis == "D":
-        return D_AXIS_GROWTH_TEMPLATE
+        return D_AXIS_GROWTH_TEMPLATE[lang]
     skill_id = matching_skill_id(axis, player.get("signature_skill_id"), skills_by_id)
     if not skill_id:
         skill_id = representative_skill_id_for_axis(axis, skills_by_id)
-    return f"{skills_by_id[skill_id]['metric']['action']}的練習"
+    action = skills_by_id[skill_id]["metric"]["action"]
+    return GROWTH_ACTION_TEMPLATE[lang].format(action=action)
 
 
 def build_scouting_report(archetype, top_match, skills_by_id, lang="zh"):

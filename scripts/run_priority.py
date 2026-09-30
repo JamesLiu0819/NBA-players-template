@@ -31,11 +31,31 @@ from engine.relevance import compute_relevance  # noqa: E402
 from engine.skill_level import compute_gap, score_skill_current_level  # noqa: E402
 
 FACTOR_LABELS = {
-    "G": "能力缺口(G)",
-    "E": "聯賽環境權重(E)",
-    "R": "自然位置相關性(R)",
-    "C": "習得成本(C)",
+    "zh": {
+        "G": "能力缺口(G)",
+        "E": "聯賽環境權重(E)",
+        "R": "自然位置相關性(R)",
+        "C": "習得成本(C)",
+    },
+    "en": {
+        "G": "Ability Gap (G)",
+        "E": "League Environment Weight (E)",
+        "R": "Positional Relevance (R)",
+        "C": "Learning Cost (C)",
+    },
 }
+
+TIE_SENTENCE_TEMPLATE = {
+    "zh": "{higher}跟{lower}的優先序完全打平(P 值相同)。",
+    "en": "{higher} and {lower} are tied for priority (equal P value).",
+}
+
+DOMINANT_SENTENCE_TEMPLATE = {
+    "zh": "{higher}排在{lower}之前，主因是{dominant_label}高出 {ratio:.2f} 倍，而非{others}的差異。",
+    "en": "{higher} ranks above {lower} mainly because {dominant_label} is {ratio:.2f}x higher, not because of {others}.",
+}
+
+OTHERS_JOIN = {"zh": "、", "en": ", "}
 
 
 def find_latest_answers_file():
@@ -80,14 +100,19 @@ def format_dominant_factor_sentence(ranked, lang="zh"):
         return None
     higher, lower = ranked[0], ranked[1]
     if higher["P"] == lower["P"]:
-        return f"{higher['name_zh']}跟{lower['name_zh']}的優先序完全打平(P 值相同)。"
+        return TIE_SENTENCE_TEMPLATE[lang].format(
+            higher=higher["name_zh"], lower=lower["name_zh"]
+        )
     result = explain_dominant_factor(higher, lower)
     dominant = result["factor"]
-    others = [FACTOR_LABELS[f] for f in ("G", "E", "R", "C") if f != dominant]
-    return (
-        f"{higher['name_zh']}排在{lower['name_zh']}之前，"
-        f"主因是{FACTOR_LABELS[dominant]}高出 {result['ratio']:.2f} 倍，"
-        f"而非{'、'.join(others)}的差異。"
+    labels = FACTOR_LABELS[lang]
+    others = [labels[f] for f in ("G", "E", "R", "C") if f != dominant]
+    return DOMINANT_SENTENCE_TEMPLATE[lang].format(
+        higher=higher["name_zh"],
+        lower=lower["name_zh"],
+        dominant_label=labels[dominant],
+        ratio=result["ratio"],
+        others=OTHERS_JOIN[lang].join(others),
     )
 
 
