@@ -11,6 +11,7 @@ from engine.body_fit import (
     _normal_cdf_percentile,
     body_distance,
     collect_body_measurements,
+    missing_required_body_fields,
     percentile_normalize_body,
 )
 
@@ -183,6 +184,47 @@ class PercentileNormalizeBodyTest(unittest.TestCase):
         self.assertEqual(new_user_body, user_body)
         self.assertEqual(new_players, players)
         self.assertEqual(new_field_ranges, field_ranges)
+
+
+REQUIRED_QUESTIONS = [
+    {"id": "q_height", "field": "height_cm", "required": True},
+    {"id": "q_weight", "field": "weight_kg", "required": True},
+    {"id": "q_wingspan", "field": "wingspan_cm"},
+]
+
+
+class MissingRequiredBodyFieldsTest(unittest.TestCase):
+    def test_flags_unanswered_required_questions(self):
+        answers = [{"question_id": "q_wingspan", "value": 193}]
+
+        result = missing_required_body_fields(REQUIRED_QUESTIONS, answers)
+
+        self.assertEqual(set(result), {"q_height", "q_weight"})
+
+    def test_empty_when_all_required_questions_answered(self):
+        answers = [
+            {"question_id": "q_height", "value": 188},
+            {"question_id": "q_weight", "value": 83},
+        ]
+
+        result = missing_required_body_fields(REQUIRED_QUESTIONS, answers)
+
+        self.assertEqual(result, [])
+
+    def test_unanswered_optional_question_is_not_flagged(self):
+        answers = [
+            {"question_id": "q_height", "value": 188},
+            {"question_id": "q_weight", "value": 83},
+        ]
+
+        result = missing_required_body_fields(REQUIRED_QUESTIONS, answers)
+
+        self.assertNotIn("q_wingspan", result)
+
+    def test_no_required_questions_means_nothing_is_ever_missing(self):
+        result = missing_required_body_fields(QUESTIONS, [])
+
+        self.assertEqual(result, [])
 
 
 if __name__ == "__main__":

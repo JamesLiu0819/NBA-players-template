@@ -1,7 +1,10 @@
 # 用途：Flask 後端,四支 API：
 #   GET  /api/form-data       給前端渲染問卷用的題庫跟技能名稱,只回傳必要欄位,
 #                             不外洩 axis_relevance/cost_C 等內部校準數字。
-#   POST /api/template-results  只吃球風定位(16題)+ 身材數值(6題,可省略),
+#   POST /api/template-results  只吃球風定位(16題)+ 身材數值(6題,其中身高、
+#                             體重必填,其餘 4 題可省略——身高體重是原型分類
+#                             體型分數的必要輸入,缺了就直接 400,見
+#                             missing_required_body_fields,2026-10 討論),
 #                             回傳定位座標、球場定位原型+一句話球探報告、
 #                             3 位深度模板、10 人對照表(每筆也帶球員自己的
 #                             座標,給前端畫雷達圖疊圖用)——刻意不需要技能
@@ -74,7 +77,11 @@ from flask import Flask, jsonify, request, send_from_directory  # noqa: E402
 from db import increment_visit_count, init_db  # noqa: E402
 from engine.archetype import classify_archetype_by_majority  # noqa: E402
 from engine.axis_position import score_axis_coordinates  # noqa: E402
-from engine.body_fit import collect_body_measurements, percentile_normalize_body  # noqa: E402
+from engine.body_fit import (  # noqa: E402
+    collect_body_measurements,
+    missing_required_body_fields,
+    percentile_normalize_body,
+)
 from engine.player_matching import (  # noqa: E402
     find_body_fit_template,
     find_ceiling_template,
@@ -243,6 +250,13 @@ def api_template_results():
         return jsonify({"error": f"invalid lang: {lang}"}), 400
 
     questions, skills, players = load_data(pool, lang)
+
+    missing_body = missing_required_body_fields(
+        questions["body_measurements"], payload.get("body_answers") or []
+    )
+    if missing_body:
+        return jsonify({"error": f"missing required body measurement(s): {', '.join(missing_body)}"}), 400
+
     skills_by_id = {s["id"]: s for s in skills}
     archetypes = load_archetypes(lang)
     try:

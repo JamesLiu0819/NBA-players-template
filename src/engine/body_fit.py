@@ -12,6 +12,10 @@
 # 可手動調整的變數：GENERAL_POPULATION_BODY_STATS(假設的籃球玩家母體身高/
 # 體重平均值跟標準差,是粗略估計,不是有實證來源的統計值,覺得換算出來的百分位
 # 不合理可以直接調)。
+# missing_required_body_fields：身高、體重(data/questions.json body_measurements
+# 裡標 "required": true 的題目)是 engine/archetype.py 體型分數的必要輸入,沒填
+# 就無法算,所以後端在算模板結果前要先擋掉;其餘身材題維持選填,省略不算錯
+# (2026-10 討論)。
 
 """L1 body-measurement layer + a generic common-field distance function.
 
@@ -60,6 +64,20 @@ def collect_body_measurements(questions, answers):
         measurements[question["field"]] = value
 
     return measurements
+
+
+def missing_required_body_fields(questions, answers):
+    """Return the ids of required body questions with no matching answer.
+
+    questions: list of {"id", ..., "required": bool (optional, default False)}.
+    answers: list of {"question_id", "value"}.
+
+    A question counts as answered if any answer references its id, regardless
+    of that answer's value -- range validation is collect_body_measurements'
+    job, not this function's.
+    """
+    answered_ids = {a["question_id"] for a in answers}
+    return [q["id"] for q in questions if q.get("required", False) and q["id"] not in answered_ids]
 
 
 def body_distance(user_body, player_body, field_ranges):

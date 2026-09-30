@@ -65,6 +65,7 @@ class QuestionsParityTest(unittest.TestCase):
             self.assertEqual(zh_q["unit"], en_q["unit"], qid)
             self.assertEqual(zh_q["min"], en_q["min"], qid)
             self.assertEqual(zh_q["max"], en_q["max"], qid)
+            self.assertEqual(zh_q.get("required", False), en_q.get("required", False), qid)
 
     def test_prompts_are_translated_not_copied(self):
         for section in ("axis_positioning", "skill_behavior", "body_measurements"):
@@ -140,6 +141,11 @@ class ArchetypesParityTest(unittest.TestCase):
         zh_by_id, en_by_id = self._by_id(self.zh), self._by_id(self.en)
         for aid, zh_a in zh_by_id.items():
             self.assertEqual(zh_a["coordinates"], en_by_id[aid]["coordinates"], aid)
+
+    def test_size_matches(self):
+        zh_by_id, en_by_id = self._by_id(self.zh), self._by_id(self.en)
+        for aid, zh_a in zh_by_id.items():
+            self.assertEqual(zh_a["size"], en_by_id[aid]["size"], aid)
 
     def test_text_fields_are_translated_not_copied(self):
         zh_by_id, en_by_id = self._by_id(self.zh), self._by_id(self.en)

@@ -38,6 +38,16 @@ class ArchetypesDataTest(unittest.TestCase):
         for archetype in self.archetypes:
             self.assertTrue(archetype["flavor"].strip(), archetype["id"])
 
+    def test_every_archetype_has_a_size_field_within_zero_to_hundred(self):
+        # size (height/weight percentile average) is what lets
+        # classify_archetype avoid labeling a short player's balanced style
+        # as a tall-implying archetype like do_it_all_forward, or a tall
+        # player's ball-handling style as floor_general (2026-10 discussion).
+        for archetype in self.archetypes:
+            self.assertIn("size", archetype, archetype["id"])
+            self.assertGreaterEqual(archetype["size"], 0, archetype["id"])
+            self.assertLessEqual(archetype["size"], 100, archetype["id"])
+
 
 if __name__ == "__main__":
     unittest.main()

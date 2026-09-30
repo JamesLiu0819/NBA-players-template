@@ -1,6 +1,7 @@
 # 用途：測試兩支 API endpoint。POST /api/template-results 只吃四軸定位(16題)
-# 跟身材數值(6題,可省略),回傳定位/3位深度模板/10人對照表——刻意不需要技能
-# 行為跟環境權重,因為很多使用者沒在打正式比賽,只想知道自己的球員模板是誰。
+# 跟身材數值(6題,其中身高、體重必填,其餘 4 題可省略),回傳定位/3位深度模板/
+# 10人對照表——刻意不需要技能行為跟環境權重,因為很多使用者沒在打正式比賽,
+# 只想知道自己的球員模板是誰。
 # POST /api/priority-results 才吃技能行為(15題)跟環境權重,回傳優先訓練順序,
 # 是使用者自己選擇要不要看的「進階」分析。
 # 用 Flask 內建的 test_client,不需要真的啟動伺服器。
@@ -31,6 +32,17 @@ def build_body_answers(questions):
     return [
         {"question_id": q["id"], "value": (q["min"] + q["max"]) / 2}
         for q in questions["body_measurements"]
+    ]
+
+
+def build_required_body_answers(questions):
+    # height_cm/weight_kg are required (2026-10); most tests below aren't
+    # about body measurements at all, so they only need the minimum payload
+    # that clears validation, not the full 6-question set.
+    return [
+        {"question_id": q["id"], "value": (q["min"] + q["max"]) / 2}
+        for q in questions["body_measurements"]
+        if q.get("required", False)
     ]
 
 
@@ -69,19 +81,42 @@ class TemplateResultsTest(unittest.TestCase):
     def test_works_without_skill_answers_or_env_in_the_request(self):
         # the whole point of this endpoint: no BARS skill self-assessment,
         # no league environment, and it still produces a full result.
-        payload = {"axis_answers": build_axis_answers(self.questions)}
+        payload = {
+            "axis_answers": build_axis_answers(self.questions),
+            "body_answers": build_required_body_answers(self.questions),
+        }
 
         response = self.client.post("/api/template-results", json=payload)
 
         self.assertEqual(response.status_code, 200)
 
-    def test_missing_body_answers_still_returns_200_with_null_body_fit(self):
+    def test_missing_required_body_answers_returns_400(self):
+        # height_cm/weight_kg are required (2026-10) -- they feed the
+        # archetype classifier's body-size term, so a template result can't
+        # be computed without them.
         payload = {"axis_answers": build_axis_answers(self.questions)}
 
         response = self.client.post("/api/template-results", json=payload)
 
+        self.assertEqual(response.status_code, 400)
+        error = response.get_json()["error"]
+        self.assertIn("body_height", error)
+        self.assertIn("body_weight", error)
+
+    def test_optional_body_fields_can_be_skipped_once_required_ones_are_present(self):
+        # wingspan/reach/sprint stay optional -- only height/weight are
+        # mandatory, and supplying just those two is already enough to
+        # populate body_fit (it's no longer possible to get a null
+        # body_fit through the API now that height/weight can't be omitted).
+        payload = {
+            "axis_answers": build_axis_answers(self.questions),
+            "body_answers": build_required_body_answers(self.questions),
+        }
+
+        response = self.client.post("/api/template-results", json=payload)
+
         self.assertEqual(response.status_code, 200)
-        self.assertIsNone(response.get_json()["deep_templates"]["body_fit"])
+        self.assertIsNotNone(response.get_json()["deep_templates"]["body_fit"])
 
     def test_missing_axis_answers_returns_400(self):
         response = self.client.post("/api/template-results", json={})
@@ -103,7 +138,10 @@ class TemplateResultsTest(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_top_10_entries_have_expected_fields(self):
-        payload = {"axis_answers": build_axis_answers(self.questions)}
+        payload = {
+            "axis_answers": build_axis_answers(self.questions),
+            "body_answers": build_required_body_answers(self.questions),
+        }
 
         response = self.client.post("/api/template-results", json=payload)
         top_player = response.get_json()["top_10"][0]
@@ -119,7 +157,10 @@ class TemplateResultsTest(unittest.TestCase):
         self.assertEqual(set(top_player["coordinates"].keys()), {"A", "B", "C", "D"})
 
     def test_response_includes_archetype_and_scouting_report(self):
-        payload = {"axis_answers": build_axis_answers(self.questions)}
+        payload = {
+            "axis_answers": build_axis_answers(self.questions),
+            "body_answers": build_required_body_answers(self.questions),
+        }
 
         response = self.client.post("/api/template-results", json=payload)
         data = response.get_json()
@@ -129,7 +170,10 @@ class TemplateResultsTest(unittest.TestCase):
         self.assertEqual(data["scouting_report"], data["archetype"]["flavor"])
 
     def test_missing_pool_defaults_to_current_players(self):
-        payload = {"axis_answers": build_axis_answers(self.questions)}
+        payload = {
+            "axis_answers": build_axis_answers(self.questions),
+            "body_answers": build_required_body_answers(self.questions),
+        }
 
         response = self.client.post("/api/template-results", json=payload)
 
@@ -139,7 +183,11 @@ class TemplateResultsTest(unittest.TestCase):
         self.assertTrue(top_10_names.issubset(current_names))
 
     def test_pool_alltime_uses_historical_players(self):
-        payload = {"axis_answers": build_axis_answers(self.questions), "pool": "alltime"}
+        payload = {
+            "axis_answers": build_axis_answers(self.questions),
+            "body_answers": build_required_body_answers(self.questions),
+            "pool": "alltime",
+        }
 
         response = self.client.post("/api/template-results", json=payload)
 
@@ -157,7 +205,11 @@ class TemplateResultsTest(unittest.TestCase):
         self.assertIn("error", response.get_json())
 
     def test_lang_en_returns_english_content(self):
-        payload = {"axis_answers": build_axis_answers(self.questions), "lang": "en"}
+        payload = {
+            "axis_answers": build_axis_answers(self.questions),
+            "body_answers": build_required_body_answers(self.questions),
+            "lang": "en",
+        }
 
         response = self.client.post("/api/template-results", json=payload)
 
@@ -168,7 +220,11 @@ class TemplateResultsTest(unittest.TestCase):
         self.assertTrue(top_10_names.issubset(en_names))
         # scouting_report 是原型 flavor 文案,英文版跟中文版內容一定不同
         zh_response = self.client.post(
-            "/api/template-results", json={"axis_answers": build_axis_answers(self.questions)}
+            "/api/template-results",
+            json={
+                "axis_answers": build_axis_answers(self.questions),
+                "body_answers": build_required_body_answers(self.questions),
+            },
         )
         self.assertNotEqual(data["scouting_report"], zh_response.get_json()["scouting_report"])
 
@@ -181,7 +237,10 @@ class TemplateResultsTest(unittest.TestCase):
         self.assertIn("error", response.get_json())
 
     def test_missing_lang_defaults_to_zh(self):
-        payload = {"axis_answers": build_axis_answers(self.questions)}
+        payload = {
+            "axis_answers": build_axis_answers(self.questions),
+            "body_answers": build_required_body_answers(self.questions),
+        }
 
         response = self.client.post("/api/template-results", json=payload)
 

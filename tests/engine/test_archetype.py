@@ -44,6 +44,30 @@ class ClassifyArchetypeTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             classify_archetype({"A": 50, "B": 50, "C": 50, "D": 50}, [])
 
+    def test_size_breaks_a_style_tie_toward_the_closer_size_anchor(self):
+        # both archetypes are equidistant on A/B/C/D alone (dead center);
+        # only the size anchor differs, so size must be the deciding factor.
+        archetypes = [
+            {"id": "small", "coordinates": {"A": 50, "B": 50, "C": 50, "D": 50}, "size": 20},
+            {"id": "big", "coordinates": {"A": 50, "B": 50, "C": 50, "D": 50}, "size": 80},
+        ]
+
+        result = classify_archetype({"A": 50, "B": 50, "C": 50, "D": 50}, archetypes, size=15)
+
+        self.assertEqual(result["id"], "small")
+
+    def test_size_is_ignored_when_archetype_has_no_size_field(self):
+        archetypes = [
+            {"id": "a", "coordinates": {"A": 90, "B": 10, "C": 10, "D": 10}},
+            {"id": "b", "coordinates": {"A": 10, "B": 90, "C": 10, "D": 10}},
+        ]
+
+        # size=1 would favor "b" if it had a size anchor near 1, but neither
+        # archetype has one, so the result must match the style-only result.
+        result = classify_archetype({"A": 88, "B": 12, "C": 10, "D": 10}, archetypes, size=1)
+
+        self.assertEqual(result["id"], "a")
+
 
 class ClassifyArchetypeByMajorityTest(unittest.TestCase):
     def setUp(self):
@@ -66,18 +90,63 @@ class ClassifyArchetypeByMajorityTest(unittest.TestCase):
         self.assertEqual(result["id"], "a")
 
     def test_ties_are_broken_by_the_closest_players_archetype(self):
-        # 2-2 tie between "a" and "b"; the #1 (closest / first in the
-        # already-ranked list) player belongs to "b", so "b" wins the tie.
+        # a genuine weight tie: rank-1 player alone gives "b" weight 4 (top_n),
+        # ranks 2+3 give "a" weight 3+2=5 -- not a tie. Use a split that ties
+        # under rank-weighting instead: rank1(b)=3, rank2(a)=2, rank3(a)=1 ->
+        # a=3, b=3. The #1 (closest) player belongs to "b", so "b" wins.
         ranked_players = [
-            {"coordinates": {"A": 12, "B": 88, "C": 10, "D": 10}},  # -> b, rank 1
-            {"coordinates": {"A": 88, "B": 12, "C": 10, "D": 10}},  # -> a
-            {"coordinates": {"A": 15, "B": 85, "C": 10, "D": 10}},  # -> b
-            {"coordinates": {"A": 85, "B": 15, "C": 10, "D": 10}},  # -> a
+            {"coordinates": {"A": 12, "B": 88, "C": 10, "D": 10}},  # -> b, rank 1, weight 3
+            {"coordinates": {"A": 88, "B": 12, "C": 10, "D": 10}},  # -> a, rank 2, weight 2
+            {"coordinates": {"A": 85, "B": 15, "C": 10, "D": 10}},  # -> a, rank 3, weight 1
         ]
 
-        result = classify_archetype_by_majority(ranked_players, self.archetypes, top_n=4)
+        result = classify_archetype_by_majority(ranked_players, self.archetypes, top_n=3)
 
         self.assertEqual(result["id"], "b")
+
+    def test_closer_players_outweigh_a_larger_count_of_farther_players(self):
+        # the top 2 (closest) players both say "a"; the next 3 (farther)
+        # all say "b" -- a plain unweighted vote would give "b" 3 votes to
+        # 2, but the closer pair's opinion should count for more (2026-10
+        # fix: a plurality among distant neighbors used to outvote a clear
+        # agreement among the closest, closer-displayed players).
+        ranked_players = [
+            {"coordinates": {"A": 88, "B": 12, "C": 10, "D": 10}},  # -> a, rank 1, weight 5
+            {"coordinates": {"A": 85, "B": 15, "C": 10, "D": 10}},  # -> a, rank 2, weight 4
+            {"coordinates": {"A": 12, "B": 88, "C": 10, "D": 10}},  # -> b, rank 3, weight 3
+            {"coordinates": {"A": 15, "B": 85, "C": 10, "D": 10}},  # -> b, rank 4, weight 2
+            {"coordinates": {"A": 18, "B": 82, "C": 10, "D": 10}},  # -> b, rank 5, weight 1
+        ]
+
+        result = classify_archetype_by_majority(ranked_players, self.archetypes, top_n=5)
+
+        self.assertEqual(result["id"], "a")
+
+    def test_uses_player_body_size_when_present(self):
+        archetypes = [
+            {"id": "a", "coordinates": {"A": 50, "B": 50, "C": 50, "D": 50}, "size": 20},
+            {"id": "b", "coordinates": {"A": 50, "B": 50, "C": 50, "D": 50}, "size": 80},
+        ]
+        ranked_players = [
+            {"coordinates": {"A": 50, "B": 50, "C": 50, "D": 50}, "body": {"height_cm": 10, "weight_kg": 10}},
+        ]
+
+        result = classify_archetype_by_majority(ranked_players, archetypes, top_n=1)
+
+        self.assertEqual(result["id"], "a")
+
+    def test_falls_back_to_style_only_when_player_has_no_body(self):
+        archetypes = [
+            {"id": "a", "coordinates": {"A": 90, "B": 10, "C": 10, "D": 10}, "size": 80},
+            {"id": "b", "coordinates": {"A": 10, "B": 90, "C": 10, "D": 10}, "size": 20},
+        ]
+        ranked_players = [
+            {"coordinates": {"A": 88, "B": 12, "C": 10, "D": 10}},  # no "body" key at all
+        ]
+
+        result = classify_archetype_by_majority(ranked_players, archetypes, top_n=1)
+
+        self.assertEqual(result["id"], "a")
 
     def test_only_considers_the_top_n_players_not_the_full_list(self):
         ranked_players = [

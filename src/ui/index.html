@@ -54,6 +54,15 @@
     gap: 1.5rem;
   }
 
+  /* 手機版本來就窄,720px 的限制不會生效;桌機版單獨放寬,讓 topnav 的內容
+     可以用到更多寬度,不會整條擠在螢幕中間一小條(2026-10 討論)。 */
+  @media (min-width: 860px) {
+    .topnav-inner {
+      max-width: 1100px;
+      gap: 3rem;
+    }
+  }
+
   .topnav-brand {
     display: flex;
     align-items: center;
@@ -76,6 +85,7 @@
     flex: 1 1 auto;
     min-width: 0;
     overflow-x: auto;
+    justify-content: center;
   }
 
   .topnav-tab {
@@ -112,24 +122,72 @@
     white-space: nowrap;
   }
 
-  .lang-switch { display: flex; gap: 0.3rem; }
+  /* 語言選項改成單一按鍵 + 下拉選單(2026-10 討論)——之後要加第三種語言,
+     只要 SUPPORTED_LANGUAGES 多一筆,選單自動多一個選項,按鍵本身完全不用改。 */
+  .lang-switch { position: relative; }
 
-  .lang-switch button {
+  .lang-switch-toggle {
     border: 1px solid var(--line);
     border-radius: 999px;
     background: transparent;
     color: var(--ink-soft);
-    padding: 0.25rem 0.6rem;
+    padding: 0.25rem 0.7rem;
     font-size: 0.75rem;
     font-weight: 700;
     cursor: pointer;
     font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
   }
 
-  .lang-switch button.active {
+  .lang-switch-toggle:hover {
     border-color: var(--accent);
-    background: var(--accent-wash);
+    color: var(--ink);
+  }
+
+  .lang-switch-toggle .caret {
+    font-size: 0.6rem;
+    opacity: 0.7;
+  }
+
+  .lang-switch-menu {
+    position: absolute;
+    top: calc(100% + 0.4rem);
+    right: 0;
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    padding: 0.3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 5.5rem;
+    z-index: 40;
+  }
+
+  .lang-switch-menu button {
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--ink-soft);
+    padding: 0.4rem 0.6rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+  }
+
+  .lang-switch-menu button:hover {
+    background: var(--paper-sunken);
+    color: var(--ink);
+  }
+
+  .lang-switch-menu button.active {
     color: var(--accent-ink);
+    background: var(--accent-wash);
   }
 
   .topnav-login {
@@ -567,6 +625,8 @@
     cursor: pointer;
   }
 
+  .wizard-next:disabled { opacity: 0.4; cursor: not-allowed; }
+
   .body-question {
     border: 1px solid var(--line);
     border-radius: var(--radius);
@@ -984,10 +1044,10 @@
   <div class="rules-box">
     <h2>📋 作答說明</h2>
     <p>每一題都是 5 句具體的行為描述，請選出最符合你實際表現的那一句</p>
-    <p>身材數值皆為選填，但填寫越完整，身材模板與運動能力的比對就越準確</p>
+    <p>身高、體重為必填，其餘身材數值選填；填寫越完整，身材模板與運動能力的比對就越準確</p>
     <h2>⚠️ 注意事項<h2>
     <p>選擇「實際上會怎麼做」，而不是「希望自己能做到的」。</p>
-    <p>沒填的身材數值不會納入比對，身材模板可能因此比較不準。</p>
+    <p>身高、體重為必填。其餘沒填的身材數值不會納入比對，身材模板可能因此比較不準。</p>
     <p>所有配對結果都是座標距離的最近鄰計算，不是真人球探評測，僅供參考。</p>
   </div>
 
@@ -1144,10 +1204,10 @@
       subtitle: "行為錨定量表(BARS), 每題請選擇「哪句描述最符合我」",
       rulesTitle: "📋 作答說明",
       rulesLine1: "每一題都是 5 句具體的行為描述，請選出最符合你實際表現的那一句",
-      rulesLine2: "身材數值皆為選填，但填寫越完整，身材模板與運動能力的比對就越準確",
+      rulesLine2: "身高、體重為必填，其餘身材數值選填；填寫越完整，身材模板與運動能力的比對就越準確",
       warningTitle: "⚠️ 注意事項",
       warningLine1: "選擇「實際上會怎麼做」，而不是「希望自己能做到的」。",
-      warningLine2: "沒填的身材數值不會納入比對，身材模板可能因此比較不準。",
+      warningLine2: "身高、體重為必填。其餘沒填的身材數值不會納入比對，身材模板可能因此比較不準。",
       warningLine3: "所有配對結果都是座標距離的最近鄰計算，不是真人球探評測，僅供參考。",
       modeCurrentTitle: "現役球員模板",
       modeAlltimeTitle: "歷史球員模板",
@@ -1159,6 +1219,7 @@
       navTrainingPlan: "訓練計劃",
       loginButton: "登入",
       menuAriaLabel: "選單",
+      visitCounterLabel: "使用人數: ",
       randomFillTitle: "隨機填答,測試用",
       randomFillButton: "🎲 隨機填答(測試用)",
       loadingLabel: "載入題庫中…",
@@ -1208,9 +1269,9 @@
       backButtonLabel: "← 上一題",
       nextButtonLabel: "下一題 →",
       phaseAxisPositioning: "球風定位",
-      phaseBodyMeasurements: "身材數值(選填)",
+      phaseBodyMeasurements: "身材數值(身高/體重必填)",
       phaseSkillBehavior: "技能行為",
-      bodyMeasurementNote: "身材數值皆為選填，填寫越完整，身材模板與運動能力比對會越準確。",
+      bodyMeasurementNote: "身高、體重為必填，其餘身材數值選填，填寫越完整，身材模板與運動能力比對會越準確。",
       stepperIncreaseAriaTemplate: (prompt) => `${prompt}加 1`,
       stepperDecreaseAriaTemplate: (prompt) => `${prompt}減 1`,
       mostSuitable: "最貼合",
@@ -1221,10 +1282,10 @@
       subtitle: "Behaviorally Anchored Rating Scale (BARS) -- pick the description that fits you best for each question",
       rulesTitle: "📋 How to Answer",
       rulesLine1: "Each question has 5 specific behavior descriptions -- pick the one that best matches how you actually play",
-      rulesLine2: "Body measurements are all optional, but the more complete they are, the more accurate your body-fit template and athleticism comparison will be",
+      rulesLine2: "Height and weight are required; other body measurements are optional -- the more complete they are, the more accurate your body-fit template and athleticism comparison will be",
       warningTitle: "⚠️ Before You Start",
       warningLine1: "Pick what you actually do, not what you wish you could do.",
-      warningLine2: "Body measurements you skip won't be used for comparison, so your body-fit template may be less accurate.",
+      warningLine2: "Height and weight are required. Any other body measurement you skip won't be used for comparison, so your body-fit template may be less accurate.",
       warningLine3: "All matches are nearest-neighbor calculations on coordinates -- not a real scout's evaluation, for reference only.",
       modeCurrentTitle: "Current Players",
       modeAlltimeTitle: "All-Time Players",
@@ -1236,6 +1297,7 @@
       navTrainingPlan: "Training Plan",
       loginButton: "Log In",
       menuAriaLabel: "Menu",
+      visitCounterLabel: "Users: ",
       randomFillTitle: "Random fill (testing only)",
       randomFillButton: "🎲 Random Fill (Testing)",
       loadingLabel: "Loading questions…",
@@ -1285,9 +1347,9 @@
       backButtonLabel: "← Back",
       nextButtonLabel: "Next →",
       phaseAxisPositioning: "Play Style",
-      phaseBodyMeasurements: "Body Measurements (Optional)",
+      phaseBodyMeasurements: "Body Measurements (height/weight required)",
       phaseSkillBehavior: "Skill Behavior",
-      bodyMeasurementNote: "Body measurements are all optional, but the more complete they are, the more accurate your body-fit template and athleticism comparison will be.",
+      bodyMeasurementNote: "Height and weight are required; other body measurements are optional. The more complete they are, the more accurate your body-fit template and athleticism comparison will be.",
       stepperIncreaseAriaTemplate: (prompt) => `${prompt}, increase by 1`,
       stepperDecreaseAriaTemplate: (prompt) => `${prompt}, decrease by 1`,
       mostSuitable: "Best Match",
@@ -1315,15 +1377,23 @@
     return UI_STRINGS[state.lang];
   }
 
-  // ---- stage 1 progress: 只算球風定位(16 題)——身材數值全部選填,不是
-  // BARS 問題,完全不列入作答進度/送出門檻(2026-09-11 討論)。
+  // ---- stage 1 progress: 球風定位(16 題)一定算,身材數值題大多選填、不列入
+  // 進度/送出門檻(2026-09-11 討論)——但身高、體重是例外,兩題標了 required,
+  // 是原型分類體型分數的必要輸入,沒填後端會直接 400,所以這兩題也要算進門檻
+  // (2026-10 討論)。
+
+  function requiredBodyQuestions() {
+    return state.bodyQuestions.filter((q) => q.required);
+  }
 
   function stage1Total() {
-    return state.axisQuestions.length;
+    return state.axisQuestions.length + requiredBodyQuestions().length;
   }
 
   function stage1Answered() {
-    return state.axisQuestions.filter((q) => state.answers[q.id] !== undefined).length;
+    const axisDone = state.axisQuestions.filter((q) => state.answers[q.id] !== undefined).length;
+    const bodyDone = requiredBodyQuestions().filter((q) => state.bodyAnswers[q.id] !== undefined).length;
+    return axisDone + bodyDone;
   }
 
   function updateStage1Progress() {
@@ -1415,6 +1485,15 @@
         label.classList.add("selected");
       }
       input.addEventListener("change", () => onSelect(score, label));
+      // Enter on a focused radio can implicitly submit the *form* in some
+      // browsers (Firefox in particular) even though the visible submit
+      // button is disabled mid-wizard -- that silently skips every
+      // remaining question by submitting whatever's answered so far
+      // (2026-10 bug report). Selection itself is unaffected: it's driven
+      // by "change" (click or arrow keys), not by this key.
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") e.preventDefault();
+      });
       const num = document.createElement("span");
       num.className = "score-num";
       num.textContent = score;
@@ -1445,12 +1524,12 @@
     });
   }
 
-  function buildBodyQuestionField(q) {
+  function buildBodyQuestionField(q, onChange, onEnter) {
     const div = document.createElement("div");
     div.className = "body-question";
     const label = document.createElement("label");
     label.className = "prompt";
-    label.textContent = q.prompt;
+    label.textContent = q.required ? `${q.prompt} *` : q.prompt;
     label.htmlFor = q.id;
 
     const input = document.createElement("input");
@@ -1475,8 +1554,21 @@
         delete state.bodyAnswers[q.id];
       }
       updateStage1Progress();
+      if (onChange) onChange();
     };
     input.addEventListener("input", commit);
+    // Enter in a number input implicitly submits its form by spec (unlike
+    // radios/checkboxes), which used to skip straight past every remaining
+    // question to whatever partial result the form could produce (2026-10
+    // bug report). Advance exactly one step instead -- same as clicking
+    // "下一題" -- so Enter is useful but can never jump further than that.
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        commit();
+        if (onEnter) onEnter();
+      }
+    });
 
     const step = (delta) => {
       if (input.value === "") {
@@ -1527,11 +1619,18 @@
           note.textContent = t().bodyMeasurementNote;
           card.appendChild(note);
         }
-        card.appendChild(buildBodyQuestionField(q));
         const nextBtn = document.createElement("button");
         nextBtn.type = "button";
         nextBtn.className = "wizard-next";
         nextBtn.textContent = t().nextButtonLabel;
+        const refreshNextBtn = () => {
+          nextBtn.disabled = Boolean(q.required) && state.bodyAnswers[q.id] === undefined;
+        };
+        const tryAdvance = () => {
+          if (!nextBtn.disabled) onAdvance();
+        };
+        card.appendChild(buildBodyQuestionField(q, refreshNextBtn, tryAdvance));
+        refreshNextBtn();
         nextBtn.addEventListener("click", onAdvance);
         nav.appendChild(nextBtn);
       },
@@ -2121,15 +2220,53 @@
   function renderLangSwitch() {
     const container = document.getElementById("lang-switch");
     container.innerHTML = "";
+
+    const toggle = document.createElement("button");
+    toggle.type = "button";
+    toggle.className = "lang-switch-toggle";
+    toggle.setAttribute("aria-haspopup", "true");
+    toggle.setAttribute("aria-expanded", "false");
+    const toggleLabel = document.createElement("span");
+    toggleLabel.textContent = LANG_BUTTON_LABELS[state.lang] || state.lang;
+    const caret = document.createElement("span");
+    caret.className = "caret";
+    caret.textContent = "▾";
+    toggle.append(toggleLabel, caret);
+
+    const menu = document.createElement("div");
+    menu.className = "lang-switch-menu";
+    menu.style.display = "none";
     for (const lang of SUPPORTED_LANGUAGES) {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.textContent = LANG_BUTTON_LABELS[lang] || lang;
-      if (lang === state.lang) btn.classList.add("active");
-      btn.addEventListener("click", () => setLang(lang));
-      container.appendChild(btn);
+      const option = document.createElement("button");
+      option.type = "button";
+      option.textContent = LANG_BUTTON_LABELS[lang] || lang;
+      if (lang === state.lang) option.classList.add("active");
+      option.addEventListener("click", () => {
+        menu.style.display = "none";
+        toggle.setAttribute("aria-expanded", "false");
+        setLang(lang);
+      });
+      menu.appendChild(option);
     }
+
+    toggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isOpen = menu.style.display !== "none";
+      menu.style.display = isOpen ? "none" : "flex";
+      toggle.setAttribute("aria-expanded", String(!isOpen));
+    });
+
+    container.append(toggle, menu);
   }
+
+  // 點選單以外的地方要把選單收起來——只加一次,不要每次 renderLangSwitch()
+  // 都重複掛一個新的 listener(2026-10 討論)。
+  document.addEventListener("click", () => {
+    const menu = document.querySelector(".lang-switch-menu");
+    if (menu) menu.style.display = "none";
+    const toggle = document.querySelector(".lang-switch-toggle");
+    if (toggle) toggle.setAttribute("aria-expanded", "false");
+  });
 
   function applyUiStrings() {
     const strings = t();
@@ -2156,6 +2293,11 @@
 
     document.getElementById("random-fill-btn").title = strings.randomFillTitle;
     document.getElementById("random-fill-btn").textContent = strings.randomFillButton;
+
+    const visitCounterEl = document.getElementById("visit-counter");
+    if (visitCounterEl.dataset.count) {
+      visitCounterEl.textContent = `${strings.visitCounterLabel}${Number(visitCounterEl.dataset.count).toLocaleString()}`;
+    }
 
     document.getElementById("loading").textContent = strings.loadingLabel;
 
@@ -2328,7 +2470,8 @@
       .then((data) => {
         if (data && typeof data.visit_count === "number") {
           const el = document.getElementById("visit-counter");
-          el.textContent = `👁 ${data.visit_count.toLocaleString()}`;
+          el.dataset.count = String(data.visit_count);
+          el.textContent = `${t().visitCounterLabel}${data.visit_count.toLocaleString()}`;
           el.style.display = "inline";
         }
       })
