@@ -578,15 +578,6 @@ PLAYERS = [
         "_estimate_basis": _BASIS,
     },
     {
-        "id": "detlef_schrempf", "name": "Detlef Schrempf", "team": "1995",
-        "coordinates": {"A": 40, "B": 55, "C": 35, "D": 45},
-        "body": {"height_cm": 208, "wingspan_cm": 213},
-        "notable_traits": ["六人組得分手感好", "中距離出手穩定", "傳導視野不錯"],
-        "signature_skill_id": "face_up_first_step",
-        "learnability_flag": "high",
-        "_estimate_basis": _BASIS,
-    },
-    {
         "id": "bill_walton", "name": "Bill Walton", "team": "1977",
         "coordinates": {"A": 35, "B": 15, "C": 25, "D": 50},
         "body": {"height_cm": 211, "wingspan_cm": 218},
