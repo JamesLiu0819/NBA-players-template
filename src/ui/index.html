@@ -112,6 +112,26 @@
     white-space: nowrap;
   }
 
+  .lang-switch { display: flex; gap: 0.3rem; }
+
+  .lang-switch button {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ink-soft);
+    padding: 0.25rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .lang-switch button.active {
+    border-color: var(--accent);
+    background: var(--accent-wash);
+    color: var(--accent-ink);
+  }
+
   .topnav-login {
     border: 1px solid var(--accent);
     border-radius: 999px;
@@ -942,6 +962,7 @@
       <a href="#" class="topnav-tab" id="topnav-tab-priority">訓練計劃</a>
     </div>
     <div class="topnav-actions">
+      <div class="lang-switch" id="lang-switch"></div>
       <span class="visit-counter" id="visit-counter" style="display:none"></span>
       <button type="button" class="topnav-login">登入</button>
       <button type="button" class="topnav-menu" aria-label="選單">☰</button>
@@ -1079,8 +1100,6 @@
 (() => {
   "use strict";
 
-  const AXIS_LABELS = { A: "持球創造", B: "投射能力", C: "防守對位", D: "運動表現" };
-
   const ENV_PRESETS = {
     collapsed_no_shooters: {
       perimeter_shooting: 1.8, face_up_first_step: 1.3, high_post_playmaking: 1.4,
@@ -1114,6 +1133,43 @@
     ceiling: { label: "天花板", caption: "運動能力跟你接近,但技術層面更成熟的球員" },
   };
 
+  const SUPPORTED_LANGUAGES = ["zh", "en"];
+
+  const UI_STRINGS = {
+    zh: {
+      pageTitle: "球探報告",
+      eyebrow: "Self-Scouting Report",
+      subtitle: "行為錨定量表(BARS), 每題請選擇「哪句描述最符合我」",
+      rulesTitle: "📋 作答說明",
+      rulesLine1: "每一題都是 5 句具體的行為描述，請選出最符合你實際表現的那一句",
+      rulesLine2: "身材數值皆為選填，但填寫越完整，身材模板與運動能力的比對就越準確",
+      warningTitle: "⚠️ 注意事項",
+      warningLine1: "選擇「實際上會怎麼做」，而不是「希望自己能做到的」。",
+      warningLine2: "沒填的身材數值不會納入比對，身材模板可能因此比較不準。",
+      warningLine3: "所有配對結果都是座標距離的最近鄰計算，不是真人球探評測，僅供參考。",
+      modeCurrentTitle: "現役球員模板",
+      modeAlltimeTitle: "歷史球員模板",
+      noMatchingPlayer: "目前沒有符合條件的球員",
+      axisLabels: { A: "持球創造", B: "投射能力", C: "防守對位", D: "運動表現" },
+    },
+    en: {
+      pageTitle: "Scouting Report",
+      eyebrow: "Self-Scouting Report",
+      subtitle: "Behaviorally Anchored Rating Scale (BARS) -- pick the description that fits you best for each question",
+      rulesTitle: "📋 How to Answer",
+      rulesLine1: "Each question has 5 specific behavior descriptions -- pick the one that best matches how you actually play",
+      rulesLine2: "Body measurements are all optional, but the more complete they are, the more accurate your body-fit template and athleticism comparison will be",
+      warningTitle: "⚠️ Before You Start",
+      warningLine1: "Pick what you actually do, not what you wish you could do.",
+      warningLine2: "Body measurements you skip won't be used for comparison, so your body-fit template may be less accurate.",
+      warningLine3: "All matches are nearest-neighbor calculations on coordinates -- not a real scout's evaluation, for reference only.",
+      modeCurrentTitle: "Current Players",
+      modeAlltimeTitle: "All-Time Players",
+      noMatchingPlayer: "No matching player found",
+      axisLabels: { A: "Creation", B: "Shooting", C: "Defense", D: "Athleticism" },
+    },
+  };
+
   const state = {
     axisQuestions: [],
     skillQuestions: [],
@@ -1126,7 +1182,14 @@
     pool: "current",
     stage1StepIndex: 0,
     stage2StepIndex: 0,
+    lang: SUPPORTED_LANGUAGES.includes(localStorage.getItem("lang"))
+      ? localStorage.getItem("lang")
+      : "zh",
   };
+
+  function t() {
+    return UI_STRINGS[state.lang];
+  }
 
   const POOL_LABELS = { current: "現役球員模板", alltime: "歷史球員模板(All-time)" };
 
@@ -1387,7 +1450,7 @@
 
     if (step.kind === "axis") {
       document.getElementById("stage1-phase-title").textContent = "球風定位";
-      renderRadioStep("stage1-wizard", step.q, AXIS_LABELS[step.q.axis], idx, total, back, advance);
+      renderRadioStep("stage1-wizard", step.q, t().axisLabels[step.q.axis], idx, total, back, advance);
     } else {
       document.getElementById("stage1-phase-title").textContent = "身材數值(選填)";
       const isFirstBodyStep = idx === state.axisQuestions.length;
@@ -1537,6 +1600,7 @@
         .filter((q) => state.bodyAnswers[q.id] !== undefined)
         .map((q) => ({ question_id: q.id, value: state.bodyAnswers[q.id] })),
       pool: state.pool,
+      lang: state.lang,
     };
   }
 
@@ -1545,6 +1609,7 @@
       axis_answers: state.axisQuestions.map((q) => ({ question_id: q.id, score: state.answers[q.id] })),
       skill_answers: state.skillQuestions.map((q) => ({ question_id: q.id, score: state.answers[q.id] })),
       env: state.env,
+      lang: state.lang,
     };
   }
 
@@ -1601,7 +1666,7 @@
       const labelR = maxRadius + 25;
       const x = center + labelR * Math.cos(angle);
       const y = center + labelR * Math.sin(angle);
-      return `<text x="${x}" y="${y}" class="radar-axis-label" text-anchor="middle" dominant-baseline="middle">${AXIS_LABELS[axis]}</text>`;
+      return `<text x="${x}" y="${y}" class="radar-axis-label" text-anchor="middle" dominant-baseline="middle">${t().axisLabels[axis]}</text>`;
     }).join("");
 
     return `
@@ -1666,7 +1731,7 @@
       ctx.stroke();
       const lx = centerX + (maxRadius + 34) * Math.cos(angle);
       const ly = centerY + (maxRadius + 34) * Math.sin(angle);
-      ctx.fillText(AXIS_LABELS[axis], lx, ly);
+      ctx.fillText(t().axisLabels[axis], lx, ly);
     });
 
     const drawPolygon = (coords, fillStyle, strokeStyle) => {
@@ -1753,7 +1818,7 @@
       </div>
       <div class="traits">${m.notable_traits.map((t) => `<span class="trait">${t}</span>`).join("")}</div>
       <div class="callout">
-        <span class="axis-tag">${AXIS_LABELS[m.dominant_diff_axis]}差距最大</span>
+        <span class="axis-tag">${t().axisLabels[m.dominant_diff_axis]}差距最大</span>
         <span class="growth"> → 可以注意：${m.growth_recommendation}</span>
       </div>`;
   }
@@ -1783,7 +1848,7 @@
     const templateCards = ["skill_fit", "body_fit", "ceiling"].map((key) => {
       const meta = DEEP_TEMPLATE_META[key];
       const m = data.deep_templates[key];
-      const who = m ? `${m.name} (${m.team})` : "目前沒有符合條件的球員";
+      const who = m ? `${m.name} (${m.team})` : t().noMatchingPlayer;
       return `
         <div class="template-card">
           <div class="kind">${meta.label}</div>
@@ -1928,10 +1993,58 @@
     document.getElementById("stage1-form").scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
+  const LANG_BUTTON_LABELS = { zh: "中", en: "EN" };
+
+  function renderLangSwitch() {
+    const container = document.getElementById("lang-switch");
+    container.innerHTML = "";
+    for (const lang of SUPPORTED_LANGUAGES) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.textContent = LANG_BUTTON_LABELS[lang] || lang;
+      if (lang === state.lang) btn.classList.add("active");
+      btn.addEventListener("click", () => setLang(lang));
+      container.appendChild(btn);
+    }
+  }
+
+  function applyUiStrings() {
+    const strings = t();
+    document.title = strings.pageTitle;
+    document.querySelector(".masthead h1").textContent = strings.pageTitle;
+    document.querySelector(".masthead .eyebrow").textContent = strings.eyebrow;
+    document.querySelector(".masthead p").textContent = strings.subtitle;
+    document.querySelector(".rules-box h2:nth-of-type(1)").textContent = strings.rulesTitle;
+    document.querySelectorAll(".rules-box p")[0].textContent = strings.rulesLine1;
+    document.querySelectorAll(".rules-box p")[1].textContent = strings.rulesLine2;
+    document.querySelector(".rules-box h2:nth-of-type(2)").textContent = strings.warningTitle;
+    document.querySelectorAll(".rules-box p")[2].textContent = strings.warningLine1;
+    document.querySelectorAll(".rules-box p")[3].textContent = strings.warningLine2;
+    document.querySelectorAll(".rules-box p")[4].textContent = strings.warningLine3;
+    document.querySelector("#mode-current-btn .mode-title").textContent = strings.modeCurrentTitle;
+    document.querySelector("#mode-alltime-btn .mode-title").textContent = strings.modeAlltimeTitle;
+  }
+
+  function setLang(lang) {
+    if (lang === state.lang) return;
+    state.lang = lang;
+    localStorage.setItem("lang", lang);
+    renderLangSwitch();
+    applyUiStrings();
+    // 作答中的那一題也要重繪成新語言,不用整頁重整
+    if (document.getElementById("stage1-form").style.display !== "none") {
+      renderStage1Wizard();
+    }
+    if (document.getElementById("stage2-block").style.display !== "none"
+        && document.getElementById("stage2-block").style.display !== undefined) {
+      renderStage2Wizard();
+    }
+  }
+
   async function main() {
     let payload;
     try {
-      const res = await fetch("/api/form-data");
+      const res = await fetch(`/api/form-data?lang=${state.lang}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       payload = await res.json();
     } catch (err) {
@@ -1947,6 +2060,9 @@
     state.bodyQuestions = payload.questions.body_measurements;
     state.skills = payload.skills;
     applyPreset("collapsed_no_shooters");
+
+    renderLangSwitch();
+    applyUiStrings();
 
     document.getElementById("loading").style.display = "none";
     document.getElementById("mode-current-btn").disabled = false;
