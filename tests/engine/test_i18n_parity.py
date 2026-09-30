@@ -151,5 +151,40 @@ class ArchetypesParityTest(unittest.TestCase):
             self.assertNotEqual(zh_a["flavor"], en_a["flavor"], aid)
 
 
+class PlayersParityTest(unittest.TestCase):
+    NON_TEXT_FIELDS = (
+        "id", "name", "team", "coordinates", "body", "signature_skill_id",
+        "learnability_flag", "mock_axis_answers", "mock_skill_answers",
+    )
+
+    def setUp(self):
+        self.zh = load_json("zh", "球員.json")["players"]
+        self.en = load_json("en", "players.json")["players"]
+
+    def _by_id(self, players):
+        return {p["id"]: p for p in players}
+
+    def test_ids_match(self):
+        self.assertEqual(
+            {p["id"] for p in self.zh}, {p["id"] for p in self.en}
+        )
+
+    def test_non_text_fields_match(self):
+        zh_by_id, en_by_id = self._by_id(self.zh), self._by_id(self.en)
+        for pid, zh_p in zh_by_id.items():
+            en_p = en_by_id[pid]
+            for field in self.NON_TEXT_FIELDS:
+                self.assertEqual(zh_p[field], en_p[field], f"{pid}.{field}")
+
+    def test_notable_traits_are_translated_not_copied(self):
+        zh_by_id, en_by_id = self._by_id(self.zh), self._by_id(self.en)
+        for pid, zh_p in zh_by_id.items():
+            en_p = en_by_id[pid]
+            self.assertEqual(len(zh_p["notable_traits"]), len(en_p["notable_traits"]), pid)
+            for zh_trait, en_trait in zip(zh_p["notable_traits"], en_p["notable_traits"]):
+                self.assertTrue(en_trait.strip(), pid)
+                self.assertNotEqual(zh_trait, en_trait, pid)
+
+
 if __name__ == "__main__":
     unittest.main()
