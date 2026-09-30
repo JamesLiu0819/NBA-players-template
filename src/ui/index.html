@@ -1201,7 +1201,7 @@
     };
   }
 
-  const SUPPORTED_LANGUAGES = ["zh", "en"];
+  const SUPPORTED_LANGUAGES = ["zh", "zh-Hans", "en"];
 
   const UI_STRINGS = {
     zh: {
@@ -1280,6 +1280,83 @@
       stepperIncreaseAriaTemplate: (prompt) => `${prompt}加 1`,
       stepperDecreaseAriaTemplate: (prompt) => `${prompt}減 1`,
       mostSuitable: "最貼合",
+    },
+    "zh-Hans": {
+      pageTitle: "球探报告",
+      eyebrow: "Self-Scouting Report",
+      subtitle: "行为锚定量表(BARS), 每题请选择「哪句描述最符合我」",
+      rulesTitle: "📋 作答说明",
+      rulesLine1: "每一题都是 5 句具体的行为描述，请选出最符合你实际表现的那一句",
+      rulesLine2: "身高、体重为必填，其余身材数值选填；填写越完整，身材模板与运动能力的比对就越准确",
+      warningTitle: "⚠️ 注意事项",
+      warningLine1: "选择「实际上会怎么做」，而不是「希望自己能做到的」。",
+      warningLine2: "身高、体重为必填。其余没填的身材数值不会纳入比对，身材模板可能因此比较不准。",
+      warningLine3: "所有配对结果都是座标距离的最近邻计算，不是真人球探评测，仅供参考。",
+      modeCurrentTitle: "现役球员模板",
+      modeAlltimeTitle: "历史球员模板",
+      noMatchingPlayer: "目前没有符合条件的球员",
+      axisLabels: { A: "持球创造", B: "投射能力", C: "防守对位", D: "运动表现" },
+      brandName: "球探报告",
+      navHome: "首页",
+      navMyTemplate: "我的模板",
+      navTrainingPlan: "训练计划",
+      loginButton: "登录",
+      menuAriaLabel: "菜单",
+      visitCounterLabel: "使用人数: ",
+      randomFillTitle: "随机填答,测试用",
+      randomFillButton: "🎲 随机填答(测试用)",
+      loadingLabel: "加载题库中…",
+      ctaHeading: "想知道自己该优先练什么吗？",
+      ctaBody: "这需要再多填 15 题技能行为题,并且选择你的联赛防守环境——不想看训练建议的话,到这里就结束了。",
+      ctaButton: "分析我的训练优先序",
+      progressLabel: "作答进度",
+      stage1SubmitButton: "查看我的球员模板",
+      stage2SubmitButton: "产生训练优先序",
+      remainingQuestions: (n) => `还差 ${n} 题`,
+      processingLabel: "整理报告中",
+      envSectionTitle: "联赛环境(暂定值)",
+      envNote: "正式的环境倍率表还没创建,需要领域专家填写完整的 5 维 × 3 档倍率表。下面三个选项是暂定值,只用来测试「环境会不会影响训练优先序」这个机制,不是精准数字。如果你没在打正式比赛,随便选一个都可以——这一区本来就是给有固定联赛环境的人用的。",
+      envPreset1: "内缩防守 / 缺乏射手",
+      envPreset2: "贴外线 / 对手有射手",
+      envPreset3: "区域防守为主",
+      footerDisclosureLine1: "球员数据是手动估算的种子数据集,不是真实统计数据推导的结果;环境权重是暂定值;贴合度星级门槛也是暂定值。",
+      footerDisclosureLine2: "这些数字之后会被正式的球员数据库跟环境倍率表取代。",
+      restartLink: "重新填一次",
+      deepTemplateSkillFitLabel: "技术模板",
+      deepTemplateSkillFitCaption: "排除运动能力,技术层面跟你最接近的球员（打法风格）",
+      deepTemplateBodyFitLabel: "身材模板",
+      deepTemplateBodyFitCaption: "身材数值跟你最接近的球员",
+      deepTemplateCeilingLabel: "天花板",
+      deepTemplateCeilingCaption: "运动能力跟你接近,但技术层面更成熟的球员",
+      dominantAxisGap: (axisLabel) => `${axisLabel}差距最大`,
+      growthNotePrefix: " → 可以注意：",
+      expandFactorsSummary: "展开 G / E / R / C",
+      factorGapLabel: "能力缺口 G",
+      factorEnvLabel: "环境权重 E",
+      factorRelevanceLabel: "相关性 R",
+      factorCostLabel: "习得成本 C",
+      radarAriaLabel: (matchLabel) => `四轴雷达图：你跟${matchLabel}的比较`,
+      youLabel: "你",
+      shareImageHeader: "🏀 球探报告",
+      shareImageDisclaimer: "非真人球探评测，仅供参考",
+      shareImageFilename: (name) => `球探报告-${name}.png`,
+      shareButtonLabel: "📥 下载分享图",
+      section1Title: "3 位深度模板",
+      section2Title: "10 人对照表",
+      section3Title: "优先训练顺序",
+      submitErrorTemplate: (msg) => `送出失败：${msg}`,
+      loadErrorTemplate: (msg) => `题库加载失败：${msg}`,
+      poolLabels: { current: "现役球员模板", alltime: "历史球员模板(All-time)" },
+      stepCounterTemplate: (i, n) => `第 ${i} / ${n} 题`,
+      backButtonLabel: "← 上一题",
+      nextButtonLabel: "下一题 →",
+      phaseAxisPositioning: "球风定位",
+      phaseBodyMeasurements: "身材数值(身高/体重必填)",
+      phaseSkillBehavior: "技能行为",
+      bodyMeasurementNote: "身高、体重为必填，其余身材数值选填，填写越完整，身材模板与运动能力比对会越准确。",
+      stepperIncreaseAriaTemplate: (prompt) => `${prompt}加 1`,
+      stepperDecreaseAriaTemplate: (prompt) => `${prompt}减 1`,
+      mostSuitable: "最贴合",
     },
     en: {
       pageTitle: "Scouting Report",
@@ -2221,7 +2298,7 @@
     document.getElementById("stage1-form").scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
-  const LANG_BUTTON_LABELS = { zh: "繁", en: "EN" };
+  const LANG_BUTTON_LABELS = { zh: "繁", "zh-Hans": "简", en: "EN" };
 
   function renderLangSwitch() {
     const container = document.getElementById("lang-switch");

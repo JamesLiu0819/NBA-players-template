@@ -1,0 +1,426 @@
+{
+  "_description": "技能库,完整 15 项(SPEC.md §3.3)。最早的 P1 最小范围(SPEC.md §12 未决问题 #1)只收录 5 项关键技能：外线投射、面框第一步过人、高位传导视野、护框、换防跟防;2026-09-10 扩充加了另外 10 项(背框单打、挡拆持球判断、无球跑动/利用掩护、转换快攻终结、罚球、前场篮板/二次进攻、一对一外围单防、协防补位轮转、防守篮板卡位、决策效率/失误控制)。要再加技能就直接在 skills 数组里加新对象,格式跟现有的一样。",
+  "_editable_fields": "每个技能对象里: cost_C(1-5,习得成本)、axis_relevance(A/B/C/D 四轴相关性,0-1,目前是依常理判断的暂定值,等 SPEC §12 issue #2 的领域专家校准后应该更新)、court_required/teammate_required(训练场地与队友需求,决定球场环节/场外环节)、metric(验收指针,含 denominator 与 thresholds 三个分层门槛)、video_tags(目前只是占位标签,还没接真正的视频库)。id 一旦被其他数据档或代码引用(例如 questions.json 的 skill_behavior.skill_id)就不要改,否则会对不起来。",
+  "skills": [
+    {
+      "id": "perimeter_shooting",
+      "name_zh": "外线投射",
+      "category": "offense",
+      "cost_C": 3,
+      "court_required": true,
+      "teammate_required": false,
+      "axis_relevance": {
+        "A": 0.3,
+        "B": 0.9,
+        "C": 0.1,
+        "D": 0.2
+      },
+      "video_tags": [
+        "shooting_catch_and_shoot",
+        "shooting_mechanics"
+      ],
+      "metric": {
+        "action": "定点投射三分",
+        "denominator": 50,
+        "direction": "makes_at_least",
+        "thresholds": {
+          "entry": 15,
+          "advanced": 20,
+          "mastery": 25
+        }
+      }
+    },
+    {
+      "id": "face_up_first_step",
+      "name_zh": "面框第一步过人",
+      "category": "offense",
+      "cost_C": 3,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": {
+        "A": 0.9,
+        "B": 0.4,
+        "C": 0.1,
+        "D": 0.5
+      },
+      "video_tags": [
+        "handles_first_step",
+        "finishing_at_rim"
+      ],
+      "metric": {
+        "action": "一对一面框单打",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": {
+          "entry": 6,
+          "advanced": 10,
+          "mastery": 14
+        }
+      }
+    },
+    {
+      "id": "high_post_playmaking",
+      "name_zh": "高位传导视野",
+      "category": "awareness",
+      "cost_C": 4,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": {
+        "A": 0.8,
+        "B": 0.5,
+        "C": 0.1,
+        "D": 0.1
+      },
+      "video_tags": [
+        "playmaking_high_post",
+        "reading_double_team"
+      ],
+      "metric": {
+        "action": "高位接球后传导",
+        "denominator": 30,
+        "direction": "errors_at_most",
+        "thresholds": {
+          "entry": 5,
+          "advanced": 2,
+          "mastery": 1
+        }
+      }
+    },
+    {
+      "id": "rim_protection",
+      "name_zh": "护框",
+      "category": "defense",
+      "cost_C": 4,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": {
+        "A": 0.1,
+        "B": 0.1,
+        "C": 0.9,
+        "D": 0.6
+      },
+      "video_tags": [
+        "rim_protection_positioning",
+        "shot_contest"
+      ],
+      "metric": {
+        "action": "对手正面攻框的防守",
+        "denominator": 30,
+        "direction": "makes_at_least",
+        "thresholds": {
+          "entry": 12,
+          "advanced": 18,
+          "mastery": 22
+        }
+      }
+    },
+    {
+      "id": "perimeter_switch_defense",
+      "name_zh": "换防跟防",
+      "category": "defense",
+      "cost_C": 3,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": {
+        "A": 0.1,
+        "B": 0.2,
+        "C": 0.9,
+        "D": 0.7
+      },
+      "video_tags": [
+        "switch_defense_footwork",
+        "closeout_technique"
+      ],
+      "metric": {
+        "action": "跟防外线持球者",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": {
+          "entry": 8,
+          "advanced": 13,
+          "mastery": 16
+        }
+      }
+    },
+    {
+      "id": "post_up",
+      "name_zh": "背框单打",
+      "category": "offense",
+      "cost_C": 4,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": {
+        "A": 0.3,
+        "B": 0.9,
+        "C": 0.1,
+        "D": 0.3
+      },
+      "video_tags": [
+        "post_up_footwork",
+        "post_up_reads"
+      ],
+      "metric": {
+        "action": "背框单打强攻得分",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": {
+          "entry": 6,
+          "advanced": 10,
+          "mastery": 14
+        }
+      }
+    },
+    {
+      "id": "pick_and_roll_ball_handling",
+      "name_zh": "挡拆持球判断",
+      "category": "offense",
+      "cost_C": 3,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": {
+        "A": 0.9,
+        "B": 0.4,
+        "C": 0.1,
+        "D": 0.3
+      },
+      "video_tags": [
+        "pick_and_roll_reads",
+        "ball_handler_reads"
+      ],
+      "metric": {
+        "action": "挡拆后正确的传/投/切判断",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": {
+          "entry": 8,
+          "advanced": 13,
+          "mastery": 17
+        }
+      }
+    },
+    {
+      "id": "off_ball_movement",
+      "name_zh": "无球跑动/利用掩护",
+      "category": "offense",
+      "cost_C": 2,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": {
+        "A": 0.2,
+        "B": 0.8,
+        "C": 0.1,
+        "D": 0.4
+      },
+      "video_tags": [
+        "off_ball_cuts",
+        "screen_usage"
+      ],
+      "metric": {
+        "action": "利用掩护跑出空档",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": {
+          "entry": 8,
+          "advanced": 13,
+          "mastery": 17
+        }
+      }
+    },
+    {
+      "id": "transition_finishing",
+      "name_zh": "转换快攻终结",
+      "category": "offense",
+      "cost_C": 2,
+      "court_required": true,
+      "teammate_required": false,
+      "axis_relevance": {
+        "A": 0.3,
+        "B": 0.2,
+        "C": 0.1,
+        "D": 0.8
+      },
+      "video_tags": [
+        "transition_finishing",
+        "fast_break_reads"
+      ],
+      "metric": {
+        "action": "快攻中完成终结",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": {
+          "entry": 10,
+          "advanced": 15,
+          "mastery": 18
+        }
+      }
+    },
+    {
+      "id": "free_throw_shooting",
+      "name_zh": "罚球",
+      "category": "offense",
+      "cost_C": 2,
+      "court_required": true,
+      "teammate_required": false,
+      "axis_relevance": {
+        "A": 0.2,
+        "B": 0.2,
+        "C": 0.2,
+        "D": 0.2
+      },
+      "video_tags": [
+        "free_throw_routine",
+        "free_throw_mechanics"
+      ],
+      "metric": {
+        "action": "罚球",
+        "denominator": 50,
+        "direction": "makes_at_least",
+        "thresholds": {
+          "entry": 35,
+          "advanced": 40,
+          "mastery": 45
+        }
+      }
+    },
+    {
+      "id": "offensive_rebounding",
+      "name_zh": "前场篮板/二次进攻",
+      "category": "awareness",
+      "cost_C": 3,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": {
+        "A": 0.1,
+        "B": 0.3,
+        "C": 0.1,
+        "D": 0.7
+      },
+      "video_tags": [
+        "offensive_rebounding",
+        "putback_finishing"
+      ],
+      "metric": {
+        "action": "前场篮板转换成得分机会",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": {
+          "entry": 6,
+          "advanced": 10,
+          "mastery": 14
+        }
+      }
+    },
+    {
+      "id": "on_ball_perimeter_defense",
+      "name_zh": "一对一外围单防",
+      "category": "defense",
+      "cost_C": 3,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": {
+        "A": 0.1,
+        "B": 0.2,
+        "C": 0.8,
+        "D": 0.5
+      },
+      "video_tags": [
+        "on_ball_defense_stance",
+        "containing_dribble_penetration"
+      ],
+      "metric": {
+        "action": "一对一单防持球者",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": {
+          "entry": 8,
+          "advanced": 13,
+          "mastery": 17
+        }
+      }
+    },
+    {
+      "id": "help_defense_rotation",
+      "name_zh": "协防补位轮转",
+      "category": "defense",
+      "cost_C": 4,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": {
+        "A": 0.1,
+        "B": 0.1,
+        "C": 0.7,
+        "D": 0.3
+      },
+      "video_tags": [
+        "help_defense_rotation",
+        "team_defense_positioning"
+      ],
+      "metric": {
+        "action": "协防补位",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": {
+          "entry": 8,
+          "advanced": 13,
+          "mastery": 17
+        }
+      }
+    },
+    {
+      "id": "defensive_rebounding_boxout",
+      "name_zh": "防守篮板卡位",
+      "category": "defense",
+      "cost_C": 2,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": {
+        "A": 0.1,
+        "B": 0.2,
+        "C": 0.5,
+        "D": 0.6
+      },
+      "video_tags": [
+        "boxing_out",
+        "defensive_rebounding"
+      ],
+      "metric": {
+        "action": "防守篮板卡位",
+        "denominator": 20,
+        "direction": "makes_at_least",
+        "thresholds": {
+          "entry": 10,
+          "advanced": 15,
+          "mastery": 18
+        }
+      }
+    },
+    {
+      "id": "decision_making_turnover_control",
+      "name_zh": "决策效率/失误控制",
+      "category": "awareness",
+      "cost_C": 3,
+      "court_required": true,
+      "teammate_required": true,
+      "axis_relevance": {
+        "A": 0.7,
+        "B": 0.2,
+        "C": 0.1,
+        "D": 0.2
+      },
+      "video_tags": [
+        "decision_making",
+        "turnover_avoidance"
+      ],
+      "metric": {
+        "action": "持球推进或做决策时不失误",
+        "denominator": 30,
+        "direction": "errors_at_most",
+        "thresholds": {
+          "entry": 6,
+          "advanced": 3,
+          "mastery": 1
+        }
+      }
+    }
+  ]
+}

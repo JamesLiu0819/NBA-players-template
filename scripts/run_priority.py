@@ -37,6 +37,12 @@ FACTOR_LABELS = {
         "R": "自然位置相關性(R)",
         "C": "習得成本(C)",
     },
+    "zh-Hans": {
+        "G": "能力缺口(G)",
+        "E": "联赛环境权重(E)",
+        "R": "自然位置相关性(R)",
+        "C": "习得成本(C)",
+    },
     "en": {
         "G": "Ability Gap (G)",
         "E": "League Environment Weight (E)",
@@ -47,15 +53,17 @@ FACTOR_LABELS = {
 
 TIE_SENTENCE_TEMPLATE = {
     "zh": "{higher}跟{lower}的優先序完全打平(P 值相同)。",
+    "zh-Hans": "{higher}跟{lower}的优先序完全打平(P 值相同)。",
     "en": "{higher} and {lower} are tied for priority (equal P value).",
 }
 
 DOMINANT_SENTENCE_TEMPLATE = {
     "zh": "{higher}排在{lower}之前，主因是{dominant_label}高出 {ratio:.2f} 倍，而非{others}的差異。",
+    "zh-Hans": "{higher}排在{lower}之前，主因是{dominant_label}高出 {ratio:.2f} 倍，而非{others}的差异。",
     "en": "{higher} ranks above {lower} mainly because {dominant_label} is {ratio:.2f}x higher, not because of {others}.",
 }
 
-OTHERS_JOIN = {"zh": "、", "en": ", "}
+OTHERS_JOIN = {"zh": "、", "zh-Hans": "、", "en": ", "}
 
 
 def find_latest_answers_file():

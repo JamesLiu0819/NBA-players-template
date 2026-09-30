@@ -1,0 +1,150 @@
+{
+  "_description": "球场定位原型(archetype)清单,给「一句话球探报告」跟结果页的原型标签用。每个原型是四轴空间里的一个锚点座标,用户座标用最近邻(Euclidean distance)分类到最接近的原型——跟 src/engine/player_matching.py 找最像球员的逻辑是同一套精神,只是比对的对象换成手动设计的原型锚点,不是球员。12 个原型尽量平均分布在 A/B/C/D 四轴空间里,不是穷举所有座标组合,涵盖常见的球风轮廓即可。每个原型还有一个 size 字段(0-100,身高百分位跟体重百分位的平均),分类时(engine/archetype.py 的 classify_archetype)如果用户/候选球员有身材数据,会把 size 并入距离计算——避免矮个子只要打法平均就被分类到隐含高大身材的原型(例如全能锋线),高个子打控球风格也被分类到控场指挥官(2026-10 讨论)。",
+  "_editable_fields": "coordinates 改变分类边界,name_zh/flavor 改变文案,size 改变身材权重的分类边界。id 一旦被别的地方引用就不要改。添加原型时尽量选跟现有锚点距离够远的座标,不然会很少被分到。size 的校准方法：拿 data/players.json 现有球员,用纯 A/B/C/D 距离(不含 size)分类到 12 个原型,对每个原型算出落在里面的球员的身高百分位、体重百分位平均值,四舍五入后就是这个原型的 size——不是凭感觉猜的,改动 coordinates 之后建议重新跑一次这个校准(方法见 2026-10 讨论)。do_it_all_forward 的座标原本是 (55,50,55,60),几乎刚好是 12 个原型的几何中心,实测(Monte Carlo,四轴各自 4 题 1-5 随机作答取平均仿真犹豫填答)显示它会吃下 32% 的分类结果,是第二名的两倍多;调整成 (60,50,60,70)后降到约 21%,跟第二名打平,不再是不成比例的磁吸点,同一份校准流程也要一并重跑。",
+  "archetypes": [
+    {
+      "id": "floor_general",
+      "name_zh": "控场指挥官",
+      "coordinates": {
+        "A": 90,
+        "B": 40,
+        "C": 40,
+        "D": 45
+      },
+      "size": 31,
+      "flavor": "一球在手队友靠我,我控制着全场的进攻节奏"
+    },
+    {
+      "id": "combo_scorer",
+      "name_zh": "双能卫",
+      "coordinates": {
+        "A": 70,
+        "B": 65,
+        "C": 40,
+        "D": 55
+      },
+      "size": 25,
+      "flavor": "组织得分样样精，我既能串联也能独挑大梁"
+    },
+    {
+      "id": "offball_shooter",
+      "name_zh": "无球射手",
+      "coordinates": {
+        "A": 20,
+        "B": 90,
+        "C": 30,
+        "D": 40
+      },
+      "size": 33,
+      "flavor": "在掩护中穿梭,高效率得分就是我的代名词"
+    },
+    {
+      "id": "three_and_d_wing",
+      "name_zh": "3D 侧翼",
+      "coordinates": {
+        "A": 35,
+        "B": 70,
+        "C": 75,
+        "D": 60
+      },
+      "size": 36,
+      "flavor": "球队最重要的拼图, 我不只能投3分也能防守"
+    },
+    {
+      "id": "lockdown_defender",
+      "name_zh": "防守大锁",
+      "coordinates": {
+        "A": 30,
+        "B": 30,
+        "C": 90,
+        "D": 65
+      },
+      "size": 47,
+      "flavor": "持球手的恶梦,有我在谁都不能越过我"
+    },
+    {
+      "id": "do_it_all_forward",
+      "name_zh": "全能锋线",
+      "coordinates": {
+        "A": 60,
+        "B": 50,
+        "C": 60,
+        "D": 70
+      },
+      "size": 55,
+      "flavor": "全场最亮眼的人,我从1到5号都会打"
+    },
+    {
+      "id": "stretch_big",
+      "name_zh": "空间型内线",
+      "coordinates": {
+        "A": 30,
+        "B": 75,
+        "C": 30,
+        "D": 35
+      },
+      "size": 50,
+      "flavor": "外线也能出手,切入的队友最爱我"
+    },
+    {
+      "id": "back_to_basket_center",
+      "name_zh": "背框中锋",
+      "coordinates": {
+        "A": 25,
+        "B": 15,
+        "C": 25,
+        "D": 35
+      },
+      "size": 83,
+      "flavor": "禁区脚步扎实,低位就是我的主场。"
+    },
+    {
+      "id": "rim_protector",
+      "name_zh": "护框长人",
+      "coordinates": {
+        "A": 15,
+        "B": 10,
+        "C": 25,
+        "D": 75
+      },
+      "size": 87,
+      "flavor": "对手进攻的恶梦,有我在你连上篮都不准"
+    },
+    {
+      "id": "cutting_finisher",
+      "name_zh": "空切终结者",
+      "coordinates": {
+        "A": 20,
+        "B": 40,
+        "C": 30,
+        "D": 85
+      },
+      "size": 72,
+      "flavor": "没球在手也很危险,我随时都能找到空档"
+    },
+    {
+      "id": "explosive_slasher",
+      "name_zh": "爆发突破手",
+      "coordinates": {
+        "A": 80,
+        "B": 35,
+        "C": 40,
+        "D": 85
+      },
+      "size": 57,
+      "flavor": "眨眼瞬间就不见,速度就是我最大的武器"
+    },
+    {
+      "id": "blue_collar_energy",
+      "name_zh": "蓝领工兵",
+      "coordinates": {
+        "A": 15,
+        "B": 25,
+        "C": 55,
+        "D": 70
+      },
+      "size": 61,
+      "flavor": "场上脏活都不闪,我就是队友的最爱"
+    }
+  ]
+}

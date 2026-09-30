@@ -95,7 +95,7 @@ from scripts.run_priority import build_priority_items, format_dominant_factor_se
 UI_DIR = ROOT / "src" / "ui"
 TEMPLATE_REQUIRED_FIELDS = ("axis_answers",)
 PRIORITY_REQUIRED_FIELDS = ("axis_answers", "skill_answers", "env")
-SUPPORTED_LANGUAGES = ("zh", "en")
+SUPPORTED_LANGUAGES = ("zh", "zh-Hans", "en")
 POOLS = ("current", "alltime")
 
 DATA_FILENAMES = {
@@ -105,6 +105,13 @@ DATA_FILENAMES = {
         "archetypes": "原型.json",
         "players_current": "球員.json",
         "players_alltime": "歷史球員.json",
+    },
+    "zh-Hans": {
+        "questions": "题库.json",
+        "skills": "技能.json",
+        "archetypes": "原型.json",
+        "players_current": "球员.json",
+        "players_alltime": "历史球员.json",
     },
     "en": {
         "questions": "questions.json",

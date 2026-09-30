@@ -228,6 +228,21 @@ class TemplateResultsTest(unittest.TestCase):
         )
         self.assertNotEqual(data["scouting_report"], zh_response.get_json()["scouting_report"])
 
+    def test_lang_zh_hans_returns_simplified_content(self):
+        payload = {
+            "axis_answers": build_axis_answers(self.questions),
+            "body_answers": build_required_body_answers(self.questions),
+            "lang": "zh-Hans",
+        }
+
+        response = self.client.post("/api/template-results", json=payload)
+
+        self.assertEqual(response.status_code, 200)
+        data = response.get_json()
+        zh_hans_names = {p["name"] for p in load_json(ROOT / "data" / "zh-Hans" / "球员.json")["players"]}
+        top_10_names = {row["name"] for row in data["top_10"]}
+        self.assertTrue(top_10_names.issubset(zh_hans_names))
+
     def test_invalid_lang_returns_400(self):
         payload = {"axis_answers": build_axis_answers(self.questions), "lang": "fr"}
 

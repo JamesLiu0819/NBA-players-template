@@ -60,11 +60,13 @@ AXIS_LABELS = {
 
 D_AXIS_GROWTH_TEMPLATE = {
     "zh": "身體天賦上有落差,不能單靠練習籃球技能",
+    "zh-Hans": "身体天赋上有落差,不能单靠练习篮球技能",
     "en": "There's an athletic gap here that practice alone can't close",
 }
 
 GROWTH_ACTION_TEMPLATE = {
     "zh": "{action}的練習",
+    "zh-Hans": "{action}的练习",
     "en": "Practice: {action}",
 }
 
