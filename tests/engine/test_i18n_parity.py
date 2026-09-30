@@ -123,5 +123,33 @@ class SkillsParityTest(unittest.TestCase):
             self.assertNotEqual(zh_s["metric"]["action"], en_s["metric"]["action"], sid)
 
 
+class ArchetypesParityTest(unittest.TestCase):
+    def setUp(self):
+        self.zh = load_json("zh", "原型.json")["archetypes"]
+        self.en = load_json("en", "archetypes.json")["archetypes"]
+
+    def _by_id(self, archetypes):
+        return {a["id"]: a for a in archetypes}
+
+    def test_ids_match(self):
+        self.assertEqual(
+            {a["id"] for a in self.zh}, {a["id"] for a in self.en}
+        )
+
+    def test_coordinates_match(self):
+        zh_by_id, en_by_id = self._by_id(self.zh), self._by_id(self.en)
+        for aid, zh_a in zh_by_id.items():
+            self.assertEqual(zh_a["coordinates"], en_by_id[aid]["coordinates"], aid)
+
+    def test_text_fields_are_translated_not_copied(self):
+        zh_by_id, en_by_id = self._by_id(self.zh), self._by_id(self.en)
+        for aid, zh_a in zh_by_id.items():
+            en_a = en_by_id[aid]
+            self.assertTrue(en_a["name_zh"].strip(), aid)
+            self.assertNotEqual(zh_a["name_zh"], en_a["name_zh"], aid)
+            self.assertTrue(en_a["flavor"].strip(), aid)
+            self.assertNotEqual(zh_a["flavor"], en_a["flavor"], aid)
+
+
 if __name__ == "__main__":
     unittest.main()

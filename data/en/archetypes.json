@@ -1,0 +1,78 @@
+{
+  "_description": "球場定位原型(archetype)清單,給「一句話球探報告」跟結果頁的原型標籤用。每個原型是四軸空間裡的一個錨點座標,使用者座標用最近鄰(Euclidean distance)分類到最接近的原型——跟 src/engine/player_matching.py 找最像球員的邏輯是同一套精神,只是比對的對象換成手動設計的原型錨點,不是球員。12 個原型盡量平均分布在 A/B/C/D 四軸空間裡,不是窮舉所有座標組合,涵蓋常見的球風輪廓即可。",
+  "_editable_fields": "整份 archetypes 清單都可以改——調 coordinates 改變分類邊界,調 name_zh/flavor 改變文案。id 一旦被別的地方引用就不要改。新增原型時盡量選跟現有錨點距離夠遠的座標,不然會很少被分到。",
+  "archetypes": [
+    {
+      "id": "floor_general",
+      "name_zh": "Floor General",
+      "coordinates": { "A": 90, "B": 40, "C": 40, "D": 45 },
+      "flavor": "Ball's in my hands, tempo's in my hands -- I run the show out there."
+    },
+    {
+      "id": "combo_scorer",
+      "name_zh": "Combo Guard",
+      "coordinates": { "A": 70, "B": 65, "C": 40, "D": 55 },
+      "flavor": "Playmaking, scoring, doesn't matter -- I run the offense and I close it out too."
+    },
+    {
+      "id": "offball_shooter",
+      "name_zh": "Off-Ball Shooter",
+      "coordinates": { "A": 20, "B": 90, "C": 30, "D": 40 },
+      "flavor": "Curling off a screen, splashing it in -- efficient scoring is my whole identity."
+    },
+    {
+      "id": "three_and_d_wing",
+      "name_zh": "3-and-D Wing",
+      "coordinates": { "A": 35, "B": 70, "C": 75, "D": 60 },
+      "flavor": "The piece every team needs -- I knock down threes and I lock you up."
+    },
+    {
+      "id": "lockdown_defender",
+      "name_zh": "Lockdown Defender",
+      "coordinates": { "A": 30, "B": 30, "C": 90, "D": 65 },
+      "flavor": "Every ball-handler's nightmare -- nobody's getting past me."
+    },
+    {
+      "id": "do_it_all_forward",
+      "name_zh": "Do-It-All Forward",
+      "coordinates": { "A": 55, "B": 50, "C": 55, "D": 60 },
+      "flavor": "Brightest guy on the floor -- I play one through five."
+    },
+    {
+      "id": "stretch_big",
+      "name_zh": "Stretch Big",
+      "coordinates": { "A": 30, "B": 75, "C": 30, "D": 35 },
+      "flavor": "I stretch the floor from deep -- every driver on my team loves playing next to me."
+    },
+    {
+      "id": "back_to_basket_center",
+      "name_zh": "Back-to-Basket Center",
+      "coordinates": { "A": 25, "B": 15, "C": 25, "D": 35 },
+      "flavor": "Footwork's locked in down low -- the block is my home court."
+    },
+    {
+      "id": "rim_protector",
+      "name_zh": "Rim Protector",
+      "coordinates": { "A": 15, "B": 10, "C": 25, "D": 75 },
+      "flavor": "Every offense's nightmare -- with me at the rim, that layup isn't going in."
+    },
+    {
+      "id": "cutting_finisher",
+      "name_zh": "Cutting Finisher",
+      "coordinates": { "A": 20, "B": 40, "C": 30, "D": 85 },
+      "flavor": "Dangerous even without the ball -- I always find the gap."
+    },
+    {
+      "id": "explosive_slasher",
+      "name_zh": "Explosive Slasher",
+      "coordinates": { "A": 80, "B": 35, "C": 40, "D": 85 },
+      "flavor": "Blink and I'm already gone -- speed is my biggest weapon."
+    },
+    {
+      "id": "blue_collar_energy",
+      "name_zh": "Blue-Collar Energy",
+      "coordinates": { "A": 15, "B": 25, "C": 55, "D": 70 },
+      "flavor": "I never dodge the dirty work -- that's why my teammates love me."
+    }
+  ]
+}
