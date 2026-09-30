@@ -82,7 +82,7 @@ def load_json(path):
         return json.load(f)
 
 
-def describe_growth_recommendation(player, skills_by_id):
+def describe_growth_recommendation(player, skills_by_id, lang="zh"):
     axis = player["dominant_diff_axis"]
     if axis == "D":
         return D_AXIS_GROWTH_TEMPLATE
@@ -92,7 +92,7 @@ def describe_growth_recommendation(player, skills_by_id):
     return f"{skills_by_id[skill_id]['metric']['action']}的練習"
 
 
-def build_scouting_report(archetype, top_match, skills_by_id):
+def build_scouting_report(archetype, top_match, skills_by_id, lang="zh"):
     """One-line "scouting report": the archetype's flavor text -- the
     shareable headline the results page leads with instead of four bare
     numbers (2026-09-13 UX review discussion). The archetype name itself is

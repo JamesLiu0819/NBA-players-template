@@ -99,6 +99,13 @@ DATA_FILENAMES = {
         "players_current": "球員.json",
         "players_alltime": "歷史球員.json",
     },
+    "en": {
+        "questions": "questions.json",
+        "skills": "skills.json",
+        "archetypes": "archetypes.json",
+        "players_current": "players.json",
+        "players_alltime": "players_alltime.json",
+    },
 }
 
 app = Flask(__name__, static_folder=None)
@@ -110,16 +117,16 @@ def load_json(path):
         return json.load(f)
 
 
-def load_data(pool="current"):
-    files = DATA_FILENAMES["zh"]
-    questions = load_json(ROOT / "data" / "zh" / files["questions"])
-    skills = load_json(ROOT / "data" / "zh" / files["skills"])["skills"]
-    players = load_json(ROOT / "data" / "zh" / files[f"players_{pool}"])["players"]
+def load_data(pool="current", lang="zh"):
+    files = DATA_FILENAMES[lang]
+    questions = load_json(ROOT / "data" / lang / files["questions"])
+    skills = load_json(ROOT / "data" / lang / files["skills"])["skills"]
+    players = load_json(ROOT / "data" / lang / files[f"players_{pool}"])["players"]
     return questions, skills, players
 
 
-def load_archetypes():
-    return load_json(ROOT / "data" / "zh" / DATA_FILENAMES["zh"]["archetypes"])["archetypes"]
+def load_archetypes(lang="zh"):
+    return load_json(ROOT / "data" / lang / DATA_FILENAMES[lang]["archetypes"])["archetypes"]
 
 
 def player_brief(player):
@@ -132,7 +139,7 @@ def missing_fields(payload, required):
     return [field for field in required if field not in payload]
 
 
-def compute_template_results(payload, questions, players, skills_by_id, archetypes):
+def compute_template_results(payload, questions, players, skills_by_id, archetypes, lang="zh"):
     coordinates = score_axis_coordinates(questions["axis_positioning"], payload["axis_answers"])
 
     body_answers = payload.get("body_answers") or []
@@ -159,7 +166,7 @@ def compute_template_results(payload, questions, players, skills_by_id, archetyp
             "fit_stars": player["fit_stars"],
             "notable_traits": player["notable_traits"],
             "dominant_diff_axis": player["dominant_diff_axis"],
-            "growth_recommendation": describe_growth_recommendation(player, skills_by_id),
+            "growth_recommendation": describe_growth_recommendation(player, skills_by_id, lang),
         })
 
     archetype = classify_archetype_by_majority(ranked_players, archetypes)
@@ -168,7 +175,7 @@ def compute_template_results(payload, questions, players, skills_by_id, archetyp
         "coordinates": coordinates,
         "archetype": {"name_zh": archetype["name_zh"], "flavor": archetype["flavor"]},
         "scouting_report": (
-            build_scouting_report(archetype, ranked_players[0], skills_by_id) if ranked_players else None
+            build_scouting_report(archetype, ranked_players[0], skills_by_id, lang) if ranked_players else None
         ),
         "deep_templates": {
             "skill_fit": player_brief(find_skill_fit_template(coordinates, players)),
@@ -182,7 +189,7 @@ def compute_template_results(payload, questions, players, skills_by_id, archetyp
     }
 
 
-def compute_priority_results(payload, questions, skills):
+def compute_priority_results(payload, questions, skills, lang="zh"):
     coordinates, items = build_priority_items(
         questions, skills, payload["axis_answers"], payload["skill_answers"], payload["env"]
     )
@@ -197,13 +204,16 @@ def compute_priority_results(payload, questions, skills):
             }
             for item in ranked_priorities
         ],
-        "dominant_factor_sentence": format_dominant_factor_sentence(ranked_priorities),
+        "dominant_factor_sentence": format_dominant_factor_sentence(ranked_priorities, lang),
     }
 
 
 @app.route("/api/form-data", methods=["GET"])
 def api_form_data():
-    questions, skills, _players = load_data()
+    lang = request.args.get("lang", "zh")
+    if lang not in SUPPORTED_LANGUAGES:
+        return jsonify({"error": f"invalid lang: {lang}"}), 400
+    questions, skills, _players = load_data(lang=lang)
     return jsonify({
         "questions": {
             "axis_positioning": questions["axis_positioning"],
@@ -228,11 +238,15 @@ def api_template_results():
     if pool not in POOLS:
         return jsonify({"error": f"invalid pool: {pool}"}), 400
 
-    questions, skills, players = load_data(pool)
+    lang = payload.get("lang", "zh")
+    if lang not in SUPPORTED_LANGUAGES:
+        return jsonify({"error": f"invalid lang: {lang}"}), 400
+
+    questions, skills, players = load_data(pool, lang)
     skills_by_id = {s["id"]: s for s in skills}
-    archetypes = load_archetypes()
+    archetypes = load_archetypes(lang)
     try:
-        results = compute_template_results(payload, questions, players, skills_by_id, archetypes)
+        results = compute_template_results(payload, questions, players, skills_by_id, archetypes, lang)
     except (ValueError, KeyError) as e:
         return jsonify({"error": str(e)}), 400
 
@@ -249,9 +263,13 @@ def api_priority_results():
     if missing:
         return jsonify({"error": f"missing required field(s): {', '.join(missing)}"}), 400
 
-    questions, skills, _players = load_data()
+    lang = payload.get("lang", "zh")
+    if lang not in SUPPORTED_LANGUAGES:
+        return jsonify({"error": f"invalid lang: {lang}"}), 400
+
+    questions, skills, _players = load_data(lang=lang)
     try:
-        results = compute_priority_results(payload, questions, skills)
+        results = compute_priority_results(payload, questions, skills, lang)
     except (ValueError, KeyError) as e:
         return jsonify({"error": str(e)}), 400
 

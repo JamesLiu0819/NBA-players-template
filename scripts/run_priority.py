@@ -75,7 +75,7 @@ def build_priority_items(questions, skills, axis_answers, skill_answers, env):
     return coordinates, items
 
 
-def format_dominant_factor_sentence(ranked):
+def format_dominant_factor_sentence(ranked, lang="zh"):
     if len(ranked) < 2:
         return None
     higher, lower = ranked[0], ranked[1]
