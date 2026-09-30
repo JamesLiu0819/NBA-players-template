@@ -83,7 +83,7 @@ def build_priority_items(questions, skills, axis_answers, skill_answers, env):
         gap = compute_gap(current)
         relevance = compute_relevance(coordinates, skill["axis_relevance"])
         if skill["id"] not in env:
-            raise SystemExit(f"answers file is missing an env weight for skill: {skill['id']}")
+            raise ValueError(f"answers file is missing an env weight for skill: {skill['id']}")
         items.append({
             "skill_id": skill["id"],
             "name_zh": skill["name_zh"],

@@ -10,11 +10,32 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT))
 
-from scripts.run_priority import format_dominant_factor_sentence  # noqa: E402
+from scripts.run_priority import build_priority_items, format_dominant_factor_sentence  # noqa: E402
 
 
 def make_item(skill_id, name_zh, P, G, E, R, C):
     return {"skill_id": skill_id, "name_zh": name_zh, "P": P, "G": G, "E": E, "R": R, "C": C}
+
+
+# 最小但真實的題庫/技能 fixture,四個軸都要有題目+作答才能通過
+# score_axis_coordinates(),不然會在碰到 env 檢查之前就先因為別的原因
+# raise ValueError,測不到我們要測的那一行。
+AXIS_QUESTIONS = [
+    {"id": "axis_a1", "axis": "A"},
+    {"id": "axis_b1", "axis": "B"},
+    {"id": "axis_c1", "axis": "C"},
+    {"id": "axis_d1", "axis": "D"},
+]
+SKILL_QUESTIONS = [{"id": "skill_q1", "skill_id": "perimeter_shooting"}]
+QUESTIONS = {"axis_positioning": AXIS_QUESTIONS, "skill_behavior": SKILL_QUESTIONS}
+AXIS_ANSWERS = [{"question_id": q["id"], "score": 3} for q in AXIS_QUESTIONS]
+SKILL_ANSWERS = [{"question_id": "skill_q1", "score": 3}]
+SKILLS = [{
+    "id": "perimeter_shooting",
+    "name_zh": "外線投射",
+    "axis_relevance": {"A": 0, "B": 1, "C": 0, "D": 0},
+    "cost_C": 1,
+}]
 
 
 class FormatDominantFactorSentenceTest(unittest.TestCase):
@@ -57,6 +78,12 @@ class FormatDominantFactorSentenceTest(unittest.TestCase):
         self.assertIn("Skill A", result)
         self.assertIn("Skill B", result)
         self.assertNotIn("主因是", result)
+
+
+class BuildPriorityItemsMissingEnvTest(unittest.TestCase):
+    def test_missing_env_weight_raises_value_error_not_system_exit(self):
+        with self.assertRaises(ValueError):
+            build_priority_items(QUESTIONS, SKILLS, AXIS_ANSWERS, SKILL_ANSWERS, {})
 
 
 if __name__ == "__main__":

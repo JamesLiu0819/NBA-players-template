@@ -234,6 +234,20 @@ class PriorityResultsTest(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn("error", response.get_json())
 
+    def test_incomplete_env_returns_400_not_a_dropped_connection(self):
+        # env present but missing one skill's weight used to raise SystemExit
+        # in build_priority_items(), which isn't caught by the route's
+        # except (ValueError, KeyError) -- the Flask dev server just dropped
+        # the connection instead of returning a clean 400 (final-review
+        # Finding 3). Regression test for the ValueError fix.
+        payload = self.build_full_payload()
+        del payload["env"][self.skills[0]["id"]]
+
+        response = self.client.post("/api/priority-results", json=payload)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("error", response.get_json())
+
     def test_non_json_body_returns_400(self):
         response = self.client.post("/api/priority-results", data="not json", content_type="text/plain")
 

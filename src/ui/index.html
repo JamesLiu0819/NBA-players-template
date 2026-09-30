@@ -842,8 +842,7 @@
     gap: 0.5rem;
   }
 
-  .top-match::before {
-    content: "最貼合";
+  .top-match-badge {
     position: absolute;
     top: -0.6rem;
     left: 1.1rem;
@@ -954,7 +953,7 @@
   <div class="topnav-inner">
     <a class="topnav-brand" href="#" id="topnav-logo">
       <span class="topnav-logo">🏀</span>
-      <span class="topnav-name">球探報告</span>
+      <span class="topnav-name" id="topnav-brand-name">球探報告</span>
     </a>
     <div class="topnav-tabs">
       <a href="#" class="topnav-tab active" id="topnav-tab-home">首頁</a>
@@ -964,8 +963,8 @@
     <div class="topnav-actions">
       <div class="lang-switch" id="lang-switch"></div>
       <span class="visit-counter" id="visit-counter" style="display:none"></span>
-      <button type="button" class="topnav-login">登入</button>
-      <button type="button" class="topnav-menu" aria-label="選單">☰</button>
+      <button type="button" class="topnav-login" id="topnav-login-btn">登入</button>
+      <button type="button" class="topnav-menu" id="topnav-menu-btn" aria-label="選單">☰</button>
     </div>
   </div>
 </nav>
@@ -1021,29 +1020,29 @@
 
     <div class="submit-block" id="stage1-submit-block" style="display:none">
       <button type="submit" class="primary" id="stage1-submit-btn" disabled>查看我的球員模板</button>
-      <span id="stage1-submit-hint">還差 <span id="stage1-remaining-count" class="mono">16</span> 題</span>
+      <span id="stage1-submit-hint"><span id="stage1-submit-hint-text"></span></span>
       <span id="stage1-submit-error"></span>
     </div>
 
   </form>
 
   <div id="stage1-processing" style="display:none">
-    <div class="eyebrow">整理報告中</div>
+    <div class="eyebrow" id="stage1-processing-label">整理報告中</div>
     <div class="scan-line"></div>
   </div>
 
   <div id="template-report"></div>
 
   <div class="cta-card" id="cta-card" style="display:none">
-    <h3>想知道自己該優先練什麼嗎？</h3>
-    <p>這需要再多填 15 題技能行為題,並且選擇你的聯賽防守環境——不想看訓練建議的話,到這裡就結束了。</p>
+    <h3 id="cta-heading">想知道自己該優先練什麼嗎？</h3>
+    <p id="cta-body">這需要再多填 15 題技能行為題,並且選擇你的聯賽防守環境——不想看訓練建議的話,到這裡就結束了。</p>
     <button type="button" class="secondary-cta" id="cta-btn">分析我的訓練優先序</button>
   </div>
 
   <div id="stage2-block">
     <div class="ledger" id="stage2-ledger">
       <div class="ledger-row">
-        <span>作答進度</span>
+        <span id="stage2-progress-label">作答進度</span>
         <span class="count mono"><span id="stage2-progress-count">0</span> / <span id="stage2-progress-total">15</span></span>
       </div>
       <div class="ledger-rule" id="stage2-ledger-rule"></div>
@@ -1057,9 +1056,9 @@
       <section class="block" id="stage2-env-section" style="display:none">
         <div class="section-head">
           <span class="section-tag">SECTION D</span>
-          <h2>聯賽環境(暫定值)</h2>
+          <h2 id="env-section-title">聯賽環境(暫定值)</h2>
         </div>
-        <div class="env-note">
+        <div class="env-note" id="env-note">
           正式的環境倍率表還沒建立,需要領域專家填寫完整的 5 維 × 3 檔倍率表。下面三個選項是暫定值,
           只用來測試「環境會不會影響訓練優先序」這個機制,不是精準數字。如果你沒在打正式比賽,
           隨便選一個都可以——這一區本來就是給有固定聯賽環境的人用的。
@@ -1073,14 +1072,14 @@
 
       <div class="submit-block" id="stage2-submit-block" style="display:none">
         <button type="submit" class="primary" id="stage2-submit-btn" disabled>產生訓練優先序</button>
-        <span id="stage2-submit-hint">還差 <span id="stage2-remaining-count" class="mono">15</span> 題</span>
+        <span id="stage2-submit-hint"><span id="stage2-submit-hint-text"></span></span>
         <span id="stage2-submit-error"></span>
       </div>
 
     </form>
 
     <div id="stage2-processing" style="display:none">
-      <div class="eyebrow">整理報告中</div>
+      <div class="eyebrow" id="stage2-processing-label">整理報告中</div>
       <div class="scan-line"></div>
     </div>
   </div>
@@ -1088,8 +1087,8 @@
   <div id="priority-report"></div>
 
   <footer class="disclosure">
-    球員資料是手動估算的種子資料集,不是真實統計數據推導的結果;環境權重是暫定值;貼合度星級門檻也是暫定值。
-    這些數字之後會被正式的球員資料庫跟環境倍率表取代。
+    <span id="footer-disclosure-line1">球員資料是手動估算的種子資料集,不是真實統計數據推導的結果;環境權重是暫定值;貼合度星級門檻也是暫定值。</span>
+    <span id="footer-disclosure-line2">這些數字之後會被正式的球員資料庫跟環境倍率表取代。</span>
     <br /><br />
     <a href="#" id="restart-link" style="display:none">重新填一次</a>
   </footer>
@@ -1127,11 +1126,14 @@
     },
   };
 
-  const DEEP_TEMPLATE_META = {
-    skill_fit: { label: "技術模板", caption: "排除運動能力,技術層面跟你最接近的球員（打法風格）" },
-    body_fit: { label: "身材模板", caption: "身材數值跟你最接近的球員" },
-    ceiling: { label: "天花板", caption: "運動能力跟你接近,但技術層面更成熟的球員" },
-  };
+  function deepTemplateMeta() {
+    const strings = t();
+    return {
+      skill_fit: { label: strings.deepTemplateSkillFitLabel, caption: strings.deepTemplateSkillFitCaption },
+      body_fit: { label: strings.deepTemplateBodyFitLabel, caption: strings.deepTemplateBodyFitCaption },
+      ceiling: { label: strings.deepTemplateCeilingLabel, caption: strings.deepTemplateCeilingCaption },
+    };
+  }
 
   const SUPPORTED_LANGUAGES = ["zh", "en"];
 
@@ -1151,6 +1153,67 @@
       modeAlltimeTitle: "歷史球員模板",
       noMatchingPlayer: "目前沒有符合條件的球員",
       axisLabels: { A: "持球創造", B: "投射能力", C: "防守對位", D: "運動表現" },
+      brandName: "球探報告",
+      navHome: "首頁",
+      navMyTemplate: "我的模板",
+      navTrainingPlan: "訓練計劃",
+      loginButton: "登入",
+      menuAriaLabel: "選單",
+      randomFillTitle: "隨機填答,測試用",
+      randomFillButton: "🎲 隨機填答(測試用)",
+      loadingLabel: "載入題庫中…",
+      ctaHeading: "想知道自己該優先練什麼嗎？",
+      ctaBody: "這需要再多填 15 題技能行為題,並且選擇你的聯賽防守環境——不想看訓練建議的話,到這裡就結束了。",
+      ctaButton: "分析我的訓練優先序",
+      progressLabel: "作答進度",
+      stage1SubmitButton: "查看我的球員模板",
+      stage2SubmitButton: "產生訓練優先序",
+      remainingQuestions: (n) => `還差 ${n} 題`,
+      processingLabel: "整理報告中",
+      envSectionTitle: "聯賽環境(暫定值)",
+      envNote: "正式的環境倍率表還沒建立,需要領域專家填寫完整的 5 維 × 3 檔倍率表。下面三個選項是暫定值,只用來測試「環境會不會影響訓練優先序」這個機制,不是精準數字。如果你沒在打正式比賽,隨便選一個都可以——這一區本來就是給有固定聯賽環境的人用的。",
+      envPreset1: "內縮防守 / 缺乏射手",
+      envPreset2: "貼外線 / 對手有射手",
+      envPreset3: "區域防守為主",
+      footerDisclosureLine1: "球員資料是手動估算的種子資料集,不是真實統計數據推導的結果;環境權重是暫定值;貼合度星級門檻也是暫定值。",
+      footerDisclosureLine2: "這些數字之後會被正式的球員資料庫跟環境倍率表取代。",
+      restartLink: "重新填一次",
+      deepTemplateSkillFitLabel: "技術模板",
+      deepTemplateSkillFitCaption: "排除運動能力,技術層面跟你最接近的球員（打法風格）",
+      deepTemplateBodyFitLabel: "身材模板",
+      deepTemplateBodyFitCaption: "身材數值跟你最接近的球員",
+      deepTemplateCeilingLabel: "天花板",
+      deepTemplateCeilingCaption: "運動能力跟你接近,但技術層面更成熟的球員",
+      distanceLabel: "距離",
+      dominantAxisGap: (axisLabel) => `${axisLabel}差距最大`,
+      growthNotePrefix: " → 可以注意：",
+      expandFactorsSummary: "展開 G / E / R / C",
+      factorGapLabel: "能力缺口 G",
+      factorEnvLabel: "環境權重 E",
+      factorRelevanceLabel: "相關性 R",
+      factorCostLabel: "習得成本 C",
+      radarAriaLabel: (matchLabel) => `四軸雷達圖：你跟${matchLabel}的比較`,
+      youLabel: "你",
+      shareImageHeader: "🏀 球探報告",
+      shareImageDisclaimer: "非真人球探評測，僅供參考",
+      shareImageFilename: (name) => `球探報告-${name}.png`,
+      shareButtonLabel: "📥 下載分享圖",
+      section1Title: "3 位深度模板",
+      section2Title: "10 人對照表",
+      section3Title: "優先訓練順序",
+      submitErrorTemplate: (msg) => `送出失敗：${msg}`,
+      loadErrorTemplate: (msg) => `題庫載入失敗：${msg}`,
+      poolLabels: { current: "現役球員模板", alltime: "歷史球員模板(All-time)" },
+      stepCounterTemplate: (i, n) => `第 ${i} / ${n} 題`,
+      backButtonLabel: "← 上一題",
+      nextButtonLabel: "下一題 →",
+      phaseAxisPositioning: "球風定位",
+      phaseBodyMeasurements: "身材數值(選填)",
+      phaseSkillBehavior: "技能行為",
+      bodyMeasurementNote: "身材數值皆為選填，填寫越完整，身材模板與運動能力比對會越準確。",
+      stepperIncreaseAriaTemplate: (prompt) => `${prompt}加 1`,
+      stepperDecreaseAriaTemplate: (prompt) => `${prompt}減 1`,
+      mostSuitable: "最貼合",
     },
     en: {
       pageTitle: "Scouting Report",
@@ -1167,6 +1230,67 @@
       modeAlltimeTitle: "All-Time Players",
       noMatchingPlayer: "No matching player found",
       axisLabels: { A: "Creation", B: "Shooting", C: "Defense", D: "Athleticism" },
+      brandName: "Scouting Report",
+      navHome: "Home",
+      navMyTemplate: "My Template",
+      navTrainingPlan: "Training Plan",
+      loginButton: "Log In",
+      menuAriaLabel: "Menu",
+      randomFillTitle: "Random fill (testing only)",
+      randomFillButton: "🎲 Random Fill (Testing)",
+      loadingLabel: "Loading questions…",
+      ctaHeading: "Want to know what to prioritize?",
+      ctaBody: "This needs 15 more skill-behavior questions, plus your league defensive environment -- if you don't want training suggestions, you can stop here.",
+      ctaButton: "Analyze My Training Priorities",
+      progressLabel: "Progress",
+      stage1SubmitButton: "See My Player Template",
+      stage2SubmitButton: "Generate Training Priorities",
+      remainingQuestions: (n) => `${n} more question${n === 1 ? "" : "s"} to go`,
+      processingLabel: "Preparing your report…",
+      envSectionTitle: "League Environment (Placeholder)",
+      envNote: "The real environment multiplier table hasn't been built yet -- that needs a domain expert to fill in the full 5-dimension x 3-tier table. The three options below are placeholders, only meant to test whether environment affects training priority, not precise numbers. If you're not playing in an organized league, pick any of them -- this section is really for people with a fixed league environment.",
+      envPreset1: "Packed Defense / No Shooters",
+      envPreset2: "Tight Perimeter / Opponent Has Shooters",
+      envPreset3: "Zone Defense",
+      footerDisclosureLine1: "Player data is a hand-estimated seed dataset, not derived from real statistics; environment weights are placeholders; fit-star thresholds are also placeholders.",
+      footerDisclosureLine2: "These numbers will be replaced by a real player database and environment multiplier table later.",
+      restartLink: "Start Over",
+      deepTemplateSkillFitLabel: "Skill-Fit Template",
+      deepTemplateSkillFitCaption: "Excluding athleticism, the player closest to you technically (playstyle)",
+      deepTemplateBodyFitLabel: "Body-Fit Template",
+      deepTemplateBodyFitCaption: "The player closest to you in body measurements",
+      deepTemplateCeilingLabel: "Ceiling",
+      deepTemplateCeilingCaption: "A player with athleticism close to yours but more mature skills",
+      distanceLabel: "Distance",
+      dominantAxisGap: (axisLabel) => `Biggest gap: ${axisLabel}`,
+      growthNotePrefix: " → Try: ",
+      expandFactorsSummary: "Expand G / E / R / C",
+      factorGapLabel: "Ability Gap (G)",
+      factorEnvLabel: "League Environment Weight (E)",
+      factorRelevanceLabel: "Positional Relevance (R)",
+      factorCostLabel: "Learning Cost (C)",
+      radarAriaLabel: (matchLabel) => `Four-axis radar chart: you vs ${matchLabel}`,
+      youLabel: "You",
+      shareImageHeader: "🏀 Scouting Report",
+      shareImageDisclaimer: "Not a real scout's evaluation -- for reference only",
+      shareImageFilename: (name) => `scouting-report-${name}.png`,
+      shareButtonLabel: "📥 Download Share Image",
+      section1Title: "3 Deep-Dive Templates",
+      section2Title: "10-Player Comparison",
+      section3Title: "Training Priority Order",
+      submitErrorTemplate: (msg) => `Submission failed: ${msg}`,
+      loadErrorTemplate: (msg) => `Failed to load questions: ${msg}`,
+      poolLabels: { current: "Current Players", alltime: "All-Time Players" },
+      stepCounterTemplate: (i, n) => `Question ${i} of ${n}`,
+      backButtonLabel: "← Back",
+      nextButtonLabel: "Next →",
+      phaseAxisPositioning: "Play Style",
+      phaseBodyMeasurements: "Body Measurements (Optional)",
+      phaseSkillBehavior: "Skill Behavior",
+      bodyMeasurementNote: "Body measurements are all optional, but the more complete they are, the more accurate your body-fit template and athleticism comparison will be.",
+      stepperIncreaseAriaTemplate: (prompt) => `${prompt}, increase by 1`,
+      stepperDecreaseAriaTemplate: (prompt) => `${prompt}, decrease by 1`,
+      mostSuitable: "Best Match",
     },
   };
 
@@ -1191,8 +1315,6 @@
     return UI_STRINGS[state.lang];
   }
 
-  const POOL_LABELS = { current: "現役球員模板", alltime: "歷史球員模板(All-time)" };
-
   // ---- stage 1 progress: 只算球風定位(16 題)——身材數值全部選填,不是
   // BARS 問題,完全不列入作答進度/送出門檻(2026-09-11 討論)。
 
@@ -1210,7 +1332,7 @@
     document.getElementById("stage1-progress-count").textContent = done;
     document.getElementById("stage1-progress-total").textContent = total;
     document.getElementById("stage1-ledger-rule").style.setProperty("--progress", `${(done / total) * 100}%`);
-    document.getElementById("stage1-remaining-count").textContent = total - done;
+    document.getElementById("stage1-submit-hint-text").textContent = t().remainingQuestions(total - done);
     document.getElementById("stage1-submit-btn").disabled = done < total;
     document.getElementById("stage1-submit-hint").style.display = done < total ? "" : "none";
   }
@@ -1231,7 +1353,7 @@
     document.getElementById("stage2-progress-count").textContent = done;
     document.getElementById("stage2-progress-total").textContent = total;
     document.getElementById("stage2-ledger-rule").style.setProperty("--progress", `${(done / total) * 100}%`);
-    document.getElementById("stage2-remaining-count").textContent = total - done;
+    document.getElementById("stage2-submit-hint-text").textContent = t().remainingQuestions(total - done);
     document.getElementById("stage2-submit-btn").disabled = done < total;
     document.getElementById("stage2-submit-hint").style.display = done < total ? "" : "none";
   }
@@ -1251,7 +1373,7 @@
     meta.className = "wizard-meta";
     const tag = document.createElement("span");
     tag.className = "wizard-step-tag mono";
-    tag.textContent = `第 ${index + 1} / ${total} 題`;
+    tag.textContent = t().stepCounterTemplate(index + 1, total);
     meta.appendChild(tag);
     if (eyebrow) {
       const eb = document.createElement("span");
@@ -1267,7 +1389,7 @@
       const backBtn = document.createElement("button");
       backBtn.type = "button";
       backBtn.className = "wizard-back";
-      backBtn.textContent = "← 上一題";
+      backBtn.textContent = t().backButtonLabel;
       backBtn.addEventListener("click", onBack);
       nav.appendChild(backBtn);
     }
@@ -1370,14 +1492,14 @@
     plusBtn.type = "button";
     plusBtn.className = "step-btn";
     plusBtn.textContent = "▲";
-    plusBtn.setAttribute("aria-label", `${q.prompt}加 1`);
+    plusBtn.setAttribute("aria-label", t().stepperIncreaseAriaTemplate(q.prompt));
     plusBtn.addEventListener("click", () => step(1));
 
     const minusBtn = document.createElement("button");
     minusBtn.type = "button";
     minusBtn.className = "step-btn";
     minusBtn.textContent = "▼";
-    minusBtn.setAttribute("aria-label", `${q.prompt}減 1`);
+    minusBtn.setAttribute("aria-label", t().stepperDecreaseAriaTemplate(q.prompt));
     minusBtn.addEventListener("click", () => step(-1));
 
     const btnGroup = document.createElement("div");
@@ -1402,14 +1524,14 @@
         if (isFirstBodyStep) {
           const note = document.createElement("p");
           note.className = "wizard-note";
-          note.textContent = "身材數值皆為選填，填寫越完整，身材模板與運動能力比對會越準確。";
+          note.textContent = t().bodyMeasurementNote;
           card.appendChild(note);
         }
         card.appendChild(buildBodyQuestionField(q));
         const nextBtn = document.createElement("button");
         nextBtn.type = "button";
         nextBtn.className = "wizard-next";
-        nextBtn.textContent = "下一題 →";
+        nextBtn.textContent = t().nextButtonLabel;
         nextBtn.addEventListener("click", onAdvance);
         nav.appendChild(nextBtn);
       },
@@ -1449,10 +1571,10 @@
     };
 
     if (step.kind === "axis") {
-      document.getElementById("stage1-phase-title").textContent = "球風定位";
+      document.getElementById("stage1-phase-title").textContent = t().phaseAxisPositioning;
       renderRadioStep("stage1-wizard", step.q, t().axisLabels[step.q.axis], idx, total, back, advance);
     } else {
-      document.getElementById("stage1-phase-title").textContent = "身材數值(選填)";
+      document.getElementById("stage1-phase-title").textContent = t().phaseBodyMeasurements;
       const isFirstBodyStep = idx === state.axisQuestions.length;
       renderBodyStep("stage1-wizard", step.q, idx, total, isFirstBodyStep, back, advance);
     }
@@ -1474,7 +1596,7 @@
     }
     document.getElementById("stage2-env-section").style.display = "none";
     document.getElementById("stage2-submit-block").style.display = "none";
-    document.getElementById("stage2-phase-title").textContent = "技能行為";
+    document.getElementById("stage2-phase-title").textContent = t().phaseSkillBehavior;
 
     const q = steps[idx];
     const skillById = Object.fromEntries(state.skills.map((s) => [s.id, s]));
@@ -1670,7 +1792,7 @@
     }).join("");
 
     return `
-      <svg viewBox="0 0 ${size} ${size}" class="radar-svg" role="img" aria-label="四軸雷達圖：你跟${matchLabel}的比較">
+      <svg viewBox="0 0 ${size} ${size}" class="radar-svg" role="img" aria-label="${t().radarAriaLabel(matchLabel)}">
         ${gridRings}
         ${axisLines}
         <polygon points="${polygonPoints(matchCoords)}" class="radar-poly radar-poly-match"></polygon>
@@ -1678,7 +1800,7 @@
         ${axisLabels}
       </svg>
       <div class="radar-legend">
-        <span class="legend-item"><span class="legend-swatch legend-swatch-user"></span>你</span>
+        <span class="legend-item"><span class="legend-swatch legend-swatch-user"></span>${t().youLabel}</span>
         <span class="legend-item"><span class="legend-swatch legend-swatch-match"></span>${matchLabel}</span>
       </div>`;
   }
@@ -1765,7 +1887,7 @@
     ctx.font = "bold 24px sans-serif";
     ctx.textAlign = "left";
     ctx.textBaseline = "alphabetic";
-    ctx.fillText("🏀 球探報告", 60, 80);
+    ctx.fillText(t().shareImageHeader, 60, 80);
 
     ctx.fillStyle = "#f0c76e";
     ctx.font = "bold 56px sans-serif";
@@ -1781,7 +1903,7 @@
       ctx.textAlign = "left";
       ctx.font = "22px sans-serif";
       ctx.fillStyle = "#d9a03f";
-      ctx.fillText("■ 你", 60, 900);
+      ctx.fillText(`■ ${t().youLabel}`, 60, 900);
       ctx.fillStyle = "#5b9bd5";
       ctx.fillText(`■ ${topMatch.name}`, 200, 900);
     }
@@ -1789,13 +1911,13 @@
     ctx.fillStyle = "#6f6350";
     ctx.font = "18px sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText("非真人球探評測，僅供參考", canvas.width / 2, canvas.height - 40);
+    ctx.fillText(t().shareImageDisclaimer, canvas.width / 2, canvas.height - 40);
 
     canvas.toBlob((blob) => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `球探報告-${data.archetype.name_zh}.png`;
+      a.download = t().shareImageFilename(data.archetype.name_zh);
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -1813,13 +1935,13 @@
         </div>
         <div class="stat-line">
           <span class="stars">${starMarkup(m.fit_stars)}</span>
-          <span class="distance mono">距離 <b>${m.distance.toFixed(1)}</b></span>
+          <span class="distance mono">${t().distanceLabel} <b>${m.distance.toFixed(1)}</b></span>
         </div>
       </div>
-      <div class="traits">${m.notable_traits.map((t) => `<span class="trait">${t}</span>`).join("")}</div>
+      <div class="traits">${m.notable_traits.map((tr) => `<span class="trait">${tr}</span>`).join("")}</div>
       <div class="callout">
-        <span class="axis-tag">${t().axisLabels[m.dominant_diff_axis]}差距最大</span>
-        <span class="growth"> → 可以注意：${m.growth_recommendation}</span>
+        <span class="axis-tag">${t().dominantAxisGap(t().axisLabels[m.dominant_diff_axis])}</span>
+        <span class="growth">${t().growthNotePrefix}${m.growth_recommendation}</span>
       </div>`;
   }
 
@@ -1831,12 +1953,12 @@
           <span class="p-value">P = ${item.P.toFixed(3)}</span>
         </div>
         <details>
-          <summary>展開 G / E / R / C</summary>
+          <summary>${t().expandFactorsSummary}</summary>
           <table class="factors">
-            <tr><td>能力缺口 G</td><td>${item.G.toFixed(2)}</td></tr>
-            <tr><td>環境權重 E</td><td>${item.E.toFixed(2)}</td></tr>
-            <tr><td>相關性 R</td><td>${item.R.toFixed(2)}</td></tr>
-            <tr><td>習得成本 C</td><td>${item.C.toFixed(2)}</td></tr>
+            <tr><td>${t().factorGapLabel}</td><td>${item.G.toFixed(2)}</td></tr>
+            <tr><td>${t().factorEnvLabel}</td><td>${item.E.toFixed(2)}</td></tr>
+            <tr><td>${t().factorRelevanceLabel}</td><td>${item.R.toFixed(2)}</td></tr>
+            <tr><td>${t().factorCostLabel}</td><td>${item.C.toFixed(2)}</td></tr>
           </table>
         </details>
       </div>`;
@@ -1845,21 +1967,22 @@
   function renderTemplateReport(data) {
     const el = document.getElementById("template-report");
 
+    const meta = deepTemplateMeta();
     const templateCards = ["skill_fit", "body_fit", "ceiling"].map((key) => {
-      const meta = DEEP_TEMPLATE_META[key];
       const m = data.deep_templates[key];
       const who = m ? `${m.name} (${m.team})` : t().noMatchingPlayer;
       return `
         <div class="template-card">
-          <div class="kind">${meta.label}</div>
+          <div class="kind">${meta[key].label}</div>
           <div class="who">${who}</div>
-          <div class="caption">${meta.caption}</div>
+          <div class="caption">${meta[key].caption}</div>
         </div>`;
     }).join("");
 
     const matchListHtml = data.top_10.map((m, i) => {
       const cardClass = i === 0 ? "top-match" : "card";
-      return `<div class="${cardClass}">${renderMatchCardInner(i + 1, m)}</div>`;
+      const badge = i === 0 ? `<span class="top-match-badge">${t().mostSuitable}</span>` : "";
+      return `<div class="${cardClass}">${badge}${renderMatchCardInner(i + 1, m)}</div>`;
     }).join("");
 
     const topMatch = data.top_10[0] || null;
@@ -1871,17 +1994,17 @@
           <div class="archetype-name">${data.archetype.name_zh}</div>
           <p class="scouting-report">${data.scouting_report || ""}</p>
           <div class="radar-wrap">${radarHtml}</div>
-          <button type="button" class="share-btn" id="share-btn">📥 下載分享圖</button>
+          <button type="button" class="share-btn" id="share-btn">${t().shareButtonLabel}</button>
         </div>
       </section>
 
       <section class="block report-fade" style="animation-delay:.05s">
-        <div class="section-head"><span class="section-tag">SECTION 1</span><h2>3 位深度模板</h2></div>
+        <div class="section-head"><span class="section-tag">SECTION 1</span><h2>${t().section1Title}</h2></div>
         <div class="template-grid">${templateCards}</div>
       </section>
 
       <section class="block report-fade" style="animation-delay:.1s">
-        <div class="section-head"><span class="section-tag">SECTION 2</span><h2>10 人對照表</h2></div>
+        <div class="section-head"><span class="section-tag">SECTION 2</span><h2>${t().section2Title}</h2></div>
         <div class="match-list">${matchListHtml}</div>
       </section>
     `;
@@ -1896,7 +2019,7 @@
     const el = document.getElementById("priority-report");
     el.innerHTML = `
       <section class="block report-fade">
-        <div class="section-head"><span class="section-tag">SECTION 3</span><h2>優先訓練順序</h2></div>
+        <div class="section-head"><span class="section-tag">SECTION 3</span><h2>${t().section3Title}</h2></div>
         ${data.priorities.map((item, i) => renderPriorityRow(item, i)).join("")}
         ${data.dominant_factor_sentence ? `<p class="dominant-sentence">${data.dominant_factor_sentence}</p>` : ""}
       </section>
@@ -1931,7 +2054,7 @@
       document.getElementById("stage1-processing").style.display = "none";
       document.getElementById("stage1-form").style.display = "block";
       document.getElementById("stage1-ledger").style.display = "block";
-      errorEl.textContent = `送出失敗：${err.message}`;
+      errorEl.textContent = t().submitErrorTemplate(err.message);
       errorEl.style.display = "block";
     }
   }
@@ -1963,7 +2086,7 @@
       document.getElementById("stage2-processing").style.display = "none";
       document.getElementById("stage2-form").style.display = "block";
       document.getElementById("stage2-ledger").style.display = "block";
-      errorEl.textContent = `送出失敗：${err.message}`;
+      errorEl.textContent = t().submitErrorTemplate(err.message);
       errorEl.style.display = "block";
     }
   }
@@ -1979,7 +2102,7 @@
 
   function revealQuiz(pool) {
     state.pool = pool;
-    document.getElementById("active-pool-label").textContent = `${POOL_LABELS[pool]} · 作答進度`;
+    document.getElementById("active-pool-label").textContent = `${t().poolLabels[pool]} · ${t().progressLabel}`;
 
     document.getElementById("mode-select").style.display = "none";
     document.getElementById("stage1-ledger").style.display = "block";
@@ -2023,12 +2146,74 @@
     document.querySelectorAll(".rules-box p")[4].textContent = strings.warningLine3;
     document.querySelector("#mode-current-btn .mode-title").textContent = strings.modeCurrentTitle;
     document.querySelector("#mode-alltime-btn .mode-title").textContent = strings.modeAlltimeTitle;
+
+    document.getElementById("topnav-brand-name").textContent = strings.brandName;
+    document.getElementById("topnav-tab-home").textContent = strings.navHome;
+    document.getElementById("topnav-tab-template").textContent = strings.navMyTemplate;
+    document.getElementById("topnav-tab-priority").textContent = strings.navTrainingPlan;
+    document.getElementById("topnav-login-btn").textContent = strings.loginButton;
+    document.getElementById("topnav-menu-btn").setAttribute("aria-label", strings.menuAriaLabel);
+
+    document.getElementById("random-fill-btn").title = strings.randomFillTitle;
+    document.getElementById("random-fill-btn").textContent = strings.randomFillButton;
+
+    document.getElementById("loading").textContent = strings.loadingLabel;
+
+    document.getElementById("cta-heading").textContent = strings.ctaHeading;
+    document.getElementById("cta-body").textContent = strings.ctaBody;
+    document.getElementById("cta-btn").textContent = strings.ctaButton;
+
+    document.getElementById("stage1-submit-btn").textContent = strings.stage1SubmitButton;
+    document.getElementById("stage2-submit-btn").textContent = strings.stage2SubmitButton;
+    document.getElementById("stage1-processing-label").textContent = strings.processingLabel;
+    document.getElementById("stage2-processing-label").textContent = strings.processingLabel;
+
+    document.getElementById("stage2-progress-label").textContent = strings.progressLabel;
+    const poolLabelEl = document.getElementById("active-pool-label");
+    poolLabelEl.textContent = document.getElementById("stage1-ledger").style.display !== "none"
+      ? `${strings.poolLabels[state.pool]} · ${strings.progressLabel}`
+      : strings.progressLabel;
+
+    document.getElementById("env-section-title").textContent = strings.envSectionTitle;
+    document.getElementById("env-note").textContent = strings.envNote;
+    const presetButtons = document.querySelectorAll("#preset-row button");
+    presetButtons[0].textContent = strings.envPreset1;
+    presetButtons[1].textContent = strings.envPreset2;
+    presetButtons[2].textContent = strings.envPreset3;
+
+    document.getElementById("footer-disclosure-line1").textContent = strings.footerDisclosureLine1;
+    document.getElementById("footer-disclosure-line2").textContent = strings.footerDisclosureLine2;
+    document.getElementById("restart-link").textContent = strings.restartLink;
+
+    // 逐題精靈的送出提示(還差 N 題)也是語言相關文字,語言切換時要一併刷新
+    // (這兩個函式本身是 idempotent 的,單純重算目前進度不會有副作用)。
+    updateStage1Progress();
+    updateStage2Progress();
   }
 
-  function setLang(lang) {
+  async function setLang(lang) {
     if (lang === state.lang) return;
     state.lang = lang;
     localStorage.setItem("lang", lang);
+
+    // 題庫(軸定位/技能行為/身材數值題目文字跟技能名稱)是 main() 第一次載入
+    // 時就固定的,只換語言不會自動變。切換語言時要重新打 /api/form-data 拿
+    // 新語言的題庫,再重繪目前這一題,不然題目文字/技能名稱會卡在舊語言
+    // (answers 是用 question_id 對應的,跨語言穩定,不會因為這次重新賦值
+    // 被清空——2026-09-18 final review Finding 2)。
+    try {
+      const res = await fetch(`/api/form-data?lang=${lang}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const payload = await res.json();
+      state.axisQuestions = payload.questions.axis_positioning;
+      state.skillQuestions = payload.questions.skill_behavior;
+      state.bodyQuestions = payload.questions.body_measurements;
+      state.skills = payload.skills;
+    } catch (err) {
+      // 題庫重抓失敗就沿用舊語言的題庫內容,至少畫面上的固定文案(選單、按鈕
+      // 等)還是會切換成新語言,不會整個卡死。
+    }
+
     renderLangSwitch();
     applyUiStrings();
     // 作答中的那一題也要重繪成新語言,不用整頁重整
@@ -2042,6 +2227,11 @@
   }
 
   async function main() {
+    // 題庫還沒抓回來之前,loading 文字就先照目前語言(localStorage 記住的那個)
+    // 顯示,不用等 applyUiStrings() 才第一次套用,不然 fetch 慢一點使用者就會
+    // 先看到一閃而過的中文(2026-09-18 final review Finding 1)。
+    document.getElementById("loading").textContent = t().loadingLabel;
+
     let payload;
     try {
       const res = await fetch(`/api/form-data?lang=${state.lang}`);
@@ -2050,7 +2240,7 @@
     } catch (err) {
       document.getElementById("loading").style.display = "none";
       const errEl = document.getElementById("load-error");
-      errEl.textContent = `題庫載入失敗：${err.message}`;
+      errEl.textContent = t().loadErrorTemplate(err.message);
       errEl.style.display = "block";
       return;
     }
