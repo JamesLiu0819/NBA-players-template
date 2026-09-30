@@ -935,10 +935,17 @@
   .card .name, .top-match .name { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .card .team, .top-match .team { font-family: var(--mono); font-size: 0.72rem; color: var(--ink-soft); flex: none; }
   .card .stat-line, .top-match .stat-line { display: flex; align-items: center; gap: 0.55rem; flex: none; }
-  .stars { color: var(--accent); font-size: 0.85rem; }
-  .stars .empty { color: var(--line); }
-  .card .distance, .top-match .distance { font-family: var(--mono); font-size: 0.76rem; color: var(--ink-soft); }
-  .card .distance b, .top-match .distance b { color: var(--ink); }
+  .stars { font-size: 0.85rem; }
+  .stars .star { position: relative; display: inline-block; }
+  .stars .star-empty { color: var(--line); }
+  .stars .star-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    color: var(--accent);
+  }
   .card .traits, .top-match .traits { display: flex; flex-wrap: wrap; gap: 0.3rem; }
   .card .trait, .top-match .trait { font-size: 0.72rem; color: var(--ink-soft); background: var(--paper-sunken); border-radius: 999px; padding: 0.18rem 0.55rem; }
   .card .callout, .top-match .callout { border-left: 2px solid var(--accent); padding-left: 0.65rem; font-size: 0.8rem; }
@@ -1020,8 +1027,8 @@
       <a href="#" class="topnav-tab" id="topnav-tab-priority">訓練計劃</a>
     </div>
     <div class="topnav-actions">
-      <div class="lang-switch" id="lang-switch"></div>
       <span class="visit-counter" id="visit-counter" style="display:none"></span>
+      <div class="lang-switch" id="lang-switch"></div>
       <button type="button" class="topnav-login" id="topnav-login-btn">登入</button>
       <button type="button" class="topnav-menu" id="topnav-menu-btn" aria-label="選單">☰</button>
     </div>
@@ -1244,7 +1251,6 @@
       deepTemplateBodyFitCaption: "身材數值跟你最接近的球員",
       deepTemplateCeilingLabel: "天花板",
       deepTemplateCeilingCaption: "運動能力跟你接近,但技術層面更成熟的球員",
-      distanceLabel: "距離",
       dominantAxisGap: (axisLabel) => `${axisLabel}差距最大`,
       growthNotePrefix: " → 可以注意：",
       expandFactorsSummary: "展開 G / E / R / C",
@@ -1322,7 +1328,6 @@
       deepTemplateBodyFitCaption: "The player closest to you in body measurements",
       deepTemplateCeilingLabel: "Ceiling",
       deepTemplateCeilingCaption: "A player with athleticism close to yours but more mature skills",
-      distanceLabel: "Distance",
       dominantAxisGap: (axisLabel) => `Biggest gap: ${axisLabel}`,
       growthNotePrefix: " → Try: ",
       expandFactorsSummary: "Expand G / E / R / C",
@@ -1835,7 +1840,10 @@
 
   function starMarkup(n) {
     let out = "";
-    for (let i = 0; i < 5; i++) out += i < n ? "★" : '<span class="empty">★</span>';
+    for (let i = 0; i < 5; i++) {
+      const fill = Math.max(0, Math.min(1, n - i));
+      out += `<span class="star"><span class="star-empty">★</span><span class="star-fill" style="width:${fill * 100}%">★</span></span>`;
+    }
     return out;
   }
 
@@ -2033,7 +2041,6 @@
         </div>
         <div class="stat-line">
           <span class="stars">${starMarkup(m.fit_stars)}</span>
-          <span class="distance mono">${t().distanceLabel} <b>${m.distance.toFixed(1)}</b></span>
         </div>
       </div>
       <div class="traits">${m.notable_traits.map((tr) => `<span class="trait">${tr}</span>`).join("")}</div>

@@ -184,30 +184,33 @@ class RankSimilarPlayersByStyleAndBodyTest(unittest.TestCase):
 
 class FitStarsForDistanceTest(unittest.TestCase):
     def test_boundary_values(self):
-        # 2026-09-11: thresholds recalibrated a second time. The first pass
-        # sampled axis coordinates as raw uniform(0, 100) per axis, which
-        # does NOT match how the site's own 隨機填答 button (or a real user
-        # answering somewhat-average-ish on everything) actually behaves:
-        # each axis is the average of 4 independently random 1-5 Likert
-        # answers, which regresses toward the middle (~50) -- much lower
-        # spread than raw uniform(0, 100). That mismatch produced far larger
-        # distances than real usage ever hits, so every real distance fell
-        # under the old thresholds -- everything rated 5 stars. Redid the
-        # sampling to average 4 random 1-5 draws per axis (matching
-        # score_axis_coordinates' own math) and body fields via the site's
-        # actual randomBodyValues() derivation (height/weight independent,
-        # wingspan/reach chained off each other). 20 trials x top-10
-        # rank_similar_players_by_style_and_body distances = 200 samples,
-        # sorted ascending; thresholds are the values at rank 40/80/120/160
-        # (57.92/68.32/74.25/79.37, rounded to 58/68/74/79).
-        self.assertEqual(fit_stars_for_distance(58), 5)
-        self.assertEqual(fit_stars_for_distance(59), 4)
-        self.assertEqual(fit_stars_for_distance(68), 4)
+        # 2026-10: recalibrated for half-star granularity (1/1.5/2/.../5,
+        # 8 thresholds instead of 4) so finer distinctions like "4.5 顆星"
+        # are visible to users instead of being flattened to whole stars.
+        # Same sampling methodology as the 2026-09-11 calibration (axis
+        # coordinates = average of 4 independent random 1-5 draws per axis;
+        # body fields via the site's actual randomBodyValues() derivation),
+        # but doubled to 40 trials x top-10 distances = 400 samples so each
+        # of the now-twice-as-many thresholds still rests on a comparable
+        # sample density. Thresholds are the values at rank i*400/9 for
+        # i=1..8 (49.15/55.33/60.34/65.12/69.08/72.05/78.81/83.43, rounded
+        # to 49/55/60/65/69/72/79/83).
+        self.assertEqual(fit_stars_for_distance(49), 5)
+        self.assertEqual(fit_stars_for_distance(50), 4.5)
+        self.assertEqual(fit_stars_for_distance(55), 4.5)
+        self.assertEqual(fit_stars_for_distance(56), 4)
+        self.assertEqual(fit_stars_for_distance(60), 4)
+        self.assertEqual(fit_stars_for_distance(61), 3.5)
+        self.assertEqual(fit_stars_for_distance(65), 3.5)
+        self.assertEqual(fit_stars_for_distance(66), 3)
         self.assertEqual(fit_stars_for_distance(69), 3)
-        self.assertEqual(fit_stars_for_distance(74), 3)
-        self.assertEqual(fit_stars_for_distance(75), 2)
+        self.assertEqual(fit_stars_for_distance(70), 2.5)
+        self.assertEqual(fit_stars_for_distance(72), 2.5)
+        self.assertEqual(fit_stars_for_distance(73), 2)
         self.assertEqual(fit_stars_for_distance(79), 2)
-        self.assertEqual(fit_stars_for_distance(80), 1)
+        self.assertEqual(fit_stars_for_distance(80), 1.5)
+        self.assertEqual(fit_stars_for_distance(83), 1.5)
+        self.assertEqual(fit_stars_for_distance(84), 1)
 
 
 class SkillDominantAxisTest(unittest.TestCase):
