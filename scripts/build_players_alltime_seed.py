@@ -47,6 +47,13 @@ from scripts.mock_answers import mock_axis_answers, mock_skill_answers  # noqa: 
 
 _BASIS = "2K 公開歷史/All-Time 卡屬性數值換算百分位推算,非真實比賽數據推導"
 _BASIS_NO_2K_CARD = "沒有 2K 歷史卡(未取得授權),改用公開球評印象手動估算,再套進同一套百分位池子,非真實數據推導"
+# 2026-10 球員庫擴充:原始 211 人的「2K 屬性 → 百分位」換算腳本已遺失(見
+# scripts/build_players_seed.py 檔頭),沒辦法完全重現同一套方法。改用錨點球員
+# (座標已定案的現有球員)做線性回歸校準——拿錨點球員的 2K 屬性組合分數對應他們
+# 已知的座標,擬合出每一軸的轉換公式,再套用到新球員的 2K 屬性上。跟 _BASIS 用
+# 的「球員池內部百分位排名」不是同一套方法,數字量級接近但不是同一個算法,所以
+# 另外標記,不要混用。
+_BASIS_CALIBRATED = "依公開 2K All-Time 卡屬性數值,用錨點球員校準回歸換算出來的座標,非官方 2K 百分位,也非真實比賽數據推導"
 
 PLAYERS = [
     {
@@ -500,15 +507,6 @@ PLAYERS = [
         "_estimate_basis": _BASIS,
     },
     {
-        "id": "elton_brand", "name": "Elton Brand", "team": "2006",
-        "coordinates": {"A": 5, "B1": 40, "B2": 87, "C1": 83, "C2": 84, "D": 3},
-        "body": {"height_cm": 206, "wingspan_cm": 218},
-        "notable_traits": ["禁區腳步紮實", "籃板卡位意識好", "協防補位判斷不錯"],
-        "signature_skill_id": "post_up",
-        "learnability_flag": "medium",
-        "_estimate_basis": _BASIS,
-    },
-    {
         "id": "chauncey_billups", "name": "Chauncey Billups", "team": "2004",
         "coordinates": {"A": 87, "B1": 67, "B2": 14, "C1": 57, "C2": 2, "D": 83},
         "body": {"height_cm": 191, "wingspan_cm": 196},
@@ -542,15 +540,6 @@ PLAYERS = [
         "notable_traits": ["持球推進爆發力強", "三分出手範圍廣", "轉換終結能力好"],
         "signature_skill_id": "pick_and_roll_ball_handling",
         "learnability_flag": "medium",
-        "_estimate_basis": _BASIS,
-    },
-    {
-        "id": "steve_francis", "name": "Steve Francis", "team": "2002",
-        "coordinates": {"A": 84, "B1": 57, "B2": 22, "C1": 92, "C2": 45, "D": 91},
-        "body": {"height_cm": 188, "wingspan_cm": 196},
-        "notable_traits": ["持球突破爆發力強", "轉換終結能力好", "單打得分手段多樣"],
-        "signature_skill_id": "face_up_first_step",
-        "learnability_flag": "low",
         "_estimate_basis": _BASIS,
     },
     {
@@ -590,15 +579,6 @@ PLAYERS = [
         "_estimate_basis": _BASIS,
     },
     {
-        "id": "artis_gilmore", "name": "Artis Gilmore", "team": "1978",
-        "coordinates": {"A": 7, "B1": 9, "B2": 94, "C1": 30, "C2": 97, "D": 71},
-        "body": {"height_cm": 218, "wingspan_cm": 226},
-        "notable_traits": ["禁區終結效率高", "籃板卡位意識強", "護框覆蓋範圍大"],
-        "signature_skill_id": "rim_protection",
-        "learnability_flag": "medium",
-        "_estimate_basis": _BASIS,
-    },
-    {
         "id": "walt_frazier", "name": "Walt Frazier", "team": "1970",
         "coordinates": {"A": 81, "B1": 41, "B2": 23, "C1": 99, "C2": 19, "D": 76},
         "body": {"height_cm": 191, "wingspan_cm": 196},
@@ -616,14 +596,115 @@ PLAYERS = [
         "learnability_flag": "medium",
         "_estimate_basis": _BASIS,
     },
+    # 2026-10 球員庫擴充:以下 12 位用 _BASIS_CALIBRATED 方法換算座標(見上方
+    # 常數定義),不是 _BASIS 的球員池內部百分位排名法。
     {
-        "id": "earl_monroe", "name": "Earl Monroe", "team": "1969",
-        "coordinates": {"A": 86, "B1": 66, "B2": 6, "C1": 87, "C2": 5, "D": 68},
-        "body": {"height_cm": 191, "wingspan_cm": 193},
-        "notable_traits": ["單打腳步花俏難防", "持球創造出手機會能力強", "中距離出手穩定"],
-        "signature_skill_id": "face_up_first_step",
+        "id": "dwyane_wade", "name": "Dwyane Wade", "team": "2009",
+        "coordinates": {"A": 96, "B1": 70, "B2": 63, "C1": 84, "C2": 45, "D": 69},
+        "body": {"height_cm": 193, "wingspan_cm": 201},
+        "notable_traits": ["突破終結效率高", "抄截嗅覺敏銳", "轉換快攻終結強"],
+        "signature_skill_id": "transition_finishing",
+        "learnability_flag": "medium",
+        "_estimate_basis": _BASIS_CALIBRATED,
+    },
+    {
+        "id": "pete_maravich", "name": "Pete Maravich", "team": "1977",
+        "coordinates": {"A": 86, "B1": 91, "B2": 19, "C1": 65, "C2": 5, "D": 43},
+        "body": {"height_cm": 196, "wingspan_cm": 201},
+        "notable_traits": ["花式控球視野好", "中距離跳投穩定", "持球推進創造力強"],
+        "signature_skill_id": "high_post_playmaking",
+        "learnability_flag": "medium",
+        "_estimate_basis": _BASIS_CALIBRATED,
+    },
+    {
+        "id": "james_worthy", "name": "James Worthy", "team": "1988",
+        "coordinates": {"A": 65, "B1": 70, "B2": 79, "C1": 63, "C2": 60, "D": 67},
+        "body": {"height_cm": 206, "wingspan_cm": 213},
+        "notable_traits": ["轉換快攻終結能力強", "運動能力出色", "中距離出手穩定"],
+        "signature_skill_id": "transition_finishing",
+        "learnability_flag": "medium",
+        "_estimate_basis": _BASIS_CALIBRATED,
+    },
+    {
+        "id": "shawn_kemp", "name": "Shawn Kemp", "team": "1996",
+        "coordinates": {"A": 14, "B1": 31, "B2": 61, "C1": 38, "C2": 70, "D": 65},
+        "body": {"height_cm": 208, "wingspan_cm": 216},
+        "notable_traits": ["扣籃終結爆發力強", "籃板卡位積極", "護框嗅覺不錯"],
+        "signature_skill_id": "offensive_rebounding",
         "learnability_flag": "high",
-        "_estimate_basis": _BASIS,
+        "_estimate_basis": _BASIS_CALIBRATED,
+    },
+    {
+        "id": "larry_johnson", "name": "Larry Johnson", "team": "1993",
+        "coordinates": {"A": 43, "B1": 72, "B2": 83, "C1": 36, "C2": 40, "D": 60},
+        "body": {"height_cm": 198, "wingspan_cm": 211},
+        "notable_traits": ["背框單打腳步扎實", "以小搏大對抗能力強", "籃板卡位積極"],
+        "signature_skill_id": "post_up",
+        "learnability_flag": "medium",
+        "_estimate_basis": _BASIS_CALIBRATED,
+    },
+    {
+        "id": "metta_world_peace", "name": "Metta World Peace", "team": "2004",
+        "coordinates": {"A": 64, "B1": 54, "B2": 36, "C1": 98, "C2": 48, "D": 57},
+        "body": {"height_cm": 198, "wingspan_cm": 206},
+        "notable_traits": ["一對一單防兇悍", "抄截嗅覺敏銳", "換防跟防能力好"],
+        "signature_skill_id": "on_ball_perimeter_defense",
+        "learnability_flag": "high",
+        "_estimate_basis": _BASIS_CALIBRATED,
+    },
+    {
+        "id": "jj_redick", "name": "JJ Redick", "team": "2016",
+        "coordinates": {"A": 53, "B1": 90, "B2": 0, "C1": 56, "C2": 0, "D": 7},
+        "body": {"height_cm": 193, "wingspan_cm": 196},
+        "notable_traits": ["無球跑動投射精準", "罰球線穩定", "定點出手快"],
+        "signature_skill_id": "off_ball_movement",
+        "learnability_flag": "high",
+        "_estimate_basis": _BASIS_CALIBRATED,
+    },
+    {
+        "id": "danny_green", "name": "Danny Green", "team": "2014",
+        "coordinates": {"A": 44, "B1": 59, "B2": 7, "C1": 69, "C2": 41, "D": 32},
+        "body": {"height_cm": 198, "wingspan_cm": 206},
+        "notable_traits": ["定點三分穩定", "換防跟防能力好", "協防補位判斷佳"],
+        "signature_skill_id": "perimeter_switch_defense",
+        "learnability_flag": "high",
+        "_estimate_basis": _BASIS_CALIBRATED,
+    },
+    {
+        "id": "dwight_howard", "name": "Dwight Howard", "team": "2011",
+        "coordinates": {"A": 0, "B1": 0, "B2": 95, "C1": 60, "C2": 95, "D": 74},
+        "body": {"height_cm": 211, "wingspan_cm": 229},
+        "notable_traits": ["護框能力頂級", "籃板卡位意識強", "扣籃終結爆發力強"],
+        "signature_skill_id": "rim_protection",
+        "learnability_flag": "high",
+        "_estimate_basis": _BASIS_CALIBRATED,
+    },
+    {
+        "id": "deandre_jordan", "name": "DeAndre Jordan", "team": "2015",
+        "coordinates": {"A": 0, "B1": 0, "B2": 48, "C1": 27, "C2": 90, "D": 49},
+        "body": {"height_cm": 211, "wingspan_cm": 224},
+        "notable_traits": ["擋拆順下終結穩定", "護框嗅覺不錯", "籃板卡位積極"],
+        "signature_skill_id": "rim_protection",
+        "learnability_flag": "high",
+        "_estimate_basis": _BASIS_CALIBRATED,
+    },
+    {
+        "id": "kyle_lowry", "name": "Kyle Lowry", "team": "2019",
+        "coordinates": {"A": 81, "B1": 66, "B2": 23, "C1": 65, "C2": 26, "D": 49},
+        "body": {"height_cm": 183, "wingspan_cm": 196},
+        "notable_traits": ["一對一單防兇悍", "擋拆持球判斷好", "肯拚敢衝搶球"],
+        "signature_skill_id": "on_ball_perimeter_defense",
+        "learnability_flag": "medium",
+        "_estimate_basis": _BASIS_CALIBRATED,
+    },
+    {
+        "id": "russell_westbrook", "name": "Russell Westbrook", "team": "2017",
+        "coordinates": {"A": 78, "B1": 32, "B2": 40, "C1": 57, "C2": 7, "D": 59},
+        "body": {"height_cm": 191, "wingspan_cm": 203},
+        "notable_traits": ["轉換快攻終結能力強", "運動能力出色", "前場籃板積極"],
+        "signature_skill_id": "transition_finishing",
+        "learnability_flag": "medium",
+        "_estimate_basis": _BASIS_CALIBRATED,
     },
 ]
 

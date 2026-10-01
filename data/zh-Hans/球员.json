@@ -4938,147 +4938,6 @@
       ]
     },
     {
-      "id": "dorian_finney_smith",
-      "name": "Dorian Finney-Smith",
-      "team": "LAL",
-      "coordinates": {
-        "A": 25.0,
-        "B1": 25.0,
-        "B2": 12.5,
-        "C1": 37.5,
-        "C2": 62.5,
-        "D": 25.0
-      },
-      "body": {
-        "height_cm": 198,
-        "wingspan_cm": 211,
-        "weight_kg": 104,
-        "standing_reach_cm": 243,
-        "running_vertical_reach_cm": 302,
-        "sprint_100m_seconds": 15.5
-      },
-      "notable_traits": [
-        "协防补位到位",
-        "3&D 定位清楚",
-        "无球跑动投射稳定"
-      ],
-      "signature_skill_id": "help_defense_rotation",
-      "learnability_flag": "high",
-      "_estimate_basis": "公开球评印象,手动估算,非真实数据推导",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 2
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 2
-        }
-      ]
-    },
-    {
       "id": "jarrett_allen",
       "name": "Jarrett Allen",
       "team": "CLE",
@@ -11424,147 +11283,6 @@
       ]
     },
     {
-      "id": "pj_washington",
-      "name": "P.J. Washington",
-      "team": "DAL",
-      "coordinates": {
-        "A": 25.0,
-        "B1": 25.0,
-        "B2": 50.0,
-        "C1": 50.0,
-        "C2": 75.0,
-        "D": 25.0
-      },
-      "body": {
-        "height_cm": 201,
-        "wingspan_cm": 211,
-        "weight_kg": 107,
-        "standing_reach_cm": 243,
-        "running_vertical_reach_cm": 302,
-        "sprint_100m_seconds": 15.5
-      },
-      "notable_traits": [
-        "换防跟防能力不错",
-        "外线出手稳定",
-        "体格对抗能力好"
-      ],
-      "signature_skill_id": "perimeter_switch_defense",
-      "learnability_flag": "medium",
-      "_estimate_basis": "公开球评印象,手动估算,非真实数据推导",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 2
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 2
-        }
-      ]
-    },
-    {
       "id": "naz_reid",
       "name": "Naz Reid",
       "team": "MIN",
@@ -15513,147 +15231,6 @@
       ]
     },
     {
-      "id": "royce_oneale",
-      "name": "Royce O'Neale",
-      "team": "PHX",
-      "coordinates": {
-        "A": 25.0,
-        "B1": 37.5,
-        "B2": 37.5,
-        "C1": 62.5,
-        "C2": 37.5,
-        "D": 25.0
-      },
-      "body": {
-        "height_cm": 198,
-        "wingspan_cm": 211,
-        "weight_kg": 102,
-        "standing_reach_cm": 243,
-        "running_vertical_reach_cm": 302,
-        "sprint_100m_seconds": 15.5
-      },
-      "notable_traits": [
-        "换防跟防能力不错",
-        "3&D 定位清楚",
-        "协防补位判断好"
-      ],
-      "signature_skill_id": "perimeter_switch_defense",
-      "learnability_flag": "high",
-      "_estimate_basis": "公开球评印象,手动估算,非真实数据推导",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 2
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 2
-        }
-      ]
-    },
-    {
       "id": "aaron_gordon",
       "name": "Aaron Gordon",
       "team": "DEN",
@@ -17769,429 +17346,6 @@
       ]
     },
     {
-      "id": "bilal_coulibaly",
-      "name": "Bilal Coulibaly",
-      "team": "WAS",
-      "coordinates": {
-        "A": 37.5,
-        "B1": 25.0,
-        "B2": 0.0,
-        "C1": 87.5,
-        "C2": 62.5,
-        "D": 62.5
-      },
-      "body": {
-        "height_cm": 201,
-        "wingspan_cm": 213,
-        "weight_kg": 107,
-        "standing_reach_cm": 245,
-        "running_vertical_reach_cm": 324,
-        "sprint_100m_seconds": 13.25
-      },
-      "notable_traits": [
-        "换防跟防能力不错",
-        "防守覆盖范围大",
-        "转换速度快"
-      ],
-      "signature_skill_id": "perimeter_switch_defense",
-      "learnability_flag": "medium",
-      "_estimate_basis": "公开球评印象 + 臂展等公开身体数据,手动估算,非真实数据推导",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 1
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 5
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 3
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 3
-        }
-      ]
-    },
-    {
-      "id": "gg_jackson",
-      "name": "GG Jackson",
-      "team": "MEM",
-      "coordinates": {
-        "A": 37.5,
-        "B1": 50.0,
-        "B2": 37.5,
-        "C1": 12.5,
-        "C2": 62.5,
-        "D": 50.0
-      },
-      "body": {
-        "height_cm": 206,
-        "wingspan_cm": 211,
-        "weight_kg": 108,
-        "standing_reach_cm": 243,
-        "running_vertical_reach_cm": 316,
-        "sprint_100m_seconds": 14.0
-      },
-      "notable_traits": [
-        "外线出手稳定",
-        "转换终结能力不错",
-        "面框单打脚步好"
-      ],
-      "signature_skill_id": "perimeter_shooting",
-      "learnability_flag": "medium",
-      "_estimate_basis": "公开球评印象,手动估算,非真实数据推导",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 3
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 3
-        }
-      ]
-    },
-    {
-      "id": "jaime_jaquez_jr",
-      "name": "Jaime Jaquez Jr.",
-      "team": "MIA",
-      "coordinates": {
-        "A": 37.5,
-        "B1": 25.0,
-        "B2": 50.0,
-        "C1": 37.5,
-        "C2": 50.0,
-        "D": 37.5
-      },
-      "body": {
-        "height_cm": 198,
-        "wingspan_cm": 198,
-        "weight_kg": 104,
-        "standing_reach_cm": 230,
-        "running_vertical_reach_cm": 296,
-        "sprint_100m_seconds": 14.75
-      },
-      "notable_traits": [
-        "背框脚步细腻",
-        "持球推进稳定",
-        "决策效率不错"
-      ],
-      "signature_skill_id": "decision_making_turnover_control",
-      "learnability_flag": "high",
-      "_estimate_basis": "公开球评印象,手动估算,非真实数据推导",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 2
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 5
-        }
-      ]
-    },
-    {
       "id": "brandon_miller",
       "name": "Brandon Miller",
       "team": "CHA",
@@ -18321,429 +17475,6 @@
         {
           "question_id": "skill_help_defense_rotation_1",
           "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 3
-        }
-      ]
-    },
-    {
-      "id": "anthony_black",
-      "name": "Anthony Black",
-      "team": "ORL",
-      "coordinates": {
-        "A": 62.5,
-        "B1": 25.0,
-        "B2": 25.0,
-        "C1": 75.0,
-        "C2": 50.0,
-        "D": 37.5
-      },
-      "body": {
-        "height_cm": 196,
-        "wingspan_cm": 208,
-        "weight_kg": 102,
-        "standing_reach_cm": 240,
-        "running_vertical_reach_cm": 306,
-        "sprint_100m_seconds": 14.75
-      },
-      "notable_traits": [
-        "传导视野不错",
-        "防守覆盖范围好",
-        "持球推进稳定"
-      ],
-      "signature_skill_id": "decision_making_turnover_control",
-      "learnability_flag": "high",
-      "_estimate_basis": "公开球评印象 + 臂展等公开身体数据,手动估算,非真实数据推导",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 2
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 5
-        }
-      ]
-    },
-    {
-      "id": "ron_holland",
-      "name": "Ron Holland",
-      "team": "DET",
-      "coordinates": {
-        "A": 37.5,
-        "B1": 25.0,
-        "B2": 25.0,
-        "C1": 100.0,
-        "C2": 62.5,
-        "D": 62.5
-      },
-      "body": {
-        "height_cm": 201,
-        "wingspan_cm": 206,
-        "weight_kg": 107,
-        "standing_reach_cm": 238,
-        "running_vertical_reach_cm": 317,
-        "sprint_100m_seconds": 13.25
-      },
-      "notable_traits": [
-        "转换终结能力不错",
-        "防守肯拚",
-        "协防补位判断好"
-      ],
-      "signature_skill_id": "help_defense_rotation",
-      "learnability_flag": "high",
-      "_estimate_basis": "公开球评印象,手动估算,非真实数据推导",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 5
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 5
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 3
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 3
-        }
-      ]
-    },
-    {
-      "id": "cody_williams",
-      "name": "Cody Williams",
-      "team": "UTA",
-      "coordinates": {
-        "A": 50.0,
-        "B1": 25.0,
-        "B2": 50.0,
-        "C1": 37.5,
-        "C2": 50.0,
-        "D": 50.0
-      },
-      "body": {
-        "height_cm": 203,
-        "wingspan_cm": 211,
-        "weight_kg": 109,
-        "standing_reach_cm": 243,
-        "running_vertical_reach_cm": 316,
-        "sprint_100m_seconds": 14.0
-      },
-      "notable_traits": [
-        "外线出手潜力不错",
-        "协防补位判断好",
-        "转换速度尚可"
-      ],
-      "signature_skill_id": "help_defense_rotation",
-      "learnability_flag": "high",
-      "_estimate_basis": "公开球评印象 + 臂展等公开身体数据,手动估算,非真实数据推导",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 3
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 5
         },
         {
           "question_id": "skill_defensive_rebounding_boxout_1",
@@ -19179,288 +17910,6 @@
       ]
     },
     {
-      "id": "reed_sheppard",
-      "name": "Reed Sheppard",
-      "team": "HOU",
-      "coordinates": {
-        "A": 62.5,
-        "B1": 62.5,
-        "B2": 12.5,
-        "C1": 87.5,
-        "C2": 50.0,
-        "D": 62.5
-      },
-      "body": {
-        "height_cm": 188,
-        "wingspan_cm": 191,
-        "weight_kg": 89,
-        "standing_reach_cm": 223,
-        "running_vertical_reach_cm": 302,
-        "sprint_100m_seconds": 13.25
-      },
-      "notable_traits": [
-        "外线出手稳定",
-        "传导视野不错",
-        "抄截嗅觉好"
-      ],
-      "signature_skill_id": "perimeter_shooting",
-      "learnability_flag": "high",
-      "_estimate_basis": "公开球评印象,手动估算,非真实数据推导",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 5
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 3
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 3
-        }
-      ]
-    },
-    {
-      "id": "nikola_jovic",
-      "name": "Nikola Jovic",
-      "team": "MIA",
-      "coordinates": {
-        "A": 37.5,
-        "B1": 12.5,
-        "B2": 12.5,
-        "C1": 25.0,
-        "C2": 50.0,
-        "D": 25.0
-      },
-      "body": {
-        "height_cm": 208,
-        "wingspan_cm": 211,
-        "weight_kg": 116,
-        "standing_reach_cm": 243,
-        "running_vertical_reach_cm": 302,
-        "sprint_100m_seconds": 15.5
-      },
-      "notable_traits": [
-        "高位策应传导不错",
-        "外线出手潜力不错",
-        "转换速度尚可"
-      ],
-      "signature_skill_id": "high_post_playmaking",
-      "learnability_flag": "high",
-      "_estimate_basis": "公开球评印象,手动估算,非真实数据推导",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 2
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 2
-        }
-      ]
-    },
-    {
       "id": "bennedict_mathurin",
       "name": "Bennedict Mathurin",
       "team": "IND",
@@ -19665,147 +18114,6 @@
         {
           "question_id": "axis_c2_1",
           "score": 3
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 1
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 5
-        }
-      ]
-    },
-    {
-      "id": "tj_mcconnell",
-      "name": "T.J. McConnell",
-      "team": "IND",
-      "coordinates": {
-        "A": 75.0,
-        "B1": 75.0,
-        "B2": 25.0,
-        "C1": 87.5,
-        "C2": 25.0,
-        "D": 12.5
-      },
-      "body": {
-        "height_cm": 185,
-        "wingspan_cm": 188,
-        "weight_kg": 84,
-        "standing_reach_cm": 220,
-        "running_vertical_reach_cm": 272,
-        "sprint_100m_seconds": 16.25
-      },
-      "notable_traits": [
-        "持球推进稳定不失误",
-        "抄截嗅觉强",
-        "节奏掌控力好"
-      ],
-      "signature_skill_id": "decision_making_turnover_control",
-      "learnability_flag": "high",
-      "_estimate_basis": "公开球评印象,手动估算,非真实数据推导",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 5
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 2
         },
         {
           "question_id": "axis_c2_2",
@@ -20589,429 +18897,6 @@
       ]
     },
     {
-      "id": "jaylin_williams",
-      "name": "Jaylin Williams",
-      "team": "OKC",
-      "coordinates": {
-        "A": 12.5,
-        "B1": 62.5,
-        "B2": 50.0,
-        "C1": 12.5,
-        "C2": 75.0,
-        "D": 0.0
-      },
-      "body": {
-        "height_cm": 206,
-        "wingspan_cm": 211,
-        "weight_kg": 107,
-        "standing_reach_cm": 243,
-        "running_vertical_reach_cm": 288,
-        "sprint_100m_seconds": 17.0
-      },
-      "notable_traits": [
-        "高位策应传导不错",
-        "协防补位判断好",
-        "卡位意识好"
-      ],
-      "signature_skill_id": "help_defense_rotation",
-      "learnability_flag": "high",
-      "_estimate_basis": "公开球评印象,手动估算,非真实数据推导",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 1
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 1
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 2
-        }
-      ]
-    },
-    {
-      "id": "isaiah_joe",
-      "name": "Isaiah Joe",
-      "team": "OKC",
-      "coordinates": {
-        "A": 25.0,
-        "B1": 100.0,
-        "B2": 12.5,
-        "C1": 37.5,
-        "C2": 12.5,
-        "D": 12.5
-      },
-      "body": {
-        "height_cm": 188,
-        "wingspan_cm": 196,
-        "weight_kg": 83,
-        "standing_reach_cm": 228,
-        "running_vertical_reach_cm": 280,
-        "sprint_100m_seconds": 16.25
-      },
-      "notable_traits": [
-        "无球跑动投射效率高",
-        "定点三分稳定",
-        "出手速度快"
-      ],
-      "signature_skill_id": "off_ball_movement",
-      "learnability_flag": "high",
-      "_estimate_basis": "公开球评印象,手动估算,非真实数据推导",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 5
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 5
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 1
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 2
-        }
-      ]
-    },
-    {
-      "id": "ayo_dosunmu",
-      "name": "Ayo Dosunmu",
-      "team": "CHI",
-      "coordinates": {
-        "A": 50.0,
-        "B1": 87.5,
-        "B2": 12.5,
-        "C1": 37.5,
-        "C2": 12.5,
-        "D": 25.0
-      },
-      "body": {
-        "height_cm": 193,
-        "wingspan_cm": 201,
-        "weight_kg": 90,
-        "standing_reach_cm": 233,
-        "running_vertical_reach_cm": 292,
-        "sprint_100m_seconds": 15.5
-      },
-      "notable_traits": [
-        "换防跟防能力不错",
-        "持球推进稳定",
-        "协防补位判断好"
-      ],
-      "signature_skill_id": "perimeter_switch_defense",
-      "learnability_flag": "high",
-      "_estimate_basis": "公开球评印象,手动估算,非真实数据推导",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 5
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 2
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 3
-        }
-      ]
-    },
-    {
       "id": "jalen_johnson",
       "name": "Jalen Johnson",
       "team": "ATL",
@@ -21149,6 +19034,2403 @@
         {
           "question_id": "skill_decision_making_turnover_control_1",
           "score": 3
+        }
+      ]
+    },
+    {
+      "id": "jamal_murray",
+      "name": "Jamal Murray",
+      "team": "DEN",
+      "coordinates": {
+        "A": 75.0,
+        "B1": 87.5,
+        "B2": 62.5,
+        "C1": 37.5,
+        "C2": 12.5,
+        "D": 37.5
+      },
+      "body": {
+        "height_cm": 193,
+        "wingspan_cm": 198,
+        "weight_kg": 90,
+        "standing_reach_cm": 230,
+        "running_vertical_reach_cm": 296,
+        "sprint_100m_seconds": 14.75
+      },
+      "notable_traits": [
+        "中距离跟三分出手稳定",
+        "关键时刻敢出手",
+        "挡拆持球判断不错"
+      ],
+      "signature_skill_id": "perimeter_shooting",
+      "learnability_flag": "medium",
+      "_estimate_basis": "依公开 2K 属性数值,用锚点球员校准回归换算出来的座标,非官方 2K 百分位,也非真实比赛数据推导",
+      "mock_axis_answers": [
+        {
+          "question_id": "axis_a_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_a_2",
+          "score": 4
+        },
+        {
+          "question_id": "axis_b1_1",
+          "score": 5
+        },
+        {
+          "question_id": "axis_b1_2",
+          "score": 4
+        },
+        {
+          "question_id": "axis_b2_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_b2_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_c1_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_c1_2",
+          "score": 2
+        },
+        {
+          "question_id": "axis_c2_1",
+          "score": 2
+        },
+        {
+          "question_id": "axis_c2_2",
+          "score": 1
+        },
+        {
+          "question_id": "axis_d_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_d_2",
+          "score": 2
+        }
+      ],
+      "mock_skill_answers": [
+        {
+          "question_id": "skill_perimeter_shooting_1",
+          "score": 5
+        },
+        {
+          "question_id": "skill_face_up_first_step_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_high_post_playmaking_1",
+          "score": 4
+        },
+        {
+          "question_id": "skill_rim_protection_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_perimeter_switch_defense_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_post_up_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_pick_and_roll_ball_handling_1",
+          "score": 4
+        },
+        {
+          "question_id": "skill_off_ball_movement_1",
+          "score": 4
+        },
+        {
+          "question_id": "skill_transition_finishing_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_free_throw_shooting_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_offensive_rebounding_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_on_ball_perimeter_defense_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_help_defense_rotation_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_defensive_rebounding_boxout_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_decision_making_turnover_control_1",
+          "score": 4
+        }
+      ]
+    },
+    {
+      "id": "brandon_ingram",
+      "name": "Brandon Ingram",
+      "team": "LAC",
+      "coordinates": {
+        "A": 62.5,
+        "B1": 75.0,
+        "B2": 62.5,
+        "C1": 25.0,
+        "C2": 25.0,
+        "D": 62.5
+      },
+      "body": {
+        "height_cm": 203,
+        "wingspan_cm": 213,
+        "weight_kg": 102,
+        "standing_reach_cm": 245,
+        "running_vertical_reach_cm": 324,
+        "sprint_100m_seconds": 13.25
+      },
+      "notable_traits": [
+        "面框单打脚步细腻",
+        "中距离跳投稳定",
+        "长臂干扰投篮"
+      ],
+      "signature_skill_id": "face_up_first_step",
+      "learnability_flag": "medium",
+      "_estimate_basis": "依公开 2K 属性数值,用锚点球员校准回归换算出来的座标,非官方 2K 百分位,也非真实比赛数据推导",
+      "mock_axis_answers": [
+        {
+          "question_id": "axis_a_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_a_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b1_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_b1_2",
+          "score": 4
+        },
+        {
+          "question_id": "axis_b2_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_b2_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_c1_1",
+          "score": 2
+        },
+        {
+          "question_id": "axis_c1_2",
+          "score": 2
+        },
+        {
+          "question_id": "axis_c2_1",
+          "score": 2
+        },
+        {
+          "question_id": "axis_c2_2",
+          "score": 2
+        },
+        {
+          "question_id": "axis_d_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_d_2",
+          "score": 3
+        }
+      ],
+      "mock_skill_answers": [
+        {
+          "question_id": "skill_perimeter_shooting_1",
+          "score": 4
+        },
+        {
+          "question_id": "skill_face_up_first_step_1",
+          "score": 5
+        },
+        {
+          "question_id": "skill_high_post_playmaking_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_rim_protection_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_perimeter_switch_defense_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_post_up_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_pick_and_roll_ball_handling_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_off_ball_movement_1",
+          "score": 4
+        },
+        {
+          "question_id": "skill_transition_finishing_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_free_throw_shooting_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_offensive_rebounding_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_on_ball_perimeter_defense_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_help_defense_rotation_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_defensive_rebounding_boxout_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_decision_making_turnover_control_1",
+          "score": 3
+        }
+      ]
+    },
+    {
+      "id": "khris_middleton",
+      "name": "Khris Middleton",
+      "team": "WAS",
+      "coordinates": {
+        "A": 50.0,
+        "B1": 75.0,
+        "B2": 50.0,
+        "C1": 37.5,
+        "C2": 25.0,
+        "D": 37.5
+      },
+      "body": {
+        "height_cm": 201,
+        "wingspan_cm": 213,
+        "weight_kg": 100,
+        "standing_reach_cm": 245,
+        "running_vertical_reach_cm": 311,
+        "sprint_100m_seconds": 14.75
+      },
+      "notable_traits": [
+        "中距离出手选择好",
+        "低位单打脚步稳",
+        "团队进攻串联佳"
+      ],
+      "signature_skill_id": "post_up",
+      "learnability_flag": "medium",
+      "_estimate_basis": "依公开 2K 属性数值,用锚点球员校准回归换算出来的座标,非官方 2K 百分位,也非真实比赛数据推导",
+      "mock_axis_answers": [
+        {
+          "question_id": "axis_a_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_a_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b1_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_b1_2",
+          "score": 4
+        },
+        {
+          "question_id": "axis_b2_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b2_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_c1_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_c1_2",
+          "score": 2
+        },
+        {
+          "question_id": "axis_c2_1",
+          "score": 2
+        },
+        {
+          "question_id": "axis_c2_2",
+          "score": 2
+        },
+        {
+          "question_id": "axis_d_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_d_2",
+          "score": 2
+        }
+      ],
+      "mock_skill_answers": [
+        {
+          "question_id": "skill_perimeter_shooting_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_face_up_first_step_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_high_post_playmaking_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_rim_protection_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_perimeter_switch_defense_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_post_up_1",
+          "score": 5
+        },
+        {
+          "question_id": "skill_pick_and_roll_ball_handling_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_off_ball_movement_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_transition_finishing_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_free_throw_shooting_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_offensive_rebounding_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_on_ball_perimeter_defense_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_help_defense_rotation_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_defensive_rebounding_boxout_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_decision_making_turnover_control_1",
+          "score": 3
+        }
+      ]
+    },
+    {
+      "id": "jonathan_kuminga",
+      "name": "Jonathan Kuminga",
+      "team": "MIN",
+      "coordinates": {
+        "A": 50.0,
+        "B1": 25.0,
+        "B2": 37.5,
+        "C1": 37.5,
+        "C2": 50.0,
+        "D": 62.5
+      },
+      "body": {
+        "height_cm": 201,
+        "wingspan_cm": 213,
+        "weight_kg": 107,
+        "standing_reach_cm": 245,
+        "running_vertical_reach_cm": 324,
+        "sprint_100m_seconds": 13.25
+      },
+      "notable_traits": [
+        "转换快攻终结能力强",
+        "运动能力出色",
+        "协防补位速度快"
+      ],
+      "signature_skill_id": "transition_finishing",
+      "learnability_flag": "high",
+      "_estimate_basis": "依公开 2K 属性数值,用锚点球员校准回归换算出来的座标,非官方 2K 百分位,也非真实比赛数据推导",
+      "mock_axis_answers": [
+        {
+          "question_id": "axis_a_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_a_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b1_1",
+          "score": 2
+        },
+        {
+          "question_id": "axis_b1_2",
+          "score": 2
+        },
+        {
+          "question_id": "axis_b2_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b2_2",
+          "score": 2
+        },
+        {
+          "question_id": "axis_c1_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_c1_2",
+          "score": 2
+        },
+        {
+          "question_id": "axis_c2_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_c2_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_d_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_d_2",
+          "score": 3
+        }
+      ],
+      "mock_skill_answers": [
+        {
+          "question_id": "skill_perimeter_shooting_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_face_up_first_step_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_high_post_playmaking_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_rim_protection_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_perimeter_switch_defense_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_post_up_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_pick_and_roll_ball_handling_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_off_ball_movement_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_transition_finishing_1",
+          "score": 5
+        },
+        {
+          "question_id": "skill_free_throw_shooting_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_offensive_rebounding_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_on_ball_perimeter_defense_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_help_defense_rotation_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_defensive_rebounding_boxout_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_decision_making_turnover_control_1",
+          "score": 3
+        }
+      ]
+    },
+    {
+      "id": "jakob_poeltl",
+      "name": "Jakob Poeltl",
+      "team": "TOR",
+      "coordinates": {
+        "A": 0.0,
+        "B1": 12.5,
+        "B2": 75.0,
+        "C1": 12.5,
+        "C2": 62.5,
+        "D": 25.0
+      },
+      "body": {
+        "height_cm": 213,
+        "wingspan_cm": 226,
+        "weight_kg": 121,
+        "standing_reach_cm": 258,
+        "running_vertical_reach_cm": 317,
+        "sprint_100m_seconds": 15.5
+      },
+      "notable_traits": [
+        "挡拆顺下终结稳定",
+        "护框判断好",
+        "卡位抢篮板扎实"
+      ],
+      "signature_skill_id": "rim_protection",
+      "learnability_flag": "high",
+      "_estimate_basis": "依公开 2K 属性数值,用锚点球员校准回归换算出来的座标,非官方 2K 百分位,也非真实比赛数据推导",
+      "mock_axis_answers": [
+        {
+          "question_id": "axis_a_1",
+          "score": 1
+        },
+        {
+          "question_id": "axis_a_2",
+          "score": 1
+        },
+        {
+          "question_id": "axis_b1_1",
+          "score": 2
+        },
+        {
+          "question_id": "axis_b1_2",
+          "score": 1
+        },
+        {
+          "question_id": "axis_b2_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_b2_2",
+          "score": 4
+        },
+        {
+          "question_id": "axis_c1_1",
+          "score": 2
+        },
+        {
+          "question_id": "axis_c1_2",
+          "score": 1
+        },
+        {
+          "question_id": "axis_c2_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_c2_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_d_1",
+          "score": 2
+        },
+        {
+          "question_id": "axis_d_2",
+          "score": 2
+        }
+      ],
+      "mock_skill_answers": [
+        {
+          "question_id": "skill_perimeter_shooting_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_face_up_first_step_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_high_post_playmaking_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_rim_protection_1",
+          "score": 5
+        },
+        {
+          "question_id": "skill_perimeter_switch_defense_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_post_up_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_pick_and_roll_ball_handling_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_off_ball_movement_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_transition_finishing_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_free_throw_shooting_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_offensive_rebounding_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_on_ball_perimeter_defense_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_help_defense_rotation_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_defensive_rebounding_boxout_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_decision_making_turnover_control_1",
+          "score": 2
+        }
+      ]
+    },
+    {
+      "id": "harrison_barnes",
+      "name": "Harrison Barnes",
+      "team": "SAS",
+      "coordinates": {
+        "A": 50.0,
+        "B1": 62.5,
+        "B2": 75.0,
+        "C1": 25.0,
+        "C2": 25.0,
+        "D": 62.5
+      },
+      "body": {
+        "height_cm": 201,
+        "wingspan_cm": 206,
+        "weight_kg": 102,
+        "standing_reach_cm": 238,
+        "running_vertical_reach_cm": 317,
+        "sprint_100m_seconds": 13.25
+      },
+      "notable_traits": [
+        "定点三分稳定",
+        "无球跑动找空档",
+        "团队防守纪律好"
+      ],
+      "signature_skill_id": "off_ball_movement",
+      "learnability_flag": "high",
+      "_estimate_basis": "依公开 2K 属性数值,用锚点球员校准回归换算出来的座标,非官方 2K 百分位,也非真实比赛数据推导",
+      "mock_axis_answers": [
+        {
+          "question_id": "axis_a_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_a_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b1_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_b1_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b2_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_b2_2",
+          "score": 4
+        },
+        {
+          "question_id": "axis_c1_1",
+          "score": 2
+        },
+        {
+          "question_id": "axis_c1_2",
+          "score": 2
+        },
+        {
+          "question_id": "axis_c2_1",
+          "score": 2
+        },
+        {
+          "question_id": "axis_c2_2",
+          "score": 2
+        },
+        {
+          "question_id": "axis_d_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_d_2",
+          "score": 3
+        }
+      ],
+      "mock_skill_answers": [
+        {
+          "question_id": "skill_perimeter_shooting_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_face_up_first_step_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_high_post_playmaking_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_rim_protection_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_perimeter_switch_defense_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_post_up_1",
+          "score": 4
+        },
+        {
+          "question_id": "skill_pick_and_roll_ball_handling_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_off_ball_movement_1",
+          "score": 5
+        },
+        {
+          "question_id": "skill_transition_finishing_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_free_throw_shooting_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_offensive_rebounding_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_on_ball_perimeter_defense_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_help_defense_rotation_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_defensive_rebounding_boxout_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_decision_making_turnover_control_1",
+          "score": 3
+        }
+      ]
+    },
+    {
+      "id": "jerami_grant",
+      "name": "Jerami Grant",
+      "team": "MEM",
+      "coordinates": {
+        "A": 50.0,
+        "B1": 50.0,
+        "B2": 50.0,
+        "C1": 37.5,
+        "C2": 50.0,
+        "D": 50.0
+      },
+      "body": {
+        "height_cm": 201,
+        "wingspan_cm": 211,
+        "weight_kg": 104,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 316,
+        "sprint_100m_seconds": 14.0
+      },
+      "notable_traits": [
+        "外线出手稳定",
+        "转换终结效率高",
+        "协防补位移动快"
+      ],
+      "signature_skill_id": "perimeter_shooting",
+      "learnability_flag": "medium",
+      "_estimate_basis": "依公开 2K 属性数值,用锚点球员校准回归换算出来的座标,非官方 2K 百分位,也非真实比赛数据推导",
+      "mock_axis_answers": [
+        {
+          "question_id": "axis_a_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_a_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b1_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b1_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b2_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b2_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_c1_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_c1_2",
+          "score": 2
+        },
+        {
+          "question_id": "axis_c2_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_c2_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_d_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_d_2",
+          "score": 3
+        }
+      ],
+      "mock_skill_answers": [
+        {
+          "question_id": "skill_perimeter_shooting_1",
+          "score": 5
+        },
+        {
+          "question_id": "skill_face_up_first_step_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_high_post_playmaking_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_rim_protection_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_perimeter_switch_defense_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_post_up_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_pick_and_roll_ball_handling_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_off_ball_movement_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_transition_finishing_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_free_throw_shooting_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_offensive_rebounding_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_on_ball_perimeter_defense_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_help_defense_rotation_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_defensive_rebounding_boxout_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_decision_making_turnover_control_1",
+          "score": 3
+        }
+      ]
+    },
+    {
+      "id": "kyle_kuzma",
+      "name": "Kyle Kuzma",
+      "team": "MIL",
+      "coordinates": {
+        "A": 50.0,
+        "B1": 50.0,
+        "B2": 50.0,
+        "C1": 37.5,
+        "C2": 37.5,
+        "D": 50.0
+      },
+      "body": {
+        "height_cm": 206,
+        "wingspan_cm": 211,
+        "weight_kg": 108,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 316,
+        "sprint_100m_seconds": 14.0
+      },
+      "notable_traits": [
+        "持球单打手段多",
+        "篮板卡位积极",
+        "转换推进速度尚可"
+      ],
+      "signature_skill_id": "face_up_first_step",
+      "learnability_flag": "medium",
+      "_estimate_basis": "依公开 2K 属性数值,用锚点球员校准回归换算出来的座标,非官方 2K 百分位,也非真实比赛数据推导",
+      "mock_axis_answers": [
+        {
+          "question_id": "axis_a_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_a_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b1_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b1_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b2_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b2_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_c1_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_c1_2",
+          "score": 2
+        },
+        {
+          "question_id": "axis_c2_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_c2_2",
+          "score": 2
+        },
+        {
+          "question_id": "axis_d_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_d_2",
+          "score": 3
+        }
+      ],
+      "mock_skill_answers": [
+        {
+          "question_id": "skill_perimeter_shooting_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_face_up_first_step_1",
+          "score": 5
+        },
+        {
+          "question_id": "skill_high_post_playmaking_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_rim_protection_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_perimeter_switch_defense_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_post_up_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_pick_and_roll_ball_handling_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_off_ball_movement_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_transition_finishing_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_free_throw_shooting_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_offensive_rebounding_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_on_ball_perimeter_defense_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_help_defense_rotation_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_defensive_rebounding_boxout_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_decision_making_turnover_control_1",
+          "score": 3
+        }
+      ]
+    },
+    {
+      "id": "grayson_allen",
+      "name": "Grayson Allen",
+      "team": "CHA",
+      "coordinates": {
+        "A": 62.5,
+        "B1": 87.5,
+        "B2": 12.5,
+        "C1": 50.0,
+        "C2": 12.5,
+        "D": 37.5
+      },
+      "body": {
+        "height_cm": 191,
+        "wingspan_cm": 196,
+        "weight_kg": 88,
+        "standing_reach_cm": 228,
+        "running_vertical_reach_cm": 294,
+        "sprint_100m_seconds": 14.75
+      },
+      "notable_traits": [
+        "无球跑动投射精准",
+        "罚球线稳定",
+        "体能耐力好"
+      ],
+      "signature_skill_id": "off_ball_movement",
+      "learnability_flag": "high",
+      "_estimate_basis": "依公开 2K 属性数值,用锚点球员校准回归换算出来的座标,非官方 2K 百分位,也非真实比赛数据推导",
+      "mock_axis_answers": [
+        {
+          "question_id": "axis_a_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_a_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b1_1",
+          "score": 5
+        },
+        {
+          "question_id": "axis_b1_2",
+          "score": 4
+        },
+        {
+          "question_id": "axis_b2_1",
+          "score": 2
+        },
+        {
+          "question_id": "axis_b2_2",
+          "score": 1
+        },
+        {
+          "question_id": "axis_c1_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_c1_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_c2_1",
+          "score": 2
+        },
+        {
+          "question_id": "axis_c2_2",
+          "score": 1
+        },
+        {
+          "question_id": "axis_d_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_d_2",
+          "score": 2
+        }
+      ],
+      "mock_skill_answers": [
+        {
+          "question_id": "skill_perimeter_shooting_1",
+          "score": 4
+        },
+        {
+          "question_id": "skill_face_up_first_step_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_high_post_playmaking_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_rim_protection_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_perimeter_switch_defense_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_post_up_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_pick_and_roll_ball_handling_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_off_ball_movement_1",
+          "score": 5
+        },
+        {
+          "question_id": "skill_transition_finishing_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_free_throw_shooting_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_offensive_rebounding_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_on_ball_perimeter_defense_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_help_defense_rotation_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_defensive_rebounding_boxout_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_decision_making_turnover_control_1",
+          "score": 3
+        }
+      ]
+    },
+    {
+      "id": "jalen_suggs",
+      "name": "Jalen Suggs",
+      "team": "ORL",
+      "coordinates": {
+        "A": 75.0,
+        "B1": 62.5,
+        "B2": 62.5,
+        "C1": 100.0,
+        "C2": 37.5,
+        "D": 62.5
+      },
+      "body": {
+        "height_cm": 196,
+        "wingspan_cm": 206,
+        "weight_kg": 97,
+        "standing_reach_cm": 238,
+        "running_vertical_reach_cm": 317,
+        "sprint_100m_seconds": 13.25
+      },
+      "notable_traits": [
+        "换防跟防能力顶级",
+        "抄截嗅觉敏锐",
+        "协防补位判断好"
+      ],
+      "signature_skill_id": "perimeter_switch_defense",
+      "learnability_flag": "high",
+      "_estimate_basis": "依公开 2K 属性数值,用锚点球员校准回归换算出来的座标,非官方 2K 百分位,也非真实比赛数据推导",
+      "mock_axis_answers": [
+        {
+          "question_id": "axis_a_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_a_2",
+          "score": 4
+        },
+        {
+          "question_id": "axis_b1_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_b1_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b2_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_b2_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_c1_1",
+          "score": 5
+        },
+        {
+          "question_id": "axis_c1_2",
+          "score": 5
+        },
+        {
+          "question_id": "axis_c2_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_c2_2",
+          "score": 2
+        },
+        {
+          "question_id": "axis_d_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_d_2",
+          "score": 3
+        }
+      ],
+      "mock_skill_answers": [
+        {
+          "question_id": "skill_perimeter_shooting_1",
+          "score": 4
+        },
+        {
+          "question_id": "skill_face_up_first_step_1",
+          "score": 4
+        },
+        {
+          "question_id": "skill_high_post_playmaking_1",
+          "score": 4
+        },
+        {
+          "question_id": "skill_rim_protection_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_perimeter_switch_defense_1",
+          "score": 5
+        },
+        {
+          "question_id": "skill_post_up_1",
+          "score": 4
+        },
+        {
+          "question_id": "skill_pick_and_roll_ball_handling_1",
+          "score": 4
+        },
+        {
+          "question_id": "skill_off_ball_movement_1",
+          "score": 4
+        },
+        {
+          "question_id": "skill_transition_finishing_1",
+          "score": 4
+        },
+        {
+          "question_id": "skill_free_throw_shooting_1",
+          "score": 4
+        },
+        {
+          "question_id": "skill_offensive_rebounding_1",
+          "score": 4
+        },
+        {
+          "question_id": "skill_on_ball_perimeter_defense_1",
+          "score": 4
+        },
+        {
+          "question_id": "skill_help_defense_rotation_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_defensive_rebounding_boxout_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_decision_making_turnover_control_1",
+          "score": 4
+        }
+      ]
+    },
+    {
+      "id": "shaedon_sharpe",
+      "name": "Shaedon Sharpe",
+      "team": "POR",
+      "coordinates": {
+        "A": 62.5,
+        "B1": 50.0,
+        "B2": 12.5,
+        "C1": 62.5,
+        "C2": 12.5,
+        "D": 50.0
+      },
+      "body": {
+        "height_cm": 196,
+        "wingspan_cm": 206,
+        "weight_kg": 98,
+        "standing_reach_cm": 238,
+        "running_vertical_reach_cm": 310,
+        "sprint_100m_seconds": 14.0
+      },
+      "notable_traits": [
+        "运动能力出色",
+        "转换终结能力强",
+        "持球突破有爆发力"
+      ],
+      "signature_skill_id": "transition_finishing",
+      "learnability_flag": "high",
+      "_estimate_basis": "依公开 2K 属性数值,用锚点球员校准回归换算出来的座标,非官方 2K 百分位,也非真实比赛数据推导",
+      "mock_axis_answers": [
+        {
+          "question_id": "axis_a_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_a_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b1_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b1_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b2_1",
+          "score": 2
+        },
+        {
+          "question_id": "axis_b2_2",
+          "score": 1
+        },
+        {
+          "question_id": "axis_c1_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_c1_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_c2_1",
+          "score": 2
+        },
+        {
+          "question_id": "axis_c2_2",
+          "score": 1
+        },
+        {
+          "question_id": "axis_d_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_d_2",
+          "score": 3
+        }
+      ],
+      "mock_skill_answers": [
+        {
+          "question_id": "skill_perimeter_shooting_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_face_up_first_step_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_high_post_playmaking_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_rim_protection_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_perimeter_switch_defense_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_post_up_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_pick_and_roll_ball_handling_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_off_ball_movement_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_transition_finishing_1",
+          "score": 5
+        },
+        {
+          "question_id": "skill_free_throw_shooting_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_offensive_rebounding_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_on_ball_perimeter_defense_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_help_defense_rotation_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_defensive_rebounding_boxout_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_decision_making_turnover_control_1",
+          "score": 3
+        }
+      ]
+    },
+    {
+      "id": "jaden_ivey",
+      "name": "Jaden Ivey",
+      "team": "FA",
+      "coordinates": {
+        "A": 75.0,
+        "B1": 50.0,
+        "B2": 12.5,
+        "C1": 37.5,
+        "C2": 12.5,
+        "D": 62.5
+      },
+      "body": {
+        "height_cm": 193,
+        "wingspan_cm": 198,
+        "weight_kg": 96,
+        "standing_reach_cm": 230,
+        "running_vertical_reach_cm": 309,
+        "sprint_100m_seconds": 13.25
+      },
+      "notable_traits": [
+        "持球推进速度快",
+        "运动能力出色",
+        "转换终结能力不错"
+      ],
+      "signature_skill_id": "transition_finishing",
+      "learnability_flag": "high",
+      "_estimate_basis": "依公开 2K 属性数值,用锚点球员校准回归换算出来的座标,非官方 2K 百分位,也非真实比赛数据推导",
+      "mock_axis_answers": [
+        {
+          "question_id": "axis_a_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_a_2",
+          "score": 4
+        },
+        {
+          "question_id": "axis_b1_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b1_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b2_1",
+          "score": 2
+        },
+        {
+          "question_id": "axis_b2_2",
+          "score": 1
+        },
+        {
+          "question_id": "axis_c1_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_c1_2",
+          "score": 2
+        },
+        {
+          "question_id": "axis_c2_1",
+          "score": 2
+        },
+        {
+          "question_id": "axis_c2_2",
+          "score": 1
+        },
+        {
+          "question_id": "axis_d_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_d_2",
+          "score": 3
+        }
+      ],
+      "mock_skill_answers": [
+        {
+          "question_id": "skill_perimeter_shooting_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_face_up_first_step_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_high_post_playmaking_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_rim_protection_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_perimeter_switch_defense_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_post_up_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_pick_and_roll_ball_handling_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_off_ball_movement_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_transition_finishing_1",
+          "score": 5
+        },
+        {
+          "question_id": "skill_free_throw_shooting_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_offensive_rebounding_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_on_ball_perimeter_defense_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_help_defense_rotation_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_defensive_rebounding_boxout_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_decision_making_turnover_control_1",
+          "score": 3
+        }
+      ]
+    },
+    {
+      "id": "cason_wallace",
+      "name": "Cason Wallace",
+      "team": "OKC",
+      "coordinates": {
+        "A": 62.5,
+        "B1": 50.0,
+        "B2": 0.0,
+        "C1": 100.0,
+        "C2": 50.0,
+        "D": 37.5
+      },
+      "body": {
+        "height_cm": 191,
+        "wingspan_cm": 203,
+        "weight_kg": 94,
+        "standing_reach_cm": 235,
+        "running_vertical_reach_cm": 301,
+        "sprint_100m_seconds": 14.75
+      },
+      "notable_traits": [
+        "抄截嗅觉顶级",
+        "换防跟防能力好",
+        "协防补位判断佳"
+      ],
+      "signature_skill_id": "on_ball_perimeter_defense",
+      "learnability_flag": "high",
+      "_estimate_basis": "依公开 2K 属性数值,用锚点球员校准回归换算出来的座标,非官方 2K 百分位,也非真实比赛数据推导",
+      "mock_axis_answers": [
+        {
+          "question_id": "axis_a_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_a_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b1_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b1_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b2_1",
+          "score": 1
+        },
+        {
+          "question_id": "axis_b2_2",
+          "score": 1
+        },
+        {
+          "question_id": "axis_c1_1",
+          "score": 5
+        },
+        {
+          "question_id": "axis_c1_2",
+          "score": 5
+        },
+        {
+          "question_id": "axis_c2_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_c2_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_d_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_d_2",
+          "score": 2
+        }
+      ],
+      "mock_skill_answers": [
+        {
+          "question_id": "skill_perimeter_shooting_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_face_up_first_step_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_high_post_playmaking_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_rim_protection_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_perimeter_switch_defense_1",
+          "score": 4
+        },
+        {
+          "question_id": "skill_post_up_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_pick_and_roll_ball_handling_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_off_ball_movement_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_transition_finishing_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_free_throw_shooting_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_offensive_rebounding_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_on_ball_perimeter_defense_1",
+          "score": 5
+        },
+        {
+          "question_id": "skill_help_defense_rotation_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_defensive_rebounding_boxout_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_decision_making_turnover_control_1",
+          "score": 3
+        }
+      ]
+    },
+    {
+      "id": "trey_murphy_iii",
+      "name": "Trey Murphy III",
+      "team": "NOP",
+      "coordinates": {
+        "A": 37.5,
+        "B1": 62.5,
+        "B2": 25.0,
+        "C1": 37.5,
+        "C2": 37.5,
+        "D": 50.0
+      },
+      "body": {
+        "height_cm": 203,
+        "wingspan_cm": 211,
+        "weight_kg": 104,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 316,
+        "sprint_100m_seconds": 14.0
+      },
+      "notable_traits": [
+        "定点三分稳定",
+        "协防补位移动快",
+        "罚球线手感好"
+      ],
+      "signature_skill_id": "perimeter_shooting",
+      "learnability_flag": "high",
+      "_estimate_basis": "依公开 2K 属性数值,用锚点球员校准回归换算出来的座标,非官方 2K 百分位,也非真实比赛数据推导",
+      "mock_axis_answers": [
+        {
+          "question_id": "axis_a_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_a_2",
+          "score": 2
+        },
+        {
+          "question_id": "axis_b1_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_b1_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b2_1",
+          "score": 2
+        },
+        {
+          "question_id": "axis_b2_2",
+          "score": 2
+        },
+        {
+          "question_id": "axis_c1_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_c1_2",
+          "score": 2
+        },
+        {
+          "question_id": "axis_c2_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_c2_2",
+          "score": 2
+        },
+        {
+          "question_id": "axis_d_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_d_2",
+          "score": 3
+        }
+      ],
+      "mock_skill_answers": [
+        {
+          "question_id": "skill_perimeter_shooting_1",
+          "score": 5
+        },
+        {
+          "question_id": "skill_face_up_first_step_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_high_post_playmaking_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_rim_protection_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_perimeter_switch_defense_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_post_up_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_pick_and_roll_ball_handling_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_off_ball_movement_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_transition_finishing_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_free_throw_shooting_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_offensive_rebounding_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_on_ball_perimeter_defense_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_help_defense_rotation_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_defensive_rebounding_boxout_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_decision_making_turnover_control_1",
+          "score": 3
+        }
+      ]
+    },
+    {
+      "id": "patrick_williams",
+      "name": "Patrick Williams",
+      "team": "CHI",
+      "coordinates": {
+        "A": 37.5,
+        "B1": 50.0,
+        "B2": 12.5,
+        "C1": 37.5,
+        "C2": 37.5,
+        "D": 37.5
+      },
+      "body": {
+        "height_cm": 201,
+        "wingspan_cm": 211,
+        "weight_kg": 104,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 309,
+        "sprint_100m_seconds": 14.75
+      },
+      "notable_traits": [
+        "换防跟防能力不错",
+        "协防补位判断好",
+        "中距离出手尚可"
+      ],
+      "signature_skill_id": "perimeter_switch_defense",
+      "learnability_flag": "high",
+      "_estimate_basis": "依公开 2K 属性数值,用锚点球员校准回归换算出来的座标,非官方 2K 百分位,也非真实比赛数据推导",
+      "mock_axis_answers": [
+        {
+          "question_id": "axis_a_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_a_2",
+          "score": 2
+        },
+        {
+          "question_id": "axis_b1_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b1_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b2_1",
+          "score": 2
+        },
+        {
+          "question_id": "axis_b2_2",
+          "score": 1
+        },
+        {
+          "question_id": "axis_c1_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_c1_2",
+          "score": 2
+        },
+        {
+          "question_id": "axis_c2_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_c2_2",
+          "score": 2
+        },
+        {
+          "question_id": "axis_d_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_d_2",
+          "score": 2
+        }
+      ],
+      "mock_skill_answers": [
+        {
+          "question_id": "skill_perimeter_shooting_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_face_up_first_step_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_high_post_playmaking_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_rim_protection_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_perimeter_switch_defense_1",
+          "score": 5
+        },
+        {
+          "question_id": "skill_post_up_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_pick_and_roll_ball_handling_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_off_ball_movement_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_transition_finishing_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_free_throw_shooting_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_offensive_rebounding_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_on_ball_perimeter_defense_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_help_defense_rotation_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_defensive_rebounding_boxout_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_decision_making_turnover_control_1",
+          "score": 2
+        }
+      ]
+    },
+    {
+      "id": "scoot_henderson",
+      "name": "Scoot Henderson",
+      "team": "POR",
+      "coordinates": {
+        "A": 75.0,
+        "B1": 50.0,
+        "B2": 0.0,
+        "C1": 37.5,
+        "C2": 12.5,
+        "D": 50.0
+      },
+      "body": {
+        "height_cm": 191,
+        "wingspan_cm": 198,
+        "weight_kg": 94,
+        "standing_reach_cm": 230,
+        "running_vertical_reach_cm": 302,
+        "sprint_100m_seconds": 14.0
+      },
+      "notable_traits": [
+        "持球推进速度快",
+        "运动能力出色",
+        "挡拆持球判断尚可"
+      ],
+      "signature_skill_id": "pick_and_roll_ball_handling",
+      "learnability_flag": "high",
+      "_estimate_basis": "依公开 2K 属性数值,用锚点球员校准回归换算出来的座标,非官方 2K 百分位,也非真实比赛数据推导",
+      "mock_axis_answers": [
+        {
+          "question_id": "axis_a_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_a_2",
+          "score": 4
+        },
+        {
+          "question_id": "axis_b1_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b1_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b2_1",
+          "score": 1
+        },
+        {
+          "question_id": "axis_b2_2",
+          "score": 1
+        },
+        {
+          "question_id": "axis_c1_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_c1_2",
+          "score": 2
+        },
+        {
+          "question_id": "axis_c2_1",
+          "score": 2
+        },
+        {
+          "question_id": "axis_c2_2",
+          "score": 1
+        },
+        {
+          "question_id": "axis_d_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_d_2",
+          "score": 3
+        }
+      ],
+      "mock_skill_answers": [
+        {
+          "question_id": "skill_perimeter_shooting_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_face_up_first_step_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_high_post_playmaking_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_rim_protection_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_perimeter_switch_defense_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_post_up_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_pick_and_roll_ball_handling_1",
+          "score": 5
+        },
+        {
+          "question_id": "skill_off_ball_movement_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_transition_finishing_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_free_throw_shooting_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_offensive_rebounding_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_on_ball_perimeter_defense_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_help_defense_rotation_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_defensive_rebounding_boxout_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_decision_making_turnover_control_1",
+          "score": 3
+        }
+      ]
+    },
+    {
+      "id": "kevin_love",
+      "name": "Kevin Love",
+      "team": "UTA",
+      "coordinates": {
+        "A": 25.0,
+        "B1": 62.5,
+        "B2": 62.5,
+        "C1": 12.5,
+        "C2": 50.0,
+        "D": 37.5
+      },
+      "body": {
+        "height_cm": 203,
+        "wingspan_cm": 211,
+        "weight_kg": 104,
+        "standing_reach_cm": 243,
+        "running_vertical_reach_cm": 309,
+        "sprint_100m_seconds": 14.75
+      },
+      "notable_traits": [
+        "外线出手稳定",
+        "篮板卡位意识佳",
+        "长传发动快攻精准"
+      ],
+      "signature_skill_id": "defensive_rebounding_boxout",
+      "learnability_flag": "medium",
+      "_estimate_basis": "依公开 2K 属性数值,用锚点球员校准回归换算出来的座标,非官方 2K 百分位,也非真实比赛数据推导",
+      "mock_axis_answers": [
+        {
+          "question_id": "axis_a_1",
+          "score": 2
+        },
+        {
+          "question_id": "axis_a_2",
+          "score": 2
+        },
+        {
+          "question_id": "axis_b1_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_b1_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b2_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_b2_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_c1_1",
+          "score": 2
+        },
+        {
+          "question_id": "axis_c1_2",
+          "score": 1
+        },
+        {
+          "question_id": "axis_c2_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_c2_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_d_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_d_2",
+          "score": 2
+        }
+      ],
+      "mock_skill_answers": [
+        {
+          "question_id": "skill_perimeter_shooting_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_face_up_first_step_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_high_post_playmaking_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_rim_protection_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_perimeter_switch_defense_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_post_up_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_pick_and_roll_ball_handling_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_off_ball_movement_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_transition_finishing_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_free_throw_shooting_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_offensive_rebounding_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_on_ball_perimeter_defense_1",
+          "score": 2
+        },
+        {
+          "question_id": "skill_help_defense_rotation_1",
+          "score": 3
+        },
+        {
+          "question_id": "skill_defensive_rebounding_boxout_1",
+          "score": 5
+        },
+        {
+          "question_id": "skill_decision_making_turnover_control_1",
+          "score": 2
         }
       ]
     }
