@@ -6,12 +6,26 @@
 # percentile_normalize_body 是另外一層轉換：身高/體重直接拿使用者的公分/公斤
 # 跟 NBA 球員比,幾乎所有使用者都會比整個球員池矮/輕,身材模板永遠是池子裡最
 # 矮的後衛(2026-09-11 討論)。所以先把身高/體重換算成「在籃球玩家母體裡算
-# 第幾百分位」,使用者用假設的常態分佈,球員用球員池自己的實際分佈,兩邊都換成
-# 百分位後才比距離；臂展/摸高/衝刺沒有可靠的一般母體數據可以參考,維持原本的
-# 絕對數值正規化。
+# 第幾百分位」才比距離;臂展/摸高/衝刺沒有可靠的一般母體數據可以參考,維持原本
+# 的絕對數值正規化。
+# 2026-10 發現使用者跟球員「兩邊各用一套不同的百分位算法」是錯的:原本使用者
+# 是常態分布連續算,球員是在球員池內排名算,兩套算法對同一個身高的輸出完全不
+# 可比——實測 206cm/113kg 的身材,算出來跟「206cm/112kg、幾乎一模一樣」的
+# Karl Malone 距離反而比跟「216cm/126kg、真的差了一大截」的 Shaq 還遠,因為
+# Malone 206cm 在球員池自己的排名只排到 61.7 百分位(球員池本來就一堆更高的
+# 中鋒),但使用者的 206cm 用常態分布算出來是 95+ 百分位,兩個數字對不上。
+# 所以改成兩邊都套同一套函數(_tail_capped_percentile),才能真的比出「身材
+# 像不像」而不是「兩套不相干的排名剛好湊近」。這套函數在門檻(身高 190cm /
+# 體重 93kg,對應 TALL_ATHLETE_THRESHOLD_Z=1.25 個標準差,使用者建議的「超過
+# 這個身材條件大概率已經是職業球員」)以下維持原本的常態分布累積機率,超過門檻
+# 後改成線性,從門檻百分位一路拉到 100(對應題目定義的最大值),避免 NBA 等級
+# 的身高體重全部被常態分布尾端壓縮成幾乎同一個數字(206cm 跟 220cm 用常態分布
+# 算出來都逼近 99.9%+,線性段才能把這段差距攤開,維持區分度)。門檻以下(一般
+# 使用者最常落的範圍)完全沒變,169/188cm 的既有驗證案例行為不變。
 # 可手動調整的變數：GENERAL_POPULATION_BODY_STATS(假設的籃球玩家母體身高/
 # 體重平均值跟標準差,是粗略估計,不是有實證來源的統計值,覺得換算出來的百分位
-# 不合理可以直接調)。
+# 不合理可以直接調)、TALL_ATHLETE_THRESHOLD_Z(超過這個標準差就從常態分布切換
+# 成線性,目前 1.25 對應身高門檻 190cm,體重門檻同一個 z 值算出來是 93kg)。
 # missing_required_body_fields：身高、體重(data/questions.json body_measurements
 # 裡標 "required": true 的題目)是 engine/archetype.py 體型分數的必要輸入,沒填
 # 就無法算,所以後端在算模板結果前要先擋掉;其餘身材題維持選填,省略不算錯
@@ -115,18 +129,21 @@ def _normal_cdf_percentile(value, mean, sd):
     return 50 * (1 + math.erf(z / math.sqrt(2)))
 
 
-def _empirical_percentile(value, pool_values):
-    """Percentile (0-100) of value within pool_values, using the mean-rank
-    method (a tie counts as half a rank, so a value equal to every other
-    value in the pool lands at the 50th percentile).
+TALL_ATHLETE_THRESHOLD_Z = 1.25
 
-    Raises ValueError if pool_values is empty.
+
+def _tail_capped_percentile(value, mean, sd, field_max, threshold_z=TALL_ATHLETE_THRESHOLD_Z):
+    """Percentile (0-100) of value under a normal(mean, sd) distribution,
+    except above threshold_z standard deviations it switches from the CDF
+    to a straight line up to field_max -- see file header for why. Below
+    the threshold this is identical to _normal_cdf_percentile.
     """
-    if not pool_values:
-        raise ValueError("empty pool; percentile is undefined")
-    below = sum(1 for v in pool_values if v < value)
-    equal = sum(1 for v in pool_values if v == value)
-    return (below + 0.5 * equal) / len(pool_values) * 100
+    threshold_value = mean + threshold_z * sd
+    if value <= threshold_value:
+        return _normal_cdf_percentile(value, mean, sd)
+    threshold_pct = _normal_cdf_percentile(threshold_value, mean, sd)
+    fraction = min((value - threshold_value) / (field_max - threshold_value), 1.0)
+    return threshold_pct + fraction * (100 - threshold_pct)
 
 
 def percentile_normalize_body(user_body, players, field_ranges):
@@ -144,10 +161,11 @@ def percentile_normalize_body(user_body, players, field_ranges):
     an NBA player" -- so an average recreational-ball height maps to an
     average-for-the-roster NBA size, not the shortest player in it.
 
-    The user's percentile comes from GENERAL_POPULATION_BODY_STATS (an
-    assumed normal distribution for the basketball-playing population, not
-    all humans -- see file header). Each player's percentile is empirical,
-    computed from the actual player pool's own distribution.
+    Both the user's and every player's percentile come from the SAME
+    _tail_capped_percentile curve (GENERAL_POPULATION_BODY_STATS mean/sd,
+    field_ranges' max as the top of the linear tail) -- see file header for
+    why using two different curves (continuous for the user, empirical
+    rank-within-pool for players) produced incomparable numbers.
 
     Only fields present in both GENERAL_POPULATION_BODY_STATS and
     field_ranges are converted; every other field (wingspan_cm,
@@ -163,17 +181,16 @@ def percentile_normalize_body(user_body, players, field_ranges):
     if not percentile_fields:
         return user_body, players, field_ranges
 
-    pools = {
-        field: [p["body"][field] for p in players if field in p.get("body", {})]
-        for field in percentile_fields
-    }
+    def to_percentile(field, raw_value):
+        mean, sd = GENERAL_POPULATION_BODY_STATS[field]
+        field_max = field_ranges[field][1]
+        return _tail_capped_percentile(raw_value, mean, sd, field_max)
 
     new_user_body = dict(user_body)
     new_field_ranges = dict(field_ranges)
     for field in percentile_fields:
         if field in user_body:
-            mean, sd = GENERAL_POPULATION_BODY_STATS[field]
-            new_user_body[field] = _normal_cdf_percentile(user_body[field], mean, sd)
+            new_user_body[field] = to_percentile(field, user_body[field])
         new_field_ranges[field] = (0, 100)
 
     new_players = []
@@ -181,7 +198,7 @@ def percentile_normalize_body(user_body, players, field_ranges):
         body = dict(player.get("body", {}))
         for field in percentile_fields:
             if field in body:
-                body[field] = _empirical_percentile(body[field], pools[field])
+                body[field] = to_percentile(field, body[field])
         new_players.append({**player, "body": body})
 
     return new_user_body, new_players, new_field_ranges

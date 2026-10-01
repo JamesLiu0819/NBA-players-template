@@ -7,8 +7,9 @@ import unittest
 
 from engine.body_fit import (
     GENERAL_POPULATION_BODY_STATS,
-    _empirical_percentile,
+    TALL_ATHLETE_THRESHOLD_Z,
     _normal_cdf_percentile,
+    _tail_capped_percentile,
     body_distance,
     collect_body_measurements,
     missing_required_body_fields,
@@ -116,18 +117,44 @@ class NormalCdfPercentileTest(unittest.TestCase):
         self.assertAlmostEqual(_normal_cdf_percentile(172, 180, 8), 15.87, places=1)
 
 
-class EmpiricalPercentileTest(unittest.TestCase):
-    def test_matches_value_below_half_the_pool(self):
-        # 25 has exactly two values below it (10, 20) and none equal, out of 5.
-        self.assertAlmostEqual(_empirical_percentile(25, [10, 20, 30, 40, 50]), 40.0)
+class TailCappedPercentileTest(unittest.TestCase):
+    # 2026-10 fix: below the threshold this must behave exactly like
+    # _normal_cdf_percentile; above it, it switches to a straight line up
+    # to field_max instead of continuing to flatten out toward 100 -- see
+    # body_fit.py's header for the Griffin/Malone/Shaq bug this fixes.
+    HEIGHT_MEAN, HEIGHT_SD = GENERAL_POPULATION_BODY_STATS["height_cm"]
+    THRESHOLD_HEIGHT = HEIGHT_MEAN + TALL_ATHLETE_THRESHOLD_Z * HEIGHT_SD  # 190cm
 
-    def test_ties_count_as_half_a_rank(self):
-        # two values equal 30 (indices 2 and one duplicate); (2 + 0.5*2) / 5 * 100
-        self.assertAlmostEqual(_empirical_percentile(30, [10, 20, 30, 30, 50]), 60.0)
+    def test_below_threshold_matches_plain_normal_cdf(self):
+        value = self.THRESHOLD_HEIGHT - 5
+        expected = _normal_cdf_percentile(value, self.HEIGHT_MEAN, self.HEIGHT_SD)
+        actual = _tail_capped_percentile(value, self.HEIGHT_MEAN, self.HEIGHT_SD, field_max=230)
+        self.assertAlmostEqual(actual, expected)
 
-    def test_empty_pool_raises(self):
-        with self.assertRaises(ValueError):
-            _empirical_percentile(30, [])
+    def test_continuous_at_the_threshold(self):
+        at_threshold_cdf = _normal_cdf_percentile(self.THRESHOLD_HEIGHT, self.HEIGHT_MEAN, self.HEIGHT_SD)
+        at_threshold_capped = _tail_capped_percentile(
+            self.THRESHOLD_HEIGHT, self.HEIGHT_MEAN, self.HEIGHT_SD, field_max=230
+        )
+        self.assertAlmostEqual(at_threshold_capped, at_threshold_cdf)
+
+    def test_field_max_maps_to_exactly_100(self):
+        actual = _tail_capped_percentile(230, self.HEIGHT_MEAN, self.HEIGHT_SD, field_max=230)
+        self.assertAlmostEqual(actual, 100.0)
+
+    def test_above_threshold_does_not_flatten_like_the_plain_cdf_does(self):
+        # the whole point of the fix: two values that are both "very tall"
+        # (206 and 220) must stay meaningfully apart, unlike the plain CDF
+        # where both already round to ~100.0.
+        pct_206 = _tail_capped_percentile(206, self.HEIGHT_MEAN, self.HEIGHT_SD, field_max=230)
+        pct_220 = _tail_capped_percentile(220, self.HEIGHT_MEAN, self.HEIGHT_SD, field_max=230)
+        cdf_206 = _normal_cdf_percentile(206, self.HEIGHT_MEAN, self.HEIGHT_SD)
+        cdf_220 = _normal_cdf_percentile(220, self.HEIGHT_MEAN, self.HEIGHT_SD)
+        self.assertGreater(pct_220 - pct_206, cdf_220 - cdf_206)
+
+    def test_never_exceeds_100_even_past_field_max(self):
+        actual = _tail_capped_percentile(999, self.HEIGHT_MEAN, self.HEIGHT_SD, field_max=230)
+        self.assertAlmostEqual(actual, 100.0)
 
 
 class PercentileNormalizeBodyTest(unittest.TestCase):
@@ -137,10 +164,12 @@ class PercentileNormalizeBodyTest(unittest.TestCase):
         # (2026-09-11 body-template-collapses-to-guards fix: matching NBA
         # players on raw cm/kg means almost every self-reporting user is
         # shorter than nearly the whole roster, so height/weight get
-        # converted to "percentile among basketball-playing people" first,
-        # then compared against each player's percentile within the actual
-        # player pool -- wingspan/reach/sprint have no reliable
-        # general-population reference, so they stay on the raw scale).
+        # converted to a percentile first -- wingspan/reach/sprint have no
+        # reliable general-population reference, so they stay on the raw
+        # scale). 2026-10: both the user and every player now go through the
+        # SAME _tail_capped_percentile curve (previously players used a
+        # separate empirical-rank-within-pool method, which produced numbers
+        # that weren't comparable to the user's -- see body_fit.py header).
         field_ranges = {
             "height_cm": (140, 230),
             "weight_kg": (40, 160),
@@ -162,15 +191,36 @@ class PercentileNormalizeBodyTest(unittest.TestCase):
 
         height_mean, height_sd = GENERAL_POPULATION_BODY_STATS["height_cm"]
         self.assertAlmostEqual(
-            new_user_body["height_cm"], _normal_cdf_percentile(188, height_mean, height_sd)
+            new_user_body["height_cm"],
+            _tail_capped_percentile(188, height_mean, height_sd, field_max=230),
         )
         self.assertEqual(new_user_body["wingspan_cm"], 193)
 
-        pool = [190, 210]
-        self.assertAlmostEqual(new_players[0]["body"]["height_cm"], _empirical_percentile(190, pool))
-        self.assertAlmostEqual(new_players[1]["body"]["height_cm"], _empirical_percentile(210, pool))
+        self.assertAlmostEqual(
+            new_players[0]["body"]["height_cm"],
+            _tail_capped_percentile(190, height_mean, height_sd, field_max=230),
+        )
+        self.assertAlmostEqual(
+            new_players[1]["body"]["height_cm"],
+            _tail_capped_percentile(210, height_mean, height_sd, field_max=230),
+        )
         self.assertEqual(new_players[0]["body"]["wingspan_cm"], 195)
         self.assertEqual(new_players[0]["id"], "p1")
+
+    def test_identical_raw_height_yields_zero_gap_even_above_the_threshold(self):
+        # The bug this fixes: under the old two-curve scheme, a player with
+        # the EXACT same raw height as the user could end up with a large
+        # apparent percentile gap, just because the player's percentile came
+        # from ranking within a small pool while the user's came from a
+        # population CDF. Two equal raw heights must now always produce a
+        # zero gap, no matter how tall they are.
+        field_ranges = {"height_cm": (140, 230)}
+        user_body = {"height_cm": 206}
+        players = [{"id": "p1", "body": {"height_cm": 206}}]
+
+        new_user_body, new_players, _ = percentile_normalize_body(user_body, players, field_ranges)
+
+        self.assertAlmostEqual(new_user_body["height_cm"], new_players[0]["body"]["height_cm"])
 
     def test_returns_inputs_unchanged_when_no_percentile_fields_present(self):
         field_ranges = {"wingspan_cm": (140, 250)}

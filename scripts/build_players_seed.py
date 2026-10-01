@@ -4,7 +4,7 @@
 # C 拆外圍防守/禁區護框)。PLAYERS 常數裡每位球員的 coordinates 不再是純手動
 # 估算,而是拿 211 位球員(現役+歷史,扣掉 3 位沒有 2K 卡的)的公開 2K 屬性數值
 # (close_shot/post_control/interior_def/block 等 18 項)算出 6 個組合分數,再用
-# 跟 engine/body_fit.py 的 _empirical_percentile 同一套平均排名法,換算成這
+# 跟舊版 engine/body_fit.py 用過的同一套平均排名法(tie 算半名次),換算成這
 # 214 人池子裡的百分位——不是直接套用 2K 的 0-99 原始分數(那樣會因為這個池子
 # 全是明星球員,把有效的 0-100 區間壓縮到 60-95 左右)。沒有 2K 卡的 3 位
 # (Charles Barkley、Reggie Miller、Rasheed Wallace)維持用同一套屬性詞彙手動
