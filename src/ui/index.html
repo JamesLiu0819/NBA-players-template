@@ -7,8 +7,9 @@
 <style>
   :root {
     color-scheme: dark;
-    /* 回到最原始的藍黑色深色調,但整體調淡一階(2026-09-11 討論)——不跟隨
-       系統深色模式,固定用這組配色。 */
+    /* 回到最原始的藍黑色深色調,但整體調淡一階(2026-09-11 討論)。這組是預設的
+       深色主題;米白主題在下面的 [data-theme="light"] 覆寫,由漢堡選單位置的
+       冷暖色切換按鈕控制,不跟隨系統深色模式,是使用者手動選的(2026-10 討論)。 */
     --paper: #1c2027;
     --paper-raised: #262b34;
     --paper-sunken: #14171c;
@@ -24,6 +25,20 @@
     --mono: "SF Mono", "JetBrains Mono", Menlo, ui-monospace, "Noto Sans Mono", monospace;
   }
 
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --paper: #f3ead9;
+    --paper-raised: #faf5ea;
+    --paper-sunken: #e8ddc5;
+    --ink: #2a2318;
+    --ink-soft: #776b55;
+    --line: rgba(42, 35, 24, 0.14);
+    --accent: #b06a1f;
+    --accent-ink: #8a4f15;
+    --accent-wash: rgba(176, 106, 31, 0.16);
+    --shadow: 0 2px 7px rgba(42, 35, 24, 0.14), 0 1px 2px rgba(42, 35, 24, 0.08);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
   }
@@ -33,8 +48,9 @@
   html { scrollbar-gutter: stable; }
 
   /* ---------- top nav bar ---------- */
-  /* logo/首頁/我的模板/訓練計劃已經接上導覽邏輯(2026-09-13 討論)；登入/
-     選單按鈕還是佔位,登入記錄/分享模板/計分等功能規劃好了再回來接。 */
+  /* logo/首頁/我的模板/訓練計劃已經接上導覽邏輯(2026-09-13 討論);原本的
+     漢堡選單按鈕一直沒有接任何功能,2026-10 改成冷暖色主題切換按鈕。登入
+     按鈕還是佔位,登入記錄/分享模板/計分等功能規劃好了再回來接。 */
 
   .topnav {
     position: sticky;
@@ -205,7 +221,7 @@
     background: var(--accent-wash);
   }
 
-  .topnav-menu {
+  .theme-toggle {
     border: 1px solid var(--line);
     border-radius: 8px;
     background: var(--paper-raised);
@@ -220,6 +236,8 @@
     font-size: 1rem;
     font-family: inherit;
   }
+
+  .theme-toggle:hover { color: var(--accent-ink); border-color: var(--accent); }
 
   @media (max-width: 560px) {
     .topnav-inner { gap: 0.75rem; }
@@ -1012,6 +1030,12 @@
 
   .random-fill-btn:hover { color: var(--accent-ink); border-color: var(--accent); }
 </style>
+<script>
+  (function () {
+    var saved = localStorage.getItem("theme");
+    document.documentElement.dataset.theme = saved === "light" ? "light" : "dark";
+  })();
+</script>
 </head>
 <body>
 
@@ -1030,7 +1054,7 @@
       <span class="visit-counter" id="visit-counter" style="display:none"></span>
       <div class="lang-switch" id="lang-switch"></div>
       <button type="button" class="topnav-login" id="topnav-login-btn">登入</button>
-      <button type="button" class="topnav-menu" id="topnav-menu-btn" aria-label="選單">☰</button>
+      <button type="button" class="theme-toggle" id="theme-toggle-btn" aria-label="切換成米白主題">☀</button>
     </div>
   </div>
 </nav>
@@ -1224,7 +1248,8 @@
       navMyTemplate: "我的模板",
       navTrainingPlan: "訓練計劃",
       loginButton: "登入",
-      menuAriaLabel: "選單",
+      themeToggleToLight: "切換成米白主題",
+      themeToggleToDark: "切換成深色主題",
       visitCounterLabel: "使用人數: ",
       randomFillTitle: "隨機填答,測試用",
       randomFillButton: "🎲 隨機填答(測試用)",
@@ -1301,7 +1326,8 @@
       navMyTemplate: "我的模板",
       navTrainingPlan: "训练计划",
       loginButton: "登录",
-      menuAriaLabel: "菜单",
+      themeToggleToLight: "切换成米白主题",
+      themeToggleToDark: "切换成深色主题",
       visitCounterLabel: "使用人数: ",
       randomFillTitle: "随机填答,测试用",
       randomFillButton: "🎲 随机填答(测试用)",
@@ -1378,7 +1404,8 @@
       navMyTemplate: "My Template",
       navTrainingPlan: "Training Plan",
       loginButton: "Log In",
-      menuAriaLabel: "Menu",
+      themeToggleToLight: "Switch to light theme",
+      themeToggleToDark: "Switch to dark theme",
       visitCounterLabel: "Users: ",
       randomFillTitle: "Random fill (testing only)",
       randomFillButton: "🎲 Random Fill (Testing)",
@@ -1452,7 +1479,17 @@
     lang: SUPPORTED_LANGUAGES.includes(localStorage.getItem("lang"))
       ? localStorage.getItem("lang")
       : "zh",
+    theme: localStorage.getItem("theme") === "light" ? "light" : "dark",
   };
+
+  function applyTheme(theme) {
+    state.theme = theme;
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem("theme", theme);
+    const btn = document.getElementById("theme-toggle-btn");
+    btn.textContent = theme === "light" ? "☾" : "☀";
+    btn.setAttribute("aria-label", theme === "light" ? t().themeToggleToDark : t().themeToggleToLight);
+  }
 
   function t() {
     return UI_STRINGS[state.lang];
@@ -2376,7 +2413,7 @@
     document.getElementById("topnav-tab-template").textContent = strings.navMyTemplate;
     document.getElementById("topnav-tab-priority").textContent = strings.navTrainingPlan;
     document.getElementById("topnav-login-btn").textContent = strings.loginButton;
-    document.getElementById("topnav-menu-btn").setAttribute("aria-label", strings.menuAriaLabel);
+    applyTheme(state.theme);
 
     document.getElementById("random-fill-btn").title = strings.randomFillTitle;
     document.getElementById("random-fill-btn").textContent = strings.randomFillButton;
@@ -2549,6 +2586,10 @@
     } else if (stage2El.style.display !== "none") {
       stage2El.scrollIntoView({ behavior: "smooth", block: "start" });
     }
+  });
+
+  document.getElementById("theme-toggle-btn").addEventListener("click", () => {
+    applyTheme(state.theme === "light" ? "dark" : "light");
   });
 
   function recordSiteVisit() {
