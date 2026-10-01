@@ -1218,7 +1218,7 @@
       modeCurrentTitle: "現役球員模板",
       modeAlltimeTitle: "歷史球員模板",
       noMatchingPlayer: "目前沒有符合條件的球員",
-      axisLabels: { A: "持球創造", B: "投射能力", C: "防守對位", D: "運動表現" },
+      axisLabels: { A: "持球創造", B1: "外線投射", B2: "禁區得分", C1: "外圍防守", C2: "禁區防守", D: "運動表現" },
       brandName: "球探報告",
       navHome: "首頁",
       navMyTemplate: "我的模板",
@@ -1258,7 +1258,7 @@
       factorEnvLabel: "環境權重 E",
       factorRelevanceLabel: "相關性 R",
       factorCostLabel: "習得成本 C",
-      radarAriaLabel: (matchLabel) => `四軸雷達圖：你跟${matchLabel}的比較`,
+      radarAriaLabel: (matchLabel) => `六軸雷達圖：你跟${matchLabel}的比較`,
       youLabel: "你",
       shareImageHeader: "🏀 球探報告",
       shareImageDisclaimer: "非真人球探評測，僅供參考",
@@ -1295,7 +1295,7 @@
       modeCurrentTitle: "现役球员模板",
       modeAlltimeTitle: "历史球员模板",
       noMatchingPlayer: "目前没有符合条件的球员",
-      axisLabels: { A: "持球创造", B: "投射能力", C: "防守对位", D: "运动表现" },
+      axisLabels: { A: "持球创造", B1: "外线投射", B2: "禁区得分", C1: "外围防守", C2: "禁区防守", D: "运动表现" },
       brandName: "球探报告",
       navHome: "首页",
       navMyTemplate: "我的模板",
@@ -1335,7 +1335,7 @@
       factorEnvLabel: "环境权重 E",
       factorRelevanceLabel: "相关性 R",
       factorCostLabel: "习得成本 C",
-      radarAriaLabel: (matchLabel) => `四轴雷达图：你跟${matchLabel}的比较`,
+      radarAriaLabel: (matchLabel) => `六轴雷达图：你跟${matchLabel}的比较`,
       youLabel: "你",
       shareImageHeader: "🏀 球探报告",
       shareImageDisclaimer: "非真人球探评测，仅供参考",
@@ -1372,7 +1372,7 @@
       modeCurrentTitle: "Current Players",
       modeAlltimeTitle: "All-Time Players",
       noMatchingPlayer: "No matching player found",
-      axisLabels: { A: "Creation", B: "Shooting", C: "Defense", D: "Athleticism" },
+      axisLabels: { A: "Creation", B1: "Perimeter Scoring", B2: "Paint Scoring", C1: "Perimeter D", C2: "Rim D", D: "Athleticism" },
       brandName: "Scouting Report",
       navHome: "Home",
       navMyTemplate: "My Template",
@@ -1412,7 +1412,7 @@
       factorEnvLabel: "League Environment Weight (E)",
       factorRelevanceLabel: "Positional Relevance (R)",
       factorCostLabel: "Learning Cost (C)",
-      radarAriaLabel: (matchLabel) => `Four-axis radar chart: you vs ${matchLabel}`,
+      radarAriaLabel: (matchLabel) => `Six-axis radar chart: you vs ${matchLabel}`,
       youLabel: "You",
       shareImageHeader: "🏀 Scouting Report",
       shareImageDisclaimer: "Not a real scout's evaluation -- for reference only",
@@ -1925,14 +1925,18 @@
   }
 
   // ---- headline card: radar chart (SVG for on-page, canvas for the
-  // downloadable share image) -- 2026-09-13 UX 檢討討論。四軸固定畫在
-  // 上/右/下/左(順時針),兩個函數共用同一套角度數學,確保畫面上看到的
-  // 雷達圖跟下載下來的分享圖是同一個形狀。
+  // downloadable share image) -- 2026-09-13 UX 檢討討論,2026-10 從四邊形
+  // 改六邊形。RADAR_AXES 的順序決定雷達圖頂點位置,從正上方開始順時針排列
+  // (radarAngle 用 360°/軸數算間距,不是寫死 90°,換軸數不用動這支函數)。
+  // 排列刻意把同一組拆分的子軸排在一起(B1/B2 相鄰、C1/C2 相鄰),視覺上才看得
+  // 出「外線 vs 禁區」「外圍 vs 護框」這兩組對照,不是隨機順序;A 維持在正上方、
+  // D 維持在對面(原本四邊形 A 上 D 左的相對位置延續下來)。兩個函數共用同一套
+  // 角度數學,確保畫面上看到的雷達圖跟下載下來的分享圖是同一個形狀。
 
-  const RADAR_AXES = ["A", "B", "C", "D"];
+  const RADAR_AXES = ["A", "B1", "B2", "D", "C2", "C1"];
 
   function radarAngle(i) {
-    return -Math.PI / 2 + i * (Math.PI / 2);
+    return -Math.PI / 2 + i * ((2 * Math.PI) / RADAR_AXES.length);
   }
 
   function radarPoint(centerX, centerY, maxRadius, coords, axis) {

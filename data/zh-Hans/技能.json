@@ -1,6 +1,6 @@
 {
   "_description": "技能库,完整 15 项(SPEC.md §3.3)。最早的 P1 最小范围(SPEC.md §12 未决问题 #1)只收录 5 项关键技能：外线投射、面框第一步过人、高位传导视野、护框、换防跟防;2026-09-10 扩充加了另外 10 项(背框单打、挡拆持球判断、无球跑动/利用掩护、转换快攻终结、罚球、前场篮板/二次进攻、一对一外围单防、协防补位轮转、防守篮板卡位、决策效率/失误控制)。要再加技能就直接在 skills 数组里加新对象,格式跟现有的一样。",
-  "_editable_fields": "每个技能对象里: cost_C(1-5,习得成本)、axis_relevance(A/B/C/D 四轴相关性,0-1,目前是依常理判断的暂定值,等 SPEC §12 issue #2 的领域专家校准后应该更新)、court_required/teammate_required(训练场地与队友需求,决定球场环节/场外环节)、metric(验收指针,含 denominator 与 thresholds 三个分层门槛)、video_tags(目前只是占位标签,还没接真正的视频库)。id 一旦被其他数据档或代码引用(例如 questions.json 的 skill_behavior.skill_id)就不要改,否则会对不起来。",
+  "_editable_fields": "每个技能对象里: cost_C(1-5,习得成本)、axis_relevance(A/B1/B2/C1/C2/D 六轴相关性,0-1,目前是依常理判断的暂定值,等 SPEC §12 issue #2 的领域专家校准后应该更新——2026-10 从四轴 A/B/C/D 改成六轴,B 拆成 B1 外线投射/B2 禁区低位得分、C 拆成 C1 外围防守/C2 禁区护框防守,每个技能原本的 B、C 权重依技能本身偏外线还是偏禁区分配到对应的两个子轴,不是均分;详见 data/questions.json 的 axis_positioning 改版说明)、court_required/teammate_required(训练场地与队友需求,决定球场环节/场外环节)、metric(验收指针,含 denominator 与 thresholds 三个分层门槛)、video_tags(目前只是占位标签,还没接真正的视频库)。id 一旦被其他数据档或代码引用(例如 questions.json 的 skill_behavior.skill_id)就不要改,否则会对不起来。",
   "skills": [
     {
       "id": "perimeter_shooting",
@@ -11,8 +11,10 @@
       "teammate_required": false,
       "axis_relevance": {
         "A": 0.3,
-        "B": 0.9,
-        "C": 0.1,
+        "B1": 0.9,
+        "B2": 0.1,
+        "C1": 0.1,
+        "C2": 0.1,
         "D": 0.2
       },
       "video_tags": [
@@ -39,8 +41,10 @@
       "teammate_required": true,
       "axis_relevance": {
         "A": 0.9,
-        "B": 0.4,
-        "C": 0.1,
+        "B1": 0.15,
+        "B2": 0.4,
+        "C1": 0.1,
+        "C2": 0.05,
         "D": 0.5
       },
       "video_tags": [
@@ -67,8 +71,10 @@
       "teammate_required": true,
       "axis_relevance": {
         "A": 0.8,
-        "B": 0.5,
-        "C": 0.1,
+        "B1": 0.2,
+        "B2": 0.35,
+        "C1": 0.05,
+        "C2": 0.05,
         "D": 0.1
       },
       "video_tags": [
@@ -95,8 +101,10 @@
       "teammate_required": true,
       "axis_relevance": {
         "A": 0.1,
-        "B": 0.1,
-        "C": 0.9,
+        "B1": 0.05,
+        "B2": 0.05,
+        "C1": 0.05,
+        "C2": 0.9,
         "D": 0.6
       },
       "video_tags": [
@@ -123,8 +131,10 @@
       "teammate_required": true,
       "axis_relevance": {
         "A": 0.1,
-        "B": 0.2,
-        "C": 0.9,
+        "B1": 0.1,
+        "B2": 0.1,
+        "C1": 0.9,
+        "C2": 0.05,
         "D": 0.7
       },
       "video_tags": [
@@ -151,8 +161,10 @@
       "teammate_required": true,
       "axis_relevance": {
         "A": 0.3,
-        "B": 0.9,
-        "C": 0.1,
+        "B1": 0.1,
+        "B2": 0.9,
+        "C1": 0.05,
+        "C2": 0.05,
         "D": 0.3
       },
       "video_tags": [
@@ -179,8 +191,10 @@
       "teammate_required": true,
       "axis_relevance": {
         "A": 0.9,
-        "B": 0.4,
-        "C": 0.1,
+        "B1": 0.25,
+        "B2": 0.25,
+        "C1": 0.1,
+        "C2": 0.05,
         "D": 0.3
       },
       "video_tags": [
@@ -207,8 +221,10 @@
       "teammate_required": true,
       "axis_relevance": {
         "A": 0.2,
-        "B": 0.8,
-        "C": 0.1,
+        "B1": 0.7,
+        "B2": 0.2,
+        "C1": 0.1,
+        "C2": 0.05,
         "D": 0.4
       },
       "video_tags": [
@@ -235,8 +251,10 @@
       "teammate_required": false,
       "axis_relevance": {
         "A": 0.3,
-        "B": 0.2,
-        "C": 0.1,
+        "B1": 0.05,
+        "B2": 0.2,
+        "C1": 0.05,
+        "C2": 0.1,
         "D": 0.8
       },
       "video_tags": [
@@ -263,8 +281,10 @@
       "teammate_required": false,
       "axis_relevance": {
         "A": 0.2,
-        "B": 0.2,
-        "C": 0.2,
+        "B1": 0.1,
+        "B2": 0.1,
+        "C1": 0.1,
+        "C2": 0.1,
         "D": 0.2
       },
       "video_tags": [
@@ -291,8 +311,10 @@
       "teammate_required": true,
       "axis_relevance": {
         "A": 0.1,
-        "B": 0.3,
-        "C": 0.1,
+        "B1": 0.05,
+        "B2": 0.3,
+        "C1": 0.05,
+        "C2": 0.1,
         "D": 0.7
       },
       "video_tags": [
@@ -319,8 +341,10 @@
       "teammate_required": true,
       "axis_relevance": {
         "A": 0.1,
-        "B": 0.2,
-        "C": 0.8,
+        "B1": 0.1,
+        "B2": 0.1,
+        "C1": 0.8,
+        "C2": 0.1,
         "D": 0.5
       },
       "video_tags": [
@@ -347,8 +371,10 @@
       "teammate_required": true,
       "axis_relevance": {
         "A": 0.1,
-        "B": 0.1,
-        "C": 0.7,
+        "B1": 0.05,
+        "B2": 0.05,
+        "C1": 0.2,
+        "C2": 0.55,
         "D": 0.3
       },
       "video_tags": [
@@ -375,8 +401,10 @@
       "teammate_required": true,
       "axis_relevance": {
         "A": 0.1,
-        "B": 0.2,
-        "C": 0.5,
+        "B1": 0.05,
+        "B2": 0.1,
+        "C1": 0.1,
+        "C2": 0.45,
         "D": 0.6
       },
       "video_tags": [
@@ -403,8 +431,10 @@
       "teammate_required": true,
       "axis_relevance": {
         "A": 0.7,
-        "B": 0.2,
-        "C": 0.1,
+        "B1": 0.1,
+        "B2": 0.1,
+        "C1": 0.05,
+        "C2": 0.05,
         "D": 0.2
       },
       "video_tags": [

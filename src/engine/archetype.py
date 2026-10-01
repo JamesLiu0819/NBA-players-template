@@ -35,17 +35,18 @@ Pure functions only.
 
 import math
 
-AXES = ("A", "B", "C", "D")
+AXES = ("A", "B1", "B2", "C1", "C2", "D")
 ARCHETYPE_MAJORITY_TOP_N = 5
 SIZE_AXIS_WEIGHT = 1.0
 
 
 def classify_archetype(coordinates, archetypes, size=None):
     """Return the archetype (from archetypes) whose coordinates are
-    closest to the given coordinates (Euclidean distance over A/B/C/D).
+    closest to the given coordinates (Euclidean distance over AXES).
 
-    archetypes: list of dicts, each with at least "coordinates": {"A".."D"}.
-        All other fields on the winning archetype pass through unchanged.
+    archetypes: list of dicts, each with at least "coordinates": {axis: 0-100
+        for axis in AXES}. All other fields on the winning archetype pass
+        through unchanged.
     size: optional 0-100 body-size score (see module header -- typically the
         average of a player's height and weight percentiles). When given,
         an archetype's own "size" field (if present) contributes

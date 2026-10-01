@@ -1,6 +1,6 @@
 {
   "_description": "技能庫,完整 15 項(SPEC.md §3.3)。最早的 P1 最小範圍(SPEC.md §12 未決問題 #1)只收錄 5 項關鍵技能：外線投射、面框第一步過人、高位傳導視野、護框、換防跟防;2026-09-10 擴充加了另外 10 項(背框單打、擋拆持球判斷、無球跑動/利用掩護、轉換快攻終結、罰球、前場籃板/二次進攻、一對一外圍單防、協防補位輪轉、防守籃板卡位、決策效率/失誤控制)。要再加技能就直接在 skills 陣列裡加新物件,格式跟現有的一樣。",
-  "_editable_fields": "每個技能物件裡: cost_C(1-5,習得成本)、axis_relevance(A/B/C/D 四軸相關性,0-1,目前是依常理判斷的暫定值,等 SPEC §12 issue #2 的領域專家校準後應該更新)、court_required/teammate_required(訓練場地與隊友需求,決定球場環節/場外環節)、metric(驗收指標,含 denominator 與 thresholds 三個分層門檻)、video_tags(目前只是佔位標籤,還沒接真正的影片庫)。id 一旦被其他資料檔或程式碼引用(例如 questions.json 的 skill_behavior.skill_id)就不要改,否則會對不起來。",
+  "_editable_fields": "每個技能物件裡: cost_C(1-5,習得成本)、axis_relevance(A/B1/B2/C1/C2/D 六軸相關性,0-1,目前是依常理判斷的暫定值,等 SPEC §12 issue #2 的領域專家校準後應該更新——2026-10 從四軸 A/B/C/D 改成六軸,B 拆成 B1 外線投射/B2 禁區低位得分、C 拆成 C1 外圍防守/C2 禁區護框防守,每個技能原本的 B、C 權重依技能本身偏外線還是偏禁區分配到對應的兩個子軸,不是均分;詳見 data/questions.json 的 axis_positioning 改版說明)、court_required/teammate_required(訓練場地與隊友需求,決定球場環節/場外環節)、metric(驗收指標,含 denominator 與 thresholds 三個分層門檻)、video_tags(目前只是佔位標籤,還沒接真正的影片庫)。id 一旦被其他資料檔或程式碼引用(例如 questions.json 的 skill_behavior.skill_id)就不要改,否則會對不起來。",
   "skills": [
     {
       "id": "perimeter_shooting",
@@ -9,13 +9,27 @@
       "cost_C": 3,
       "court_required": true,
       "teammate_required": false,
-      "axis_relevance": { "A": 0.3, "B": 0.9, "C": 0.1, "D": 0.2 },
-      "video_tags": ["shooting_catch_and_shoot", "shooting_mechanics"],
+      "axis_relevance": {
+        "A": 0.3,
+        "B1": 0.9,
+        "B2": 0.1,
+        "C1": 0.1,
+        "C2": 0.1,
+        "D": 0.2
+      },
+      "video_tags": [
+        "shooting_catch_and_shoot",
+        "shooting_mechanics"
+      ],
       "metric": {
         "action": "spot-up three-point shooting",
         "denominator": 50,
         "direction": "makes_at_least",
-        "thresholds": { "entry": 15, "advanced": 20, "mastery": 25 }
+        "thresholds": {
+          "entry": 15,
+          "advanced": 20,
+          "mastery": 25
+        }
       }
     },
     {
@@ -25,13 +39,27 @@
       "cost_C": 3,
       "court_required": true,
       "teammate_required": true,
-      "axis_relevance": { "A": 0.9, "B": 0.4, "C": 0.1, "D": 0.5 },
-      "video_tags": ["handles_first_step", "finishing_at_rim"],
+      "axis_relevance": {
+        "A": 0.9,
+        "B1": 0.15,
+        "B2": 0.4,
+        "C1": 0.1,
+        "C2": 0.05,
+        "D": 0.5
+      },
+      "video_tags": [
+        "handles_first_step",
+        "finishing_at_rim"
+      ],
       "metric": {
         "action": "one-on-one face-up isolation",
         "denominator": 20,
         "direction": "makes_at_least",
-        "thresholds": { "entry": 6, "advanced": 10, "mastery": 14 }
+        "thresholds": {
+          "entry": 6,
+          "advanced": 10,
+          "mastery": 14
+        }
       }
     },
     {
@@ -41,13 +69,27 @@
       "cost_C": 4,
       "court_required": true,
       "teammate_required": true,
-      "axis_relevance": { "A": 0.8, "B": 0.5, "C": 0.1, "D": 0.1 },
-      "video_tags": ["playmaking_high_post", "reading_double_team"],
+      "axis_relevance": {
+        "A": 0.8,
+        "B1": 0.2,
+        "B2": 0.35,
+        "C1": 0.05,
+        "C2": 0.05,
+        "D": 0.1
+      },
+      "video_tags": [
+        "playmaking_high_post",
+        "reading_double_team"
+      ],
       "metric": {
         "action": "playmaking off a high-post catch",
         "denominator": 30,
         "direction": "errors_at_most",
-        "thresholds": { "entry": 5, "advanced": 2, "mastery": 1 }
+        "thresholds": {
+          "entry": 5,
+          "advanced": 2,
+          "mastery": 1
+        }
       }
     },
     {
@@ -57,13 +99,27 @@
       "cost_C": 4,
       "court_required": true,
       "teammate_required": true,
-      "axis_relevance": { "A": 0.1, "B": 0.1, "C": 0.9, "D": 0.6 },
-      "video_tags": ["rim_protection_positioning", "shot_contest"],
+      "axis_relevance": {
+        "A": 0.1,
+        "B1": 0.05,
+        "B2": 0.05,
+        "C1": 0.05,
+        "C2": 0.9,
+        "D": 0.6
+      },
+      "video_tags": [
+        "rim_protection_positioning",
+        "shot_contest"
+      ],
       "metric": {
         "action": "defending a direct rim attack",
         "denominator": 30,
         "direction": "makes_at_least",
-        "thresholds": { "entry": 12, "advanced": 18, "mastery": 22 }
+        "thresholds": {
+          "entry": 12,
+          "advanced": 18,
+          "mastery": 22
+        }
       }
     },
     {
@@ -73,13 +129,27 @@
       "cost_C": 3,
       "court_required": true,
       "teammate_required": true,
-      "axis_relevance": { "A": 0.1, "B": 0.2, "C": 0.9, "D": 0.7 },
-      "video_tags": ["switch_defense_footwork", "closeout_technique"],
+      "axis_relevance": {
+        "A": 0.1,
+        "B1": 0.1,
+        "B2": 0.1,
+        "C1": 0.9,
+        "C2": 0.05,
+        "D": 0.7
+      },
+      "video_tags": [
+        "switch_defense_footwork",
+        "closeout_technique"
+      ],
       "metric": {
         "action": "staying in front of a perimeter ball handler after a switch",
         "denominator": 20,
         "direction": "makes_at_least",
-        "thresholds": { "entry": 8, "advanced": 13, "mastery": 16 }
+        "thresholds": {
+          "entry": 8,
+          "advanced": 13,
+          "mastery": 16
+        }
       }
     },
     {
@@ -89,13 +159,27 @@
       "cost_C": 4,
       "court_required": true,
       "teammate_required": true,
-      "axis_relevance": { "A": 0.3, "B": 0.9, "C": 0.1, "D": 0.3 },
-      "video_tags": ["post_up_footwork", "post_up_reads"],
+      "axis_relevance": {
+        "A": 0.3,
+        "B1": 0.1,
+        "B2": 0.9,
+        "C1": 0.05,
+        "C2": 0.05,
+        "D": 0.3
+      },
+      "video_tags": [
+        "post_up_footwork",
+        "post_up_reads"
+      ],
       "metric": {
         "action": "post-up scoring moves",
         "denominator": 20,
         "direction": "makes_at_least",
-        "thresholds": { "entry": 6, "advanced": 10, "mastery": 14 }
+        "thresholds": {
+          "entry": 6,
+          "advanced": 10,
+          "mastery": 14
+        }
       }
     },
     {
@@ -105,13 +189,27 @@
       "cost_C": 3,
       "court_required": true,
       "teammate_required": true,
-      "axis_relevance": { "A": 0.9, "B": 0.4, "C": 0.1, "D": 0.3 },
-      "video_tags": ["pick_and_roll_reads", "ball_handler_reads"],
+      "axis_relevance": {
+        "A": 0.9,
+        "B1": 0.25,
+        "B2": 0.25,
+        "C1": 0.1,
+        "C2": 0.05,
+        "D": 0.3
+      },
+      "video_tags": [
+        "pick_and_roll_reads",
+        "ball_handler_reads"
+      ],
       "metric": {
         "action": "correct pass/shoot/drive reads off a pick-and-roll",
         "denominator": 20,
         "direction": "makes_at_least",
-        "thresholds": { "entry": 8, "advanced": 13, "mastery": 17 }
+        "thresholds": {
+          "entry": 8,
+          "advanced": 13,
+          "mastery": 17
+        }
       }
     },
     {
@@ -121,13 +219,27 @@
       "cost_C": 2,
       "court_required": true,
       "teammate_required": true,
-      "axis_relevance": { "A": 0.2, "B": 0.8, "C": 0.1, "D": 0.4 },
-      "video_tags": ["off_ball_cuts", "screen_usage"],
+      "axis_relevance": {
+        "A": 0.2,
+        "B1": 0.7,
+        "B2": 0.2,
+        "C1": 0.1,
+        "C2": 0.05,
+        "D": 0.4
+      },
+      "video_tags": [
+        "off_ball_cuts",
+        "screen_usage"
+      ],
       "metric": {
         "action": "using screens to get open",
         "denominator": 20,
         "direction": "makes_at_least",
-        "thresholds": { "entry": 8, "advanced": 13, "mastery": 17 }
+        "thresholds": {
+          "entry": 8,
+          "advanced": 13,
+          "mastery": 17
+        }
       }
     },
     {
@@ -137,13 +249,27 @@
       "cost_C": 2,
       "court_required": true,
       "teammate_required": false,
-      "axis_relevance": { "A": 0.3, "B": 0.2, "C": 0.1, "D": 0.8 },
-      "video_tags": ["transition_finishing", "fast_break_reads"],
+      "axis_relevance": {
+        "A": 0.3,
+        "B1": 0.05,
+        "B2": 0.2,
+        "C1": 0.05,
+        "C2": 0.1,
+        "D": 0.8
+      },
+      "video_tags": [
+        "transition_finishing",
+        "fast_break_reads"
+      ],
       "metric": {
         "action": "finishing in transition",
         "denominator": 20,
         "direction": "makes_at_least",
-        "thresholds": { "entry": 10, "advanced": 15, "mastery": 18 }
+        "thresholds": {
+          "entry": 10,
+          "advanced": 15,
+          "mastery": 18
+        }
       }
     },
     {
@@ -153,13 +279,27 @@
       "cost_C": 2,
       "court_required": true,
       "teammate_required": false,
-      "axis_relevance": { "A": 0.2, "B": 0.2, "C": 0.2, "D": 0.2 },
-      "video_tags": ["free_throw_routine", "free_throw_mechanics"],
+      "axis_relevance": {
+        "A": 0.2,
+        "B1": 0.1,
+        "B2": 0.1,
+        "C1": 0.1,
+        "C2": 0.1,
+        "D": 0.2
+      },
+      "video_tags": [
+        "free_throw_routine",
+        "free_throw_mechanics"
+      ],
       "metric": {
         "action": "free throw shooting",
         "denominator": 50,
         "direction": "makes_at_least",
-        "thresholds": { "entry": 35, "advanced": 40, "mastery": 45 }
+        "thresholds": {
+          "entry": 35,
+          "advanced": 40,
+          "mastery": 45
+        }
       }
     },
     {
@@ -169,13 +309,27 @@
       "cost_C": 3,
       "court_required": true,
       "teammate_required": true,
-      "axis_relevance": { "A": 0.1, "B": 0.3, "C": 0.1, "D": 0.7 },
-      "video_tags": ["offensive_rebounding", "putback_finishing"],
+      "axis_relevance": {
+        "A": 0.1,
+        "B1": 0.05,
+        "B2": 0.3,
+        "C1": 0.05,
+        "C2": 0.1,
+        "D": 0.7
+      },
+      "video_tags": [
+        "offensive_rebounding",
+        "putback_finishing"
+      ],
       "metric": {
         "action": "converting offensive rebounds into scoring chances",
         "denominator": 20,
         "direction": "makes_at_least",
-        "thresholds": { "entry": 6, "advanced": 10, "mastery": 14 }
+        "thresholds": {
+          "entry": 6,
+          "advanced": 10,
+          "mastery": 14
+        }
       }
     },
     {
@@ -185,13 +339,27 @@
       "cost_C": 3,
       "court_required": true,
       "teammate_required": true,
-      "axis_relevance": { "A": 0.1, "B": 0.2, "C": 0.8, "D": 0.5 },
-      "video_tags": ["on_ball_defense_stance", "containing_dribble_penetration"],
+      "axis_relevance": {
+        "A": 0.1,
+        "B1": 0.1,
+        "B2": 0.1,
+        "C1": 0.8,
+        "C2": 0.1,
+        "D": 0.5
+      },
+      "video_tags": [
+        "on_ball_defense_stance",
+        "containing_dribble_penetration"
+      ],
       "metric": {
         "action": "one-on-one on-ball defense",
         "denominator": 20,
         "direction": "makes_at_least",
-        "thresholds": { "entry": 8, "advanced": 13, "mastery": 17 }
+        "thresholds": {
+          "entry": 8,
+          "advanced": 13,
+          "mastery": 17
+        }
       }
     },
     {
@@ -201,13 +369,27 @@
       "cost_C": 4,
       "court_required": true,
       "teammate_required": true,
-      "axis_relevance": { "A": 0.1, "B": 0.1, "C": 0.7, "D": 0.3 },
-      "video_tags": ["help_defense_rotation", "team_defense_positioning"],
+      "axis_relevance": {
+        "A": 0.1,
+        "B1": 0.05,
+        "B2": 0.05,
+        "C1": 0.2,
+        "C2": 0.55,
+        "D": 0.3
+      },
+      "video_tags": [
+        "help_defense_rotation",
+        "team_defense_positioning"
+      ],
       "metric": {
         "action": "help defense rotations",
         "denominator": 20,
         "direction": "makes_at_least",
-        "thresholds": { "entry": 8, "advanced": 13, "mastery": 17 }
+        "thresholds": {
+          "entry": 8,
+          "advanced": 13,
+          "mastery": 17
+        }
       }
     },
     {
@@ -217,13 +399,27 @@
       "cost_C": 2,
       "court_required": true,
       "teammate_required": true,
-      "axis_relevance": { "A": 0.1, "B": 0.2, "C": 0.5, "D": 0.6 },
-      "video_tags": ["boxing_out", "defensive_rebounding"],
+      "axis_relevance": {
+        "A": 0.1,
+        "B1": 0.05,
+        "B2": 0.1,
+        "C1": 0.1,
+        "C2": 0.45,
+        "D": 0.6
+      },
+      "video_tags": [
+        "boxing_out",
+        "defensive_rebounding"
+      ],
       "metric": {
         "action": "boxing out for defensive rebounds",
         "denominator": 20,
         "direction": "makes_at_least",
-        "thresholds": { "entry": 10, "advanced": 15, "mastery": 18 }
+        "thresholds": {
+          "entry": 10,
+          "advanced": 15,
+          "mastery": 18
+        }
       }
     },
     {
@@ -233,13 +429,27 @@
       "cost_C": 3,
       "court_required": true,
       "teammate_required": true,
-      "axis_relevance": { "A": 0.7, "B": 0.2, "C": 0.1, "D": 0.2 },
-      "video_tags": ["decision_making", "turnover_avoidance"],
+      "axis_relevance": {
+        "A": 0.7,
+        "B1": 0.1,
+        "B2": 0.1,
+        "C1": 0.05,
+        "C2": 0.05,
+        "D": 0.2
+      },
+      "video_tags": [
+        "decision_making",
+        "turnover_avoidance"
+      ],
       "metric": {
         "action": "advancing the ball or making decisions without turning it over",
         "denominator": 30,
         "direction": "errors_at_most",
-        "thresholds": { "entry": 6, "advanced": 3, "mastery": 1 }
+        "thresholds": {
+          "entry": 6,
+          "advanced": 3,
+          "mastery": 1
+        }
       }
     }
   ]

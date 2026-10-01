@@ -1,4 +1,4 @@
-# 用途：測試 compute_relevance(四軸座標 × 技能相關性 → R_i)的加權平均計算,
+# 用途：測試 compute_relevance(六軸座標 × 技能相關性 → R_i)的加權平均計算,
 # 包含全相關、零相關、混合權重、權重全為零時該報錯等情況。
 # 可手動調整的變數：無——這支檔案裡的座標/相關性數字都是為了驗證公式而設計的
 # 測試案例,不是要調的參數。
@@ -10,21 +10,21 @@ from engine.relevance import compute_relevance
 
 class ComputeRelevanceTest(unittest.TestCase):
     def test_full_relevance_on_a_maxed_out_axis_gives_full_score(self):
-        coords = {"A": 100, "B": 0, "C": 0, "D": 0}
-        relevance = {"A": 1.0, "B": 0.0, "C": 0.0, "D": 0.0}
+        coords = {"A": 100, "B1": 0, "B2": 0, "C1": 0, "C2": 0, "D": 0}
+        relevance = {"A": 1.0, "B1": 0.0, "B2": 0.0, "C1": 0.0, "C2": 0.0, "D": 0.0}
 
         self.assertEqual(compute_relevance(coords, relevance), 1.0)
 
     def test_zero_coordinate_on_the_only_relevant_axis_gives_zero(self):
-        coords = {"A": 0, "B": 0, "C": 0, "D": 0}
-        relevance = {"A": 0.0, "B": 0.0, "C": 0.9, "D": 0.6}
+        coords = {"A": 0, "B1": 0, "B2": 0, "C1": 0, "C2": 0, "D": 0}
+        relevance = {"A": 0.0, "B1": 0.0, "B2": 0.0, "C1": 0.9, "C2": 0.0, "D": 0.6}
 
         self.assertEqual(compute_relevance(coords, relevance), 0.0)
 
     def test_weighted_average_across_multiple_relevant_axes(self):
-        # rim_protection-like profile: mostly C, some D
-        coords = {"A": 20, "B": 20, "C": 80, "D": 40}
-        relevance = {"A": 0.1, "B": 0.1, "C": 0.9, "D": 0.6}
+        # rim_protection-like profile: mostly C2 (paint defense), some D
+        coords = {"A": 20, "B1": 20, "B2": 20, "C1": 10, "C2": 80, "D": 40}
+        relevance = {"A": 0.1, "B1": 0.1, "B2": 0.0, "C1": 0.0, "C2": 0.9, "D": 0.6}
 
         # weighted sum = .1*.20 + .1*.20 + .9*.80 + .6*.40 = .02+.02+.72+.24 = 1.00
         # weight total = .1+.1+.9+.6 = 1.7
@@ -32,15 +32,15 @@ class ComputeRelevanceTest(unittest.TestCase):
         self.assertAlmostEqual(compute_relevance(coords, relevance), 1.00 / 1.7)
 
     def test_all_zero_relevance_weights_raises(self):
-        coords = {"A": 50, "B": 50, "C": 50, "D": 50}
-        relevance = {"A": 0.0, "B": 0.0, "C": 0.0, "D": 0.0}
+        coords = {"A": 50, "B1": 50, "B2": 50, "C1": 50, "C2": 50, "D": 50}
+        relevance = {"A": 0.0, "B1": 0.0, "B2": 0.0, "C1": 0.0, "C2": 0.0, "D": 0.0}
 
         with self.assertRaises(ValueError):
             compute_relevance(coords, relevance)
 
     def test_result_is_clamped_to_zero_one(self):
-        coords = {"A": 100, "B": 100, "C": 100, "D": 100}
-        relevance = {"A": 1.0, "B": 1.0, "C": 1.0, "D": 1.0}
+        coords = {"A": 100, "B1": 100, "B2": 100, "C1": 100, "C2": 100, "D": 100}
+        relevance = {"A": 1.0, "B1": 1.0, "B2": 1.0, "C1": 1.0, "C2": 1.0, "D": 1.0}
 
         self.assertEqual(compute_relevance(coords, relevance), 1.0)
 

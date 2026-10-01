@@ -1,21 +1,9 @@
 {
-  "_description": "問診題庫。axis_positioning 是四軸定位 16 題(A/B/C/D 各 4 題),skill_behavior 是完整 15 項技能(SPEC.md §3.3)的行為錨定題(目前每項技能 1 題,共 15 題),body_measurements 是 SPEC.md §5.2 身材類的 6 題數值題(給「3 位深度模板」的身體最貼合用)。目前合計 37 題;SPEC §5.5 的完整題數預算是 45-51 題,還缺聯賽環境(5題)、目標/限制/困擾(6題)兩塊(SPEC.md §12 未決問題 #1 的擴充範圍)。axis_positioning/skill_behavior 都是 BARS(行為錨定評分量表,見 SPEC.md §5.1)——問的是具體行為/頻率,不是自評能力高低;body_measurements 例外,是直接填數值,不是 BARS。",
-  "_editable_fields": "axis_positioning/skill_behavior 每題的 prompt(題目文字)跟 anchors(1-5 每個分數對應的行為描述)可以照 BARS 精神修改用詞,body_measurements 每題的 prompt/unit/min/max 可以依實際需求調整,但改的時候要小心三件事:(1) id 一旦被其他地方引用(例如 skill_behavior 的 skill_id 對應 skills.json 的技能 id;body_measurements 的 field 對應 players.json 的 body 欄位名)就不要改,否則資料兜不起來;(2) 每題的 anchors 必須維持 1-5 五個完整的行為描述,不能只改數字不改文字,否則就違背了 BARS 的設計目的;(3) body_measurements 的 field 全部六項(height_cm/wingspan_cm/weight_kg/standing_reach_cm/running_vertical_reach_cm/sprint_100m_seconds)都已經對應到 players.json 每個球員的 body 欄位,新增題目要小心維持這個對應關係。要新增題目就照現有的物件格式加進對應的陣列。body_measurements 的 body_height/body_weight 標了 required:true——身高、體重是原型分類(engine/archetype.py 的體型分數)的必要輸入,沒填無法算,所以改成必填,其餘四題(臂展/摸高/衝刺)維持選填,省略 required 等同 false(2026-10 討論,見 engine/body_fit.py 的 missing_required_body_fields)。axis_positioning 題目若加上 \"reverse_scored\": true(目前 axis_b3、axis_c1),代表這題錨點刻意照「1=最少,5=最多」描述的字面頻率排列,但該行為本身跟軸的方向相反(例如常卡在禁區反而扣空間分),engine/axis_position.py 的 score_axis_coordinates 會自動把這題的分數反轉(6-score)再平均——改這種題的用詞時要連 reverse_scored 一起確認方向是否還成立,不能只改文字。",
+  "_description": "問診題庫。axis_positioning 是六軸定位 12 題(A/B1/B2/C1/C2/D 各 2 題,2026-10 從四軸 16 題改版——B 拆成 B1 外線投射/B2 禁區低位得分,C 拆成 C1 外圍防守/C2 禁區護框防守,理由跟校準依據見下方 _editable_fields 與 docs/superpowers/plans),skill_behavior 是完整 15 項技能(SPEC.md §3.3)的行為錨定題(目前每項技能 1 題,共 15 題),body_measurements 是 SPEC.md §5.2 身材類的 6 題數值題(給「3 位深度模板」的身體最貼合用)。目前合計 33 題。axis_positioning/skill_behavior 都是 BARS(行為錨定評分量表,見 SPEC.md §5.1)——問的是具體行為/頻率,不是自評能力高低;body_measurements 例外,是直接填數值,不是 BARS。",
+  "_editable_fields": "axis_positioning/skill_behavior 每題的 prompt(題目文字)跟 anchors(1-5 每個分數對應的行為描述)可以照 BARS 精神修改用詞,body_measurements 每題的 prompt/unit/min/max 可以依實際需求調整,但改的時候要小心三件事:(1) id 一旦被其他地方引用(例如 skill_behavior 的 skill_id 對應 skills.json 的技能 id;body_measurements 的 field 對應 players.json 的 body 欄位名)就不要改,否則資料兜不起來;(2) 每題的 anchors 必須維持 1-5 五個完整的行為描述,不能只改數字不改文字,否則就違背了 BARS 的設計目的;(3) body_measurements 的 field 全部六項(height_cm/wingspan_cm/weight_kg/standing_reach_cm/running_vertical_reach_cm/sprint_100m_seconds)都已經對應到 players.json 每個球員的 body 欄位,新增題目要小心維持這個對應關係。要新增題目就照現有的物件格式加進對應的陣列。body_measurements 的 body_height/body_weight 標了 required:true——身高、體重是原型分類(engine/archetype.py 的體型分數)的必要輸入,沒填無法算,所以改成必填,其餘四題(臂展/摸高/衝刺)維持選填,省略 required 等同 false(2026-10 討論,見 engine/body_fit.py 的 missing_required_body_fields)。axis_positioning 支援 \"reverse_scored\": true(見 engine/axis_position.py 的 score_axis_coordinates,分數會自動 6-score 反轉再平均),但目前這 12 題沒有一題用到——六軸改版時發現舊版 B 軸(axis_b1-b4)問的其實是「站位偏好」而非「投籃實力」、舊版 axis_c1 問的是「教練角色分配」而非「禁區防守能力」,這正是 2K 數值比對發現 B、C 兩軸系統性低估中鋒的根本原因之一(見 2026-10 討論);改版後每題都直接問「成功率/把握度」這種表現型描述,不再需要用 reverse_scored 去扭轉站位類問題的方向。新增題目如果又要用「字面頻率跟軸方向相反」的寫法,一樣可以加這個欄位,但建議優先改寫成直接的表現型問法。",
   "axis_positioning": [
     {
-      "id": "axis_a1",
-      "axis": "A",
-      "prompt": "After passing, do you actively cut and relocate to get the ball back?",
-      "anchors": {
-        "1": "Never -- once I pass, I just set a screen or stand still",
-        "2": "Rarely -- I usually wait for teammates to find me",
-        "3": "About half the time, depends on the flow of the game",
-        "4": "Often -- I actively move toward the ball-handler",
-        "5": "Always -- I'm the team's go-to second option"
-      }
-    },
-    {
-      "id": "axis_a2",
+      "id": "axis_a_1",
       "axis": "A",
       "prompt": "When the defense traps you, what's your first reaction?",
       "anchors": {
@@ -27,7 +15,7 @@
       }
     },
     {
-      "id": "axis_a3",
+      "id": "axis_a_2",
       "axis": "A",
       "prompt": "In a single game, about how many times do you drive off the dribble to score or set up a teammate?",
       "anchors": {
@@ -39,82 +27,56 @@
       }
     },
     {
-      "id": "axis_a4",
-      "axis": "A",
-      "prompt": "When the coach calls for a \"get a bucket\" isolation play, does the ball come to you first?",
+      "id": "axis_b1_1",
+      "axis": "B1",
+      "prompt": "When you get an open look from the perimeter, about how often do you knock it down?",
       "anchors": {
-        "1": "Never me",
-        "2": "Rarely me",
-        "3": "Occasionally me",
-        "4": "Often me",
-        "5": "Almost always me"
+        "1": "Rarely goes in -- I usually look to pass instead",
+        "2": "Goes in occasionally, but I'd often rather pass",
+        "3": "About half the time, depends on my feel that day",
+        "4": "Goes in most of the time -- it's a reliable weapon for me",
+        "5": "Nearly automatic -- defenses specifically scramble to chase me off it"
       }
     },
     {
-      "id": "axis_b1",
-      "axis": "B",
-      "prompt": "Off the ball, how often do you actively relocate beyond the three-point line?",
+      "id": "axis_b1_2",
+      "axis": "B1",
+      "prompt": "How would you describe your confidence in the pull-up jumper off the dribble (mid-range or three)?",
       "anchors": {
-        "1": "Never -- I stay near the paint almost the whole time",
-        "2": "Rarely",
+        "1": "I almost never pull up for this shot",
+        "2": "I attempt it occasionally, with a low success rate",
+        "3": "Moderate -- I take it depending on the situation",
+        "4": "It's a shot I trust -- I take it with confidence most of the time",
+        "5": "It's my signature move -- teammates trust me to take it"
+      }
+    },
+    {
+      "id": "axis_b2_1",
+      "axis": "B2",
+      "prompt": "Backing a defender down with the ball, with them wedged between you and the rim, what portion of the time can you score directly off footwork or a post move?",
+      "anchors": {
+        "1": "I almost never post up",
+        "2": "I attempt it occasionally, with a low success rate",
         "3": "About half the time",
-        "4": "Often",
-        "5": "Almost every possession, I spot up on the perimeter"
+        "4": "I can usually create a good look with footwork or a pivot",
+        "5": "I create a high-percentage shot almost every time"
       }
     },
     {
-      "id": "axis_b2",
-      "axis": "B",
-      "prompt": "Where do most of your shot attempts come from during a game?",
+      "id": "axis_b2_2",
+      "axis": "B2",
+      "prompt": "How confident are you finishing at short range (from the rim out to the free-throw line)?",
       "anchors": {
-        "1": "Almost all in the paint (at the rim / low post)",
-        "2": "Mostly between the paint and mid-range",
-        "3": "Evenly spread across paint, mid-range, and three-point line",
-        "4": "Mostly mid-range to three-point range",
-        "5": "Almost entirely beyond the three-point line"
+        "1": "I rarely get the chance, or can't convert when I do",
+        "2": "I occasionally finish, but often get blocked or miss",
+        "3": "About half the time, depending on the matchup",
+        "4": "I finish most of the time -- my touch is reliable there",
+        "5": "It's an automatic scoring zone for me -- defenses specifically worry about it"
       }
     },
     {
-      "id": "axis_b3",
-      "axis": "B",
-      "prompt": "On offensive possessions, how often do you post up or camp in the paint?",
-      "reverse_scored": true,
-      "anchors": {
-        "1": "Almost never post up in the paint",
-        "2": "Rarely post up in the paint",
-        "3": "About half the time",
-        "4": "Often post up in the paint",
-        "5": "Post up in the paint almost every possession"
-      }
-    },
-    {
-      "id": "axis_b4",
-      "axis": "B",
-      "prompt": "After setting a pick-and-roll, which direction do you naturally move?",
-      "anchors": {
-        "1": "Always roll to the basket (pick & roll)",
-        "2": "Mostly roll to the basket",
-        "3": "Depends on the situation, roll and pop about evenly",
-        "4": "Mostly pop out to mid-range or three-point range",
-        "5": "Always pop out beyond the three-point line (pick & pop)"
-      }
-    },
-    {
-      "id": "axis_c1",
-      "axis": "C",
-      "prompt": "On defense, how often does the coach assign you to help-defend, box out, or protect the paint?",
-      "reverse_scored": true,
-      "anchors": {
-        "1": "Almost never me",
-        "2": "Rarely me",
-        "3": "About half the time",
-        "4": "Often me",
-        "5": "Almost always me"
-      }
-    },
-    {
-      "id": "axis_c2",
-      "axis": "C",
+      "id": "axis_c1_1",
+      "axis": "C1",
       "prompt": "When guarding a perimeter ball-handler, what portion of the time can you stay glued to them for the full possession without losing contact?",
       "anchors": {
         "1": "I can barely hold on -- they create separation immediately",
@@ -125,8 +87,8 @@
       }
     },
     {
-      "id": "axis_c3",
-      "axis": "C",
+      "id": "axis_c1_2",
+      "axis": "C1",
       "prompt": "After switching onto a perimeter shooter, what portion of the time can you prevent them from getting an easy open look?",
       "anchors": {
         "1": "They almost always get separation easily",
@@ -137,19 +99,31 @@
       }
     },
     {
-      "id": "axis_c4",
-      "axis": "C",
-      "prompt": "When the opponent pushes the break, what role do you tend to take?",
+      "id": "axis_c2_1",
+      "axis": "C2",
+      "prompt": "On defense, how often does the coach assign you to help-defend, box out, or protect the paint?",
       "anchors": {
-        "1": "I always retreat to protect the paint",
-        "2": "I mostly retreat to the paint",
-        "3": "Depends on the situation -- I do both paint protection and chasing back",
-        "4": "I mostly chase back to pressure the ball-handler",
-        "5": "I always chase back to pressure the ball-handler, rarely dropping to the paint"
+        "1": "Almost never me",
+        "2": "Rarely me",
+        "3": "About half the time",
+        "4": "Often me",
+        "5": "Almost always me"
       }
     },
     {
-      "id": "axis_d1",
+      "id": "axis_c2_2",
+      "axis": "C2",
+      "prompt": "When you step in to help or contest a direct rim attack, what portion of the time do you actually disrupt or alter the shot?",
+      "anchors": {
+        "1": "I rarely help -- I'm usually a step late or pick up a foul",
+        "2": "I disrupt it occasionally, but inconsistently",
+        "3": "About half the time",
+        "4": "I create an effective contest or block most of the time",
+        "5": "I'm a wall at the rim -- opponents actively avoid that side"
+      }
+    },
+    {
+      "id": "axis_d_1",
       "axis": "D",
       "prompt": "On fast breaks, how often are you the first one down the floor to finish (layup / dunk)?",
       "anchors": {
@@ -161,19 +135,7 @@
       }
     },
     {
-      "id": "axis_d2",
-      "axis": "D",
-      "prompt": "After taking real contact, what portion of the time can you still finish the play you started (layup / pass)?",
-      "anchors": {
-        "1": "I almost always lose my balance or the play falls apart",
-        "2": "I can rarely hold my form",
-        "3": "About half the time",
-        "4": "I can hold my form and finish most of the time",
-        "5": "Contact barely affects me at all"
-      }
-    },
-    {
-      "id": "axis_d3",
+      "id": "axis_d_2",
       "axis": "D",
       "prompt": "In a single game, about how many times can you elevate high enough to finish a put-back dunk or a block?",
       "anchors": {
@@ -182,18 +144,6 @@
         "3": "2-3 times",
         "4": "4-5 times",
         "5": "6+ times -- it's one of my regular weapons"
-      }
-    },
-    {
-      "id": "axis_d4",
-      "axis": "D",
-      "prompt": "Guarding a speedy perimeter player (a guard) one-on-one, what portion of the time can you stay in front of their first step?",
-      "anchors": {
-        "1": "I can barely keep up -- I get beaten on the first step almost every time",
-        "2": "I can rarely stay in front",
-        "3": "About half the time",
-        "4": "I can stay in front most of the time",
-        "5": "I can stay in front almost every time -- hard to beat off the first step"
       }
     }
   ],

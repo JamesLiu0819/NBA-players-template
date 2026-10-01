@@ -11,7 +11,7 @@ import unittest
 from pathlib import Path
 
 DATA_DIR = Path(__file__).resolve().parents[2] / "data" / "zh"
-AXES = ("A", "B", "C", "D")
+AXES = ("A", "B1", "B2", "C1", "C2", "D")
 VALID_LEARNABILITY_FLAGS = {"low", "medium", "high"}
 MIN_PLAYERS = 10
 

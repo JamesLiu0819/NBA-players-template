@@ -55,14 +55,14 @@ class QuestionsDataTest(unittest.TestCase):
     def setUp(self):
         self.data = load_json("題庫.json")
 
-    def test_axis_positioning_has_four_questions_per_axis(self):
+    def test_axis_positioning_has_two_questions_per_axis(self):
         axis_questions = self.data["axis_positioning"]
-        self.assertEqual(len(axis_questions), 16)
+        self.assertEqual(len(axis_questions), 12)
 
         counts = {axis: 0 for axis in AXES}
         for q in axis_questions:
             counts[q["axis"]] += 1
-        self.assertEqual(counts, {"A": 4, "B": 4, "C": 4, "D": 4})
+        self.assertEqual(counts, {axis: 2 for axis in AXES})
 
     def test_every_axis_question_has_five_bars_anchors_and_unique_id(self):
         seen_ids = set()

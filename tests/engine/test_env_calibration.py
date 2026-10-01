@@ -72,14 +72,18 @@ class EnvCalibrationTest(unittest.TestCase):
         self.questions = load_json("題庫.json")
         self.skills = load_json("技能.json")["skills"]
 
-        # "護框接近滿分、外線投射中等、自主進攻偏低": high rim-protection
-        # current level (-> near-zero gap), mid shooting, low on-ball
-        # creation/passing current levels (-> large gaps there).
+        # "護框接近滿分、外線投射偏高、自主進攻偏低": the rim-protection
+        # *skill-level* answer below is separately forced near-max (-> near-
+        # zero gap) -- these axis-level scores are the broader style self-
+        # assessment, unchanged in spirit from the pre-six-axis version:
+        # A low, B1 (perimeter shooting style) high, everything else neutral.
         axis_scores = {
-            "axis_a1": 1, "axis_a2": 2, "axis_a3": 1, "axis_a4": 2,   # A low
-            "axis_b1": 4, "axis_b2": 5, "axis_b3": 4, "axis_b4": 5,   # B high
-            "axis_c1": 3, "axis_c2": 3, "axis_c3": 3, "axis_c4": 3,   # C mid
-            "axis_d1": 3, "axis_d2": 3, "axis_d3": 3, "axis_d4": 3,   # D mid
+            "axis_a_1": 1, "axis_a_2": 2,     # A low
+            "axis_b1_1": 4, "axis_b1_2": 5,   # B1 (perimeter) high
+            "axis_b2_1": 3, "axis_b2_2": 3,   # B2 (paint) neutral
+            "axis_c1_1": 3, "axis_c1_2": 3,   # C1 (perimeter D) neutral
+            "axis_c2_1": 3, "axis_c2_2": 3,   # C2 (rim D) neutral
+            "axis_d_1": 3, "axis_d_2": 3,     # D neutral
         }
         self.axis_answers = [{"question_id": qid, "score": s} for qid, s in axis_scores.items()]
 

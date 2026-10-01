@@ -7,7 +7,7 @@
 Pure functions only. See SPEC.md §4 (R_i = L2 coordinates x axis_relevance).
 """
 
-AXES = ("A", "B", "C", "D")
+AXES = ("A", "B1", "B2", "C1", "C2", "D")
 
 
 def compute_relevance(axis_coordinates, axis_relevance):

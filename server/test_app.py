@@ -69,7 +69,7 @@ class TemplateResultsTest(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         data = response.get_json()
-        self.assertEqual(set(data["coordinates"].keys()), {"A", "B", "C", "D"})
+        self.assertEqual(set(data["coordinates"].keys()), {"A", "B1", "B2", "C1", "C2", "D"})
         self.assertEqual(
             set(data["deep_templates"].keys()), {"skill_fit", "body_fit", "ceiling"}
         )
@@ -154,7 +154,7 @@ class TemplateResultsTest(unittest.TestCase):
             },
         )
         self.assertEqual(top_player["rank"], 1)
-        self.assertEqual(set(top_player["coordinates"].keys()), {"A", "B", "C", "D"})
+        self.assertEqual(set(top_player["coordinates"].keys()), {"A", "B1", "B2", "C1", "C2", "D"})
 
     def test_response_includes_archetype_and_scouting_report(self):
         payload = {
@@ -283,7 +283,7 @@ class PriorityResultsTest(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         data = response.get_json()
-        self.assertEqual(set(data["coordinates"].keys()), {"A", "B", "C", "D"})
+        self.assertEqual(set(data["coordinates"].keys()), {"A", "B1", "B2", "C1", "C2", "D"})
         self.assertEqual(len(data["priorities"]), 15)
         self.assertIn("dominant_factor_sentence", data)
         # this endpoint is priority-only -- template/matching fields don't belong here

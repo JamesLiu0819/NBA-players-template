@@ -36,7 +36,8 @@ import math
 
 from engine.body_fit import body_distance
 
-AXES = ("A", "B", "C", "D")
+AXES = ("A", "B1", "B2", "C1", "C2", "D")
+STYLE_AXES_EXCLUDING_D = ("A", "B1", "B2", "C1", "C2")
 
 D_AXIS_WEIGHT = 1.5
 
@@ -62,16 +63,16 @@ def fit_stars_for_distance(distance):
 
 
 def rank_similar_players(user_coordinates, players, k=10):
-    """Rank players by distance to user_coordinates in A/B/C/D space.
+    """Rank players by distance to user_coordinates across all six axes.
 
-    user_coordinates: {"A"..."D": 0-100}.
-    players: list of dicts, each with at least "coordinates": {"A"..."D": 0-100}.
+    user_coordinates: {axis: 0-100 for axis in AXES}.
+    players: list of dicts, each with at least "coordinates": {axis: 0-100 for axis in AXES}.
         All other fields on each player dict pass through unchanged.
 
     Returns the k nearest players (or fewer, if len(players) < k) sorted by
     ascending distance. Each result dict is the original player dict plus:
-        distance: float, unweighted Euclidean distance over A/B/C/D
-        diff: {"A"..."D": player[axis] - user_coordinates[axis]} (signed)
+        distance: float, unweighted Euclidean distance over all six axes
+        diff: {axis: player[axis] - user_coordinates[axis] for axis in AXES} (signed)
         dominant_diff_axis: axis of the signed max of diff (see the design
             doc for the known edge case when the user leads on every axis)
         fit_stars: int 1-5
@@ -94,7 +95,7 @@ def rank_similar_players(user_coordinates, players, k=10):
 
 def rank_similar_players_by_style_and_body(user_coordinates, user_body, players, field_ranges, k=10):
     """Like rank_similar_players, but folds normalized body-measurement
-    fields into the distance alongside the A/B/C/D style axes -- used only
+    fields into the distance alongside the six style axes -- used only
     for the 10-player comparison table, so a user doesn't see e.g. a tall
     big and a small agile guard both offered as "your template" just
     because their style axes happen to be close (2026-09-11 body-aware
@@ -113,7 +114,7 @@ def rank_similar_players_by_style_and_body(user_coordinates, user_body, players,
     Each result dict is the original player dict plus:
         distance: float, combined style+body distance (D axis weighted
             D_AXIS_WEIGHT times more heavily than A/B/C/body fields)
-        diff: {"A"..."D": player[axis] - user_coordinates[axis]} (signed,
+        diff: {axis: player[axis] - user_coordinates[axis] for axis in AXES} (signed,
             style-only -- growth-recommendation text is keyed off this)
         dominant_diff_axis: axis of the signed max of diff (style-only)
         fit_stars: int 1-5
@@ -147,7 +148,7 @@ def rank_similar_players_by_style_and_body(user_coordinates, user_body, players,
 
 
 def skill_dominant_axis(axis_relevance):
-    """Return the axis (A/B/C/D) with the highest relevance weight for a skill."""
+    """Return the axis (one of AXES) with the highest relevance weight for a skill."""
     return max(AXES, key=lambda axis: axis_relevance[axis])
 
 
@@ -182,12 +183,13 @@ def representative_skill_id_for_axis(axis, skills_by_id):
     )
 
 
-def _abc_distance(diff):
-    """Euclidean distance over just the A/B/C axes of a diff dict -- the
-    axes SPEC.md treats as learnable; D is deliberately excluded, since the
-    functions that use this are specifically about "closeness ignoring
-    athleticism."""
-    return math.sqrt(sum(diff[axis] ** 2 for axis in ("A", "B", "C")))
+def _style_distance_excluding_d(diff):
+    """Euclidean distance over every axis except D (A/B1/B2/C1/C2) of a diff
+    dict -- the axes SPEC.md treats as learnable; D is deliberately excluded,
+    since the functions that use this are specifically about "closeness
+    ignoring athleticism" (renamed from _abc_distance in the 2026-10 six-axis
+    split -- same role, just over 5 style axes instead of 3)."""
+    return math.sqrt(sum(diff[axis] ** 2 for axis in STYLE_AXES_EXCLUDING_D))
 
 
 def find_ceiling_template(user_coordinates, players):
@@ -204,18 +206,18 @@ def find_ceiling_template(user_coordinates, players):
     axis is the biggest gap" logic with no real use once ceiling stopped
     meaning that).
 
-    Candidates must have their overall dominant_diff_axis land on A, B, or
-    C with diff[axis] > 0 -- a genuine skill lead, not just the "least
-    negative" axis when the user actually leads on every axis (see
-    rank_similar_players' documented edge case). Among candidates, picks
-    whichever has the closest D axis to the user's.
+    Candidates must have their overall dominant_diff_axis land on a style
+    axis (A/B1/B2/C1/C2, i.e. not D) with diff[axis] > 0 -- a genuine skill
+    lead, not just the "least negative" axis when the user actually leads on
+    every axis (see rank_similar_players' documented edge case). Among
+    candidates, picks whichever has the closest D axis to the user's.
 
     Returns None if no player in the given pool qualifies.
     """
     ranked = rank_similar_players(user_coordinates, players, k=len(players))
     candidates = [
         p for p in ranked
-        if p["dominant_diff_axis"] in ("A", "B", "C") and p["diff"][p["dominant_diff_axis"]] > 0
+        if p["dominant_diff_axis"] in STYLE_AXES_EXCLUDING_D and p["diff"][p["dominant_diff_axis"]] > 0
     ]
     if not candidates:
         return None
@@ -224,15 +226,16 @@ def find_ceiling_template(user_coordinates, players):
 
 def find_skill_fit_template(user_coordinates, players):
     """Find the "skill best-fit" deep template (技能最貼合): the player
-    closest to the user on just the A/B/C axes, ignoring D entirely --
-    who plays the most like you already, regardless of athleticism.
+    closest to the user on every style axis (A/B1/B2/C1/C2), ignoring D
+    entirely -- who plays the most like you already, regardless of
+    athleticism.
 
     Returns None if players is empty.
     """
     ranked = rank_similar_players(user_coordinates, players, k=len(players))
     if not ranked:
         return None
-    return min(ranked, key=lambda p: _abc_distance(p["diff"]))
+    return min(ranked, key=lambda p: _style_distance_excluding_d(p["diff"]))
 
 
 def find_body_fit_template(user_body, players, field_ranges):

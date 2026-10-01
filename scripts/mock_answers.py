@@ -14,7 +14,7 @@
 
 from engine.relevance import compute_relevance
 
-AXES = ("A", "B", "C", "D")
+AXES = ("A", "B1", "B2", "C1", "C2", "D")
 
 
 def mock_axis_answers(axis_positioning_questions, target_coordinates):

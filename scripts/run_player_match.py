@@ -53,8 +53,10 @@ from engine.player_matching import (  # noqa: E402
 
 AXIS_LABELS = {
     "A": "持球創造",
-    "B": "投射能力",
-    "C": "防守對位",
+    "B1": "外線投射",
+    "B2": "禁區得分",
+    "C1": "外圍防守",
+    "C2": "禁區防守",
     "D": "運動表現",
 }
 
@@ -136,7 +138,7 @@ def main():
     body_field_ranges = {q["field"]: (q["min"], q["max"]) for q in questions["body_measurements"]}
 
     coordinates = score_axis_coordinates(questions["axis_positioning"], answers["axis_answers"])
-    print("你的四軸座標:")
+    print("你的六軸座標:")
     for axis in AXES:
         print(f"  {axis}: {coordinates[axis]:.1f}")
 

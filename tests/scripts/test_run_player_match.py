@@ -40,13 +40,13 @@ class DescribeGrowthRecommendationTest(unittest.TestCase):
 
     def test_non_d_axis_glues_action_text_in_zh(self):
         player = {
-            "dominant_diff_axis": "B",
+            "dominant_diff_axis": "B1",
             "signature_skill_id": "perimeter_shooting",
         }
         skills_by_id = {
             "perimeter_shooting": {
                 "id": "perimeter_shooting",
-                "axis_relevance": {"A": 0, "B": 1, "C": 0, "D": 0},
+                "axis_relevance": {"A": 0, "B1": 1, "B2": 0, "C1": 0, "C2": 0, "D": 0},
                 "metric": {"action": "定點投射三分"},
             },
         }
@@ -57,13 +57,13 @@ class DescribeGrowthRecommendationTest(unittest.TestCase):
 
     def test_non_d_axis_glues_action_text_in_en(self):
         player = {
-            "dominant_diff_axis": "B",
+            "dominant_diff_axis": "B1",
             "signature_skill_id": "perimeter_shooting",
         }
         skills_by_id = {
             "perimeter_shooting": {
                 "id": "perimeter_shooting",
-                "axis_relevance": {"A": 0, "B": 1, "C": 0, "D": 0},
+                "axis_relevance": {"A": 0, "B1": 1, "B2": 0, "C1": 0, "C2": 0, "D": 0},
                 "metric": {"action": "spot-up three-point shooting"},
             },
         }

@@ -22,16 +22,16 @@ from engine.player_matching import (
 
 class RankSimilarPlayersTest(unittest.TestCase):
     def test_computes_distance_and_signed_diff_correctly(self):
-        user = {"A": 50, "B": 50, "C": 50, "D": 50}
+        user = {"A": 50, "B1": 50, "B2": 0, "C1": 50, "C2": 0, "D": 50}
         players = [
-            {"id": "p1", "name": "P1", "coordinates": {"A": 60, "B": 40, "C": 50, "D": 50}},
+            {"id": "p1", "name": "P1", "coordinates": {"A": 60, "B1": 40, "B2": 0, "C1": 50, "C2": 0, "D": 50}},
         ]
 
         ranked = rank_similar_players(user, players, k=10)
 
         self.assertEqual(len(ranked), 1)
         result = ranked[0]
-        self.assertEqual(result["diff"], {"A": 10, "B": -10, "C": 0, "D": 0})
+        self.assertEqual(result["diff"], {"A": 10, "B1": -10, "B2": 0, "C1": 0, "C2": 0, "D": 0})
         self.assertAlmostEqual(result["distance"], 200 ** 0.5)
         self.assertEqual(result["dominant_diff_axis"], "A")
         self.assertEqual(result["fit_stars"], 5)
@@ -40,11 +40,11 @@ class RankSimilarPlayersTest(unittest.TestCase):
         self.assertEqual(result["name"], "P1")
 
     def test_sorts_ascending_by_distance_and_truncates_to_k(self):
-        user = {"A": 0, "B": 0, "C": 0, "D": 0}
+        user = {"A": 0, "B1": 0, "B2": 0, "C1": 0, "C2": 0, "D": 0}
         players = [
-            {"id": "far", "name": "Far", "coordinates": {"A": 90, "B": 0, "C": 0, "D": 0}},
-            {"id": "near", "name": "Near", "coordinates": {"A": 10, "B": 0, "C": 0, "D": 0}},
-            {"id": "mid", "name": "Mid", "coordinates": {"A": 50, "B": 0, "C": 0, "D": 0}},
+            {"id": "far", "name": "Far", "coordinates": {"A": 90, "B1": 0, "B2": 0, "C1": 0, "C2": 0, "D": 0}},
+            {"id": "near", "name": "Near", "coordinates": {"A": 10, "B1": 0, "B2": 0, "C1": 0, "C2": 0, "D": 0}},
+            {"id": "mid", "name": "Mid", "coordinates": {"A": 50, "B1": 0, "B2": 0, "C1": 0, "C2": 0, "D": 0}},
         ]
 
         ranked = rank_similar_players(user, players, k=2)
@@ -52,10 +52,10 @@ class RankSimilarPlayersTest(unittest.TestCase):
         self.assertEqual([p["id"] for p in ranked], ["near", "mid"])
 
     def test_returns_all_players_when_fewer_than_k(self):
-        user = {"A": 0, "B": 0, "C": 0, "D": 0}
+        user = {"A": 0, "B1": 0, "B2": 0, "C1": 0, "C2": 0, "D": 0}
         players = [
-            {"id": "only1", "name": "Only1", "coordinates": {"A": 10, "B": 0, "C": 0, "D": 0}},
-            {"id": "only2", "name": "Only2", "coordinates": {"A": 20, "B": 0, "C": 0, "D": 0}},
+            {"id": "only1", "name": "Only1", "coordinates": {"A": 10, "B1": 0, "B2": 0, "C1": 0, "C2": 0, "D": 0}},
+            {"id": "only2", "name": "Only2", "coordinates": {"A": 20, "B1": 0, "B2": 0, "C1": 0, "C2": 0, "D": 0}},
         ]
 
         ranked = rank_similar_players(user, players, k=10)
@@ -67,9 +67,12 @@ class RankSimilarPlayersTest(unittest.TestCase):
         # player on every axis, all diffs are negative. argmax still returns
         # the *least negative* axis -- not a real "direction to grow toward".
         # This test documents that behavior explicitly rather than hiding it.
-        user = {"A": 90, "B": 90, "C": 90, "D": 90}
+        user = {"A": 90, "B1": 90, "B2": 90, "C1": 90, "C2": 90, "D": 90}
         players = [
-            {"id": "weaker", "name": "Weaker", "coordinates": {"A": 10, "B": 20, "C": 30, "D": 40}},
+            {
+                "id": "weaker", "name": "Weaker",
+                "coordinates": {"A": 10, "B1": 15, "B2": 20, "C1": 25, "C2": 30, "D": 40},
+            },
         ]
 
         ranked = rank_similar_players(user, players, k=10)
@@ -88,17 +91,17 @@ class RankSimilarPlayersByStyleAndBodyTest(unittest.TestCase):
         # a moderate style gap, which is the whole point of this function
         # (SPEC change: stop pairing a user with players of a wildly
         # different body type just because their play style matches).
-        user_coordinates = {"A": 50, "B": 50, "C": 50, "D": 50}
+        user_coordinates = {"A": 50, "B1": 50, "B2": 0, "C1": 50, "C2": 0, "D": 50}
         user_body = {"height_cm": 188}
         players = [
             {
                 "id": "close_style_far_body", "name": "CloseStyleFarBody",
-                "coordinates": {"A": 50, "B": 50, "C": 50, "D": 50},
+                "coordinates": {"A": 50, "B1": 50, "B2": 0, "C1": 50, "C2": 0, "D": 50},
                 "body": {"height_cm": 230},
             },
             {
                 "id": "far_style_close_body", "name": "FarStyleCloseBody",
-                "coordinates": {"A": 90, "B": 50, "C": 50, "D": 50},
+                "coordinates": {"A": 90, "B1": 50, "B2": 0, "C1": 50, "C2": 0, "D": 50},
                 "body": {"height_cm": 190},
             },
         ]
@@ -110,15 +113,15 @@ class RankSimilarPlayersByStyleAndBodyTest(unittest.TestCase):
         self.assertEqual([p["id"] for p in ranked], ["far_style_close_body", "close_style_far_body"])
         # diff/dominant_diff_axis stay style-only (A/B/C/D), since downstream
         # growth-recommendation text is keyed off the style axes, not body.
-        self.assertEqual(ranked[0]["diff"], {"A": 40, "B": 0, "C": 0, "D": 0})
+        self.assertEqual(ranked[0]["diff"], {"A": 40, "B1": 0, "B2": 0, "C1": 0, "C2": 0, "D": 0})
         self.assertEqual(ranked[0]["dominant_diff_axis"], "A")
 
     def test_degrades_to_style_only_distance_when_user_has_no_body_data(self):
-        user_coordinates = {"A": 50, "B": 50, "C": 50, "D": 50}
+        user_coordinates = {"A": 50, "B1": 50, "B2": 0, "C1": 50, "C2": 0, "D": 50}
         players = [
             {
                 "id": "p1", "name": "P1",
-                "coordinates": {"A": 60, "B": 50, "C": 50, "D": 50},
+                "coordinates": {"A": 60, "B1": 50, "B2": 0, "C1": 50, "C2": 0, "D": 50},
                 "body": {"height_cm": 230},
             },
         ]
@@ -130,20 +133,20 @@ class RankSimilarPlayersByStyleAndBodyTest(unittest.TestCase):
         self.assertAlmostEqual(ranked[0]["distance"], 10.0)
 
     def test_sorts_ascending_and_truncates_to_k(self):
-        user_coordinates = {"A": 0, "B": 0, "C": 0, "D": 0}
+        user_coordinates = {"A": 0, "B1": 0, "B2": 0, "C1": 0, "C2": 0, "D": 0}
         user_body = {"height_cm": 140}
         players = [
             {
                 "id": "far", "name": "Far",
-                "coordinates": {"A": 90, "B": 0, "C": 0, "D": 0}, "body": {"height_cm": 140},
+                "coordinates": {"A": 90, "B1": 0, "B2": 0, "C1": 0, "C2": 0, "D": 0}, "body": {"height_cm": 140},
             },
             {
                 "id": "near", "name": "Near",
-                "coordinates": {"A": 10, "B": 0, "C": 0, "D": 0}, "body": {"height_cm": 140},
+                "coordinates": {"A": 10, "B1": 0, "B2": 0, "C1": 0, "C2": 0, "D": 0}, "body": {"height_cm": 140},
             },
             {
                 "id": "mid", "name": "Mid",
-                "coordinates": {"A": 50, "B": 0, "C": 0, "D": 0}, "body": {"height_cm": 140},
+                "coordinates": {"A": 50, "B1": 0, "B2": 0, "C1": 0, "C2": 0, "D": 0}, "body": {"height_cm": 140},
             },
         ]
 
@@ -161,15 +164,15 @@ class RankSimilarPlayersByStyleAndBodyTest(unittest.TestCase):
         # the other way with weight 1. Values reference D_AXIS_WEIGHT
         # directly so this test doesn't need editing every time the ratio
         # is retuned, only if it's tuned down to <= 1.2 (12^2 / 10^2).
-        user_coordinates = {"A": 50, "B": 50, "C": 50, "D": 50}
+        user_coordinates = {"A": 50, "B1": 50, "B2": 0, "C1": 50, "C2": 0, "D": 50}
         players = [
             {
                 "id": "big_d_gap", "name": "Big D Gap",
-                "coordinates": {"A": 50, "B": 50, "C": 50, "D": 60},
+                "coordinates": {"A": 50, "B1": 50, "B2": 0, "C1": 50, "C2": 0, "D": 60},
             },
             {
                 "id": "big_a_gap", "name": "Big A Gap",
-                "coordinates": {"A": 62, "B": 50, "C": 50, "D": 50},
+                "coordinates": {"A": 62, "B1": 50, "B2": 0, "C1": 50, "C2": 0, "D": 50},
             },
         ]
 
@@ -216,19 +219,19 @@ class FitStarsForDistanceTest(unittest.TestCase):
 class SkillDominantAxisTest(unittest.TestCase):
     def test_returns_the_axis_with_highest_relevance(self):
         self.assertEqual(
-            skill_dominant_axis({"A": 0.1, "B": 0.9, "C": 0.1, "D": 0.2}), "B"
+            skill_dominant_axis({"A": 0.1, "B1": 0.9, "B2": 0, "C1": 0.1, "C2": 0, "D": 0.2}), "B1"
         )
 
 
 class MatchingSkillIdTest(unittest.TestCase):
     def setUp(self):
         self.skills_by_id = {
-            "perimeter_shooting": {"axis_relevance": {"A": 0.3, "B": 0.9, "C": 0.1, "D": 0.2}},
-            "rim_protection": {"axis_relevance": {"A": 0.1, "B": 0.1, "C": 0.9, "D": 0.6}},
+            "perimeter_shooting": {"axis_relevance": {"A": 0.3, "B1": 0.9, "B2": 0, "C1": 0.1, "C2": 0, "D": 0.2}},
+            "rim_protection": {"axis_relevance": {"A": 0.1, "B1": 0.1, "B2": 0, "C1": 0.9, "C2": 0, "D": 0.6}},
         }
 
     def test_returns_skill_id_when_its_dominant_axis_matches(self):
-        result = matching_skill_id("B", "perimeter_shooting", self.skills_by_id)
+        result = matching_skill_id("B1", "perimeter_shooting", self.skills_by_id)
         self.assertEqual(result, "perimeter_shooting")
 
     def test_returns_none_when_dominant_axis_does_not_match(self):
@@ -236,27 +239,27 @@ class MatchingSkillIdTest(unittest.TestCase):
         self.assertIsNone(result)
 
     def test_returns_none_when_no_signature_skill(self):
-        result = matching_skill_id("B", None, self.skills_by_id)
+        result = matching_skill_id("B1", None, self.skills_by_id)
         self.assertIsNone(result)
 
     def test_returns_none_when_signature_skill_not_in_skills_by_id(self):
-        result = matching_skill_id("B", "does_not_exist", self.skills_by_id)
+        result = matching_skill_id("B1", "does_not_exist", self.skills_by_id)
         self.assertIsNone(result)
 
 
 class RepresentativeSkillIdForAxisTest(unittest.TestCase):
     def test_returns_the_skill_with_highest_relevance_for_the_axis(self):
         skills_by_id = {
-            "perimeter_shooting": {"axis_relevance": {"A": 0.3, "B": 0.9, "C": 0.1, "D": 0.2}},
-            "rim_protection": {"axis_relevance": {"A": 0.1, "B": 0.1, "C": 0.9, "D": 0.6}},
+            "perimeter_shooting": {"axis_relevance": {"A": 0.3, "B1": 0.9, "B2": 0, "C1": 0.1, "C2": 0, "D": 0.2}},
+            "rim_protection": {"axis_relevance": {"A": 0.1, "B1": 0.1, "B2": 0, "C1": 0.9, "C2": 0, "D": 0.6}},
         }
-        result = representative_skill_id_for_axis("B", skills_by_id)
+        result = representative_skill_id_for_axis("B1", skills_by_id)
         self.assertEqual(result, "perimeter_shooting")
 
     def test_ties_break_by_ascending_skill_id(self):
         skills_by_id = {
-            "zebra_skill": {"axis_relevance": {"A": 0.5, "B": 0.1, "C": 0.1, "D": 0.1}},
-            "apple_skill": {"axis_relevance": {"A": 0.5, "B": 0.1, "C": 0.1, "D": 0.1}},
+            "zebra_skill": {"axis_relevance": {"A": 0.5, "B1": 0.1, "B2": 0, "C1": 0.1, "C2": 0, "D": 0.1}},
+            "apple_skill": {"axis_relevance": {"A": 0.5, "B1": 0.1, "B2": 0, "C1": 0.1, "C2": 0, "D": 0.1}},
         }
         result = representative_skill_id_for_axis("A", skills_by_id)
         self.assertEqual(result, "apple_skill")
@@ -264,10 +267,10 @@ class RepresentativeSkillIdForAxisTest(unittest.TestCase):
 
 class FindSkillFitTemplateTest(unittest.TestCase):
     def test_picks_the_closest_on_a_b_c_regardless_of_d(self):
-        user = {"A": 50, "B": 50, "C": 50, "D": 50}
+        user = {"A": 50, "B1": 50, "B2": 0, "C1": 50, "C2": 0, "D": 50}
         players = [
-            {"id": "far_abc_near_d", "name": "Far ABC", "coordinates": {"A": 90, "B": 90, "C": 90, "D": 50}},
-            {"id": "near_abc_far_d", "name": "Near ABC", "coordinates": {"A": 52, "B": 48, "C": 51, "D": 5}},
+            {"id": "far_abc_near_d", "name": "Far ABC", "coordinates": {"A": 90, "B1": 90, "B2": 0, "C1": 90, "C2": 0, "D": 50}},
+            {"id": "near_abc_far_d", "name": "Near ABC", "coordinates": {"A": 52, "B1": 48, "B2": 0, "C1": 51, "C2": 0, "D": 5}},
         ]
 
         result = find_skill_fit_template(user, players)
@@ -275,7 +278,7 @@ class FindSkillFitTemplateTest(unittest.TestCase):
         self.assertEqual(result["id"], "near_abc_far_d")
 
     def test_returns_none_when_no_players_given(self):
-        user = {"A": 50, "B": 50, "C": 50, "D": 50}
+        user = {"A": 50, "B1": 50, "B2": 0, "C1": 50, "C2": 0, "D": 50}
 
         result = find_skill_fit_template(user, [])
 
@@ -291,11 +294,11 @@ class FindCeilingTemplateTest(unittest.TestCase):
     # could actually grow into.
 
     def test_finds_a_skill_dominant_close_d_player(self):
-        user = {"A": 50, "B": 50, "C": 50, "D": 50}
+        user = {"A": 50, "B1": 50, "B2": 0, "C1": 50, "C2": 0, "D": 50}
         players = [
             {
                 "id": "polished_peer", "name": "Polished Peer",
-                "coordinates": {"A": 90, "B": 50, "C": 50, "D": 52},
+                "coordinates": {"A": 90, "B1": 50, "B2": 0, "C1": 50, "C2": 0, "D": 52},
             },
         ]
 
@@ -306,11 +309,11 @@ class FindCeilingTemplateTest(unittest.TestCase):
     def test_excludes_candidates_whose_dominant_gap_is_d(self):
         # This is exactly the OLD ceiling shape -- different athletic
         # tools, not different skill -- so it no longer qualifies.
-        user = {"A": 50, "B": 50, "C": 50, "D": 50}
+        user = {"A": 50, "B1": 50, "B2": 0, "C1": 50, "C2": 0, "D": 50}
         players = [
             {
                 "id": "athletic_outlier", "name": "Athletic Outlier",
-                "coordinates": {"A": 52, "B": 48, "C": 51, "D": 95},
+                "coordinates": {"A": 52, "B1": 48, "B2": 0, "C1": 51, "C2": 0, "D": 95},
             },
         ]
 
@@ -322,11 +325,11 @@ class FindCeilingTemplateTest(unittest.TestCase):
         # Known rank_similar_players edge case: when the user leads on
         # every axis, argmax still returns the *least negative* axis, which
         # can land on A/B/C without representing a real skill lead.
-        user = {"A": 50, "B": 50, "C": 50, "D": 50}
+        user = {"A": 50, "B1": 50, "B2": 0, "C1": 50, "C2": 0, "D": 50}
         players = [
             {
                 "id": "weaker_everywhere", "name": "Weaker Everywhere",
-                "coordinates": {"A": 45, "B": 30, "C": 20, "D": 10},
+                "coordinates": {"A": 45, "B1": 30, "B2": 0, "C1": 20, "C2": 0, "D": 10},
             },
         ]
 
@@ -335,22 +338,22 @@ class FindCeilingTemplateTest(unittest.TestCase):
         self.assertIsNone(result)
 
     def test_returns_none_when_no_candidates(self):
-        user = {"A": 50, "B": 50, "C": 50, "D": 50}
+        user = {"A": 50, "B1": 50, "B2": 0, "C1": 50, "C2": 0, "D": 50}
 
         result = find_ceiling_template(user, [])
 
         self.assertIsNone(result)
 
     def test_picks_the_closest_on_d_among_multiple_candidates(self):
-        user = {"A": 50, "B": 50, "C": 50, "D": 50}
+        user = {"A": 50, "B1": 50, "B2": 0, "C1": 50, "C2": 0, "D": 50}
         players = [
             {
                 "id": "far_on_d", "name": "Far on D",
-                "coordinates": {"A": 90, "B": 50, "C": 50, "D": 90},
+                "coordinates": {"A": 90, "B1": 50, "B2": 0, "C1": 50, "C2": 0, "D": 90},
             },
             {
                 "id": "close_on_d", "name": "Close on D",
-                "coordinates": {"A": 90, "B": 50, "C": 50, "D": 52},
+                "coordinates": {"A": 90, "B1": 50, "B2": 0, "C1": 50, "C2": 0, "D": 52},
             },
         ]
 

@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 
 DATA_DIR = Path(__file__).resolve().parents[2] / "data"
-AXES = ("A", "B", "C", "D")
+AXES = ("A", "B1", "B2", "C1", "C2", "D")
 
 
 class ArchetypesDataTest(unittest.TestCase):

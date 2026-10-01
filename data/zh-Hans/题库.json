@@ -1,21 +1,9 @@
 {
-  "_description": "问诊题库。axis_positioning 是四轴定位 16 题(A/B/C/D 各 4 题),skill_behavior 是完整 15 项技能(SPEC.md §3.3)的行为锚定题(目前每项技能 1 题,共 15 题),body_measurements 是 SPEC.md §5.2 身材类的 6 题数值题(给「3 位深度模板」的身体最贴合用)。目前合计 37 题;SPEC §5.5 的完整题数预算是 45-51 题,还缺联赛环境(5题)、目标/限制/困扰(6题)两块(SPEC.md §12 未决问题 #1 的扩充范围)。axis_positioning/skill_behavior 都是 BARS(行为锚定评分量表,见 SPEC.md §5.1)——问的是具体行为/频率,不是自评能力高低;body_measurements 例外,是直接填数值,不是 BARS。",
-  "_editable_fields": "axis_positioning/skill_behavior 每题的 prompt(题目文本)跟 anchors(1-5 每个分数对应的行为描述)可以照 BARS 精神修改用词,body_measurements 每题的 prompt/unit/min/max 可以依实际需求调整,但改的时候要小心三件事:(1) id 一旦被其他地方引用(例如 skill_behavior 的 skill_id 对应 skills.json 的技能 id;body_measurements 的 field 对应 players.json 的 body 字段名)就不要改,否则数据兜不起来;(2) 每题的 anchors 必须维持 1-5 五个完整的行为描述,不能只改数字不改文本,否则就违背了 BARS 的设计目的;(3) body_measurements 的 field 全部六项(height_cm/wingspan_cm/weight_kg/standing_reach_cm/running_vertical_reach_cm/sprint_100m_seconds)都已经对应到 players.json 每个球员的 body 字段,添加题目要小心维持这个对应关系。要添加题目就照现有的对象格式加进对应的数组。body_measurements 的 body_height/body_weight 标了 required:true——身高、体重是原型分类(engine/archetype.py 的体型分数)的必要输入,没填无法算,所以改成必填,其余四题(臂展/摸高/冲刺)维持选填,省略 required 等同 false(2026-10 讨论,见 engine/body_fit.py 的 missing_required_body_fields)。axis_positioning 题目若加上 \"reverse_scored\": true(目前 axis_b3、axis_c1),代表这题锚点刻意照「1=最少,5=最多」描述的字面频率排列,但该行为本身跟轴的方向相反(例如常卡在禁区反而扣空间分),engine/axis_position.py 的 score_axis_coordinates 会自动把这题的分数反转(6-score)再平均——改这种题的用词时要连 reverse_scored 一起确认方向是否还成立,不能只改文本。",
+  "_description": "问诊题库。axis_positioning 是六轴定位 12 题(A/B1/B2/C1/C2/D 各 2 题,2026-10 从四轴 16 题改版——B 拆成 B1 外线投射/B2 禁区低位得分,C 拆成 C1 外围防守/C2 禁区护框防守,理由跟校准依据见下方 _editable_fields 与 docs/superpowers/plans),skill_behavior 是完整 15 项技能(SPEC.md §3.3)的行为锚定题(目前每项技能 1 题,共 15 题),body_measurements 是 SPEC.md §5.2 身材类的 6 题数值题(给「3 位深度模板」的身体最贴合用)。目前合计 33 题。axis_positioning/skill_behavior 都是 BARS(行为锚定评分量表,见 SPEC.md §5.1)——问的是具体行为/频率,不是自评能力高低;body_measurements 例外,是直接填数值,不是 BARS。",
+  "_editable_fields": "axis_positioning/skill_behavior 每题的 prompt(题目文本)跟 anchors(1-5 每个分数对应的行为描述)可以照 BARS 精神修改用词,body_measurements 每题的 prompt/unit/min/max 可以依实际需求调整,但改的时候要小心三件事:(1) id 一旦被其他地方引用(例如 skill_behavior 的 skill_id 对应 skills.json 的技能 id;body_measurements 的 field 对应 players.json 的 body 字段名)就不要改,否则数据兜不起来;(2) 每题的 anchors 必须维持 1-5 五个完整的行为描述,不能只改数字不改文本,否则就违背了 BARS 的设计目的;(3) body_measurements 的 field 全部六项(height_cm/wingspan_cm/weight_kg/standing_reach_cm/running_vertical_reach_cm/sprint_100m_seconds)都已经对应到 players.json 每个球员的 body 字段,添加题目要小心维持这个对应关系。要添加题目就照现有的对象格式加进对应的数组。body_measurements 的 body_height/body_weight 标了 required:true——身高、体重是原型分类(engine/archetype.py 的体型分数)的必要输入,没填无法算,所以改成必填,其余四题(臂展/摸高/冲刺)维持选填,省略 required 等同 false(2026-10 讨论,见 engine/body_fit.py 的 missing_required_body_fields)。axis_positioning 支持 \"reverse_scored\": true(见 engine/axis_position.py 的 score_axis_coordinates,分数会自动 6-score 反转再平均),但目前这 12 题没有一题用到——六轴改版时发现旧版 B 轴(axis_b1-b4)问的其实是「站位偏好」而非「投篮实力」、旧版 axis_c1 问的是「教练角色分配」而非「禁区防守能力」,这正是 2K 数值比对发现 B、C 两轴系统性低估中锋的根本原因之一(见 2026-10 讨论);改版后每题都直接问「成功率/把握度」这种表现型描述,不再需要用 reverse_scored 去扭转站位类问题的方向。添加题目如果又要用「字面频率跟轴方向相反」的写法,一样可以加这个字段,但建议优先改写成直接的表现型问法。",
   "axis_positioning": [
     {
-      "id": "axis_a1",
-      "axis": "A",
-      "prompt": "传球后,你会不会主动跑位再次要球?",
-      "anchors": {
-        "1": "从不,传完就跑去卡位或定点",
-        "2": "很少,通常等队友自己找我",
-        "3": "一半一半,看场上局势",
-        "4": "常常,我会主动移动到持球手附近",
-        "5": "一定,我是球队固定的二次发动点"
-      }
-    },
-    {
-      "id": "axis_a2",
+      "id": "axis_a_1",
       "axis": "A",
       "prompt": "面对防守包夹时,你的第一反应是?",
       "anchors": {
@@ -27,7 +15,7 @@
       }
     },
     {
-      "id": "axis_a3",
+      "id": "axis_a_2",
       "axis": "A",
       "prompt": "一场比赛中,你主动运球突破尝试得分或助攻的次数大约是?",
       "anchors": {
@@ -39,82 +27,56 @@
       }
     },
     {
-      "id": "axis_a4",
-      "axis": "A",
-      "prompt": "教练喊『自己来一个』的战术时,球会不会第一时间找到你?",
+      "id": "axis_b1_1",
+      "axis": "B1",
+      "prompt": "外线出现空档投篮机会时,你大概抓得住几成?",
       "anchors": {
-        "1": "从来不会是我",
-        "2": "很少是我",
-        "3": "偶尔会是我",
-        "4": "常常是我",
-        "5": "几乎都是我"
+        "1": "几乎不太进,通常选择不出手",
+        "2": "偶尔进,大部分会想传球",
+        "3": "一半左右,看手感",
+        "4": "大多能进,算是稳定的武器",
+        "5": "几乎十拿九稳,对手会特别来追防我"
       }
     },
     {
-      "id": "axis_b1",
-      "axis": "B",
-      "prompt": "无球时,你多常主动跑到三分线外站位?",
+      "id": "axis_b1_2",
+      "axis": "B1",
+      "prompt": "运球急停跳投(中距离或三分)的命中把握,你会怎么形容自己?",
       "anchors": {
-        "1": "从不,我几乎都待在禁区附近",
-        "2": "很少",
-        "3": "一半时间",
-        "4": "常常",
-        "5": "几乎每次进攻都会站到外线"
+        "1": "几乎不会做这个动作",
+        "2": "偶尔尝试,成功率不高",
+        "3": "中等,看状况出手",
+        "4": "算是信心球,大多敢出手也有把握",
+        "5": "这是我的招牌动作,队友都放心交给我"
       }
     },
     {
-      "id": "axis_b2",
-      "axis": "B",
-      "prompt": "你在比赛中出手的位置主要落在哪里?",
+      "id": "axis_b2_1",
+      "axis": "B2",
+      "prompt": "背框拿球、防守者卡在你跟篮框中间时,你能靠脚步或低位技巧直接得分的比例是?",
       "anchors": {
-        "1": "几乎都在禁区内(篮下/低位)",
-        "2": "大多在禁区与中距离之间",
-        "3": "禁区、中距离、三分线平均分布",
-        "4": "大多在中距离到三分线",
-        "5": "几乎都是三分线外"
+        "1": "几乎不会背框进攻",
+        "2": "偶尔尝试,成功率低",
+        "3": "一半左右",
+        "4": "大多能靠脚步或转身找到机会",
+        "5": "几乎每次都能制造出高几率的出手"
       }
     },
     {
-      "id": "axis_b3",
-      "axis": "B",
-      "prompt": "进攻回合中,你在禁区要位、卡位的频率是?",
-      "reverse_scored": true,
+      "id": "axis_b2_2",
+      "axis": "B2",
+      "prompt": "禁区附近(篮框周围到罚球线之间)的近距离终结,你的把握度如何?",
       "anchors": {
-        "1": "几乎不会去禁区卡位",
-        "2": "很少在禁区卡位",
-        "3": "一半时间",
-        "4": "常常在禁区卡位",
-        "5": "几乎每个回合都在禁区卡位"
+        "1": "几乎没机会,或把握不住",
+        "2": "偶尔能完成,常被封盖或打铁",
+        "3": "一半左右,看对位",
+        "4": "大多能顺利完成,手感稳定",
+        "5": "几乎是稳定得分区,对手特别忌惮"
       }
     },
     {
-      "id": "axis_b4",
-      "axis": "B",
-      "prompt": "挡拆后,你习惯的跑位方向是?",
-      "anchors": {
-        "1": "一定顺下往篮下走(pick & roll)",
-        "2": "大多数会顺下",
-        "3": "看情况,顺下外拆各半",
-        "4": "大多数会外拆到中距离或三分线",
-        "5": "一定外拆到三分线外(pick & pop)"
-      }
-    },
-    {
-      "id": "axis_c1",
-      "axis": "C",
-      "prompt": "防守时,教练多常把你安排在禁区协防、卡位、补防的角色?",
-      "reverse_scored": true,
-      "anchors": {
-        "1": "几乎不会是我",
-        "2": "很少是我",
-        "3": "一半时间",
-        "4": "常常是我",
-        "5": "几乎每次都是我"
-      }
-    },
-    {
-      "id": "axis_c2",
-      "axis": "C",
+      "id": "axis_c1_1",
+      "axis": "C1",
       "prompt": "防守外线持球者时,你能全场贴身跟防、不脱节的比例是?",
       "anchors": {
         "1": "几乎守不住,马上被拉开",
@@ -125,8 +87,8 @@
       }
     },
     {
-      "id": "axis_c3",
-      "axis": "C",
+      "id": "axis_c1_2",
+      "axis": "C1",
       "prompt": "换防后守到外线射手时,你能不被轻易拉开空档投篮的比例是?",
       "anchors": {
         "1": "几乎都会被轻易拉开",
@@ -137,19 +99,31 @@
       }
     },
     {
-      "id": "axis_c4",
-      "axis": "C",
-      "prompt": "对方快攻回防时,你的角色比较偏向?",
+      "id": "axis_c2_1",
+      "axis": "C2",
+      "prompt": "防守时,教练多常把你安排在禁区协防、卡位、补防的角色?",
       "anchors": {
-        "1": "一定退回禁区保护篮框",
-        "2": "大多退回禁区",
-        "3": "看状况,禁区、追防都会做",
-        "4": "大多往外追防持球者",
-        "5": "一定往外追防持球者,不太回禁区"
+        "1": "几乎不会是我",
+        "2": "很少是我",
+        "3": "一半时间",
+        "4": "常常是我",
+        "5": "几乎每次都是我"
       }
     },
     {
-      "id": "axis_d1",
+      "id": "axis_c2_2",
+      "axis": "C2",
+      "prompt": "对手持球攻击禁区、由你正面协防或补位时,你能靠干扰、封阻影响到对方出手的比例是?",
+      "anchors": {
+        "1": "几乎帮不上忙,常常慢一步或犯规",
+        "2": "偶尔能干扰到,但不稳定",
+        "3": "一半左右",
+        "4": "大多能形成有效干扰或封盖",
+        "5": "几乎是禁区屏障,对手会刻意避开这个方向"
+      }
+    },
+    {
+      "id": "axis_d_1",
       "axis": "D",
       "prompt": "快攻时,你能第一个冲到前场完成终结(上篮/扣篮)的频率是?",
       "anchors": {
@@ -161,19 +135,7 @@
       }
     },
     {
-      "id": "axis_d2",
-      "axis": "D",
-      "prompt": "强力对抗、身体碰撞后,你还能完成原本动作(上篮/传球)的比例是?",
-      "anchors": {
-        "1": "几乎都会失去平衡或动作变形",
-        "2": "很少能保持动作",
-        "3": "一半时间",
-        "4": "大多能保持动作完成",
-        "5": "几乎不受对抗影响"
-      }
-    },
-    {
-      "id": "axis_d3",
+      "id": "axis_d_2",
       "axis": "D",
       "prompt": "一场比赛中,你能高高跳起完成补扣或封盖的次数大约是?",
       "anchors": {
@@ -182,18 +144,6 @@
         "3": "2-3 次",
         "4": "4-5 次",
         "5": "6 次以上,是我的常规武器"
-      }
-    },
-    {
-      "id": "axis_d4",
-      "axis": "D",
-      "prompt": "一对一单防速度型球员(后卫)时,你能跟上对方第一步的比例是?",
-      "anchors": {
-        "1": "几乎跟不上,第一步就被过",
-        "2": "很少跟得上",
-        "3": "一半时间",
-        "4": "大多跟得上",
-        "5": "几乎都能跟上,很难被第一步过人"
       }
     }
   ],
