@@ -83,6 +83,8 @@ from engine.body_fit import (  # noqa: E402
     percentile_normalize_body,
 )
 from engine.player_matching import (  # noqa: E402
+    ALLTIME_POOL_STAR_THRESHOLDS,
+    CURRENT_POOL_STAR_THRESHOLDS,
     find_body_fit_template,
     find_ceiling_template,
     find_skill_fit_template,
@@ -153,7 +155,8 @@ def missing_fields(payload, required):
     return [field for field in required if field not in payload]
 
 
-def compute_template_results(payload, questions, players, skills_by_id, archetypes, lang="zh"):
+def compute_template_results(payload, questions, players, skills_by_id, archetypes, lang="zh", pool="current"):
+    star_thresholds = ALLTIME_POOL_STAR_THRESHOLDS if pool == "alltime" else CURRENT_POOL_STAR_THRESHOLDS
     coordinates = score_axis_coordinates(questions["axis_positioning"], payload["axis_answers"])
 
     body_answers = payload.get("body_answers") or []
@@ -168,7 +171,7 @@ def compute_template_results(payload, questions, players, skills_by_id, archetyp
 
     top_10 = []
     ranked_players = rank_similar_players_by_style_and_body(
-        coordinates, user_body_pct, players_pct, body_field_ranges_pct, k=10
+        coordinates, user_body_pct, players_pct, body_field_ranges_pct, k=10, star_thresholds=star_thresholds
     )
     for rank, player in enumerate(ranked_players, start=1):
         top_10.append({
@@ -267,7 +270,7 @@ def api_template_results():
     skills_by_id = {s["id"]: s for s in skills}
     archetypes = load_archetypes(lang)
     try:
-        results = compute_template_results(payload, questions, players, skills_by_id, archetypes, lang)
+        results = compute_template_results(payload, questions, players, skills_by_id, archetypes, lang, pool)
     except (ValueError, KeyError) as e:
         return jsonify({"error": str(e)}), 400
 

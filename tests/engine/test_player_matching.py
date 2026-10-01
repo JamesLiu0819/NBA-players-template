@@ -7,6 +7,8 @@
 import unittest
 
 from engine.player_matching import (
+    ALLTIME_POOL_STAR_THRESHOLDS,
+    CURRENT_POOL_STAR_THRESHOLDS,
     D_AXIS_WEIGHT,
     find_body_fit_template,
     find_ceiling_template,
@@ -186,34 +188,46 @@ class RankSimilarPlayersByStyleAndBodyTest(unittest.TestCase):
 
 
 class FitStarsForDistanceTest(unittest.TestCase):
-    def test_boundary_values(self):
-        # 2026-10: recalibrated for half-star granularity (1/1.5/2/.../5,
-        # 8 thresholds instead of 4) so finer distinctions like "4.5 顆星"
-        # are visible to users instead of being flattened to whole stars.
-        # Same sampling methodology as the 2026-09-11 calibration (axis
-        # coordinates = average of 4 independent random 1-5 draws per axis;
-        # body fields via the site's actual randomBodyValues() derivation),
-        # but doubled to 40 trials x top-10 distances = 400 samples so each
-        # of the now-twice-as-many thresholds still rests on a comparable
-        # sample density. Thresholds are the values at rank i*400/9 for
-        # i=1..8 (49.15/55.33/60.34/65.12/69.08/72.05/78.81/83.43, rounded
-        # to 49/55/60/65/69/72/79/83).
-        self.assertEqual(fit_stars_for_distance(49), 5)
-        self.assertEqual(fit_stars_for_distance(50), 4.5)
-        self.assertEqual(fit_stars_for_distance(55), 4.5)
-        self.assertEqual(fit_stars_for_distance(56), 4)
-        self.assertEqual(fit_stars_for_distance(60), 4)
-        self.assertEqual(fit_stars_for_distance(61), 3.5)
-        self.assertEqual(fit_stars_for_distance(65), 3.5)
-        self.assertEqual(fit_stars_for_distance(66), 3)
-        self.assertEqual(fit_stars_for_distance(69), 3)
-        self.assertEqual(fit_stars_for_distance(70), 2.5)
-        self.assertEqual(fit_stars_for_distance(72), 2.5)
+    def test_boundary_values_default_to_current_pool_thresholds(self):
+        # 2026-10 pool-size fix: the 64-player historical pool and the
+        # 150-player current pool used to share one threshold table, which
+        # systematically under-rated matches against the smaller pool (its
+        # nearest neighbors are naturally farther away just because there
+        # are fewer of them -- see the module header). Each pool now has
+        # its own calibrated table; fit_stars_for_distance defaults to
+        # CURRENT_POOL_STAR_THRESHOLDS when no table is passed. Same
+        # sampling methodology as before (six-axis coordinates = average of
+        # 2 independent random 1-5 draws per axis, matching the real 2
+        # questions/axis quiz; body fields via GENERAL_POPULATION_BODY_STATS
+        # + percentile_normalize_body, matching the real request pipeline),
+        # 40 trials x top-10 distances = 400 samples, thresholds at rank
+        # i*400/9 for i=1..8.
+        self.assertEqual(fit_stars_for_distance(48), 5)
+        self.assertEqual(fit_stars_for_distance(49), 4.5)
+        self.assertEqual(fit_stars_for_distance(56), 4.5)
+        self.assertEqual(fit_stars_for_distance(57), 4)
+        self.assertEqual(fit_stars_for_distance(59), 4)
+        self.assertEqual(fit_stars_for_distance(60), 3.5)
+        self.assertEqual(fit_stars_for_distance(62), 3.5)
+        self.assertEqual(fit_stars_for_distance(63), 3)
+        self.assertEqual(fit_stars_for_distance(65), 3)
+        self.assertEqual(fit_stars_for_distance(66), 2.5)
+        self.assertEqual(fit_stars_for_distance(69), 2.5)
+        self.assertEqual(fit_stars_for_distance(70), 2)
         self.assertEqual(fit_stars_for_distance(73), 2)
-        self.assertEqual(fit_stars_for_distance(79), 2)
-        self.assertEqual(fit_stars_for_distance(80), 1.5)
-        self.assertEqual(fit_stars_for_distance(83), 1.5)
-        self.assertEqual(fit_stars_for_distance(84), 1)
+        self.assertEqual(fit_stars_for_distance(74), 1.5)
+        self.assertEqual(fit_stars_for_distance(81), 1.5)
+        self.assertEqual(fit_stars_for_distance(82), 1)
+
+    def test_alltime_pool_thresholds_are_looser_than_current_pool(self):
+        # Same raw distance should never score worse under the sparser
+        # all-time pool's table than under the current pool's -- the whole
+        # point of calibrating separately is that a given distance means a
+        # relatively *better* match in the smaller pool, never a worse one.
+        for distance in (50, 65, 75, 85, 95):
+            current_stars = fit_stars_for_distance(distance, CURRENT_POOL_STAR_THRESHOLDS)
+            alltime_stars = fit_stars_for_distance(distance, ALLTIME_POOL_STAR_THRESHOLDS)
+            self.assertGreaterEqual(alltime_stars, current_stars)
 
 
 class SkillDominantAxisTest(unittest.TestCase):

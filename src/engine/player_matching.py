@@ -15,16 +15,19 @@
 # 討論,倍率先抓 2、後來調成 1.5,之後看效果再調)。技能最貼合/天花板刻意不受
 # 影響,因為它們本來就不是「四軸平權距離」的結構。
 # 可手動調整的變數：D_AXIS_WEIGHT(D 軸平方項的權重倍率,目前是 1.5,之後要調
-# 整就直接改這個數字)、_DISTANCE_STAR_THRESHOLDS(貼合度星級的距離門檻——
-# 2026-09-11 實測校準過兩次,都是整數星級(1-5)。2026-10 改成半顆星精度
-# (1/1.5/2/.../5,9 個級距、8 個門檻),因為使用者想看到「4.5 顆星」這種更
-# 細的差異,不想被整數星級抹平。校準方法沿用同一套(四軸座標＝4 個獨立 1-5
-# 隨機值取平均;身材數值沿用網站 randomBodyValues() 的推導邏輯,不是獨立均勻
-# 抽樣),樣本數從 20 次(200 筆)加倍成 40 次(400 筆)——門檻數量從 4 個變
-# 8 個,樣本數跟著加倍才能維持「每個門檻間距大約對應多少筆樣本」跟原本差不多
-# 的統計穩定度。取第 44/89/133/178/222/267/311/356 名的距離(400 筆由小到大
-# 排序,對應 i*400/9,i=1..8)當門檻,四捨五入成 49/55/60/65/69/72/79/83。
-# 之後如果覺得星等分佈不合理,可以重跑同樣的抽樣流程重新校準。
+# 整就直接改這個數字)、CURRENT_POOL_STAR_THRESHOLDS / ALLTIME_POOL_STAR_
+# THRESHOLDS(貼合度星級的距離門檻,各自半顆星精度、9 個級距 8 個門檻)。
+# 2026-10 發現兩個球員池共用同一套門檻是錯的:歷史池只有 64 人,不到現役池
+# 150 人的一半,同樣的距離在小很多的池子裡「正常」,但套同一套門檻會系統性地
+# 把歷史池的星等拉低(使用者反應全能型球風配歷史池,10 人裡沒有一個拿得到 3
+# 星以上,但同樣的座標配現役池最佳match有 5 星——純粹是池子小、鄰居天生離得
+# 遠,不是真的配得差)。所以改成兩個池子各自校準一套門檻。校準方法:六軸座標
+# ＝每軸 2 個獨立 1-5 隨機值取平均(對應 score_axis_coordinates 的真實算法,
+# 不是連續均勻抽樣);身高體重用 GENERAL_POPULATION_BODY_STATS 常態分佈抽樣後
+# 跟該球員池一起餵進 percentile_normalize_body,跟正式站台的計算路徑完全一樣。
+# 40 次模擬、k=10,共 400 筆距離樣本,取第 44/89/133/178/222/267/311/356 名
+# (由小到大排序,對應 i*400/9,i=1..8)當門檻,四捨五入到整數。之後如果覺得
+# 星等分佈不合理,對該球員池重跑同樣的抽樣流程重新校準即可。
 
 """L3 matching layer: nearest-neighbor player template matching.
 
@@ -41,33 +44,49 @@ STYLE_AXES_EXCLUDING_D = ("A", "B1", "B2", "C1", "C2")
 
 D_AXIS_WEIGHT = 1.5
 
-_DISTANCE_STAR_THRESHOLDS = (
-    (49, 5),
-    (55, 4.5),
-    (60, 4),
-    (65, 3.5),
-    (69, 3),
-    (72, 2.5),
-    (79, 2),
-    (83, 1.5),
+CURRENT_POOL_STAR_THRESHOLDS = (
+    (48, 5),
+    (56, 4.5),
+    (59, 4),
+    (62, 3.5),
+    (65, 3),
+    (69, 2.5),
+    (73, 2),
+    (81, 1.5),
+)
+
+ALLTIME_POOL_STAR_THRESHOLDS = (
+    (59, 5),
+    (65, 4.5),
+    (71, 4),
+    (74, 3.5),
+    (79, 3),
+    (83, 2.5),
+    (88, 2),
+    (94, 1.5),
 )
 
 
-def fit_stars_for_distance(distance):
+def fit_stars_for_distance(distance, thresholds=CURRENT_POOL_STAR_THRESHOLDS):
     """Bucket a distance into a 1-5 star fit rating (half-star increments)
-    using fixed thresholds."""
-    for threshold, stars in _DISTANCE_STAR_THRESHOLDS:
+    using fixed thresholds. Pass ALLTIME_POOL_STAR_THRESHOLDS when matching
+    against the (much smaller) historical player pool -- see the module
+    header for why the two pools can't share one threshold set."""
+    for threshold, stars in thresholds:
         if distance <= threshold:
             return stars
     return 1
 
 
-def rank_similar_players(user_coordinates, players, k=10):
+def rank_similar_players(user_coordinates, players, k=10, star_thresholds=CURRENT_POOL_STAR_THRESHOLDS):
     """Rank players by distance to user_coordinates across all six axes.
 
     user_coordinates: {axis: 0-100 for axis in AXES}.
     players: list of dicts, each with at least "coordinates": {axis: 0-100 for axis in AXES}.
         All other fields on each player dict pass through unchanged.
+    star_thresholds: which calibrated threshold table to bucket fit_stars
+        with -- pass ALLTIME_POOL_STAR_THRESHOLDS when players is the
+        historical pool.
 
     Returns the k nearest players (or fewer, if len(players) < k) sorted by
     ascending distance. Each result dict is the original player dict plus:
@@ -87,13 +106,15 @@ def rank_similar_players(user_coordinates, players, k=10):
             "distance": distance,
             "diff": diff,
             "dominant_diff_axis": dominant_diff_axis,
-            "fit_stars": fit_stars_for_distance(distance),
+            "fit_stars": fit_stars_for_distance(distance, star_thresholds),
         })
     ranked.sort(key=lambda item: item["distance"])
     return ranked[:k]
 
 
-def rank_similar_players_by_style_and_body(user_coordinates, user_body, players, field_ranges, k=10):
+def rank_similar_players_by_style_and_body(
+    user_coordinates, user_body, players, field_ranges, k=10, star_thresholds=CURRENT_POOL_STAR_THRESHOLDS
+):
     """Like rank_similar_players, but folds normalized body-measurement
     fields into the distance alongside the six style axes -- used only
     for the 10-player comparison table, so a user doesn't see e.g. a tall
@@ -109,6 +130,11 @@ def rank_similar_players_by_style_and_body(user_coordinates, user_body, players,
     field_ranges: {field: (min, max)}, passed straight through to
         body_distance for normalization.
     players: list of dicts, each with "coordinates" and a "body" dict.
+    star_thresholds: which calibrated threshold table to bucket fit_stars
+        with -- pass ALLTIME_POOL_STAR_THRESHOLDS when players is the
+        historical pool (64 players is sparse enough that the same raw
+        distance means a meaningfully worse match than in the 150-player
+        current pool; see module header).
 
     Returns the k nearest players sorted by ascending combined distance.
     Each result dict is the original player dict plus:
@@ -141,7 +167,7 @@ def rank_similar_players_by_style_and_body(user_coordinates, user_body, players,
             "distance": distance,
             "diff": diff,
             "dominant_diff_axis": dominant_diff_axis,
-            "fit_stars": fit_stars_for_distance(distance),
+            "fit_stars": fit_stars_for_distance(distance, star_thresholds),
         })
     ranked.sort(key=lambda item: item["distance"])
     return ranked[:k]
