@@ -113,7 +113,7 @@ class RankSimilarPlayersByStyleAndBodyTest(unittest.TestCase):
         )
 
         self.assertEqual([p["id"] for p in ranked], ["far_style_close_body", "close_style_far_body"])
-        # diff/dominant_diff_axis stay style-only (A/B/C/D), since downstream
+        # diff/dominant_diff_axis stay style-only (A/B1/B2/C1/C2/D), since downstream
         # growth-recommendation text is keyed off the style axes, not body.
         self.assertEqual(ranked[0]["diff"], {"A": 40, "B1": 0, "B2": 0, "C1": 0, "C2": 0, "D": 0})
         self.assertEqual(ranked[0]["dominant_diff_axis"], "A")

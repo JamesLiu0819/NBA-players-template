@@ -4,3 +4,8 @@ __pycache__/
 .superpowers/
 .claude/
 .venv/
+
+# tools/survey.html 匯出的本機測試作答,是真實使用者的個人作答資料,不對外公開
+# (見 CLAUDE.md 目錄約定);.gitkeep 讓目錄本身留在版本庫裡,內容不進 git。
+data/answers/*
+!data/answers/.gitkeep

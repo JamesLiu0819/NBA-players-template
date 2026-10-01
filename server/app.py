@@ -1,7 +1,7 @@
 # 用途：Flask 後端,四支 API：
 #   GET  /api/form-data       給前端渲染問卷用的題庫跟技能名稱,只回傳必要欄位,
 #                             不外洩 axis_relevance/cost_C 等內部校準數字。
-#   POST /api/template-results  只吃球風定位(16題)+ 身材數值(6題,其中身高、
+#   POST /api/template-results  只吃六軸定位(12題)+ 身材數值(6題,其中身高、
 #                             體重必填,其餘 4 題可省略——身高體重是原型分類
 #                             體型分數的必要輸入,缺了就直接 400,見
 #                             missing_required_body_fields,2026-10 討論),
@@ -10,27 +10,27 @@
 #                             座標,給前端畫雷達圖疊圖用)——刻意不需要技能
 #                             行為跟環境權重,因為很多使用者沒在打正式比賽,
 #                             只想知道自己的球員模板。原型不是直接拿使用者
-#                             座標比對 data/archetypes.json 的原型錨點,而是
+#                             座標比對 archetypes.json 的原型錨點,而是
 #                             把 10 人對照表前 5 位最相似的真人球員各自分類到
 #                             最近的原型後投票多數決(engine/archetype.py 的
 #                             classify_archetype_by_majority),確保原型標籤
 #                             一定跟畫面上顯示的球員一致,不會各算各的
 #                             (2026-09-13 討論)。一句話球探報告是原型文案+
 #                             10人表#1的成長建議組出來的。
-#                             10 人對照表用四軸+身材一起算距離(沒填身材數值
-#                             題就自動退化成純四軸),避免推薦身材差異很大的
-#                             球員當模板;3 位深度模板維持純四軸/純身材距離,
+#                             10 人對照表用六軸+身材一起算距離(沒填身材數值
+#                             題就自動退化成純六軸),避免推薦身材差異很大的
+#                             球員當模板;3 位深度模板維持純六軸/純身材距離,
 #                             刻意不受這個改動影響(第一版本來多加了一張跟 10
 #                             人對照表#1 相同的「整體模板」卡,但根本就是重複
 #                             資訊,2026-09-11 移除)。
 #                             身材裡的身高/體重會先用 percentile_normalize_body
 #                             換算成百分位再比,不然幾乎所有使用者都比全部 NBA
 #                             球員矮/輕,身材模板永遠是最矮的後衛。天花板的定義
-#                             是「D 軸接近、主導差距在 A/B/C」,是一個身體條件
-#                             跟你差不多、但技術更成熟的球員(2026-09-11 重新
-#                             設計,原本的反面對照段落因為用同一套「D 軸差距
-#                             最大」邏輯、找到的其實是天賦不同的人而非天花板,
-#                             已經移除)。
+#                             是「D 軸接近、主導差距在某個技能軸
+#                             (A/B1/B2/C1/C2)」,是一個身體條件跟你差不多、
+#                             但技術更成熟的球員(2026-09-11 重新設計,原本的
+#                             反面對照段落因為用同一套「D 軸差距最大」邏輯、
+#                             找到的其實是天賦不同的人而非天花板,已經移除)。
 #   POST /api/priority-results  才吃技能行為(15題)+ 環境權重,回傳優先訓練
 #                             順序,是使用者自己選擇要不要看的「進階」分析。
 #   POST /api/site-visit        每次呼叫讓瀏覽人次計數器 +1,回傳遞增後的
@@ -38,18 +38,25 @@
 #                             docs/superpowers/specs/2026-09-15-visit-counter-design.md)。
 #                             計數邏輯在 db.py,沒有 DATABASE_URL 環境變數
 #                             時退化成記憶體計數器(本機開發/測試)。
-# /api/template-results 吃一個選填的 "pool" 欄位("current"預設值 或
-# "alltime"),決定球員池要用 data/players.json(現役)還是
-# data/players_alltime.json(歷史,2026-09-11 新增)。兩份資料同一套 schema,
+# 三語系統(2026-09 新增):三支 POST API 都吃一個選填的 "lang" 欄位
+# ("zh"預設值、"zh-Hans"、"en",見 SUPPORTED_LANGUAGES),決定資料從
+# data/zh/、data/zh-Hans/、data/en/ 哪個資料夾讀——三個資料夾裡的五個檔案
+# (questions/skills/players/players_alltime/archetypes,各語言檔名不同,見
+# DATA_FILENAMES)結構必須完全對應,由 tests/engine/test_i18n_parity.py 把關,
+# 所有計算邏輯完全不受語言影響,只有讀哪份文案資料不同。
+# /api/template-results 另吃一個選填的 "pool" 欄位("current"預設值 或
+# "alltime"),決定球員池要用該語言資料夾下的 players.json(現役)還是
+# players_alltime.json(歷史,2026-09-11 新增)。兩份資料同一套 schema,
 # 差別只有歷史池的 "team" 欄位放代表年份而不是球隊縮寫,所以 compute_
-# template_results 完全不用改,只有 load_data 多一個參數決定讀哪個檔案。
+# template_results 完全不用改,load_data 吃 pool 跟 lang 兩個參數決定讀哪個
+# 語言資料夾裡的哪個檔案。
 # 同時把 /src/ui 的靜態前端檔案服務出去。**刻意不**把 data/ 整個目錄當靜態
 # 檔案服務——data/answers/ 裡面是真實使用者的個人作答資料,不能公開存取。
 # 計算邏輯全部重用 src/engine 跟 scripts/run_priority.py、
 # scripts/run_player_match.py 已經拆出來的函數,這支檔案只做請求解析、資料載入、
 # 呼叫、組裝回應,不重寫任何計算規則。
-# 可手動調整的變數：PLAYER_POOL_FILES(pool 名稱對應的球員資料檔名,要再加
-# 新的球員池就在這裡加一筆)。
+# 可手動調整的變數：DATA_FILENAMES(每個語言資料夾裡,每種資料的檔名,要再加
+# 新語言就在這裡加一筆)。
 """Flask app: GET /api/form-data, POST /api/template-results,
 POST /api/priority-results, static file serving for /src/ui.
 

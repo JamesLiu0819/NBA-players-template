@@ -1,7 +1,7 @@
 # CLAUDE.md — 籃球球員模板分析系統
 
 ## 專案一句話
-把一套原本靠 AI 對話執行的籃球球員分析流程，改寫成**不需要 AI 介入**的規則化網站：使用者填題目量表（目前已上線 37 題：四軸定位 16 + 技能行為 15 + 身材數值 6〔選填〕；SPEC.md §5.5 規劃的完整版是 45–51 題，還缺聯賽環境、目標/限制兩塊）→ 系統計算四軸座標與優先序 → 輸出模板球員、訓練菜單。影片清單這塊還沒建（skills.json 的 `video_tags` 目前只是佔位標籤，沒有接真正的影片庫）。
+把一套原本靠 AI 對話執行的籃球球員分析流程，改寫成**不需要 AI 介入**的規則化網站：使用者填題目量表（目前已上線 33 題：六軸定位 12〔A/B1/B2/C1/C2/D 各 2〕+ 技能行為 15 + 身材數值 6〔其中身高體重必填，其餘選填〕；SPEC.md §5.5 規劃的完整版是 41–47 題，還缺聯賽環境、目標/限制兩塊）→ 系統計算六軸座標與優先序 → 輸出模板球員、訓練菜單。網站同時提供繁中（`data/zh/`）、簡中（`data/zh-Hans/`）、英文（`data/en/`）三語版本，由 API 的 `lang` 參數切換，三份資料檔結構完全對應（`tests/engine/test_i18n_parity.py` 把關）。四軸座標是 2026-10 以前的舊設計：原本的 B（空間位置）、C（防守對位）各自是「兩端二選一」的光譜軸，後來發現這其實問的是站位偏好/教練分配角色，不是真實的投籃或防守能力，系統性低估中鋒——改成各自拆成兩個獨立技能軸（B1 外線投射/B2 禁區得分、C1 外圍防守/C2 禁區防守），才有六軸。影片清單這塊還沒建（skills.json 的 `video_tags` 目前只是佔位標籤，沒有接真正的影片庫）。
 
 ## 最重要的三條規則
 
@@ -18,17 +18,26 @@
 
 ```
 /data
-  players.json          # 現役球員庫（離線建置產物，勿手改，改 scripts/）
-  players_alltime.json  # 歷史球員庫，同一套 schema，team 欄位改放代表年份
-  archetypes.json       # 球場定位原型錨點（多數決分類用，見 engine/archetype.py）
-  skills.json           # 技能庫 + 成本 C_i + 驗收指標
-  questions.json        # 問診題庫 + 分支規則（目前 37 題，見檔案內 _description）
-  answers/              # tools/survey.html 匯出的本機測試作答，不對外公開
+  zh/                  # 繁體中文，預設語言
+    球員.json           # 現役球員庫（離線建置產物，勿手改，改 scripts/）
+    歷史球員.json        # 歷史球員庫，同一套 schema，team 欄位改放代表年份
+    原型.json           # 球場定位原型錨點（多數決分類用，見 engine/archetype.py）
+    技能.json           # 技能庫 + 成本 C_i + 驗收指標
+    題庫.json           # 問診題庫 + 分支規則（目前 33 題，見檔案內 _description）
+  zh-Hans/             # 簡體中文，五個檔案跟 zh/ 結構完全一致，檔名用簡體字
+  en/                  # 英文，同結構，檔名固定用原始英文（players.json/
+                       # questions.json/archetypes.json/skills.json/
+                       # players_alltime.json）
+  # 三個語言資料夾結構必須完全對應（id 集合、非文字欄位、座標、身體數據都要
+  # 一致，只有文案不同），由 tests/engine/test_i18n_parity.py 把關。
+  answers/              # tools/survey.html 匯出的本機測試作答，不對外公開、
+                        # 不進 git（見 .gitignore），目錄本身用 .gitkeep 保留
   # 尚未建立：env_weights.json（環境倍率表——現在是 src/ui/index.html 裡
   # 3 組暫定的 ENV_PRESETS，不是 SPEC.md §3.2 講的完整表）、videos.json
   # （影片庫——skills.json 的 video_tags 目前只是佔位標籤，還沒接上）
 /scripts                # 離線建庫腳本（Python）
-/server                 # Flask 後端，唯一對外服務的伺服器（見 server/README.md）
+/server                 # Flask 後端，唯一對外服務的伺服器（見 server/README.md）；
+                        # lang 參數（"zh"/"zh-Hans"/"en"）決定讀哪個 data/{lang}/
 /src
   /engine               # 純函數：向量計算、座標、匹配、排序。必須可單元測試
   /ui                   # 正式網站前端，由 server/app.py 服務

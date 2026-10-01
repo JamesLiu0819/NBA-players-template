@@ -1,5 +1,5 @@
 <!--
-  用途：本機用的問診測試頁,收集 27 題作答(四軸定位 16 題 + 技能行為 5 題 +
+  用途：本機用的問診測試頁,收集 33 題作答(六軸定位 12 題 + 技能行為 15 題 +
   身材數值 6 題)、即時預覽排序、匯出 answers.json。不做任何決策——正式結果
   一律以 scripts/run_priority.py(優先序)跟 scripts/run_player_match.py(球員
   配對/深度模板)的輸出為準;身材數值題目前只用於匯出,這頁本身沒有身體最貼合
@@ -101,7 +101,7 @@
     background: var(--warn-bg); border: 1px solid var(--warn-border);
     border-radius: 6px; padding: .6rem .8rem; font-size: .9rem; margin-bottom: .75rem;
   }
-  .axis-coords { display: flex; gap: 1.5rem; font-size: 1.05rem; }
+  .axis-coords { display: flex; flex-wrap: wrap; gap: 1.5rem; font-size: 1.05rem; }
   .axis-coords strong { font-size: 1.3rem; }
   .priority-row {
     border: 1px solid var(--border); border-radius: 8px;
@@ -130,25 +130,25 @@
 
 <h1>問診測試頁（本機用）</h1>
 <p>
-  四軸定位 16 題 + 技能行為 5 題 + 身材數值 6 題，共 27 題。四軸定位跟技能行為題請選
+  六軸定位 12 題 + 技能行為 15 題 + 身材數值 6 題，共 33 題。六軸定位跟技能行為題請選
   「哪句描述最像我」，<strong>不是憑感覺打分數</strong>——這是 BARS（行為錨定評分量表）的
   重點，見 <code>SPEC.md §5.1</code>。身材數值題例外，直接填實際數字就好。
 </p>
 
 <div class="sticky-progress">
-  <span id="progress-text">已填 0 / 27</span>
+  <span id="progress-text">已填 0 / 33</span>
   <div class="progress-bar"><div class="progress-bar-fill" id="progress-fill"></div></div>
 </div>
 
 <div id="loading-message">載入題庫中…（若卡住，請確認你是用 <code>python3 -m http.server</code> 開啟，而不是直接雙擊 HTML 檔）</div>
 
 <section id="axis-section" style="display:none">
-  <h2>A. 四軸定位（16 題）</h2>
+  <h2>A. 六軸定位（12 題）</h2>
   <div id="axis-questions"></div>
 </section>
 
 <section id="skill-section" style="display:none">
-  <h2>技能行為（5 題）</h2>
+  <h2>技能行為（15 題）</h2>
   <div id="skill-questions"></div>
 </section>
 
@@ -183,7 +183,7 @@
     <code>python3 scripts/run_priority.py</code> 讀匯出的作答檔計算，兩者的公式邏輯必須一致
     （見 <code>tools/README.md</code> 的手動比對步驟）。
   </p>
-  <h3>四軸座標</h3>
+  <h3>六軸座標</h3>
   <div id="axis-preview" class="axis-coords"><p class="preview-pending">尚未開始作答</p></div>
   <h3 style="margin-top:1rem">優先序</h3>
   <div id="priority-preview"><p class="preview-pending">尚未開始作答</p></div>
@@ -206,8 +206,11 @@
 (() => {
   "use strict";
 
-  const AXES = ["A", "B", "C", "D"];
-  const AXIS_LABELS = { A: "A 持球創造", B: "B 空間位置", C: "C 防守對位", D: "D 運動能力層級" };
+  const AXES = ["A", "B1", "B2", "C1", "C2", "D"];
+  const AXIS_LABELS = {
+    A: "A 持球創造", B1: "B1 外線投射", B2: "B2 禁區得分",
+    C1: "C1 外圍防守", C2: "C2 禁區防守", D: "D 運動能力層級",
+  };
   const FACTOR_LABELS = { G: "能力缺口 G", E: "環境權重 E", R: "相關性 R", C: "習得成本 C" };
 
   // Provisional-only presets for the "環境權重" testing widget (SPEC.md §12
@@ -256,18 +259,23 @@
   // mirrors src/engine/axis_position.py: score_axis_coordinates
   function scoreAxisCoordinates(questions, answers) {
     const axisByQuestion = {};
-    for (const q of questions) axisByQuestion[q.id] = q.axis;
+    const reverseByQuestion = {};
+    for (const q of questions) {
+      axisByQuestion[q.id] = q.axis;
+      reverseByQuestion[q.id] = q.reverse_scored || false;
+    }
 
-    const scoresByAxis = { A: [], B: [], C: [], D: [] };
+    const scoresByAxis = { A: [], B1: [], B2: [], C1: [], C2: [], D: [] };
     for (const answer of answers) {
       const questionId = answer.question_id;
       if (!(questionId in axisByQuestion)) {
         throw new Error(`answer references unknown question: ${questionId}`);
       }
-      const score = answer.score;
+      let score = answer.score;
       if (!(score >= 1 && score <= 5)) {
         throw new Error(`score out of range 1-5 for ${questionId}: ${score}`);
       }
+      if (reverseByQuestion[questionId]) score = 6 - score;
       scoresByAxis[axisByQuestion[questionId]].push(score);
     }
 
@@ -554,7 +562,7 @@
       ).join("");
     } catch (err) {
       lastCoords = null;
-      el.innerHTML = `<p class="preview-pending">四軸定位題組尚未填完（${err.message}）</p>`;
+      el.innerHTML = `<p class="preview-pending">六軸定位題組尚未填完（${err.message}）</p>`;
     }
   }
 
@@ -580,7 +588,7 @@
   function renderPriorityPreview() {
     const el = document.getElementById("priority-preview");
     if (!lastCoords) {
-      el.innerHTML = `<p class="preview-pending">需先完成四軸定位題組</p>`;
+      el.innerHTML = `<p class="preview-pending">需先完成六軸定位題組</p>`;
       return;
     }
     try {

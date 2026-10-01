@@ -1408,8 +1408,8 @@ def main():
             "推算的 15 題技能行為模擬作答(依 axis_relevance 加權,招牌技能強制"
             "滿分),讓球員資料也有技能層級細節可以比對。body 欄位裡的"
             "height_cm/wingspan_cm 是手動估算,其餘 weight_kg/standing_reach_cm/"
-            "running_vertical_reach_cm/sprint_100m_seconds 是由這兩項加上四軸座標"
-            "公式推算出來的(見 scripts/build_players_seed.py 的"
+            "running_vertical_reach_cm/sprint_100m_seconds 是由這兩項加上六軸座標"
+            "裡的 D 軸、B1 軸公式推算出來的(見 scripts/build_players_seed.py 的"
             "derive_body_measurements),不是個別球員的真實測量值。"
         ),
         "_editable_fields": (

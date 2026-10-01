@@ -1,19 +1,20 @@
-# 用途：L3 匹配層,把使用者的四軸座標拿去跟球員種子資料算最近鄰,並提供「差異
-# 軸是否剛好對到某個技能」的判斷。rank_similar_players 是純四軸距離,供 3 位
+# 用途：L3 匹配層,把使用者的六軸座標拿去跟球員種子資料算最近鄰,並提供「差異
+# 軸是否剛好對到某個技能」的判斷。rank_similar_players 是純六軸距離,供 3 位
 # 深度模板挑選邏輯使用——技能最貼合(find_skill_fit_template)、身體最貼合
 # (find_body_fit_template)、天花板(find_ceiling_template)。
-# 天花板的定義是「D 軸(運動能力)接近,但主導差距在 A/B/C 某個技能軸」——找一個
-# 跟你身體條件差不多、但技術更成熟的球員,代表一個真正練得到的目標。原本的定義
-# 是反過來(A/B/C 接近、D 軸差距最大),但那樣找到的其實是「天賦跟你不一樣的
-# 人」,不是天花板;連帶反面對照(find_anti_template)也一起移除了,因為它用的
-# 是同一套「D 軸差距最大」邏輯,一樣沒有意義(2026-09-11 重新設計討論)。
-# rank_similar_players_by_style_and_body 是另一支「四軸+身材」的混合距離函數,
+# 天花板的定義是「D 軸(運動能力)接近,但主導差距在某個技能軸
+# (A/B1/B2/C1/C2)」——找一個跟你身體條件差不多、但技術更成熟的球員,代表一個
+# 真正練得到的目標。原本的定義是反過來(技能軸接近、D 軸差距最大),但那樣找到
+# 的其實是「天賦跟你不一樣的人」,不是天花板;連帶反面對照(find_anti_template)
+# 也一起移除了,因為它用的是同一套「D 軸差距最大」邏輯,一樣沒有意義
+# (2026-09-11 重新設計討論)。
+# rank_similar_players_by_style_and_body 是另一支「六軸+身材」的混合距離函數,
 # 給 10 人對照表跟「整體模板」用,刻意不影響上面 3 個深度模板函數(它們的設計
 # 就是要跟身材無關,見 2026-09-11 body-aware matching 討論)。這支函數裡 D 軸
 # (運動能力)的平方項會乘上 D_AXIS_WEIGHT——身體條件的差距被認為比技巧差距
-# 影響大更多,所以刻意讓 D 軸差距在距離裡佔比更重,不是四軸平權(2026-09-11
+# 影響大更多,所以刻意讓 D 軸差距在距離裡佔比更重,不是六軸平權(2026-09-11
 # 討論,倍率先抓 2、後來調成 1.5,之後看效果再調)。技能最貼合/天花板刻意不受
-# 影響,因為它們本來就不是「四軸平權距離」的結構。
+# 影響,因為它們本來就不是「六軸平權距離」的結構。
 # 可手動調整的變數：D_AXIS_WEIGHT(D 軸平方項的權重倍率,目前是 1.5,之後要調
 # 整就直接改這個數字)、CURRENT_POOL_STAR_THRESHOLDS / ALLTIME_POOL_STAR_
 # THRESHOLDS(貼合度星級的距離門檻,各自半顆星精度、9 個級距 8 個門檻)。
@@ -139,7 +140,7 @@ def rank_similar_players_by_style_and_body(
     Returns the k nearest players sorted by ascending combined distance.
     Each result dict is the original player dict plus:
         distance: float, combined style+body distance (D axis weighted
-            D_AXIS_WEIGHT times more heavily than A/B/C/body fields)
+            D_AXIS_WEIGHT times more heavily than A/B1/B2/C1/C2/body fields)
         diff: {axis: player[axis] - user_coordinates[axis] for axis in AXES} (signed,
             style-only -- growth-recommendation text is keyed off this)
         dominant_diff_axis: axis of the signed max of diff (style-only)
@@ -221,10 +222,10 @@ def _style_distance_excluding_d(diff):
 def find_ceiling_template(user_coordinates, players):
     """Find the "ceiling" deep template (天花板): a player with roughly the
     user's own athletic tools (D axis close) whose game is far more
-    developed -- the dominant gap is a skill axis (A/B/C), not athleticism.
-    This is meant to be a genuinely achievable target: what you could
-    become if you maxed out your technique with the tools you already have
-    (2026-09-11 redesign -- the old definition, "A/B/C close, D the
+    developed -- the dominant gap is a skill axis (A/B1/B2/C1/C2), not
+    athleticism. This is meant to be a genuinely achievable target: what you
+    could become if you maxed out your technique with the tools you already
+    have (2026-09-11 redesign -- the old definition, "skill axes close, D the
     dominant gap", just returned someone with different genetics, which
     isn't a real ceiling since athletic ability isn't something you train
     into. That old shape is also why find_anti_template was removed

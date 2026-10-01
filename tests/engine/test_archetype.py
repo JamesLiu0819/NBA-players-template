@@ -48,7 +48,7 @@ class ClassifyArchetypeTest(unittest.TestCase):
             classify_archetype({"A": 50, "B1": 50, "B2": 0, "C1": 50, "C2": 0, "D": 50}, [])
 
     def test_size_breaks_a_style_tie_toward_the_closer_size_anchor(self):
-        # both archetypes are equidistant on A/B/C/D alone (dead center);
+        # both archetypes are equidistant on the six style axes alone (dead center);
         # only the size anchor differs, so size must be the deciding factor.
         archetypes = [
             {"id": "small", "coordinates": {"A": 50, "B1": 50, "B2": 0, "C1": 50, "C2": 0, "D": 50}, "size": 20},

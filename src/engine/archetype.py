@@ -12,14 +12,14 @@
 # 目前 5——10 人對照表的前一半)。原型本身的數量/座標/文案在
 # data/archetypes.json 裡調整,不在這支檔案。
 #
-# size 參數(2026-10 討論)：classify_archetype 原本純看 A/B/C/D 四軸,完全不看
-# 身材,結果矮個子只要打法平均就會被分類到「全能鋒線」之類隱含高大身材的原型,
-# 高個子打控球風格也會被分類到「控場指揮官」——原型名稱在使用者認知裡跟身材
-# 綁在一起,但計算本身完全沒有身材這個維度。size 是身高百分位跟體重百分位的
-# 平均(不是直接算 BMI——BMI=體重/身高^2 會把身高訊號本身抵銷掉,而身高才是
-# 真正決定「後衛 vs 中鋒」觀感的主因),跟 A/B/C/D 一樣是 0-100 尺度,所以直接
+# size 參數(2026-10 討論)：classify_archetype 原本純看六軸(A/B1/B2/C1/C2/D),
+# 完全不看身材,結果矮個子只要打法平均就會被分類到「全能鋒線」之類隱含高大身材
+# 的原型,高個子打控球風格也會被分類到「控場指揮官」——原型名稱在使用者認知裡
+# 跟身材綁在一起,但計算本身完全沒有身材這個維度。size 是身高百分位跟體重百分位
+# 的平均(不是直接算 BMI——BMI=體重/身高^2 會把身高訊號本身抵銷掉,而身高才是
+# 真正決定「後衛 vs 中鋒」觀感的主因),跟六軸一樣是 0-100 尺度,所以直接
 # 併入同一個歐氏距離,不用額外正規化。size 是選填參數,沒傳或原型缺 size 欄位
-# 就完全退化成原本的純四軸距離。
+# 就完全退化成原本的純六軸距離。
 #
 # size 要用哪種百分位(2026-10 二次討論,修正前一版的誤用)：compute_player_sizes
 # 算的是「身高/體重在這份 players 名單裡排第幾名」(0=全名單最矮最輕,100=全
@@ -64,7 +64,7 @@ def classify_archetype(coordinates, archetypes, size=None):
         average of a player's height and weight percentiles). When given,
         an archetype's own "size" field (if present) contributes
         (archetype["size"] - size)^2 * SIZE_AXIS_WEIGHT to the squared
-        distance alongside A/B/C/D, so archetypes whose real-world body
+        distance alongside AXES, so archetypes whose real-world body
         profile is far from `size` are penalized even if their style axes
         are close. An archetype missing a "size" field is treated as
         size-neutral (no penalty term) regardless of `size`.
@@ -135,7 +135,7 @@ def classify_archetype_by_majority(ranked_players, archetypes, player_sizes=None
     archetype the closer players favor most.
 
     ranked_players: list of dicts, each with at least "id" and
-        "coordinates": {"A".."D"}.
+        "coordinates": {axis: 0-100 for axis in AXES}.
     player_sizes: optional {player_id: size} from compute_player_sizes,
         computed over the full pool ranked_players was drawn from (not just
         this top_n slice). A player missing from player_sizes (or when

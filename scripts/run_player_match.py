@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-# 用途：讀取匯出的作答檔跟 data/players.json,算出四軸座標後印出「3 位深度模板」
+# 用途：讀取匯出的作答檔跟 data/zh/球員.json,算出六軸座標後印出「3 位深度模板」
 # (技術模板/身材模板/天花板)、「10 人對照表」兩段文字報表。
-# 10 人對照表用 rank_similar_players_by_style_and_body,四軸+身材一起算距離,
+# 10 人對照表用 rank_similar_players_by_style_and_body,六軸+身材一起算距離,
 # 避免推薦身材差異很大的球員當模板(2026-09-11);技術模板跟身材模板維持用
-# 純四軸/純身材距離,刻意不受這個改動影響。身材裡的身高/體重在比較前會先用
+# 純六軸/純身材距離,刻意不受這個改動影響。身材裡的身高/體重在比較前會先用
 # percentile_normalize_body 換算成百分位,不然幾乎所有使用者都會比全部 NBA
 # 球員矮/輕,身材模板永遠是最矮的後衛(2026-09-11 討論)。compute_player_sizes
 # (原型多數決要用的「球員池內部排名」size)一定要在 percentile_normalize_body
 # 之前、用原始 players 名單算——percentile_normalize_body 會把 body.height_cm/
 # weight_kg 覆寫成另一種百分位,順序顛倒的話兩套百分位會混在一起算錯
 # (2026-10 討論,見 engine/archetype.py 檔頭)。
-# 天花板的定義是「D 軸接近、主導差距在 A/B/C 某個技能軸」——一個身體條件跟你
+# 天花板的定義是「D 軸接近、主導差距在某個技能軸(A/B1/B2/C1/C2)」——一個身體條件跟你
 # 差不多、但技術更成熟的球員,是一個真正練得到的目標,而不是天賦不同的另一個
 # 人;原本的「反面對照」段落用的是「D 軸差距最大」邏輯,找到的其實是後者,所以
 # 直接移除,天花板改用前者的定義。曾經多加過一個跟 10 人對照表#1 相同的「整體
@@ -21,7 +21,7 @@
 # D_AXIS_GROWTH_TEMPLATE(D軸無法訓練時使用的專用句型文字)、
 # CEILING_NOT_FOUND_MESSAGE(找不到符合條件的天花板時顯示的訊息)、
 # BODY_MEASUREMENTS_NOT_ANSWERED_MESSAGE(作答檔沒有身材數值題時顯示的訊息)。
-# describe_growth_recommendation 現在一定會回傳一個具體 action(A/B/C 差距軸
+# describe_growth_recommendation 現在一定會回傳一個具體 action(技能差距軸
 # 找不到球員自己的招牌技能對得上時,改用 representative_skill_id_for_axis 找
 # 該軸相關性最高的技能頂替,不再回退成「XX 的練習」這種空泛句型,見 2026-09-11
 # 討論)。

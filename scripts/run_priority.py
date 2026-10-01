@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# 用途：讀取匯出的作答檔,呼叫 src/engine 算出四軸座標與優先序,是唯一權威的
+# 用途：讀取匯出的作答檔,呼叫 src/engine 算出六軸座標與優先序,是唯一權威的
 # 計算結果(tools/survey.html 的即時預覽只是給人看趨勢,不是正式結果)。
 # 可手動調整的變數：FACTOR_LABELS(中文標籤文字,可依用詞習慣調整,不影響計算)。
 # 其餘像 eps、排序邏輯都在 src/engine 裡,不要在這支腳本裡重複定義計算規則。
@@ -145,7 +145,7 @@ def main():
         questions, skills, answers["axis_answers"], answers["skill_answers"], answers["env"]
     )
 
-    print("四軸座標:")
+    print("六軸座標:")
     for axis in AXES:
         print(f"  {axis}: {coordinates[axis]:.1f}")
 
