@@ -1,12 +1,15 @@
 # 用途：測試 classify_archetype(把六軸座標分類到最接近的球場定位原型)的
-# 最近鄰計算邏輯與邊界情況,以及 classify_archetype_by_majority(改用比對到
-# 的前 N 位球員自己的原型多數決,取代直接拿使用者座標比對原型錨點)。
+# 最近鄰計算邏輯與邊界情況,classify_archetype_by_majority(改用比對到的前 N
+# 位球員自己的原型多數決,取代直接拿使用者座標比對原型錨點),以及
+# compute_player_sizes(算每位球員身高體重在整份名單裡的排名百分位,供原型
+# 分類用——2026-10 發現這個百分位不能跟 body_fit.percentile_normalize_body
+# 給 10 人對照表用的百分位共用,見 archetype.py 檔頭)。
 # 可手動調整的變數：無——這支檔案裡的座標資料都是為了驗證公式而設計的
 # 測試案例,不是要調的參數。
 
 import unittest
 
-from engine.archetype import classify_archetype, classify_archetype_by_majority
+from engine.archetype import classify_archetype, classify_archetype_by_majority, compute_player_sizes
 
 
 class ClassifyArchetypeTest(unittest.TestCase):
@@ -122,29 +125,43 @@ class ClassifyArchetypeByMajorityTest(unittest.TestCase):
 
         self.assertEqual(result["id"], "a")
 
-    def test_uses_player_body_size_when_present(self):
+    def test_uses_player_sizes_when_present(self):
         archetypes = [
             {"id": "a", "coordinates": {"A": 50, "B1": 50, "B2": 0, "C1": 50, "C2": 0, "D": 50}, "size": 20},
             {"id": "b", "coordinates": {"A": 50, "B1": 50, "B2": 0, "C1": 50, "C2": 0, "D": 50}, "size": 80},
         ]
         ranked_players = [
-            {"coordinates": {"A": 50, "B1": 50, "B2": 0, "C1": 50, "C2": 0, "D": 50}, "body": {"height_cm": 10, "weight_kg": 10}},
+            {"id": "p1", "coordinates": {"A": 50, "B1": 50, "B2": 0, "C1": 50, "C2": 0, "D": 50}},
         ]
 
-        result = classify_archetype_by_majority(ranked_players, archetypes, top_n=1)
+        result = classify_archetype_by_majority(ranked_players, archetypes, player_sizes={"p1": 15}, top_n=1)
 
         self.assertEqual(result["id"], "a")
 
-    def test_falls_back_to_style_only_when_player_has_no_body(self):
+    def test_falls_back_to_style_only_when_player_sizes_is_none(self):
         archetypes = [
             {"id": "a", "coordinates": {"A": 90, "B1": 10, "B2": 0, "C1": 10, "C2": 0, "D": 10}, "size": 80},
             {"id": "b", "coordinates": {"A": 10, "B1": 90, "B2": 0, "C1": 10, "C2": 0, "D": 10}, "size": 20},
         ]
         ranked_players = [
-            {"coordinates": {"A": 88, "B1": 12, "B2": 0, "C1": 10, "C2": 0, "D": 10}},  # no "body" key at all
+            {"id": "p1", "coordinates": {"A": 88, "B1": 12, "B2": 0, "C1": 10, "C2": 0, "D": 10}},
         ]
 
-        result = classify_archetype_by_majority(ranked_players, archetypes, top_n=1)
+        result = classify_archetype_by_majority(ranked_players, archetypes, player_sizes=None, top_n=1)
+
+        self.assertEqual(result["id"], "a")
+
+    def test_falls_back_to_style_only_when_player_missing_from_player_sizes(self):
+        archetypes = [
+            {"id": "a", "coordinates": {"A": 90, "B1": 10, "B2": 0, "C1": 10, "C2": 0, "D": 10}, "size": 80},
+            {"id": "b", "coordinates": {"A": 10, "B1": 90, "B2": 0, "C1": 10, "C2": 0, "D": 10}, "size": 20},
+        ]
+        ranked_players = [
+            {"id": "p1", "coordinates": {"A": 88, "B1": 12, "B2": 0, "C1": 10, "C2": 0, "D": 10}},
+        ]
+
+        # player_sizes is non-empty but has no entry for "p1" specifically.
+        result = classify_archetype_by_majority(ranked_players, archetypes, player_sizes={"someone_else": 50}, top_n=1)
 
         self.assertEqual(result["id"], "a")
 
@@ -183,6 +200,43 @@ class ClassifyArchetypeByMajorityTest(unittest.TestCase):
         result = classify_archetype_by_majority(ranked_players, self.archetypes)
 
         self.assertEqual(result["id"], "a")
+
+
+class ComputePlayerSizesTest(unittest.TestCase):
+    def test_ranks_shortest_lightest_player_lowest(self):
+        players = [
+            {"id": "short", "body": {"height_cm": 180, "weight_kg": 70}},
+            {"id": "medium", "body": {"height_cm": 190, "weight_kg": 85}},
+            {"id": "tall", "body": {"height_cm": 210, "weight_kg": 110}},
+        ]
+
+        sizes = compute_player_sizes(players)
+
+        self.assertLess(sizes["short"], sizes["medium"])
+        self.assertLess(sizes["medium"], sizes["tall"])
+
+    def test_omits_players_missing_height_or_weight(self):
+        players = [
+            {"id": "complete", "body": {"height_cm": 190, "weight_kg": 85}},
+            {"id": "no_weight", "body": {"height_cm": 190}},
+            {"id": "no_body"},
+        ]
+
+        sizes = compute_player_sizes(players)
+
+        self.assertEqual(set(sizes), {"complete"})
+
+    def test_is_relative_to_the_given_pool_not_an_absolute_scale(self):
+        # the exact same player (190cm/85kg) gets a different size depending
+        # on who else is in the pool -- this is deliberately pool-relative,
+        # not a fixed percentile against some universal population (that is
+        # body_fit.percentile_normalize_body's job, a different scale --
+        # see archetype.py's header for why the two must not be shared).
+        same_player = {"id": "p", "body": {"height_cm": 190, "weight_kg": 85}}
+        among_bigs = [same_player, {"id": "big", "body": {"height_cm": 220, "weight_kg": 120}}]
+        among_guards = [same_player, {"id": "guard", "body": {"height_cm": 175, "weight_kg": 70}}]
+
+        self.assertLess(compute_player_sizes(among_bigs)["p"], compute_player_sizes(among_guards)["p"])
 
 
 if __name__ == "__main__":

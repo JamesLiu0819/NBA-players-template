@@ -75,7 +75,7 @@ sys.path.insert(0, str(ROOT))
 from flask import Flask, jsonify, request, send_from_directory  # noqa: E402
 
 from db import increment_visit_count, init_db  # noqa: E402
-from engine.archetype import classify_archetype_by_majority  # noqa: E402
+from engine.archetype import classify_archetype_by_majority, compute_player_sizes  # noqa: E402
 from engine.axis_position import score_axis_coordinates  # noqa: E402
 from engine.body_fit import (  # noqa: E402
     collect_body_measurements,
@@ -165,6 +165,7 @@ def compute_template_results(payload, questions, players, skills_by_id, archetyp
         if body_answers else {}
     )
     body_field_ranges = {q["field"]: (q["min"], q["max"]) for q in questions["body_measurements"]}
+    player_sizes = compute_player_sizes(players)
     user_body_pct, players_pct, body_field_ranges_pct = percentile_normalize_body(
         user_body, players, body_field_ranges
     )
@@ -186,7 +187,7 @@ def compute_template_results(payload, questions, players, skills_by_id, archetyp
             "growth_recommendation": describe_growth_recommendation(player, skills_by_id, lang),
         })
 
-    archetype = classify_archetype_by_majority(ranked_players, archetypes)
+    archetype = classify_archetype_by_majority(ranked_players, archetypes, player_sizes=player_sizes)
 
     return {
         "coordinates": coordinates,

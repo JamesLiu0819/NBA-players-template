@@ -4,9 +4,12 @@
 # 10 人對照表用 rank_similar_players_by_style_and_body,四軸+身材一起算距離,
 # 避免推薦身材差異很大的球員當模板(2026-09-11);技術模板跟身材模板維持用
 # 純四軸/純身材距離,刻意不受這個改動影響。身材裡的身高/體重在比較前會先用
-# percentile_normalize_body 換算成百分位(使用者跟球員各自在自己的母體裡排
-# 第幾百分位),不然幾乎所有使用者都會比全部 NBA 球員矮/輕,身材模板永遠是
-# 最矮的後衛(同樣是 2026-09-11 討論)。
+# percentile_normalize_body 換算成百分位,不然幾乎所有使用者都會比全部 NBA
+# 球員矮/輕,身材模板永遠是最矮的後衛(2026-09-11 討論)。compute_player_sizes
+# (原型多數決要用的「球員池內部排名」size)一定要在 percentile_normalize_body
+# 之前、用原始 players 名單算——percentile_normalize_body 會把 body.height_cm/
+# weight_kg 覆寫成另一種百分位,順序顛倒的話兩套百分位會混在一起算錯
+# (2026-10 討論,見 engine/archetype.py 檔頭)。
 # 天花板的定義是「D 軸接近、主導差距在 A/B/C 某個技能軸」——一個身體條件跟你
 # 差不多、但技術更成熟的球員,是一個真正練得到的目標,而不是天賦不同的另一個
 # 人;原本的「反面對照」段落用的是「D 軸差距最大」邏輯,找到的其實是後者,所以
@@ -39,7 +42,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from engine.archetype import classify_archetype_by_majority  # noqa: E402
+from engine.archetype import classify_archetype_by_majority, compute_player_sizes  # noqa: E402
 from engine.axis_position import AXES, score_axis_coordinates  # noqa: E402
 from engine.body_fit import collect_body_measurements, percentile_normalize_body  # noqa: E402
 from engine.player_matching import (  # noqa: E402
@@ -147,6 +150,7 @@ def main():
         collect_body_measurements(questions["body_measurements"], body_answers)
         if body_answers else {}
     )
+    player_sizes = compute_player_sizes(players)
     user_body_pct, players_pct, body_field_ranges_pct = percentile_normalize_body(
         user_body, players, body_field_ranges
     )
@@ -154,7 +158,7 @@ def main():
         coordinates, user_body_pct, players_pct, body_field_ranges_pct, k=10
     )
 
-    archetype = classify_archetype_by_majority(ranked, archetypes)
+    archetype = classify_archetype_by_majority(ranked, archetypes, player_sizes=player_sizes)
     print(f"\n球場定位原型：{archetype['name_zh']}")
     if ranked:
         print(f"一句話球探報告：{build_scouting_report(archetype, ranked[0], skills_by_id)}")
