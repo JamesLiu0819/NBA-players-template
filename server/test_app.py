@@ -285,7 +285,8 @@ class PriorityResultsTest(unittest.TestCase):
         data = response.get_json()
         self.assertEqual(set(data["coordinates"].keys()), {"A", "B1", "B2", "C1", "C2", "D"})
         self.assertEqual(len(data["priorities"]), 15)
-        self.assertIn("dominant_factor_sentence", data)
+        self.assertNotIn("dominant_factor_sentence", data)
+        self.assertTrue(all("action" in p for p in data["priorities"]))
         # this endpoint is priority-only -- template/matching fields don't belong here
         self.assertNotIn("top_10", data)
         self.assertNotIn("deep_templates", data)

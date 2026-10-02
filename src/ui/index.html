@@ -843,13 +843,19 @@
   .priority-row .headline { display: flex; justify-content: space-between; align-items: baseline; gap: 0.75rem; }
   .priority-row .rank { font-family: var(--mono); font-weight: 800; color: var(--accent-ink); margin-right: 0.5rem; }
 
-  .dominant-sentence {
-    background: var(--accent-wash);
-    border-left: 2px solid var(--accent);
-    padding: 0.7rem 0.9rem;
-    border-radius: 0 6px 6px 0;
+  .priority-row-top {
+    border-color: var(--accent);
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .priority-row-top .headline { font-size: 1.05rem; font-weight: 700; }
+  .priority-row-top .rank { font-size: 1.1rem; }
+
+  .priority-action {
+    margin: 0.5rem 0 0;
     font-size: 0.88rem;
-    margin: 0.75rem 0 0;
+    color: var(--ink-soft);
   }
 
   /* ---------- headline card: archetype + one-line report + radar + share ---------- */
@@ -1307,6 +1313,7 @@
       bodyMeasurementNote: "身高、體重為必填，其餘身材數值選填，填寫越完整，身材模板與運動能力比對會越準確。",
       stepperIncreaseAriaTemplate: (prompt) => `${prompt}加 1`,
       stepperDecreaseAriaTemplate: (prompt) => `${prompt}減 1`,
+      priorityActionTemplate: (action) => `具體可以從「${action}」開始練習`,
       mostSuitable: "最貼合",
     },
     "zh-Hans": {
@@ -1374,6 +1381,7 @@
       bodyMeasurementNote: "身高、体重为必填，其余身材数值选填，填写越完整，身材模板与运动能力比对会越准确。",
       stepperIncreaseAriaTemplate: (prompt) => `${prompt}加 1`,
       stepperDecreaseAriaTemplate: (prompt) => `${prompt}减 1`,
+      priorityActionTemplate: (action) => `具体可以从「${action}」开始练习`,
       mostSuitable: "最贴合",
     },
     en: {
@@ -1441,6 +1449,7 @@
       bodyMeasurementNote: "Height and weight are required; other body measurements are optional. The more complete they are, the more accurate your body-fit template and athleticism comparison will be.",
       stepperIncreaseAriaTemplate: (prompt) => `${prompt}, increase by 1`,
       stepperDecreaseAriaTemplate: (prompt) => `${prompt}, decrease by 1`,
+      priorityActionTemplate: (action) => `A concrete starting point: ${action}`,
       mostSuitable: "Best Match",
     },
   };
@@ -2126,11 +2135,11 @@
       </div>`;
   }
 
-  function renderPriorityRow(item, index) {
+  function renderPriorityRow(item, rank) {
     return `
       <div class="priority-row">
         <div class="headline">
-          <span><span class="rank">#${index + 1}</span>${item.name_zh}</span>
+          <span><span class="rank">#${rank}</span>${item.name_zh}</span>
         </div>
       </div>`;
   }
@@ -2188,18 +2197,20 @@
 
   function renderPriorityReport(data) {
     const el = document.getElementById("priority-report");
-    const rowsHtml = data.priorities.map((item, i) => renderPriorityRow(item, i));
-    const splitAt = Math.ceil(rowsHtml.length / 2);
-    const leftHtml = rowsHtml.slice(0, splitAt).join("");
-    const rightHtml = rowsHtml.slice(splitAt).join("");
+    const [first, ...rest] = data.priorities.slice(0, 5);
+
+    const topHtml = first ? `
+      <div class="priority-row priority-row-top">
+        <div class="headline"><span class="rank">#1</span>${first.name_zh}</div>
+        <p class="priority-action">${t().priorityActionTemplate(first.action)}</p>
+      </div>` : "";
+    const restHtml = rest.map((item, i) => renderPriorityRow(item, i + 2)).join("");
+
     el.innerHTML = `
       <section class="block report-fade">
         <div class="section-head"><span class="section-tag">SECTION 3</span><h2>${t().section3Title}</h2></div>
-        <div class="priority-columns">
-          <div class="priority-column">${leftHtml}</div>
-          <div class="priority-column">${rightHtml}</div>
-        </div>
-        ${data.dominant_factor_sentence ? `<p class="dominant-sentence">${data.dominant_factor_sentence}</p>` : ""}
+        ${topHtml}
+        <div class="priority-columns">${restHtml}</div>
       </section>
     `;
   }

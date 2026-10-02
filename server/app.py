@@ -99,7 +99,7 @@ from engine.player_matching import (  # noqa: E402
 )
 from engine.priority import rank_priorities  # noqa: E402
 from scripts.run_player_match import build_scouting_report, describe_growth_recommendation  # noqa: E402
-from scripts.run_priority import build_priority_items, format_dominant_factor_sentence  # noqa: E402
+from scripts.run_priority import build_priority_items  # noqa: E402
 
 UI_DIR = ROOT / "src" / "ui"
 TEMPLATE_REQUIRED_FIELDS = ("axis_answers",)
@@ -214,11 +214,12 @@ def compute_template_results(payload, questions, players, skills_by_id, archetyp
     }
 
 
-def compute_priority_results(payload, questions, skills, lang="zh"):
+def compute_priority_results(payload, questions, skills):
     coordinates, items = build_priority_items(
         questions, skills, payload["axis_answers"], payload["skill_answers"], payload["env"]
     )
     ranked_priorities = rank_priorities(items)
+    skills_by_id = {s["id"]: s for s in skills}
 
     return {
         "coordinates": coordinates,
@@ -226,10 +227,10 @@ def compute_priority_results(payload, questions, skills, lang="zh"):
             {
                 "skill_id": item["skill_id"], "name_zh": item["name_zh"], "P": item["P"],
                 "G": item["G"], "E": item["E"], "R": item["R"], "C": item["C"],
+                "action": skills_by_id[item["skill_id"]]["metric"]["action"],
             }
             for item in ranked_priorities
         ],
-        "dominant_factor_sentence": format_dominant_factor_sentence(ranked_priorities, lang),
     }
 
 
@@ -301,7 +302,7 @@ def api_priority_results():
 
     questions, skills, _players = load_data(lang=lang)
     try:
-        results = compute_priority_results(payload, questions, skills, lang)
+        results = compute_priority_results(payload, questions, skills)
     except (ValueError, KeyError) as e:
         return jsonify({"error": str(e)}), 400
 
