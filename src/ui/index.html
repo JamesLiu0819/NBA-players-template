@@ -60,6 +60,14 @@
     border-bottom: 1px solid var(--line);
   }
 
+  /* 導覽列是 sticky 56px 高,scrollIntoView({block:"start"}) 預設會把目標
+     元素的最上緣貼齊 viewport y=0,結果被 sticky 導覽列蓋住一截,看起來
+     像「捲過頭」,其實是目標本身被擋住了(2026-10 討論)。這裡統一留出導覽
+     列的高度,不用每個捲動目標各自處理。 */
+  #archetype-headline, #priority-report, #stage1-form, #stage2-block, #stage2-env-section {
+    scroll-margin-top: 72px;
+  }
+
   .topnav-inner {
     max-width: 720px;
     margin: 0 auto;
@@ -270,7 +278,11 @@
   .page {
     max-width: 720px;
     margin: 0 auto;
-    padding: 0 1.25rem 5rem;
+    /* 底部留白至少半個視窗高:scrollIntoView({block:"start"}) 沒辦法把
+       太靠近頁尾的區塊(例如訓練計劃)捲到視窗最上緣,如果區塊後面剩下的
+       內容不夠一個視窗高——捲動會卡在半路,看起來像「跳到奇怪的位置」
+       (2026-10 討論,訓練計劃分頁捲動跳太下面的真正原因)。 */
+    padding: 0 1.25rem max(5rem, 100vh);
   }
 
   /* ---------- masthead + ledger progress ---------- */
@@ -673,14 +685,38 @@
 
   .body-question .unit { color: var(--ink-soft); font-size: 0.82rem; }
 
-  .env-note {
-    background: var(--accent-wash);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 0.75rem 1rem;
-    font-size: 0.85rem;
+  .env-sliders {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .env-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .env-row label {
+    flex: 0 0 9rem;
+    font-size: 0.82rem;
     color: var(--ink-soft);
-    margin-bottom: 1rem;
+  }
+
+  .env-row input[type="range"] {
+    flex: 1;
+    accent-color: var(--accent);
+  }
+
+  .env-row .env-value {
+    flex: 0 0 2.6rem;
+    text-align: right;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    color: var(--ink);
   }
 
   .preset-row {
@@ -719,7 +755,8 @@
     gap: 0.6rem;
   }
 
-  #stage1-submit-block {
+  #stage1-submit-block,
+  #stage2-submit-block {
     align-items: center;
     text-align: center;
   }
@@ -789,6 +826,12 @@
     to { opacity: 1; transform: none; }
   }
 
+  .priority-columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0 1rem;
+  }
+
   .priority-row {
     border: 1px solid var(--line);
     border-radius: var(--radius);
@@ -799,11 +842,6 @@
 
   .priority-row .headline { display: flex; justify-content: space-between; align-items: baseline; gap: 0.75rem; }
   .priority-row .rank { font-family: var(--mono); font-weight: 800; color: var(--accent-ink); margin-right: 0.5rem; }
-  .priority-row .p-value { font-family: var(--mono); color: var(--ink-soft); font-size: 0.85rem; }
-  .priority-row details { margin-top: 0.4rem; font-size: 0.82rem; }
-  .priority-row summary { cursor: pointer; color: var(--ink-soft); }
-  .priority-row table.factors { width: 100%; border-collapse: collapse; margin-top: 0.3rem; font-family: var(--mono); }
-  .priority-row table.factors td { padding: 0.15rem 0.4rem; border-top: 1px solid var(--line); }
 
   .dominant-sentence {
     background: var(--accent-wash);
@@ -1015,23 +1053,6 @@
   }
 
   #stage2-block { display: none; }
-
-  .random-fill-btn {
-    position: fixed;
-    top: 68px;
-    right: 1rem;
-    z-index: 40;
-    padding: 0.5rem 0.9rem;
-    border-radius: 999px;
-    border: 1px solid var(--line);
-    background: var(--paper-raised);
-    color: var(--ink-soft);
-    font-size: 0.8rem;
-    cursor: pointer;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
-  }
-
-  .random-fill-btn:hover { color: var(--accent-ink); border-color: var(--accent); }
 </style>
 <script>
   (function () {
@@ -1049,7 +1070,6 @@
       <span class="topnav-name" id="topnav-brand-name">球探報告</span>
     </a>
     <div class="topnav-tabs">
-      <a href="#" class="topnav-tab active" id="topnav-tab-home">首頁</a>
       <a href="#" class="topnav-tab" id="topnav-tab-template">我的模板</a>
       <a href="#" class="topnav-tab" id="topnav-tab-priority">訓練計劃</a>
     </div>
@@ -1061,8 +1081,6 @@
     </div>
   </div>
 </nav>
-
-<button type="button" id="random-fill-btn" class="random-fill-btn" title="隨機填答,測試用" style="display:none">🎲 隨機填答(測試用)</button>
 
 <div class="page">
 
@@ -1151,16 +1169,12 @@
           <span class="section-tag">SECTION D</span>
           <h2 id="env-section-title">聯賽環境(暫定值)</h2>
         </div>
-        <div class="env-note" id="env-note">
-          正式的環境倍率表還沒建立,需要領域專家填寫完整的 5 維 × 3 檔倍率表。下面三個選項是暫定值,
-          只用來測試「環境會不會影響訓練優先序」這個機制,不是精準數字。如果你沒在打正式比賽,
-          隨便選一個都可以——這一區本來就是給有固定聯賽環境的人用的。
-        </div>
         <div class="preset-row" id="preset-row">
           <button type="button" data-preset="collapsed_no_shooters">內縮防守 / 缺乏射手</button>
           <button type="button" data-preset="tight_perimeter_opp_shooters">貼外線 / 對手有射手</button>
           <button type="button" data-preset="zone_defense">區域防守為主</button>
         </div>
+        <div class="env-sliders" id="env-sliders"></div>
       </section>
 
       <div class="submit-block" id="stage2-submit-block" style="display:none">
@@ -1180,9 +1194,6 @@
   <div id="priority-report"></div>
 
   <footer class="disclosure">
-    <span id="footer-disclosure-line1">球員資料是手動估算的種子資料集,不是真實統計數據推導的結果;環境權重是暫定值;貼合度星級門檻也是暫定值。</span>
-    <span id="footer-disclosure-line2">這些數字之後會被正式的球員資料庫跟環境倍率表取代。</span>
-    <br /><br />
     <a href="#" id="restart-link" style="display:none">重新填一次</a>
   </footer>
 
@@ -1247,15 +1258,12 @@
       noMatchingPlayer: "目前沒有符合條件的球員",
       axisLabels: { A: "持球創造", B1: "外線投射", B2: "禁區得分", C1: "外圍防守", C2: "禁區防守", D: "運動表現" },
       brandName: "球探報告",
-      navHome: "首頁",
       navMyTemplate: "我的模板",
       navTrainingPlan: "訓練計劃",
       loginButton: "登入",
       themeToggleToLight: "切換成米白主題",
       themeToggleToDark: "切換成深色主題",
       visitCounterLabel: "使用人數: ",
-      randomFillTitle: "隨機填答,測試用",
-      randomFillButton: "🎲 隨機填答(測試用)",
       loadingLabel: "載入題庫中…",
       ctaHeading: "想知道自己該優先練什麼嗎？",
       ctaBody: "這需要再多填 15 題技能行為題,並且選擇你的聯賽防守環境——不想看訓練建議的話,到這裡就結束了。",
@@ -1266,12 +1274,9 @@
       remainingQuestions: (n) => `還差 ${n} 題`,
       processingLabel: "整理報告中",
       envSectionTitle: "聯賽環境(暫定值)",
-      envNote: "正式的環境倍率表還沒建立,需要領域專家填寫完整的 5 維 × 3 檔倍率表。下面三個選項是暫定值,只用來測試「環境會不會影響訓練優先序」這個機制,不是精準數字。如果你沒在打正式比賽,隨便選一個都可以——這一區本來就是給有固定聯賽環境的人用的。",
       envPreset1: "內縮防守 / 缺乏射手",
       envPreset2: "貼外線 / 對手有射手",
       envPreset3: "區域防守為主",
-      footerDisclosureLine1: "球員資料是手動估算的種子資料集,不是真實統計數據推導的結果;環境權重是暫定值;貼合度星級門檻也是暫定值。",
-      footerDisclosureLine2: "這些數字之後會被正式的球員資料庫跟環境倍率表取代。",
       restartLink: "重新填一次",
       deepTemplateSkillFitLabel: "技術模板",
       deepTemplateSkillFitCaption: "排除運動能力,技術層面跟你最接近的球員（打法風格）",
@@ -1281,11 +1286,6 @@
       deepTemplateCeilingCaption: "運動能力跟你接近,但技術層面更成熟的球員",
       dominantAxisGap: (axisLabel) => `${axisLabel}差距最大`,
       growthNotePrefix: " → 可以注意：",
-      expandFactorsSummary: "展開 G / E / R / C",
-      factorGapLabel: "能力缺口 G",
-      factorEnvLabel: "環境權重 E",
-      factorRelevanceLabel: "相關性 R",
-      factorCostLabel: "習得成本 C",
       radarAriaLabel: (matchLabel) => `六軸雷達圖：你跟${matchLabel}的比較`,
       youLabel: "你",
       shareImageHeader: "🏀 球探報告",
@@ -1325,15 +1325,12 @@
       noMatchingPlayer: "目前没有符合条件的球员",
       axisLabels: { A: "持球创造", B1: "外线投射", B2: "禁区得分", C1: "外围防守", C2: "禁区防守", D: "运动表现" },
       brandName: "球探报告",
-      navHome: "首页",
       navMyTemplate: "我的模板",
       navTrainingPlan: "训练计划",
       loginButton: "登录",
       themeToggleToLight: "切换成米白主题",
       themeToggleToDark: "切换成深色主题",
       visitCounterLabel: "使用人数: ",
-      randomFillTitle: "随机填答,测试用",
-      randomFillButton: "🎲 随机填答(测试用)",
       loadingLabel: "加载题库中…",
       ctaHeading: "想知道自己该优先练什么吗？",
       ctaBody: "这需要再多填 15 题技能行为题,并且选择你的联赛防守环境——不想看训练建议的话,到这里就结束了。",
@@ -1344,12 +1341,9 @@
       remainingQuestions: (n) => `还差 ${n} 题`,
       processingLabel: "整理报告中",
       envSectionTitle: "联赛环境(暂定值)",
-      envNote: "正式的环境倍率表还没创建,需要领域专家填写完整的 5 维 × 3 档倍率表。下面三个选项是暂定值,只用来测试「环境会不会影响训练优先序」这个机制,不是精准数字。如果你没在打正式比赛,随便选一个都可以——这一区本来就是给有固定联赛环境的人用的。",
       envPreset1: "内缩防守 / 缺乏射手",
       envPreset2: "贴外线 / 对手有射手",
       envPreset3: "区域防守为主",
-      footerDisclosureLine1: "球员数据是手动估算的种子数据集,不是真实统计数据推导的结果;环境权重是暂定值;贴合度星级门槛也是暂定值。",
-      footerDisclosureLine2: "这些数字之后会被正式的球员数据库跟环境倍率表取代。",
       restartLink: "重新填一次",
       deepTemplateSkillFitLabel: "技术模板",
       deepTemplateSkillFitCaption: "排除运动能力,技术层面跟你最接近的球员（打法风格）",
@@ -1359,11 +1353,6 @@
       deepTemplateCeilingCaption: "运动能力跟你接近,但技术层面更成熟的球员",
       dominantAxisGap: (axisLabel) => `${axisLabel}差距最大`,
       growthNotePrefix: " → 可以注意：",
-      expandFactorsSummary: "展开 G / E / R / C",
-      factorGapLabel: "能力缺口 G",
-      factorEnvLabel: "环境权重 E",
-      factorRelevanceLabel: "相关性 R",
-      factorCostLabel: "习得成本 C",
       radarAriaLabel: (matchLabel) => `六轴雷达图：你跟${matchLabel}的比较`,
       youLabel: "你",
       shareImageHeader: "🏀 球探报告",
@@ -1403,15 +1392,12 @@
       noMatchingPlayer: "No matching player found",
       axisLabels: { A: "Creation", B1: "Perimeter Scoring", B2: "Paint Scoring", C1: "Perimeter D", C2: "Rim D", D: "Athleticism" },
       brandName: "Scouting Report",
-      navHome: "Home",
       navMyTemplate: "My Template",
       navTrainingPlan: "Training Plan",
       loginButton: "Log In",
       themeToggleToLight: "Switch to light theme",
       themeToggleToDark: "Switch to dark theme",
       visitCounterLabel: "Users: ",
-      randomFillTitle: "Random fill (testing only)",
-      randomFillButton: "🎲 Random Fill (Testing)",
       loadingLabel: "Loading questions…",
       ctaHeading: "Want to know what to prioritize?",
       ctaBody: "This needs 15 more skill-behavior questions, plus your league defensive environment -- if you don't want training suggestions, you can stop here.",
@@ -1422,12 +1408,9 @@
       remainingQuestions: (n) => `${n} more question${n === 1 ? "" : "s"} to go`,
       processingLabel: "Preparing your report…",
       envSectionTitle: "League Environment (Placeholder)",
-      envNote: "The real environment multiplier table hasn't been built yet -- that needs a domain expert to fill in the full 5-dimension x 3-tier table. The three options below are placeholders, only meant to test whether environment affects training priority, not precise numbers. If you're not playing in an organized league, pick any of them -- this section is really for people with a fixed league environment.",
       envPreset1: "Packed Defense / No Shooters",
       envPreset2: "Tight Perimeter / Opponent Has Shooters",
       envPreset3: "Zone Defense",
-      footerDisclosureLine1: "Player data is a hand-estimated seed dataset, not derived from real statistics; environment weights are placeholders; fit-star thresholds are also placeholders.",
-      footerDisclosureLine2: "These numbers will be replaced by a real player database and environment multiplier table later.",
       restartLink: "Start Over",
       deepTemplateSkillFitLabel: "Skill-Fit Template",
       deepTemplateSkillFitCaption: "Excluding athleticism, the player closest to you technically (playstyle)",
@@ -1437,11 +1420,6 @@
       deepTemplateCeilingCaption: "A player with athleticism close to yours but more mature skills",
       dominantAxisGap: (axisLabel) => `Biggest gap: ${axisLabel}`,
       growthNotePrefix: " → Try: ",
-      expandFactorsSummary: "Expand G / E / R / C",
-      factorGapLabel: "Ability Gap (G)",
-      factorEnvLabel: "League Environment Weight (E)",
-      factorRelevanceLabel: "Positional Relevance (R)",
-      factorCostLabel: "Learning Cost (C)",
       radarAriaLabel: (matchLabel) => `Six-axis radar chart: you vs ${matchLabel}`,
       youLabel: "You",
       shareImageHeader: "🏀 Scouting Report",
@@ -1606,6 +1584,19 @@
         label.classList.add("selected");
       }
       input.addEventListener("change", () => onSelect(score, label));
+      // Clicking a radio that's ALREADY the recorded answer for this
+      // question (e.g. you went back a step, then re-pick the same option
+      // to move forward again) doesn't fire "change" -- its checked state
+      // never actually flips, so the browser never raises the event. That
+      // silently stranded users on the question with no visible way
+      // forward (2026-10 bug report: "can only go back, not forward").
+      // "click" always fires regardless of whether checked changed, so use
+      // it as the fallback specifically for the same-answer-again case;
+      // genuinely new selections are left to "change" alone so onSelect
+      // doesn't fire twice for one click.
+      input.addEventListener("click", () => {
+        if (state.answers[q.id] === score) onSelect(score, label);
+      });
       // Enter on a focused radio can implicitly submit the *form* in some
       // browsers (Firefox in particular) even though the visible submit
       // button is disabled mid-wizard -- that silently skips every
@@ -1834,102 +1825,66 @@
     renderRadioStep("stage2-wizard", q, eyebrow, idx, total, back, advance);
   }
 
-  // ---- random-fill (testing only): fills whichever stage is currently visible ----
-
-  function randomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-
-  function checkRadioAnswer(questionId, score) {
-    const input = document.querySelector(`input[name="${CSS.escape(questionId)}"][value="${score}"]`);
-    if (input) input.checked = true;
-    state.answers[questionId] = score;
-  }
-
-  function randomFloat(min, max) {
-    return min + Math.random() * (max - min);
-  }
-
-  function clampToQuestion(value, q) {
-    return Math.min(q.max, Math.max(q.min, value));
-  }
-
-  function randomBodyValues() {
-    // Independent per-field random draws (the old behavior) can produce
-    // physically impossible bodies -- e.g. wingspan shorter than height, or
-    // a standing reach taller than the running (jumping) reach. Each field
-    // below is derived from the previous one with a randomized but always
-    // non-negative offset, so the physical ordering is guaranteed to hold
-    // even after clamping to each question's own [min, max] (the field
-    // ranges leave enough headroom that clamping never flips the order --
-    // see the 2026-09-11 body-aware-matching / random-fill discussion).
-    const byField = Object.fromEntries(state.bodyQuestions.map((q) => [q.field, q]));
-    const values = {};
-
-    if (byField.height_cm) {
-      values.height_cm = randomFloat(byField.height_cm.min, byField.height_cm.max);
-    }
-    if (byField.weight_kg) {
-      values.weight_kg = randomFloat(byField.weight_kg.min, byField.weight_kg.max);
-    }
-    if (byField.wingspan_cm) {
-      const base = values.height_cm ?? randomFloat(byField.wingspan_cm.min, byField.wingspan_cm.max);
-      values.wingspan_cm = clampToQuestion(base + randomFloat(0, 15), byField.wingspan_cm);
-    }
-    if (byField.standing_reach_cm) {
-      const base = values.wingspan_cm ?? randomFloat(byField.standing_reach_cm.min, byField.standing_reach_cm.max);
-      values.standing_reach_cm = clampToQuestion(base + randomFloat(28, 36), byField.standing_reach_cm);
-    }
-    if (byField.running_vertical_reach_cm) {
-      const base = values.standing_reach_cm ?? randomFloat(byField.running_vertical_reach_cm.min, byField.running_vertical_reach_cm.max);
-      values.running_vertical_reach_cm = clampToQuestion(base + randomFloat(30, 100), byField.running_vertical_reach_cm);
-    }
-    if (byField.sprint_100m_seconds) {
-      values.sprint_100m_seconds = randomFloat(byField.sprint_100m_seconds.min, byField.sprint_100m_seconds.max);
-    }
-
-    return values;
-  }
-
-  function randomFillStage1() {
-    for (const q of state.axisQuestions) checkRadioAnswer(q.id, randomInt(1, 5));
-    const bodyValues = randomBodyValues();
-    for (const q of state.bodyQuestions) {
-      const value = Math.round(bodyValues[q.field] * 10) / 10;
-      const input = document.getElementById(q.id);
-      if (input) input.value = value;
-      state.bodyAnswers[q.id] = value;
-    }
-    updateStage1Progress();
-  }
-
-  function randomFillStage2() {
-    for (const q of state.skillQuestions) checkRadioAnswer(q.id, randomInt(1, 5));
-    updateStage2Progress();
-  }
-
-  function handleRandomFill() {
-    // 隨機填答是測試用途,目的是快速跳到可送出的狀態,所以填完直接把逐題
-    // 精靈跳到最後一步(顯示送出按鈕),不用還要手動點完剩下的題目
-    // (2026-09-13 單題精靈改動)。
-    if (document.getElementById("stage1-form").style.display !== "none") {
-      randomFillStage1();
-      state.stage1StepIndex = stage1StepSequence().length;
-      renderStage1Wizard();
-    }
-    if (document.getElementById("stage2-block").style.display !== "none") {
-      randomFillStage2();
-      state.stage2StepIndex = state.skillQuestions.length;
-      renderStage2Wizard();
-    }
-  }
-
   function applyPreset(key) {
     state.selectedPreset = key;
     state.env = { ...ENV_PRESETS[key] };
     document.querySelectorAll("#preset-row button").forEach((btn) => {
       btn.classList.toggle("selected", btn.dataset.preset === key);
     });
+    syncEnvSliders();
+  }
+
+  // 聯賽環境除了 3 個推薦預設,也讓使用者自己拉每個技能的倍率滑桿客製化
+  // (2026-10 討論:原本只有預設按鈕,拿掉說明文字後使用者完全沒辦法自訂,
+  // 把 tools/survey.html 本來就有的逐技能滑桿搬過來)。手動拉動滑桿會覆蓋
+  // 掉目前選的預設,所以同時要取消 preset-row 的 selected 樣式,但不用
+  // 清空 state.selectedPreset 以外的狀態——倍率本身就是 state.env,滑桿
+  // 只是另一種寫入方式。
+  function renderEnvSliders() {
+    const container = document.getElementById("env-sliders");
+    container.innerHTML = "";
+    for (const skill of state.skills) {
+      const row = document.createElement("div");
+      row.className = "env-row";
+
+      const label = document.createElement("label");
+      label.htmlFor = `env-${skill.id}`;
+      label.textContent = skill.name_zh;
+
+      const range = document.createElement("input");
+      range.type = "range";
+      range.id = `env-${skill.id}`;
+      range.min = "0.5";
+      range.max = "2.0";
+      range.step = "0.1";
+      const current = state.env[skill.id] ?? 1.0;
+      range.value = String(current);
+
+      const valueSpan = document.createElement("span");
+      valueSpan.className = "env-value";
+      valueSpan.textContent = `×${Number(current).toFixed(1)}`;
+
+      range.addEventListener("input", () => {
+        state.env[skill.id] = Number(range.value);
+        valueSpan.textContent = `×${Number(range.value).toFixed(1)}`;
+        state.selectedPreset = null;
+        document.querySelectorAll("#preset-row button").forEach((btn) => btn.classList.remove("selected"));
+      });
+
+      row.append(label, range, valueSpan);
+      container.appendChild(row);
+    }
+  }
+
+  function syncEnvSliders() {
+    for (const skill of state.skills) {
+      const range = document.getElementById(`env-${skill.id}`);
+      if (!range) continue;
+      const value = state.env[skill.id];
+      range.value = String(value);
+      const valueSpan = range.nextElementSibling;
+      if (valueSpan) valueSpan.textContent = `×${Number(value).toFixed(1)}`;
+    }
   }
 
   function buildTemplatePayload() {
@@ -2176,17 +2131,7 @@
       <div class="priority-row">
         <div class="headline">
           <span><span class="rank">#${index + 1}</span>${item.name_zh}</span>
-          <span class="p-value">P = ${item.P.toFixed(3)}</span>
         </div>
-        <details>
-          <summary>${t().expandFactorsSummary}</summary>
-          <table class="factors">
-            <tr><td>${t().factorGapLabel}</td><td>${item.G.toFixed(2)}</td></tr>
-            <tr><td>${t().factorEnvLabel}</td><td>${item.E.toFixed(2)}</td></tr>
-            <tr><td>${t().factorRelevanceLabel}</td><td>${item.R.toFixed(2)}</td></tr>
-            <tr><td>${t().factorCostLabel}</td><td>${item.C.toFixed(2)}</td></tr>
-          </table>
-        </details>
       </div>`;
   }
 
@@ -2216,7 +2161,7 @@
 
     el.innerHTML = `
       <section class="block report-fade">
-        <div class="headline-card">
+        <div class="headline-card" id="archetype-headline">
           <div class="archetype-name">${data.archetype.name_zh}</div>
           <p class="scouting-report">${data.scouting_report || ""}</p>
           <div class="radar-wrap">${radarHtml}</div>
@@ -2243,10 +2188,17 @@
 
   function renderPriorityReport(data) {
     const el = document.getElementById("priority-report");
+    const rowsHtml = data.priorities.map((item, i) => renderPriorityRow(item, i));
+    const splitAt = Math.ceil(rowsHtml.length / 2);
+    const leftHtml = rowsHtml.slice(0, splitAt).join("");
+    const rightHtml = rowsHtml.slice(splitAt).join("");
     el.innerHTML = `
       <section class="block report-fade">
         <div class="section-head"><span class="section-tag">SECTION 3</span><h2>${t().section3Title}</h2></div>
-        ${data.priorities.map((item, i) => renderPriorityRow(item, i)).join("")}
+        <div class="priority-columns">
+          <div class="priority-column">${leftHtml}</div>
+          <div class="priority-column">${rightHtml}</div>
+        </div>
         ${data.dominant_factor_sentence ? `<p class="dominant-sentence">${data.dominant_factor_sentence}</p>` : ""}
       </section>
     `;
@@ -2333,7 +2285,6 @@
     document.getElementById("mode-select").style.display = "none";
     document.getElementById("stage1-ledger").style.display = "block";
     document.getElementById("stage1-form").style.display = "block";
-    document.getElementById("random-fill-btn").style.display = "block";
 
     state.stage1StepIndex = 0;
     renderStage1Wizard();
@@ -2412,14 +2363,10 @@
     document.querySelector("#mode-alltime-btn .mode-title").textContent = strings.modeAlltimeTitle;
 
     document.getElementById("topnav-brand-name").textContent = strings.brandName;
-    document.getElementById("topnav-tab-home").textContent = strings.navHome;
     document.getElementById("topnav-tab-template").textContent = strings.navMyTemplate;
     document.getElementById("topnav-tab-priority").textContent = strings.navTrainingPlan;
     document.getElementById("topnav-login-btn").textContent = strings.loginButton;
     applyTheme(state.theme);
-
-    document.getElementById("random-fill-btn").title = strings.randomFillTitle;
-    document.getElementById("random-fill-btn").textContent = strings.randomFillButton;
 
     const visitCounterEl = document.getElementById("visit-counter");
     if (visitCounterEl.dataset.count) {
@@ -2444,14 +2391,12 @@
       : strings.progressLabel;
 
     document.getElementById("env-section-title").textContent = strings.envSectionTitle;
-    document.getElementById("env-note").textContent = strings.envNote;
     const presetButtons = document.querySelectorAll("#preset-row button");
     presetButtons[0].textContent = strings.envPreset1;
     presetButtons[1].textContent = strings.envPreset2;
     presetButtons[2].textContent = strings.envPreset3;
+    if (state.skills && state.skills.length > 0) renderEnvSliders();
 
-    document.getElementById("footer-disclosure-line1").textContent = strings.footerDisclosureLine1;
-    document.getElementById("footer-disclosure-line2").textContent = strings.footerDisclosureLine2;
     document.getElementById("restart-link").textContent = strings.restartLink;
 
     // 逐題精靈的送出提示(還差 N 題)也是語言相關文字,語言切換時要一併刷新
@@ -2533,7 +2478,6 @@
     document.getElementById("stage1-form").addEventListener("submit", handleStage1Submit);
     document.getElementById("stage2-form").addEventListener("submit", handleStage2Submit);
     document.getElementById("cta-btn").addEventListener("click", revealStage2);
-    document.getElementById("random-fill-btn").addEventListener("click", handleRandomFill);
     document.getElementById("restart-link").addEventListener("click", (e) => {
       e.preventDefault();
       window.location.reload();
@@ -2544,10 +2488,9 @@
 
   // ---- 上方導覽列(2026-09-13 討論)----
   // logo：回到最一開始的首頁(現役/歷史選項那頁)——直接重新整理頁面是最
-  // 保險的做法,保證所有作答狀態都清空,跟「最一開始」字面意思一致。
-  // 首頁分頁：帶到填問卷的畫面——問卷還沒開始就預設用現役球員池開始,
-  // 已經開始或送出過了就捲回問卷區(不清空已經填的答案)。
-  // 我的模板/訓練計劃分頁：捲到對應的報告區塊,報告還沒產生就不做事
+  // 保險的做法,保證所有作答狀態都清空,跟「最一開始」字面意思一致。首頁分頁
+  // 已經移除(2026-10 討論:按 logo/標題就能回首頁,不需要多一個分頁做一樣
+  // 的事)。我的模板/訓練計劃分頁：捲到對應的報告區塊,報告還沒產生就不做事
   // (畫面上還沒有東西可以捲過去)。
 
   function setActiveTopnavTab(activeId) {
@@ -2560,22 +2503,15 @@
     window.location.reload();
   });
 
-  document.getElementById("topnav-tab-home").addEventListener("click", (e) => {
-    e.preventDefault();
-    setActiveTopnavTab("topnav-tab-home");
-    if (document.getElementById("stage1-form").style.display === "none") {
-      revealQuiz("current");
-    } else {
-      document.getElementById("stage1-form").scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  });
-
   document.getElementById("topnav-tab-template").addEventListener("click", (e) => {
     e.preventDefault();
     setActiveTopnavTab("topnav-tab-template");
-    const el = document.getElementById("template-report");
-    if (el.innerHTML.trim() !== "") {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    // 捲到原型名稱+六角圖那個卡片,不是整個 template-report 容器的最上緣
+    // (容器裡最上面其實就是這張卡,但加個明確的錨點目標,之後要在上面插其他
+    // 區塊也不會不小心改掉捲動位置——2026-10 討論)。
+    const headlineEl = document.getElementById("archetype-headline");
+    if (headlineEl) {
+      headlineEl.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   });
 
