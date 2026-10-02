@@ -50,7 +50,9 @@
   /* ---------- top nav bar ---------- */
   /* logo/首頁/我的模板/訓練計劃已經接上導覽邏輯(2026-09-13 討論);原本的
      漢堡選單按鈕一直沒有接任何功能,2026-10 改成冷暖色主題切換按鈕。登入
-     按鈕還是佔位,登入記錄/分享模板/計分等功能規劃好了再回來接。 */
+     按鈕本來也是佔位,手機版因為 actions 區塊塞太多東西導致冷暖色按鈕
+     被擠到最右邊、視覺不對稱,乾脆直接移除,登入記錄/分享模板/計分等
+     功能規劃好了再回來重新設計(2026-10 討論)。 */
 
   .topnav {
     position: sticky;
@@ -208,22 +210,6 @@
 
   .lang-switch-menu button.active {
     color: var(--accent-ink);
-    background: var(--accent-wash);
-  }
-
-  .topnav-login {
-    border: 1px solid var(--accent);
-    border-radius: 999px;
-    background: transparent;
-    color: var(--accent-ink);
-    padding: 0.4rem 0.9rem;
-    font-size: 0.8rem;
-    font-weight: 700;
-    cursor: pointer;
-    font-family: inherit;
-  }
-
-  .topnav-login:hover {
     background: var(--accent-wash);
   }
 
@@ -1094,7 +1080,6 @@
     <div class="topnav-actions">
       <span class="visit-counter" id="visit-counter" style="display:none"></span>
       <div class="lang-switch" id="lang-switch"></div>
-      <button type="button" class="topnav-login" id="topnav-login-btn">登入</button>
       <button type="button" class="theme-toggle" id="theme-toggle-btn" aria-label="切換成米白主題">☀</button>
     </div>
   </div>
@@ -1276,7 +1261,6 @@
       brandName: "球探報告",
       navMyTemplate: "我的模板",
       navTrainingPlan: "訓練計劃",
-      loginButton: "登入",
       themeToggleToLight: "切換成米白主題",
       themeToggleToDark: "切換成深色主題",
       visitCounterLabel: "使用人數: ",
@@ -1345,7 +1329,6 @@
       brandName: "球探报告",
       navMyTemplate: "我的模板",
       navTrainingPlan: "训练计划",
-      loginButton: "登录",
       themeToggleToLight: "切换成米白主题",
       themeToggleToDark: "切换成深色主题",
       visitCounterLabel: "使用人数: ",
@@ -1414,7 +1397,6 @@
       brandName: "Scouting Report",
       navMyTemplate: "My Template",
       navTrainingPlan: "Training Plan",
-      loginButton: "Log In",
       themeToggleToLight: "Switch to light theme",
       themeToggleToDark: "Switch to dark theme",
       visitCounterLabel: "Users: ",
@@ -2401,7 +2383,6 @@
     document.getElementById("topnav-brand-name").textContent = strings.brandName;
     document.getElementById("topnav-tab-template").textContent = strings.navMyTemplate;
     document.getElementById("topnav-tab-priority").textContent = strings.navTrainingPlan;
-    document.getElementById("topnav-login-btn").textContent = strings.loginButton;
     applyTheme(state.theme);
 
     const visitCounterEl = document.getElementById("visit-counter");
