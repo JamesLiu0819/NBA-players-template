@@ -849,13 +849,24 @@
     margin-bottom: 1rem;
   }
 
-  .priority-row-top .headline { font-size: 1.05rem; font-weight: 700; }
+  .priority-row-top .headline { font-size: 1.05rem; font-weight: 700; flex-wrap: wrap; }
   .priority-row-top .rank { font-size: 1.1rem; }
 
   .priority-action {
-    margin: 0.5rem 0 0;
-    font-size: 0.88rem;
+    font-size: 0.85rem;
+    font-weight: 400;
     color: var(--ink-soft);
+    text-align: right;
+  }
+
+  .low-similarity-note {
+    background: var(--accent-wash);
+    border-left: 2px solid var(--accent);
+    padding: 0.7rem 0.9rem;
+    border-radius: 0 6px 6px 0;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    margin: 0 0 1rem;
   }
 
   /* ---------- headline card: archetype + one-line report + radar + share ---------- */
@@ -999,7 +1010,8 @@
   .card .rank, .top-match .rank { font-family: var(--mono); font-weight: 800; color: var(--accent-ink); font-size: 0.78rem; }
   .card .name, .top-match .name { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .card .team, .top-match .team { font-family: var(--mono); font-size: 0.72rem; color: var(--ink-soft); flex: none; }
-  .card .stat-line, .top-match .stat-line { display: flex; align-items: center; gap: 0.55rem; flex: none; }
+  .card .stat-line, .top-match .stat-line { display: flex; align-items: center; gap: 0.4rem; flex: none; }
+  .stat-label { font-size: 0.72rem; color: var(--ink-soft); }
   .stars { font-size: 0.85rem; }
   .stars .star { position: relative; display: inline-block; }
   .stars .star-empty { color: var(--line); }
@@ -1314,6 +1326,8 @@
       stepperIncreaseAriaTemplate: (prompt) => `${prompt}加 1`,
       stepperDecreaseAriaTemplate: (prompt) => `${prompt}減 1`,
       priorityActionTemplate: (action) => `具體可以從「${action}」開始練習`,
+      similarityLabel: "相似度",
+      lowSimilarityNote: "你的打法或身材組合比較特殊,目前球員池裡還沒有非常接近的對照組,所以相似度星等整體偏低——這代表你風格獨特,不代表你表現不好。",
       mostSuitable: "最貼合",
     },
     "zh-Hans": {
@@ -1382,6 +1396,8 @@
       stepperIncreaseAriaTemplate: (prompt) => `${prompt}加 1`,
       stepperDecreaseAriaTemplate: (prompt) => `${prompt}减 1`,
       priorityActionTemplate: (action) => `具体可以从「${action}」开始练习`,
+      similarityLabel: "相似度",
+      lowSimilarityNote: "你的打法或身材组合比较特殊,目前球员池里还没有非常接近的对照组,所以相似度星等整体偏低——这代表你风格独特,不代表你表现不好。",
       mostSuitable: "最贴合",
     },
     en: {
@@ -1450,6 +1466,8 @@
       stepperIncreaseAriaTemplate: (prompt) => `${prompt}, increase by 1`,
       stepperDecreaseAriaTemplate: (prompt) => `${prompt}, decrease by 1`,
       priorityActionTemplate: (action) => `A concrete starting point: ${action}`,
+      similarityLabel: "Similarity",
+      lowSimilarityNote: "Your style or body combination is uncommon enough that the player pool doesn't have a very close comp yet, so your similarity stars are lower across the board -- that means your style is distinctive, not that you're performing poorly.",
       mostSuitable: "Best Match",
     },
   };
@@ -2125,6 +2143,7 @@
           <span class="team mono">${m.team}</span>
         </div>
         <div class="stat-line">
+          <span class="stat-label">${t().similarityLabel}</span>
           <span class="stars">${starMarkup(m.fit_stars)}</span>
         </div>
       </div>
@@ -2167,6 +2186,14 @@
 
     const topMatch = data.top_10[0] || null;
     const radarHtml = topMatch ? buildRadarSvg(data.coordinates, topMatch.coordinates, topMatch.name) : "";
+    // 相似度星星是距離算出來的,跟球員強不強完全無關——但「星星」這個符號很
+    // 容易被看成評分,打法/身材比較極端的使用者可能整組對照表都偏低分,容易
+    // 誤以為是自己很差,而不是球員池剛好沒有很接近的對照組。只在真的發生時
+    // (連最接近的 #1 都沒到 2.5 顆星)才顯示這句話,不是每次都提醒
+    // (2026-10 討論)。
+    const lowSimilarityNoteHtml = topMatch && topMatch.fit_stars < 2.5
+      ? `<p class="low-similarity-note">${t().lowSimilarityNote}</p>`
+      : "";
 
     el.innerHTML = `
       <section class="block report-fade">
@@ -2185,6 +2212,7 @@
 
       <section class="block report-fade" style="animation-delay:.1s">
         <div class="section-head"><span class="section-tag">SECTION 2</span><h2>${t().section2Title}</h2></div>
+        ${lowSimilarityNoteHtml}
         <div class="match-list">${matchListHtml}</div>
       </section>
     `;
@@ -2201,8 +2229,10 @@
 
     const topHtml = first ? `
       <div class="priority-row priority-row-top">
-        <div class="headline"><span class="rank">#1</span>${first.name_zh}</div>
-        <p class="priority-action">${t().priorityActionTemplate(first.action)}</p>
+        <div class="headline">
+          <span><span class="rank">#1</span>${first.name_zh}</span>
+          <span class="priority-action">${t().priorityActionTemplate(first.action)}</span>
+        </div>
       </div>` : "";
     const restHtml = rest.map((item, i) => renderPriorityRow(item, i + 2)).join("");
 
