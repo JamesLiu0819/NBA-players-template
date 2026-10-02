@@ -1935,6 +1935,14 @@
 
   const RADAR_AXES = ["A", "B1", "B2", "D", "C2", "C1"];
 
+  // mirrors --sans so the downloaded share image reads the same as the
+  // on-page headline-card instead of falling back to a generic sans-serif
+  // (2026-10: the two had drifted apart -- left-aligned canvas text vs the
+  // card's text-align:center, "■" glyphs instead of the card's rounded
+  // legend chips, wrong subtitle color -- this constant plus the rewritten
+  // downloadShareImage() below bring them back in sync).
+  const CANVAS_SANS = '-apple-system, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+
   function radarAngle(i) {
     return -Math.PI / 2 + i * ((2 * Math.PI) / RADAR_AXES.length);
   }
@@ -2027,7 +2035,7 @@
     });
 
     ctx.fillStyle = "#9aa1ab";
-    ctx.font = "22px sans-serif";
+    ctx.font = `22px ${CANVAS_SANS}`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     RADAR_AXES.forEach((axis, i) => {
@@ -2061,44 +2069,69 @@
     drawPolygon(userCoords, "rgba(217, 160, 63, 0.35)", "#d9a03f");
   }
 
+  // draws a rounded-rect swatch + label pair, centered as a group around cx
+  // -- mirrors .legend-item/.legend-swatch (0.7rem chip, 3px radius) instead
+  // of the plain "■" glyph the canvas version used to fall back to.
+  function drawCenteredLegend(ctx, cx, y, items) {
+    const swatchSize = 20;
+    const swatchGap = 10;
+    const itemGap = 40;
+    ctx.font = `600 24px ${CANVAS_SANS}`;
+    ctx.textBaseline = "middle";
+    const widths = items.map((it) => swatchSize + swatchGap + ctx.measureText(it.label).width);
+    const totalWidth = widths.reduce((a, b) => a + b, 0) + itemGap * (items.length - 1);
+    let x = cx - totalWidth / 2;
+    items.forEach((it, i) => {
+      ctx.fillStyle = it.color;
+      ctx.beginPath();
+      ctx.roundRect(x, y - swatchSize / 2, swatchSize, swatchSize, 4);
+      ctx.fill();
+      ctx.fillStyle = "#9aa1ab";
+      ctx.textAlign = "left";
+      ctx.fillText(it.label, x + swatchSize + swatchGap, y + 1);
+      x += widths[i] + itemGap;
+    });
+  }
+
   function downloadShareImage(data, topMatch) {
     const canvas = document.createElement("canvas");
     canvas.width = 1000;
     canvas.height = 1150;
     const ctx = canvas.getContext("2d");
+    const cx = canvas.width / 2;
 
     ctx.fillStyle = "#1c2027";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = "#9aa1ab";
-    ctx.font = "bold 24px sans-serif";
-    ctx.textAlign = "left";
+    ctx.textAlign = "center";
     ctx.textBaseline = "alphabetic";
-    ctx.fillText(t().shareImageHeader, 60, 80);
 
+    ctx.fillStyle = "#9aa1ab";
+    ctx.font = `bold 24px ${CANVAS_SANS}`;
+    ctx.fillText(t().shareImageHeader, cx, 80);
+
+    // matches .archetype-name (1.6rem/800/--accent-ink)
     ctx.fillStyle = "#f0c76e";
-    ctx.font = "bold 56px sans-serif";
-    ctx.fillText(data.archetype.name_zh, 60, 170);
+    ctx.font = `800 56px ${CANVAS_SANS}`;
+    ctx.fillText(data.archetype.name_zh, cx, 170);
 
-    ctx.fillStyle = "#e9e7e0";
-    ctx.font = "26px sans-serif";
-    wrapCanvasText(ctx, data.scouting_report, 60, 230, canvas.width - 120, 38);
+    // matches .scouting-report (0.92rem/--ink-soft, was --ink before)
+    ctx.fillStyle = "#9aa1ab";
+    ctx.font = `26px ${CANVAS_SANS}`;
+    wrapCanvasText(ctx, data.scouting_report, cx, 230, canvas.width - 200, 38);
 
     if (topMatch) {
-      drawRadarOnCanvas(ctx, canvas.width / 2, 620, 150, data.coordinates, topMatch.coordinates);
-
-      ctx.textAlign = "left";
-      ctx.font = "22px sans-serif";
-      ctx.fillStyle = "#d9a03f";
-      ctx.fillText(`■ ${t().youLabel}`, 60, 900);
-      ctx.fillStyle = "#5b9bd5";
-      ctx.fillText(`■ ${topMatch.name}`, 200, 900);
+      drawRadarOnCanvas(ctx, cx, 620, 150, data.coordinates, topMatch.coordinates);
+      drawCenteredLegend(ctx, cx, 900, [
+        { label: t().youLabel, color: "#d9a03f" },
+        { label: topMatch.name, color: "#5b9bd5" },
+      ]);
     }
 
     ctx.fillStyle = "#6f6350";
-    ctx.font = "18px sans-serif";
+    ctx.font = `18px ${CANVAS_SANS}`;
     ctx.textAlign = "center";
-    ctx.fillText(t().shareImageDisclaimer, canvas.width / 2, canvas.height - 40);
+    ctx.fillText(t().shareImageDisclaimer, cx, canvas.height - 40);
 
     canvas.toBlob((blob) => {
       const url = URL.createObjectURL(blob);
