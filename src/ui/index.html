@@ -1113,11 +1113,10 @@
   <div class="rules-box">
     <h2>📋 作答說明</h2>
     <p>每一題都是 5 句具體的行為描述，請選出最符合你實際表現的那一句</p>
-    <p>身高、體重為必填，其餘身材數值選填；填寫越完整，身材模板與運動能力的比對就越準確</p>
     <h2>⚠️ 注意事項<h2>
     <p>選擇「實際上會怎麼做」，而不是「希望自己能做到的」。</p>
     <p>身高、體重為必填。其餘沒填的身材數值不會納入比對，身材模板可能因此比較不準。</p>
-    <p>所有配對結果都是座標距離的最近鄰計算，不是真人球探評測，僅供參考。</p>
+    <p>所有配對結果都是以座標距離最接近的計算，不是真人球探評測，結果僅供參考。</p>
   </div>
 
   <div class="mode-select" id="mode-select">
@@ -1263,14 +1262,13 @@
     zh: {
       pageTitle: "球探報告",
       eyebrow: "Self-Scouting Report",
-      subtitle: "行為錨定量表(BARS), 每題請選擇「哪句描述最符合我」",
+      subtitle: "行為量表, 請選擇「最符合我」的選項",
       rulesTitle: "📋 作答說明",
       rulesLine1: "每一題都是 5 句具體的行為描述，請選出最符合你實際表現的那一句",
-      rulesLine2: "身高、體重為必填，其餘身材數值選填；填寫越完整，身材模板與運動能力的比對就越準確",
       warningTitle: "⚠️ 注意事項",
       warningLine1: "選擇「實際上會怎麼做」，而不是「希望自己能做到的」。",
       warningLine2: "身高、體重為必填。其餘沒填的身材數值不會納入比對，身材模板可能因此比較不準。",
-      warningLine3: "所有配對結果都是座標距離的最近鄰計算，不是真人球探評測，僅供參考。",
+      warningLine3: "所有配對結果都是以座標距離最接近的計算，不是真人球探評測，結果僅供參考。",
       modeCurrentTitle: "現役球員模板",
       modeAlltimeTitle: "歷史球員模板",
       noMatchingPlayer: "目前沒有符合條件的球員",
@@ -1284,27 +1282,27 @@
       visitCounterLabel: "使用人數: ",
       loadingLabel: "載入題庫中…",
       ctaHeading: "想知道自己該優先練什麼嗎？",
-      ctaBody: "這需要再多填 15 題技能行為題,並且選擇你的聯賽防守環境——不想看訓練建議的話,到這裡就結束了。",
+      ctaBody: "再填 15 題技能行為題,並且選擇你的聯賽防守環境。",
       ctaButton: "分析我的訓練優先序",
       progressLabel: "作答進度",
       stage1SubmitButton: "查看我的球員模板",
       stage2SubmitButton: "產生訓練優先序",
       remainingQuestions: (n) => `還差 ${n} 題`,
       processingLabel: "整理報告中",
-      envSectionTitle: "聯賽環境(暫定值)",
+      envSectionTitle: "聯賽環境",
       envPreset1: "內縮防守 / 缺乏射手",
       envPreset2: "貼外線 / 對手有射手",
       envPreset3: "區域防守為主",
       restartLink: "重新填一次",
       deepTemplateSkillFitLabel: "技術模板",
-      deepTemplateSkillFitCaption: "排除運動能力,技術層面跟你最接近的球員（打法風格）",
+      deepTemplateSkillFitCaption: "排除運動能力,技術層面與打法風格跟你最接近的球員",
       deepTemplateBodyFitLabel: "身材模板",
       deepTemplateBodyFitCaption: "身材數值跟你最接近的球員",
       deepTemplateCeilingLabel: "天花板",
       deepTemplateCeilingCaption: "運動能力跟你接近,但技術層面更成熟的球員",
       dominantAxisGap: (axisLabel) => `${axisLabel}差距最大`,
       growthNotePrefix: " → 可以注意：",
-      radarAriaLabel: (matchLabel) => `六軸雷達圖：你跟${matchLabel}的比較`,
+      radarAriaLabel: (matchLabel) => `六角雷達圖：你跟${matchLabel}的比較`,
       youLabel: "你",
       shareImageHeader: "🏀 球探報告",
       shareImageDisclaimer: "非真人球探評測，僅供參考",
@@ -1327,20 +1325,19 @@
       stepperDecreaseAriaTemplate: (prompt) => `${prompt}減 1`,
       priorityActionTemplate: (action) => `具體可以從「${action}」開始練習`,
       similarityLabel: "相似度",
-      lowSimilarityNote: "你的打法或身材組合比較特殊,目前球員池裡還沒有非常接近的對照組,所以相似度星等整體偏低——這代表你風格獨特,不代表你表現不好。",
+      lowSimilarityNote: "你的球風或身材獨特,目前球員池裡還沒有非常接近的對照組,所以相似度星等整體偏低",
       mostSuitable: "最貼合",
     },
     "zh-Hans": {
       pageTitle: "球探报告",
       eyebrow: "Self-Scouting Report",
-      subtitle: "行为锚定量表(BARS), 每题请选择「哪句描述最符合我」",
+      subtitle: "行为量表, 请选择「最符合我」的选项",
       rulesTitle: "📋 作答说明",
       rulesLine1: "每一题都是 5 句具体的行为描述，请选出最符合你实际表现的那一句",
-      rulesLine2: "身高、体重为必填，其余身材数值选填；填写越完整，身材模板与运动能力的比对就越准确",
       warningTitle: "⚠️ 注意事项",
       warningLine1: "选择「实际上会怎么做」，而不是「希望自己能做到的」。",
       warningLine2: "身高、体重为必填。其余没填的身材数值不会纳入比对，身材模板可能因此比较不准。",
-      warningLine3: "所有配对结果都是座标距离的最近邻计算，不是真人球探评测，仅供参考。",
+      warningLine3: "所有配对结果都是以座标距离最接近的计算，不是真人球探评测，结果仅供参考。",
       modeCurrentTitle: "现役球员模板",
       modeAlltimeTitle: "历史球员模板",
       noMatchingPlayer: "目前没有符合条件的球员",
@@ -1354,27 +1351,27 @@
       visitCounterLabel: "使用人数: ",
       loadingLabel: "加载题库中…",
       ctaHeading: "想知道自己该优先练什么吗？",
-      ctaBody: "这需要再多填 15 题技能行为题,并且选择你的联赛防守环境——不想看训练建议的话,到这里就结束了。",
+      ctaBody: "再填 15 题技能行为题,并且选择你的联赛防守环境。",
       ctaButton: "分析我的训练优先序",
       progressLabel: "作答进度",
       stage1SubmitButton: "查看我的球员模板",
       stage2SubmitButton: "产生训练优先序",
       remainingQuestions: (n) => `还差 ${n} 题`,
       processingLabel: "整理报告中",
-      envSectionTitle: "联赛环境(暂定值)",
+      envSectionTitle: "联赛环境",
       envPreset1: "内缩防守 / 缺乏射手",
       envPreset2: "贴外线 / 对手有射手",
       envPreset3: "区域防守为主",
       restartLink: "重新填一次",
       deepTemplateSkillFitLabel: "技术模板",
-      deepTemplateSkillFitCaption: "排除运动能力,技术层面跟你最接近的球员（打法风格）",
+      deepTemplateSkillFitCaption: "排除运动能力,技术层面与打法风格跟你最接近的球员",
       deepTemplateBodyFitLabel: "身材模板",
       deepTemplateBodyFitCaption: "身材数值跟你最接近的球员",
       deepTemplateCeilingLabel: "天花板",
       deepTemplateCeilingCaption: "运动能力跟你接近,但技术层面更成熟的球员",
       dominantAxisGap: (axisLabel) => `${axisLabel}差距最大`,
       growthNotePrefix: " → 可以注意：",
-      radarAriaLabel: (matchLabel) => `六轴雷达图：你跟${matchLabel}的比较`,
+      radarAriaLabel: (matchLabel) => `六角雷达图：你跟${matchLabel}的比较`,
       youLabel: "你",
       shareImageHeader: "🏀 球探报告",
       shareImageDisclaimer: "非真人球探评测，仅供参考",
@@ -1397,20 +1394,19 @@
       stepperDecreaseAriaTemplate: (prompt) => `${prompt}减 1`,
       priorityActionTemplate: (action) => `具体可以从「${action}」开始练习`,
       similarityLabel: "相似度",
-      lowSimilarityNote: "你的打法或身材组合比较特殊,目前球员池里还没有非常接近的对照组,所以相似度星等整体偏低——这代表你风格独特,不代表你表现不好。",
+      lowSimilarityNote: "你的球风或身材独特,目前球员池里还没有非常接近的对照组,所以相似度星等整体偏低",
       mostSuitable: "最贴合",
     },
     en: {
       pageTitle: "Scouting Report",
       eyebrow: "Self-Scouting Report",
-      subtitle: "Behaviorally Anchored Rating Scale (BARS) -- pick the description that fits you best for each question",
+      subtitle: "A behavior scale -- pick the option that fits you best",
       rulesTitle: "📋 How to Answer",
       rulesLine1: "Each question has 5 specific behavior descriptions -- pick the one that best matches how you actually play",
-      rulesLine2: "Height and weight are required; other body measurements are optional -- the more complete they are, the more accurate your body-fit template and athleticism comparison will be",
       warningTitle: "⚠️ Before You Start",
       warningLine1: "Pick what you actually do, not what you wish you could do.",
       warningLine2: "Height and weight are required. Any other body measurement you skip won't be used for comparison, so your body-fit template may be less accurate.",
-      warningLine3: "All matches are nearest-neighbor calculations on coordinates -- not a real scout's evaluation, for reference only.",
+      warningLine3: "All matches are calculated by closest coordinate distance -- not a real scout's evaluation, results are for reference only.",
       modeCurrentTitle: "Current Players",
       modeAlltimeTitle: "All-Time Players",
       noMatchingPlayer: "No matching player found",
@@ -1424,27 +1420,27 @@
       visitCounterLabel: "Users: ",
       loadingLabel: "Loading questions…",
       ctaHeading: "Want to know what to prioritize?",
-      ctaBody: "This needs 15 more skill-behavior questions, plus your league defensive environment -- if you don't want training suggestions, you can stop here.",
+      ctaBody: "15 more skill-behavior questions, plus your league defensive environment.",
       ctaButton: "Analyze My Training Priorities",
       progressLabel: "Progress",
       stage1SubmitButton: "See My Player Template",
       stage2SubmitButton: "Generate Training Priorities",
       remainingQuestions: (n) => `${n} more question${n === 1 ? "" : "s"} to go`,
       processingLabel: "Preparing your report…",
-      envSectionTitle: "League Environment (Placeholder)",
+      envSectionTitle: "League Environment",
       envPreset1: "Packed Defense / No Shooters",
       envPreset2: "Tight Perimeter / Opponent Has Shooters",
       envPreset3: "Zone Defense",
       restartLink: "Start Over",
       deepTemplateSkillFitLabel: "Skill-Fit Template",
-      deepTemplateSkillFitCaption: "Excluding athleticism, the player closest to you technically (playstyle)",
+      deepTemplateSkillFitCaption: "Excluding athleticism, the player closest to you in technique and playstyle",
       deepTemplateBodyFitLabel: "Body-Fit Template",
       deepTemplateBodyFitCaption: "The player closest to you in body measurements",
       deepTemplateCeilingLabel: "Ceiling",
       deepTemplateCeilingCaption: "A player with athleticism close to yours but more mature skills",
       dominantAxisGap: (axisLabel) => `Biggest gap: ${axisLabel}`,
       growthNotePrefix: " → Try: ",
-      radarAriaLabel: (matchLabel) => `Six-axis radar chart: you vs ${matchLabel}`,
+      radarAriaLabel: (matchLabel) => `Hexagon radar chart: you vs ${matchLabel}`,
       youLabel: "You",
       shareImageHeader: "🏀 Scouting Report",
       shareImageDisclaimer: "Not a real scout's evaluation -- for reference only",
@@ -1467,7 +1463,7 @@
       stepperDecreaseAriaTemplate: (prompt) => `${prompt}, decrease by 1`,
       priorityActionTemplate: (action) => `A concrete starting point: ${action}`,
       similarityLabel: "Similarity",
-      lowSimilarityNote: "Your style or body combination is uncommon enough that the player pool doesn't have a very close comp yet, so your similarity stars are lower across the board -- that means your style is distinctive, not that you're performing poorly.",
+      lowSimilarityNote: "Your playstyle or body type is distinctive enough that the player pool doesn't have a very close comp yet, so your similarity stars are lower across the board.",
       mostSuitable: "Best Match",
     },
   };
@@ -2395,11 +2391,10 @@
     document.querySelector(".masthead p").textContent = strings.subtitle;
     document.querySelector(".rules-box h2:nth-of-type(1)").textContent = strings.rulesTitle;
     document.querySelectorAll(".rules-box p")[0].textContent = strings.rulesLine1;
-    document.querySelectorAll(".rules-box p")[1].textContent = strings.rulesLine2;
     document.querySelector(".rules-box h2:nth-of-type(2)").textContent = strings.warningTitle;
-    document.querySelectorAll(".rules-box p")[2].textContent = strings.warningLine1;
-    document.querySelectorAll(".rules-box p")[3].textContent = strings.warningLine2;
-    document.querySelectorAll(".rules-box p")[4].textContent = strings.warningLine3;
+    document.querySelectorAll(".rules-box p")[1].textContent = strings.warningLine1;
+    document.querySelectorAll(".rules-box p")[2].textContent = strings.warningLine2;
+    document.querySelectorAll(".rules-box p")[3].textContent = strings.warningLine3;
     document.querySelector("#mode-current-btn .mode-title").textContent = strings.modeCurrentTitle;
     document.querySelector("#mode-alltime-btn .mode-title").textContent = strings.modeAlltimeTitle;
 
