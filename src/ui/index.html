@@ -16,8 +16,8 @@
     --ink: #e9e7e0;
     --ink-soft: #9aa1ab;
     --line: rgba(255, 255, 255, 0.12);
-    --fabric-hi: rgba(255, 255, 255, 0.07);
-    --fabric-lo: rgba(0, 0, 0, 0.17);
+    --fabric-hi: rgba(255, 255, 255, 0.05);
+    --fabric-lo: rgba(0, 0, 0, 0.13);
     --accent: #d9a03f;
     --accent-ink: #f0c76e;
     --accent-wash: rgba(217, 160, 63, 0.16);
@@ -28,10 +28,11 @@
     /* 灰階雜訊,用 overlay 疊色模式蓋在紋理背景上(見下面 body, .ledger 規則)
        ——灰階本身不含顏色,疊色模式會自動配合不管是深色還是米白主題的底色,
        所以兩個主題共用同一份,不用像 --fabric-hi/lo 那樣分開宣告。2026-10
-       第三次調整:條紋週期從 14px 改回 4px(使用者指定),但條紋本身維持柔邊
-       漸層(不是硬邊 1px 線),跟一開始造成摩爾紋的硬邊 2px 版本不是同一種
-       結構,柔邊漸層對縮放比例沒那麼敏感;雜訊顆粒也跟著縮小(baseFrequency
-       0.22→0.75)配合條紋週期,比例才協調。 */
+       第五次調整:使用者給了一張麻花辮/交叉編織毛線的照片當參考,單方向條紋
+       (不管週期多大)終究只是「斜紋」,讀不出「編織」感——改成兩個方向
+       (45deg + -45deg)的柔邊條紋疊在一起,交叉處會自然產生深淺變化,比較
+       接近線跟線交織的視覺。兩層疊加後對比會加倍,所以 --fabric-hi/lo 的
+       透明度也跟著調低,避免交叉點糊成一團死黑/死白。 */
     --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch' result='t'/%3E%3CfeGaussianBlur in='t' stdDeviation='0.6' result='b'/%3E%3CfeColorMatrix in='b' type='matrix' values='0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
@@ -43,8 +44,8 @@
     --ink: #2a2318;
     --ink-soft: #776b55;
     --line: rgba(42, 35, 24, 0.14);
-    --fabric-hi: rgba(255, 255, 255, 0.45);
-    --fabric-lo: rgba(42, 35, 24, 0.13);
+    --fabric-hi: rgba(255, 255, 255, 0.35);
+    --fabric-lo: rgba(42, 35, 24, 0.1);
     --accent: #b06a1f;
     --accent-ink: #8a4f15;
     --accent-wash: rgba(176, 106, 31, 0.16);
@@ -252,19 +253,22 @@
 
   /* 顏色維持 --paper 不變。織布紋理規則拉出來給 body 跟 .ledger(作答進度那條
      sticky 列)共用,避免兩個背景看起來不一致(2026-10 討論)：
-     (1) 45 度柔邊條紋(--fabric-hi/--fabric-lo 交錯,6px 一個週期,2026-10 第四次
-         討論從 4px 微調回來,透明度也跟著調低一點)做出紋路方向——邊緣是漸層,
-         不是硬邊 1px 線,所以跟一開始造成摩爾紋的硬邊 2px 版本不是同一種結構,
-         縮放比例沒那麼敏感;
-     (2) --noise 灰階雜訊用 overlay 疊色模式蓋上去,打散條紋的規則感,做出
+     (1)(2) 45 度跟 -45 度各一組柔邊條紋(--fabric-hi/--fabric-lo 交錯,6px
+         一個週期),兩個方向交叉疊加做出「編織」的視覺,不是單方向的斜紋
+         (2026-10 第五次討論,參考使用者提供的麻花辮毛線照片)。邊緣是漸層,
+         不是硬邊 1px 線,所以跟一開始造成摩爾紋的硬邊 2px 版本不是同一種
+         結構,縮放比例沒那麼敏感;
+     (3) --noise 灰階雜訊用 overlay 疊色模式蓋上去,打散條紋的規則感,做出
          纖維顆粒的不規則感,疊色模式會自動配合底色深淺,兩主題不用分開調。 */
   body, .ledger {
     background-color: var(--paper);
     background-image:
       repeating-linear-gradient(45deg,
         var(--fabric-hi) 0px, var(--fabric-lo) 3px, var(--fabric-hi) 6px),
+      repeating-linear-gradient(-45deg,
+        var(--fabric-hi) 0px, var(--fabric-lo) 3px, var(--fabric-hi) 6px),
       var(--noise);
-    background-blend-mode: normal, overlay;
+    background-blend-mode: normal, normal, overlay;
   }
 
   body {
