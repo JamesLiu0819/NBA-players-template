@@ -16,8 +16,8 @@
     --ink: #e9e7e0;
     --ink-soft: #9aa1ab;
     --line: rgba(255, 255, 255, 0.12);
-    --fabric-hi: rgba(255, 255, 255, 0.07);
-    --fabric-lo: rgba(0, 0, 0, 0.18);
+    --fabric-hi: rgba(255, 255, 255, 0.09);
+    --fabric-lo: rgba(0, 0, 0, 0.22);
     --accent: #d9a03f;
     --accent-ink: #f0c76e;
     --accent-wash: rgba(217, 160, 63, 0.16);
@@ -25,10 +25,15 @@
     --radius: 10px;
     --sans: -apple-system, "Segoe UI", "PingFang TC", "Noto Sans TC", system-ui, sans-serif;
     --mono: "SF Mono", "JetBrains Mono", Menlo, ui-monospace, "Noto Sans Mono", monospace;
-    /* 灰階雜訊,用 overlay 疊色模式蓋在 body 上(見下面 body 規則)——灰階本身
-       不含顏色,疊色模式會自動配合不管是深色還是米白主題的底色,所以兩個主題
-       共用同一份,不用像 --fabric-hi/lo 那樣分開宣告(2026-10 討論)。 */
-    --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch' result='t'/%3E%3CfeColorMatrix in='t' type='matrix' values='0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+    /* 灰階雜訊,用 overlay 疊色模式蓋在紋理背景上(見下面 body, .ledger 規則)
+       ——灰階本身不含顏色,疊色模式會自動配合不管是深色還是米白主題的底色,
+       所以兩個主題共用同一份,不用像 --fabric-hi/lo 那樣分開宣告。2026-10
+       第二次調整:原本 baseFrequency 0.95 的細顆粒在某些螢幕縮放比例下會
+       跟 45 度條紋產生摩爾紋(使用者回報「填到聯賽環境時背景變成大斜條紋」,
+       不是真的換了圖案,是細紋理在縮放時失真),改成大顆粒(0.22)+ 模糊,
+       同時把條紋週期從 2px 放大到 14px,兩者都不再落在容易摩爾紋的細緻度,
+       順便也更接近使用者想要的毛線針織布料質感。 */
+    --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.22' numOctaves='3' stitchTiles='stitch' result='t'/%3E%3CfeGaussianBlur in='t' stdDeviation='1.1' result='b'/%3E%3CfeColorMatrix in='b' type='matrix' values='0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
   :root[data-theme="light"] {
@@ -39,8 +44,8 @@
     --ink: #2a2318;
     --ink-soft: #776b55;
     --line: rgba(42, 35, 24, 0.14);
-    --fabric-hi: rgba(255, 255, 255, 0.45);
-    --fabric-lo: rgba(42, 35, 24, 0.14);
+    --fabric-hi: rgba(255, 255, 255, 0.55);
+    --fabric-lo: rgba(42, 35, 24, 0.17);
     --accent: #b06a1f;
     --accent-ink: #8a4f15;
     --accent-wash: rgba(176, 106, 31, 0.16);
@@ -246,21 +251,24 @@
     .topnav-tab { font-size: 0.78rem; }
   }
 
-  body {
-    margin: 0;
-    /* 顏色維持 --paper 不變。前兩版(格線編織、低透明度雜訊)都太淡,看起來還
-       是接近純色——這版直接做出「斜紋布」的材質感,不再刻意壓透明度
-       (2026-10 討論,參考使用者提供的西裝布紋理照片)：
-       (1) 45 度對角線條紋(--fabric-hi/--fabric-lo 交錯)模擬斜紋布的紋路方向;
-       (2) --noise 灰階雜訊用 overlay 疊色模式蓋上去,打散條紋的規則感,做出
-           纖維顆粒的不規則感,疊色模式會自動配合底色深淺,兩主題不用分開調。 */
+  /* 顏色維持 --paper 不變。織布紋理規則拉出來給 body 跟 .ledger(作答進度那條
+     sticky 列)共用,避免兩個背景看起來不一致(2026-10 討論)：
+     (1) 45 度柔邊條紋(--fabric-hi/--fabric-lo 交錯,14px 一個週期)做出紋路
+         方向,週期刻意放大很多(原本 2px)——太細的週期在部分螢幕縮放比例下
+         會跟雜訊層疊出摩爾紋,放大後不只比較像厚針織毛料,也順便解掉這個問題;
+     (2) --noise 灰階雜訊用 overlay 疊色模式蓋上去,打散條紋的規則感,做出
+         纖維顆粒的不規則感,疊色模式會自動配合底色深淺,兩主題不用分開調。 */
+  body, .ledger {
     background-color: var(--paper);
     background-image:
       repeating-linear-gradient(45deg,
-        var(--fabric-hi) 0, var(--fabric-hi) 1px,
-        var(--fabric-lo) 1px, var(--fabric-lo) 2px),
+        var(--fabric-hi) 0px, var(--fabric-lo) 7px, var(--fabric-hi) 14px),
       var(--noise);
     background-blend-mode: normal, overlay;
+  }
+
+  body {
+    margin: 0;
     color: var(--ink);
     font-family: var(--sans);
     -webkit-font-smoothing: antialiased;
@@ -471,7 +479,6 @@
     position: sticky;
     top: 56px;
     z-index: 20;
-    background: var(--paper);
     padding: 0.75rem 0 0.6rem;
     border-bottom: 1px solid var(--line);
   }
