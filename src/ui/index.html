@@ -16,6 +16,7 @@
     --ink: #e9e7e0;
     --ink-soft: #9aa1ab;
     --line: rgba(255, 255, 255, 0.12);
+    --weave: rgba(255, 255, 255, 0.035);
     --accent: #d9a03f;
     --accent-ink: #f0c76e;
     --accent-wash: rgba(217, 160, 63, 0.16);
@@ -33,6 +34,7 @@
     --ink: #2a2318;
     --ink-soft: #776b55;
     --line: rgba(42, 35, 24, 0.14);
+    --weave: rgba(42, 35, 24, 0.05);
     --accent: #b06a1f;
     --accent-ink: #8a4f15;
     --accent-wash: rgba(176, 106, 31, 0.16);
@@ -240,7 +242,13 @@
 
   body {
     margin: 0;
-    background: var(--paper);
+    /* 顏色維持 --paper 不變,疊兩組 1px 間距 3px 的水平/垂直細線做出編織布
+       的紋理(經緯線交叉的錯覺)——透明度刻意壓得很低,近看才看得出紋理,
+       遠看跟整頁內容不會搶視覺(2026-10 討論)。 */
+    background-color: var(--paper);
+    background-image:
+      repeating-linear-gradient(0deg, var(--weave) 0, var(--weave) 1px, transparent 1px, transparent 3px),
+      repeating-linear-gradient(90deg, var(--weave) 0, var(--weave) 1px, transparent 1px, transparent 3px);
     color: var(--ink);
     font-family: var(--sans);
     -webkit-font-smoothing: antialiased;
