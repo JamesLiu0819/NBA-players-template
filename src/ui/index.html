@@ -16,8 +16,6 @@
     --ink: #e9e7e0;
     --ink-soft: #9aa1ab;
     --line: rgba(255, 255, 255, 0.12);
-    --fabric-hi: rgba(255, 255, 255, 0.05);
-    --fabric-lo: rgba(0, 0, 0, 0.13);
     --accent: #d9a03f;
     --accent-ink: #f0c76e;
     --accent-wash: rgba(217, 160, 63, 0.16);
@@ -25,15 +23,6 @@
     --radius: 10px;
     --sans: -apple-system, "Segoe UI", "PingFang TC", "Noto Sans TC", system-ui, sans-serif;
     --mono: "SF Mono", "JetBrains Mono", Menlo, ui-monospace, "Noto Sans Mono", monospace;
-    /* 灰階雜訊,用 overlay 疊色模式蓋在紋理背景上(見下面 body, .ledger 規則)
-       ——灰階本身不含顏色,疊色模式會自動配合不管是深色還是米白主題的底色,
-       所以兩個主題共用同一份,不用像 --fabric-hi/lo 那樣分開宣告。2026-10
-       第五次調整:使用者給了一張麻花辮/交叉編織毛線的照片當參考,單方向條紋
-       (不管週期多大)終究只是「斜紋」,讀不出「編織」感——改成兩個方向
-       (45deg + -45deg)的柔邊條紋疊在一起,交叉處會自然產生深淺變化,比較
-       接近線跟線交織的視覺。兩層疊加後對比會加倍,所以 --fabric-hi/lo 的
-       透明度也跟著調低,避免交叉點糊成一團死黑/死白。 */
-    --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch' result='t'/%3E%3CfeGaussianBlur in='t' stdDeviation='0.6' result='b'/%3E%3CfeColorMatrix in='b' type='matrix' values='0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
   :root[data-theme="light"] {
@@ -44,8 +33,6 @@
     --ink: #2a2318;
     --ink-soft: #776b55;
     --line: rgba(42, 35, 24, 0.14);
-    --fabric-hi: rgba(255, 255, 255, 0.35);
-    --fabric-lo: rgba(42, 35, 24, 0.1);
     --accent: #b06a1f;
     --accent-ink: #8a4f15;
     --accent-wash: rgba(176, 106, 31, 0.16);
@@ -252,23 +239,17 @@
   }
 
   /* 顏色維持 --paper 不變。織布紋理規則拉出來給 body 跟 .ledger(作答進度那條
-     sticky 列)共用,避免兩個背景看起來不一致(2026-10 討論)：
-     (1)(2) 45 度跟 -45 度各一組柔邊條紋(--fabric-hi/--fabric-lo 交錯,6px
-         一個週期),兩個方向交叉疊加做出「編織」的視覺,不是單方向的斜紋
-         (2026-10 第五次討論,參考使用者提供的麻花辮毛線照片)。邊緣是漸層,
-         不是硬邊 1px 線,所以跟一開始造成摩爾紋的硬邊 2px 版本不是同一種
-         結構,縮放比例沒那麼敏感;
-     (3) --noise 灰階雜訊用 overlay 疊色模式蓋上去,打散條紋的規則感,做出
-         纖維顆粒的不規則感,疊色模式會自動配合底色深淺,兩主題不用分開調。 */
+     sticky 列)共用,避免兩個背景看起來不一致(2026-10 討論)。前幾版都是純
+     CSS 漸層/雜訊湊出來的織布效果,始終不夠像真的布料——2026-10 第六次討論
+     改用真的毛呢人字紋(herringbone)照片(fabric-texture.jpg,Poly Haven
+     CC0 授權,已轉灰階、裁成正方形、壓縮到 512px/~124KB,見 src/ui/fabric-
+     texture.jpg)。用灰階照片 + overlay 疊色模式蓋在 --paper 上,照片本身
+     不含顏色,疊色模式會自動配合深色/米白主題的底色,兩個主題不用準備兩張圖。 */
   body, .ledger {
     background-color: var(--paper);
-    background-image:
-      repeating-linear-gradient(45deg,
-        var(--fabric-hi) 0px, var(--fabric-lo) 3px, var(--fabric-hi) 6px),
-      repeating-linear-gradient(-45deg,
-        var(--fabric-hi) 0px, var(--fabric-lo) 3px, var(--fabric-hi) 6px),
-      var(--noise);
-    background-blend-mode: normal, normal, overlay;
+    background-image: url("fabric-texture.jpg");
+    background-size: 360px 360px;
+    background-blend-mode: overlay;
   }
 
   body {
@@ -277,6 +258,29 @@
     font-family: var(--sans);
     -webkit-font-smoothing: antialiased;
     line-height: 1.6;
+  }
+
+  /* 背景大型球員剪影浮水印(2026-10 討論)——固定在右下角,不隨捲動移動,
+     z-index 壓到最底層、pointer-events 關掉,純裝飾不擋互動。素材是單一黑色
+     剪影 PNG(src/ui/silhouettes/dunk-black.png,來源見 silhouettes/README,
+     CC0 授權)——深色主題用 filter: invert(1) 直接把黑翻白,不用準備兩張圖;
+     米白主題保留原本的黑色,在下面 [data-theme="light"] 覆寫回 filter: none。 */
+  body::before {
+    content: "";
+    position: fixed;
+    right: -4vmin;
+    bottom: -4vmin;
+    width: 52vmin;
+    height: 52vmin;
+    background: url("silhouettes/dunk-black.png") no-repeat bottom right / contain;
+    opacity: 0.05;
+    filter: invert(1);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  :root[data-theme="light"] body::before {
+    filter: none;
   }
 
   .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
@@ -1190,7 +1194,7 @@
 
   <div class="cta-card" id="cta-card" style="display:none">
     <h3 id="cta-heading">想知道自己該優先練什麼嗎？</h3>
-    <p id="cta-body">這需要再多填 15 題技能行為題,並且選擇你的聯賽防守環境——不想看訓練建議的話,到這裡就結束了。</p>
+    <p id="cta-body">這需要再多填 15 題技能行為題，並且選擇你的聯賽防守環境——不想看訓練建議的話，到這裡就結束了。</p>
     <button type="button" class="secondary-cta" id="cta-btn">分析我的訓練優先序</button>
   </div>
 
@@ -1289,7 +1293,7 @@
     zh: {
       pageTitle: "球探報告",
       eyebrow: "Self-Scouting Report",
-      subtitle: "行為量表, 請選擇「最符合我」的選項",
+      subtitle: "行為量表，請選擇「最符合我」的選項",
       rulesTitle: "📋 作答說明",
       rulesLine1: "每一題都是 5 句具體的行為描述，請選出最符合你實際表現的那一句",
       warningTitle: "⚠️ 注意事項",
@@ -1305,10 +1309,10 @@
       navTrainingPlan: "訓練計劃",
       themeToggleToLight: "切換成米白主題",
       themeToggleToDark: "切換成深色主題",
-      visitCounterLabel: "使用人數: ",
+      visitCounterLabel: "使用人數：",
       loadingLabel: "載入題庫中…",
       ctaHeading: "想知道自己該優先練什麼嗎？",
-      ctaBody: "再填 15 題技能行為題,並且選擇你的聯賽防守環境。",
+      ctaBody: "這需要再多填 15 題技能行為題，並且選擇你的聯賽防守環境——不想看訓練建議的話，到這裡就結束了。",
       ctaButton: "分析我的訓練優先序",
       progressLabel: "作答進度",
       stage1SubmitButton: "查看我的球員模板",
@@ -1321,11 +1325,11 @@
       envPreset3: "區域防守為主",
       restartLink: "重新填一次",
       deepTemplateSkillFitLabel: "技術模板",
-      deepTemplateSkillFitCaption: "排除運動能力,技術層面與打法風格跟你最接近的球員",
+      deepTemplateSkillFitCaption: "排除運動能力，技術層面與打法風格跟你最接近的球員",
       deepTemplateBodyFitLabel: "身材模板",
       deepTemplateBodyFitCaption: "身材數值跟你最接近的球員",
       deepTemplateCeilingLabel: "天花板",
-      deepTemplateCeilingCaption: "運動能力跟你接近,但技術層面更成熟的球員",
+      deepTemplateCeilingCaption: "運動能力跟你接近，但技術層面更成熟的球員",
       dominantAxisGap: (axisLabel) => `${axisLabel}差距最大`,
       growthNotePrefix: " → 可以注意：",
       radarAriaLabel: (matchLabel) => `六角雷達圖：你跟${matchLabel}的比較`,
@@ -1351,13 +1355,13 @@
       stepperDecreaseAriaTemplate: (prompt) => `${prompt}減 1`,
       priorityActionTemplate: (action) => `具體可以從「${action}」開始練習`,
       similarityLabel: "相似度",
-      lowSimilarityNote: "你的球風或身材獨特,目前球員池裡還沒有非常接近的對照組,所以相似度星等整體偏低",
+      lowSimilarityNote: "你的球風或身材獨特，目前球員池裡還沒有非常接近的對照組，所以相似度星等整體偏低",
       mostSuitable: "最貼合",
     },
     "zh-Hans": {
       pageTitle: "球探报告",
       eyebrow: "Self-Scouting Report",
-      subtitle: "行为量表, 请选择「最符合我」的选项",
+      subtitle: "行为量表，请选择「最符合我」的选项",
       rulesTitle: "📋 作答说明",
       rulesLine1: "每一题都是 5 句具体的行为描述，请选出最符合你实际表现的那一句",
       warningTitle: "⚠️ 注意事项",
@@ -1373,10 +1377,10 @@
       navTrainingPlan: "训练计划",
       themeToggleToLight: "切换成米白主题",
       themeToggleToDark: "切换成深色主题",
-      visitCounterLabel: "使用人数: ",
+      visitCounterLabel: "使用人数：",
       loadingLabel: "加载题库中…",
       ctaHeading: "想知道自己该优先练什么吗？",
-      ctaBody: "再填 15 题技能行为题,并且选择你的联赛防守环境。",
+      ctaBody: "这需要再多填 15 题技能行为题，并且选择你的联赛防守环境——不想看训练建议的话，到这里就结束了。",
       ctaButton: "分析我的训练优先序",
       progressLabel: "作答进度",
       stage1SubmitButton: "查看我的球员模板",
@@ -1389,11 +1393,11 @@
       envPreset3: "区域防守为主",
       restartLink: "重新填一次",
       deepTemplateSkillFitLabel: "技术模板",
-      deepTemplateSkillFitCaption: "排除运动能力,技术层面与打法风格跟你最接近的球员",
+      deepTemplateSkillFitCaption: "排除运动能力，技术层面与打法风格跟你最接近的球员",
       deepTemplateBodyFitLabel: "身材模板",
       deepTemplateBodyFitCaption: "身材数值跟你最接近的球员",
       deepTemplateCeilingLabel: "天花板",
-      deepTemplateCeilingCaption: "运动能力跟你接近,但技术层面更成熟的球员",
+      deepTemplateCeilingCaption: "运动能力跟你接近，但技术层面更成熟的球员",
       dominantAxisGap: (axisLabel) => `${axisLabel}差距最大`,
       growthNotePrefix: " → 可以注意：",
       radarAriaLabel: (matchLabel) => `六角雷达图：你跟${matchLabel}的比较`,
@@ -1419,7 +1423,7 @@
       stepperDecreaseAriaTemplate: (prompt) => `${prompt}减 1`,
       priorityActionTemplate: (action) => `具体可以从「${action}」开始练习`,
       similarityLabel: "相似度",
-      lowSimilarityNote: "你的球风或身材独特,目前球员池里还没有非常接近的对照组,所以相似度星等整体偏低",
+      lowSimilarityNote: "你的球风或身材独特，目前球员池里还没有非常接近的对照组，所以相似度星等整体偏低",
       mostSuitable: "最贴合",
     },
     en: {
@@ -1444,7 +1448,7 @@
       visitCounterLabel: "Users: ",
       loadingLabel: "Loading questions…",
       ctaHeading: "Want to know what to prioritize?",
-      ctaBody: "15 more skill-behavior questions, plus your league defensive environment.",
+      ctaBody: "Answer 15 more skill-behavior questions and choose your league's defensive environment -- if you don't want training suggestions, you can stop here.",
       ctaButton: "Analyze My Training Priorities",
       progressLabel: "Progress",
       stage1SubmitButton: "See My Player Template",
@@ -2135,7 +2139,33 @@
     });
   }
 
-  function downloadShareImage(data, topMatch) {
+  // 哪個軸配哪個剪影姿勢是固定規則,不是每個原型各挑一張——球員池/原型以後
+  // 會變動,但六軸不會,規則不用跟著維護(2026-10 討論)。沒有剛好對應「禁區
+  // 得分」姿勢的素材,用運球急停那張頂著(見 src/ui/silhouettes/README.md)。
+  const AXIS_SILHOUETTE = {
+    A: "dribble", C1: "dribble",
+    B1: "shoot",
+    B2: "handle",
+    C2: "dunk", D: "dunk",
+  };
+
+  function dominantAxisForPose(coordinates) {
+    return RADAR_AXES.reduce(
+      (best, axis) => (coordinates[axis] > coordinates[best] ? axis : best),
+      RADAR_AXES[0]
+    );
+  }
+
+  function loadImage(src) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = src;
+    });
+  }
+
+  async function downloadShareImage(data, topMatch) {
     const canvas = document.createElement("canvas");
     canvas.width = 1000;
     canvas.height = 1150;
@@ -2144,6 +2174,22 @@
 
     ctx.fillStyle = "#1c2027";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // 背景剪影,依使用者自己座標裡最高分的軸決定姿勢,跟首頁的大浮水印剪影
+    // 同一套素材,只是這裡固定用白色版(分享圖背景永遠是深色,不用跟著切換
+    // 主題)。載入失敗(離線/CDN 問題都不會發生,但保險)就跳過,不擋下載。
+    try {
+      const pose = AXIS_SILHOUETTE[dominantAxisForPose(data.coordinates)] || "dunk";
+      const silhouette = await loadImage(`silhouettes/${pose}-white.png`);
+      const h = 520;
+      const w = silhouette.width * (h / silhouette.height);
+      ctx.save();
+      ctx.globalAlpha = 0.1;
+      ctx.drawImage(silhouette, canvas.width - w + 60, canvas.height - h + 40, w, h);
+      ctx.restore();
+    } catch (err) {
+      console.warn("share image silhouette failed to load, skipping", err);
+    }
 
     ctx.textAlign = "center";
     ctx.textBaseline = "alphabetic";
