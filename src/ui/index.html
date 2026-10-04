@@ -16,7 +16,7 @@
     --ink: #e9e7e0;
     --ink-soft: #9aa1ab;
     --line: rgba(255, 255, 255, 0.12);
-    --weave: rgba(255, 255, 255, 0.035);
+    --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch' result='t'/%3E%3CfeGaussianBlur in='t' stdDeviation='0.5' result='b'/%3E%3CfeColorMatrix in='b' type='matrix' values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
     --accent: #d9a03f;
     --accent-ink: #f0c76e;
     --accent-wash: rgba(217, 160, 63, 0.16);
@@ -34,7 +34,7 @@
     --ink: #2a2318;
     --ink-soft: #776b55;
     --line: rgba(42, 35, 24, 0.14);
-    --weave: rgba(42, 35, 24, 0.05);
+    --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch' result='t'/%3E%3CfeGaussianBlur in='t' stdDeviation='0.5' result='b'/%3E%3CfeColorMatrix in='b' type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
     --accent: #b06a1f;
     --accent-ink: #8a4f15;
     --accent-wash: rgba(176, 106, 31, 0.16);
@@ -242,13 +242,12 @@
 
   body {
     margin: 0;
-    /* 顏色維持 --paper 不變,疊兩組 1px 間距 3px 的水平/垂直細線做出編織布
-       的紋理(經緯線交叉的錯覺)——透明度刻意壓得很低,近看才看得出紋理,
-       遠看跟整頁內容不會搶視覺(2026-10 討論)。 */
+    /* 顏色維持 --paper 不變,原本試過格子狀編織布紋理(水平+垂直細線),改用
+       SVG feTurbulence 產生的細緻雜訊 + 一點模糊,做出比較像毛地毯/氈布那種
+       不規則絨毛顆粒感,而不是整齊的經緯格線(2026-10 討論)。--noise 是 inline
+       SVG data URI,兩個主題各自調過雜訊顏色(白/黑)跟透明度。 */
     background-color: var(--paper);
-    background-image:
-      repeating-linear-gradient(0deg, var(--weave) 0, var(--weave) 1px, transparent 1px, transparent 3px),
-      repeating-linear-gradient(90deg, var(--weave) 0, var(--weave) 1px, transparent 1px, transparent 3px);
+    background-image: var(--noise);
     color: var(--ink);
     font-family: var(--sans);
     -webkit-font-smoothing: antialiased;
