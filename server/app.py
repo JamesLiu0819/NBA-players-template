@@ -15,8 +15,12 @@
 #                             最近的原型後投票多數決(engine/archetype.py 的
 #                             classify_archetype_by_majority),確保原型標籤
 #                             一定跟畫面上顯示的球員一致,不會各算各的
-#                             (2026-09-13 討論)。一句話球探報告是原型文案+
-#                             10人表#1的成長建議組出來的。
+#                             (2026-09-13 討論)。一句話球探報告就是原型的
+#                             flavor 文案,不含成長建議——成長建議已經會顯示
+#                             在 10 人表#1 的卡片上,headline 再講一次是重複
+#                             資訊(2026-10 清掉 build_scouting_report 裡算了
+#                             沒用到的 growth 變數時順便把這段註解改成跟現在
+#                             的行為一致)。
 #                             10 人對照表用六軸+身材一起算距離(沒填身材數值
 #                             題就自動退化成純六軸),避免推薦身材差異很大的
 #                             球員當模板;3 位深度模板維持純六軸/純身材距離,
@@ -98,7 +102,11 @@ from engine.player_matching import (  # noqa: E402
     rank_similar_players_by_style_and_body,
 )
 from engine.priority import rank_priorities  # noqa: E402
-from scripts.run_player_match import build_scouting_report, describe_growth_recommendation  # noqa: E402
+from scripts.run_player_match import (  # noqa: E402
+    build_scouting_report,
+    describe_growth_recommendation,
+    describe_training_breakdown,
+)
 from scripts.run_priority import build_priority_items  # noqa: E402
 
 UI_DIR = ROOT / "src" / "ui"
@@ -192,6 +200,7 @@ def compute_template_results(payload, questions, players, skills_by_id, archetyp
             "notable_traits": player["notable_traits"],
             "dominant_diff_axis": player["dominant_diff_axis"],
             "growth_recommendation": describe_growth_recommendation(player, skills_by_id, lang),
+            "training_breakdown": describe_training_breakdown(player, skills_by_id, lang),
         })
 
     archetype = classify_archetype_by_majority(ranked_players, archetypes, player_sizes=player_sizes)
@@ -200,7 +209,7 @@ def compute_template_results(payload, questions, players, skills_by_id, archetyp
         "coordinates": coordinates,
         "archetype": {"name_zh": archetype["name_zh"], "flavor": archetype["flavor"]},
         "scouting_report": (
-            build_scouting_report(archetype, ranked_players[0], skills_by_id, lang) if ranked_players else None
+            build_scouting_report(archetype) if ranked_players else None
         ),
         "deep_templates": {
             "skill_fit": player_brief(find_skill_fit_template(coordinates, players)),

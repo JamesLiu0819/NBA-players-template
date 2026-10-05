@@ -151,10 +151,30 @@ class TemplateResultsTest(unittest.TestCase):
             {
                 "rank", "name", "team", "coordinates", "distance", "fit_stars",
                 "notable_traits", "dominant_diff_axis", "growth_recommendation",
+                "training_breakdown",
             },
         )
         self.assertEqual(top_player["rank"], 1)
         self.assertEqual(set(top_player["coordinates"].keys()), {"A", "B1", "B2", "C1", "C2", "D"})
+
+    def test_top_10_training_breakdown_covers_all_six_axes(self):
+        payload = {
+            "axis_answers": build_axis_answers(self.questions),
+            "body_answers": build_required_body_answers(self.questions),
+        }
+
+        response = self.client.post("/api/template-results", json=payload)
+        breakdown = response.get_json()["top_10"][0]["training_breakdown"]
+
+        self.assertEqual(len(breakdown), 6)
+        self.assertEqual(
+            {row["axis"] for row in breakdown}, {"A", "B1", "B2", "C1", "C2", "D"}
+        )
+        for row in breakdown:
+            self.assertIn("your_value", row)
+            self.assertIn("player_value", row)
+            self.assertIn("diff", row)
+            self.assertIn("skill_action", row)
 
     def test_response_includes_archetype_and_scouting_report(self):
         payload = {
