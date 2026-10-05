@@ -717,40 +717,6 @@
 
   .body-question .unit { color: var(--ink-soft); font-size: 0.82rem; }
 
-  .env-sliders {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-top: 0.75rem;
-    padding-top: 0.75rem;
-    border-top: 1px solid var(--line);
-  }
-
-  .env-row {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .env-row label {
-    flex: 0 0 9rem;
-    font-size: 0.82rem;
-    color: var(--ink-soft);
-  }
-
-  .env-row input[type="range"] {
-    flex: 1;
-    accent-color: var(--accent);
-  }
-
-  .env-row .env-value {
-    flex: 0 0 2.6rem;
-    text-align: right;
-    font-family: var(--mono);
-    font-size: 0.82rem;
-    color: var(--ink);
-  }
-
   .preset-row {
     display: flex;
     flex-wrap: wrap;
@@ -1222,7 +1188,6 @@
           <button type="button" data-preset="tight_perimeter_opp_shooters">貼外線 / 對手有射手</button>
           <button type="button" data-preset="zone_defense">區域防守為主</button>
         </div>
-        <div class="env-sliders" id="env-sliders"></div>
       </section>
 
       <div class="submit-block" id="stage2-submit-block" style="display:none">
@@ -1882,60 +1847,6 @@
     document.querySelectorAll("#preset-row button").forEach((btn) => {
       btn.classList.toggle("selected", btn.dataset.preset === key);
     });
-    syncEnvSliders();
-  }
-
-  // 聯賽環境除了 3 個推薦預設,也讓使用者自己拉每個技能的倍率滑桿客製化
-  // (2026-10 討論:原本只有預設按鈕,拿掉說明文字後使用者完全沒辦法自訂,
-  // 把 tools/survey.html 本來就有的逐技能滑桿搬過來)。手動拉動滑桿會覆蓋
-  // 掉目前選的預設,所以同時要取消 preset-row 的 selected 樣式,但不用
-  // 清空 state.selectedPreset 以外的狀態——倍率本身就是 state.env,滑桿
-  // 只是另一種寫入方式。
-  function renderEnvSliders() {
-    const container = document.getElementById("env-sliders");
-    container.innerHTML = "";
-    for (const skill of state.skills) {
-      const row = document.createElement("div");
-      row.className = "env-row";
-
-      const label = document.createElement("label");
-      label.htmlFor = `env-${skill.id}`;
-      label.textContent = skill.name_zh;
-
-      const range = document.createElement("input");
-      range.type = "range";
-      range.id = `env-${skill.id}`;
-      range.min = "0.5";
-      range.max = "2.0";
-      range.step = "0.1";
-      const current = state.env[skill.id] ?? 1.0;
-      range.value = String(current);
-
-      const valueSpan = document.createElement("span");
-      valueSpan.className = "env-value";
-      valueSpan.textContent = `×${Number(current).toFixed(1)}`;
-
-      range.addEventListener("input", () => {
-        state.env[skill.id] = Number(range.value);
-        valueSpan.textContent = `×${Number(range.value).toFixed(1)}`;
-        state.selectedPreset = null;
-        document.querySelectorAll("#preset-row button").forEach((btn) => btn.classList.remove("selected"));
-      });
-
-      row.append(label, range, valueSpan);
-      container.appendChild(row);
-    }
-  }
-
-  function syncEnvSliders() {
-    for (const skill of state.skills) {
-      const range = document.getElementById(`env-${skill.id}`);
-      if (!range) continue;
-      const value = state.env[skill.id];
-      range.value = String(value);
-      const valueSpan = range.nextElementSibling;
-      if (valueSpan) valueSpan.textContent = `×${Number(value).toFixed(1)}`;
-    }
   }
 
   function buildTemplatePayload() {
@@ -2533,7 +2444,6 @@
     presetButtons[0].textContent = strings.envPreset1;
     presetButtons[1].textContent = strings.envPreset2;
     presetButtons[2].textContent = strings.envPreset3;
-    if (state.skills && state.skills.length > 0) renderEnvSliders();
 
     document.getElementById("restart-link").textContent = strings.restartLink;
 
