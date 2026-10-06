@@ -22,11 +22,15 @@ python3 -m http.server 8000
 
 ## 填寫流程
 
-1. 依序填完六軸定位 12 題 + 技能行為 15 題 + 身材數值 6 題（共 33 題；六軸定位
+1. 依序填完六軸定位 12 題 + 技能行為 11 題 + 身材數值 6 題（共 29 題；六軸定位
    題在 2026-10 從四軸 16 題改版成六軸 12 題，技能庫則在 2026-09-10 從 5 項擴充
    成 15 項，這裡的數字已同步更新）。
    六軸定位跟技能行為每題都要選「哪句描述最像我」，不是憑感覺打分數；身材數值
-   題直接填實際數字。
+   題直接填實際數字。另外 4 個技能(post_up、perimeter_switch_defense、
+   rim_protection、transition_finishing)在 2026-10 發現跟六軸定位題重複後，
+   不再有自己的技能行為題——它們的現況水準直接借用對應六軸定位題的作答(見
+   `data/zh/題庫.json` 裡的 `also_measures_skill`)，所以這 4 個技能不會出現
+   在技能行為題組裡，是正常現象，不是漏題。
 2. 在「環境權重」區塊，用三個預設按鈕之一（或手動拉滑桿）設定 5 個技能的 E
    值。**這些是暫定值**，`data/env_weights.json`（SPEC.md §12 issue #2）還沒
    建立。
@@ -76,9 +80,10 @@ python3 scripts/run_player_match.py data/answers/answers_20260908T153000.json
    `tests/engine/test_env_calibration.py` 裡的 `ENV_COLLAPSED_NO_SHOOTERS` /
    `ENV_TIGHT_PERIMETER_OPP_SHOOTERS` 手動同步的兩份數字不小心改到只改了一
    邊；再看是不是 JS 版的 `scoreAxisCoordinates` / `scoreSkillCurrentLevel` /
-   `computeGap` / `computeRelevance` / `computePriority` / `rankPriorities`
-   其中一個函式跟對應的 Python 實作邏輯分岔了（例如四捨五入、clamp 範圍、
-   排序 tie-break 規則）。
+   `scoreSkillCurrentLevelFromSingleAnswer` / `computeGap` / `computeRelevance` /
+   `computePriority` / `rankPriorities` 其中一個函式跟對應的 Python 實作邏輯
+   分岔了（例如四捨五入、clamp 範圍、排序 tie-break 規則，或是
+   `also_measures_skill` 的替代題對照表算錯）。
 
 ## 範圍限制
 

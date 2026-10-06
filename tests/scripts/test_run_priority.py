@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT))
 
+from engine.skill_level import compute_gap  # noqa: E402
 from scripts.run_priority import build_priority_items, format_dominant_factor_sentence  # noqa: E402
 
 
@@ -86,6 +87,43 @@ class BuildPriorityItemsMissingEnvTest(unittest.TestCase):
     def test_missing_env_weight_raises_value_error_not_system_exit(self):
         with self.assertRaises(ValueError):
             build_priority_items(QUESTIONS, SKILLS, AXIS_ANSWERS, SKILL_ANSWERS, {})
+
+
+class BuildPriorityItemsAlsoMeasuresSkillTest(unittest.TestCase):
+    """A skill whose dedicated skill_behavior question was removed as a
+    duplicate (see "also_measures_skill" in questions.json, 2026-10) must get
+    its current level from the substitute axis_positioning answer instead,
+    with no skill_behavior answer for it at all."""
+
+    def setUp(self):
+        self.axis_questions = [
+            {"id": "axis_a1", "axis": "A"},
+            {"id": "axis_b1_1", "axis": "B1"},
+            {"id": "axis_b2_1", "axis": "B2", "also_measures_skill": "post_up"},
+            {"id": "axis_c1_1", "axis": "C1"},
+            {"id": "axis_c2_1", "axis": "C2"},
+            {"id": "axis_d1", "axis": "D"},
+        ]
+        self.questions = {"axis_positioning": self.axis_questions, "skill_behavior": []}
+        self.axis_answers = [
+            {"question_id": q["id"], "score": 4 if q["id"] == "axis_b2_1" else 3}
+            for q in self.axis_questions
+        ]
+        self.skills = [{
+            "id": "post_up",
+            "name_zh": "背框單打",
+            "axis_relevance": {"A": 0, "B1": 0, "B2": 1, "C1": 0, "C2": 0, "D": 0},
+            "cost_C": 1,
+        }]
+        self.env = {"post_up": 1.0}
+
+    def test_uses_the_substitute_axis_answers_score_as_current_level(self):
+        _, items = build_priority_items(
+            self.questions, self.skills, self.axis_answers, [], self.env
+        )
+
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0]["G"], compute_gap(4))
 
 
 if __name__ == "__main__":

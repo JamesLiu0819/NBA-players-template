@@ -5,15 +5,19 @@
 # 可手動調整的變數：無——這支檔案本身不含校準參數,它是在檢查別的檔案。
 
 import json
+import sys
 import unittest
 from pathlib import Path
 
 from engine.axis_position import AXES, score_axis_coordinates
 from engine.priority import rank_priorities
-from engine.relevance import compute_relevance
-from engine.skill_level import compute_gap, score_skill_current_level
 
-DATA_DIR = Path(__file__).resolve().parents[2] / "data" / "zh"
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+
+from scripts.run_priority import build_priority_items  # noqa: E402
+
+DATA_DIR = ROOT / "data" / "zh"
 
 REQUIRED_SKILL_FIELDS = {
     "id",
@@ -71,9 +75,21 @@ class QuestionsDataTest(unittest.TestCase):
             seen_ids.add(q["id"])
             self.assertEqual(set(q["anchors"].keys()), {"1", "2", "3", "4", "5"})
 
-    def test_skill_behavior_covers_all_fifteen_skills(self):
-        skill_ids = {q["skill_id"] for q in self.data["skill_behavior"]}
-        self.assertEqual(skill_ids, ALL_SKILL_IDS)
+    def test_skill_behavior_plus_also_measures_skill_covers_all_fifteen_skills(self):
+        # 4 skills no longer have their own skill_behavior question (removed
+        # as 2026-10 duplicates of an axis_positioning question) -- they're
+        # covered instead via "also_measures_skill" on the substitute axis
+        # question. Every skill must have exactly one source of its current
+        # level, never both and never neither.
+        skill_behavior_ids = {q["skill_id"] for q in self.data["skill_behavior"]}
+        substituted_ids = {
+            q["also_measures_skill"]
+            for q in self.data["axis_positioning"]
+            if q.get("also_measures_skill")
+        }
+
+        self.assertEqual(skill_behavior_ids & substituted_ids, set())
+        self.assertEqual(skill_behavior_ids | substituted_ids, ALL_SKILL_IDS)
 
     def test_every_skill_behavior_question_has_five_bars_anchors(self):
         for q in self.data["skill_behavior"]:
@@ -167,20 +183,9 @@ class FullPipelineIntegrationTest(unittest.TestCase):
             "perimeter_switch_defense": 1.0,
         })
 
-        priority_inputs = []
-        for skill in self.skills:
-            current = score_skill_current_level(
-                self.questions["skill_behavior"], skill_answers, skill["id"]
-            )
-            gap = compute_gap(current)
-            relevance = compute_relevance(coordinates, skill["axis_relevance"])
-            priority_inputs.append({
-                "skill_id": skill["id"],
-                "G": gap,
-                "E": env_multiplier[skill["id"]],
-                "R": relevance,
-                "C": skill["cost_C"],
-            })
+        _, priority_inputs = build_priority_items(
+            self.questions, self.skills, axis_answers, skill_answers, env_multiplier
+        )
 
         ranked = rank_priorities(priority_inputs)
 

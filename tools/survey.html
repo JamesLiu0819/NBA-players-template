@@ -1,6 +1,7 @@
 <!--
-  用途：本機用的問診測試頁,收集 33 題作答(六軸定位 12 題 + 技能行為 15 題 +
-  身材數值 6 題)、即時預覽排序、匯出 answers.json。不做任何決策——正式結果
+  用途：本機用的問診測試頁,收集 29 題作答(六軸定位 12 題 + 技能行為 11 題 +
+  身材數值 6 題;另有 4 個技能的現況水準借用六軸定位題的作答,見
+  also_measures_skill)、即時預覽排序、匯出 answers.json。不做任何決策——正式結果
   一律以 scripts/run_priority.py(優先序)跟 scripts/run_player_match.py(球員
   配對/深度模板)的輸出為準;身材數值題目前只用於匯出,這頁本身沒有身體最貼合
   的即時預覽(那需要另外載入 players.json,只有 run_player_match.py 會算)。
@@ -319,6 +320,19 @@
     return Math.max(0.0, target - current);
   }
 
+  // mirrors src/engine/skill_level.py: score_skill_current_level_from_single_answer
+  function scoreSkillCurrentLevelFromSingleAnswer(answers, questionId) {
+    for (const answer of answers) {
+      if (answer.question_id !== questionId) continue;
+      const score = answer.score;
+      if (!(score >= 1 && score <= 5)) {
+        throw new Error(`score out of range 1-5 for ${questionId}: ${score}`);
+      }
+      return score;
+    }
+    throw new Error(`no answer found for question: ${questionId}`);
+  }
+
   // mirrors src/engine/relevance.py: compute_relevance
   function computeRelevance(axisCoordinates, axisRelevance) {
     const weightTotal = AXES.reduce((sum, axis) => sum + axisRelevance[axis], 0);
@@ -593,8 +607,16 @@
     }
     try {
       const skillAnswers = collectAnswers(state.skillQuestions);
+      const axisAnswers = collectAnswers(state.axisQuestions);
+      // mirrors scripts/run_priority.py: build_priority_items's substitute_question_by_skill
+      const substituteQuestionBySkill = {};
+      for (const q of state.axisQuestions) {
+        if (q.also_measures_skill) substituteQuestionBySkill[q.also_measures_skill] = q.id;
+      }
       const items = state.skills.map((skill) => {
-        const current = scoreSkillCurrentLevel(state.skillQuestions, skillAnswers, skill.id);
+        const current = skill.id in substituteQuestionBySkill
+          ? scoreSkillCurrentLevelFromSingleAnswer(axisAnswers, substituteQuestionBySkill[skill.id])
+          : scoreSkillCurrentLevel(state.skillQuestions, skillAnswers, skill.id);
         const gap = computeGap(current);
         const relevance = computeRelevance(lastCoords, skill.axis_relevance);
         return {

@@ -1,10 +1,16 @@
-# 用途：測試 score_skill_current_level(BARS 作答→技能現況水準)跟
-# compute_gap(現況→缺口 G_i)這兩個函數的計算邏輯與邊界情況。
+# 用途：測試 score_skill_current_level(BARS 作答→技能現況水準)、
+# score_skill_current_level_from_single_answer(單題作答直接借用為技能現況水準,
+# 給 also_measures_skill 重複題合併機制用)跟 compute_gap(現況→缺口 G_i)
+# 這幾個函數的計算邏輯與邊界情況。
 # 可手動調整的變數：無——QUESTIONS 是固定的測試用假資料,不是要調的參數。
 
 import unittest
 
-from engine.skill_level import compute_gap, score_skill_current_level
+from engine.skill_level import (
+    compute_gap,
+    score_skill_current_level,
+    score_skill_current_level_from_single_answer,
+)
 
 QUESTIONS = [
     {"id": "shoot1", "skill_id": "perimeter_shooting", "prompt": "..."},
@@ -49,6 +55,30 @@ class ScoreSkillCurrentLevelTest(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             score_skill_current_level(QUESTIONS, answers, "rim_protection")
+
+
+class ScoreSkillCurrentLevelFromSingleAnswerTest(unittest.TestCase):
+    def test_returns_the_matching_answers_score(self):
+        answers = [
+            {"question_id": "axis_b2_1", "score": 4},
+            {"question_id": "shoot1", "score": 2},
+        ]
+
+        level = score_skill_current_level_from_single_answer(answers, "axis_b2_1")
+
+        self.assertEqual(level, 4)
+
+    def test_no_matching_answer_raises(self):
+        answers = [{"question_id": "shoot1", "score": 4}]
+
+        with self.assertRaises(ValueError):
+            score_skill_current_level_from_single_answer(answers, "axis_b2_1")
+
+    def test_score_out_of_range_raises(self):
+        answers = [{"question_id": "axis_b2_1", "score": 0}]
+
+        with self.assertRaises(ValueError):
+            score_skill_current_level_from_single_answer(answers, "axis_b2_1")
 
 
 class ComputeGapTest(unittest.TestCase):

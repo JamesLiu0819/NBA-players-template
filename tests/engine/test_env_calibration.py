@@ -15,15 +15,18 @@ collapsed_no_shooters / tight_perimeter_opp_shooters buttons in
 tools/survey.html — keep them in sync by hand if either changes.
 """
 import json
+import sys
 import unittest
 from pathlib import Path
 
-from engine.axis_position import score_axis_coordinates
 from engine.priority import rank_priorities
-from engine.relevance import compute_relevance
-from engine.skill_level import compute_gap, score_skill_current_level
 
-DATA_DIR = Path(__file__).resolve().parents[2] / "data" / "zh"
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+
+from scripts.run_priority import build_priority_items  # noqa: E402
+
+DATA_DIR = ROOT / "data" / "zh"
 
 ENV_COLLAPSED_NO_SHOOTERS = {
     "perimeter_shooting": 1.8,
@@ -72,17 +75,19 @@ class EnvCalibrationTest(unittest.TestCase):
         self.questions = load_json("題庫.json")
         self.skills = load_json("技能.json")["skills"]
 
-        # "護框接近滿分、外線投射偏高、自主進攻偏低": the rim-protection
-        # *skill-level* answer below is separately forced near-max (-> near-
-        # zero gap) -- these axis-level scores are the broader style self-
-        # assessment, unchanged in spirit from the pre-six-axis version:
+        # "護框接近滿分、外線投射偏高、自主進攻偏低": rim_protection's current
+        # level is forced near-max (-> near-zero gap) via axis_c2_2 (its
+        # also_measures_skill substitute question, since rim_protection no
+        # longer has its own skill_behavior question -- see 2026-10 duplicate
+        # removal) -- the rest of the axis-level scores are the broader style
+        # self-assessment, unchanged in spirit from the pre-six-axis version:
         # A low, B1 (perimeter shooting style) high, everything else neutral.
         axis_scores = {
             "axis_a_1": 1, "axis_a_2": 2,     # A low
             "axis_b1_1": 4, "axis_b1_2": 5,   # B1 (perimeter) high
             "axis_b2_1": 3, "axis_b2_2": 3,   # B2 (paint) neutral
             "axis_c1_1": 3, "axis_c1_2": 3,   # C1 (perimeter D) neutral
-            "axis_c2_1": 3, "axis_c2_2": 3,   # C2 (rim D) neutral
+            "axis_c2_1": 3, "axis_c2_2": 5,   # C2 (rim D): c2_2 forces rim_protection near-max
             "axis_d_1": 3, "axis_d_2": 3,     # D neutral
         }
         self.axis_answers = [{"question_id": qid, "score": s} for qid, s in axis_scores.items()]
@@ -96,7 +101,6 @@ class EnvCalibrationTest(unittest.TestCase):
             "perimeter_shooting": 3,
             "face_up_first_step": 1,
             "high_post_playmaking": 1,
-            "rim_protection": 5,
             "perimeter_switch_defense": 3,
         })
         self.skill_answers = [
@@ -105,17 +109,9 @@ class EnvCalibrationTest(unittest.TestCase):
         ]
 
     def _rank_with_env(self, env):
-        coordinates = score_axis_coordinates(self.questions["axis_positioning"], self.axis_answers)
-        items = []
-        for skill in self.skills:
-            current = score_skill_current_level(self.questions["skill_behavior"], self.skill_answers, skill["id"])
-            items.append({
-                "skill_id": skill["id"],
-                "G": compute_gap(current),
-                "E": env[skill["id"]],
-                "R": compute_relevance(coordinates, skill["axis_relevance"]),
-                "C": skill["cost_C"],
-            })
+        _, items = build_priority_items(
+            self.questions, self.skills, self.axis_answers, self.skill_answers, env
+        )
         return rank_priorities(items)
 
     def test_collapsed_defense_ranks_shooting_first_and_rim_protection_last(self):

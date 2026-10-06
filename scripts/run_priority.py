@@ -28,7 +28,11 @@ sys.path.insert(0, str(ROOT / "src"))
 from engine.axis_position import AXES, score_axis_coordinates  # noqa: E402
 from engine.priority import explain_dominant_factor, rank_priorities  # noqa: E402
 from engine.relevance import compute_relevance  # noqa: E402
-from engine.skill_level import compute_gap, score_skill_current_level  # noqa: E402
+from engine.skill_level import (  # noqa: E402
+    compute_gap,
+    score_skill_current_level,
+    score_skill_current_level_from_single_answer,
+)
 
 FACTOR_LABELS = {
     "zh": {
@@ -85,9 +89,20 @@ def load_json(path):
 def build_priority_items(questions, skills, axis_answers, skill_answers, env):
     coordinates = score_axis_coordinates(questions["axis_positioning"], axis_answers)
 
+    substitute_question_by_skill = {
+        q["also_measures_skill"]: q["id"]
+        for q in questions["axis_positioning"]
+        if q.get("also_measures_skill")
+    }
+
     items = []
     for skill in skills:
-        current = score_skill_current_level(questions["skill_behavior"], skill_answers, skill["id"])
+        if skill["id"] in substitute_question_by_skill:
+            current = score_skill_current_level_from_single_answer(
+                axis_answers, substitute_question_by_skill[skill["id"]]
+            )
+        else:
+            current = score_skill_current_level(questions["skill_behavior"], skill_answers, skill["id"])
         gap = compute_gap(current)
         relevance = compute_relevance(coordinates, skill["axis_relevance"])
         if skill["id"] not in env:

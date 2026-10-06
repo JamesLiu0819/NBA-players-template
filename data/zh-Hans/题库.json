@@ -1,6 +1,6 @@
 {
-  "_description": "问诊题库。axis_positioning 是六轴定位 12 题(A/B1/B2/C1/C2/D 各 2 题,2026-10 从四轴 16 题改版——B 拆成 B1 外线投射/B2 禁区低位得分,C 拆成 C1 外围防守/C2 禁区护框防守,理由跟校准依据见下方 _editable_fields 与 docs/superpowers/plans),skill_behavior 是完整 15 项技能(SPEC.md §3.3)的行为锚定题(目前每项技能 1 题,共 15 题),body_measurements 是 SPEC.md §5.2 身材类的 6 题数值题(给「3 位深度模板」的身体最贴合用)。目前合计 33 题。axis_positioning/skill_behavior 都是 BARS(行为锚定评分量表,见 SPEC.md §5.1)——问的是具体行为/频率,不是自评能力高低;body_measurements 例外,是直接填数值,不是 BARS。",
-  "_editable_fields": "axis_positioning/skill_behavior 每题的 prompt(题目文本)跟 anchors(1-5 每个分数对应的行为描述)可以照 BARS 精神修改用词,body_measurements 每题的 prompt/unit/min/max 可以依实际需求调整,但改的时候要小心三件事:(1) id 一旦被其他地方引用(例如 skill_behavior 的 skill_id 对应 skills.json 的技能 id;body_measurements 的 field 对应 players.json 的 body 字段名)就不要改,否则数据兜不起来;(2) 每题的 anchors 必须维持 1-5 五个完整的行为描述,不能只改数字不改文本,否则就违背了 BARS 的设计目的;(3) body_measurements 的 field 全部六项(height_cm/wingspan_cm/weight_kg/standing_reach_cm/running_vertical_reach_cm/sprint_100m_seconds)都已经对应到 players.json 每个球员的 body 字段,添加题目要小心维持这个对应关系。要添加题目就照现有的对象格式加进对应的数组。body_measurements 的 body_height/body_weight 标了 required:true——身高、体重是原型分类(engine/archetype.py 的体型分数)的必要输入,没填无法算,所以改成必填,其余四题(臂展/摸高/冲刺)维持选填,省略 required 等同 false(2026-10 讨论,见 engine/body_fit.py 的 missing_required_body_fields)。axis_positioning 支持 \"reverse_scored\": true(见 engine/axis_position.py 的 score_axis_coordinates,分数会自动 6-score 反转再平均),但目前这 12 题没有一题用到——六轴改版时发现旧版 B 轴(axis_b1-b4)问的其实是「站位偏好」而非「投篮实力」、旧版 axis_c1 问的是「教练角色分配」而非「禁区防守能力」,这正是 2K 数值比对发现 B、C 两轴系统性低估中锋的根本原因之一(见 2026-10 讨论);改版后每题都直接问「成功率/把握度」这种表现型描述,不再需要用 reverse_scored 去扭转站位类问题的方向。添加题目如果又要用「字面频率跟轴方向相反」的写法,一样可以加这个字段,但建议优先改写成直接的表现型问法。",
+  "_description": "问诊题库。axis_positioning 是六轴定位 12 题(A/B1/B2/C1/C2/D 各 2 题,2026-10 从四轴 16 题改版——B 拆成 B1 外线投射/B2 禁区低位得分,C 拆成 C1 外围防守/C2 禁区护框防守,理由跟校准依据见下方 _editable_fields 与 docs/superpowers/plans),skill_behavior 是 15 项技能(SPEC.md §3.3)里,问法会跟 axis_positioning 明显重复的 4 项已经移除(post_up/perimeter_switch_defense/rim_protection/transition_finishing,这 4 项的现况水准改直接借用对应 axis_positioning 题的分数,见该题的 also_measures_skill 字段跟 scripts/run_priority.py 的 build_priority_items),所以目前是 11 题,不是 15 题(2026-10 讨论)。body_measurements 是 SPEC.md §5.2 身材类的 6 题数值题(给「3 位深度模板」的身体最贴合用)。目前合计 29 题。axis_positioning/skill_behavior 都是 BARS(行为锚定评分量表,见 SPEC.md §5.1)——问的是具体行为/频率,不是自评能力高低;body_measurements 例外,是直接填数值,不是 BARS。",
+  "_editable_fields": "axis_positioning/skill_behavior 每题的 prompt(题目文本)跟 anchors(1-5 每个分数对应的行为描述)可以照 BARS 精神修改用词,body_measurements 每题的 prompt/unit/min/max 可以依实际需求调整,但改的时候要小心三件事:(1) id 一旦被其他地方引用(例如 skill_behavior 的 skill_id 对应 skills.json 的技能 id;body_measurements 的 field 对应 players.json 的 body 字段名)就不要改,否则数据兜不起来;(2) 每题的 anchors 必须维持 1-5 五个完整的行为描述,不能只改数字不改文本,否则就违背了 BARS 的设计目的;(3) body_measurements 的 field 全部六项(height_cm/wingspan_cm/weight_kg/standing_reach_cm/running_vertical_reach_cm/sprint_100m_seconds)都已经对应到 players.json 每个球员的 body 字段,添加题目要小心维持这个对应关系。要添加题目就照现有的对象格式加进对应的数组。body_measurements 的 body_height/body_weight 标了 required:true——身高、体重是原型分类(engine/archetype.py 的体型分数)的必要输入,没填无法算,所以改成必填,其余四题(臂展/摸高/冲刺)维持选填,省略 required 等同 false(2026-10 讨论,见 engine/body_fit.py 的 missing_required_body_fields)。axis_positioning 支持 \"reverse_scored\": true(见 engine/axis_position.py 的 score_axis_coordinates,分数会自动 6-score 反转再平均),但目前这 12 题没有一题用到——六轴改版时发现旧版 B 轴(axis_b1-b4)问的其实是「站位偏好」而非「投篮实力」、旧版 axis_c1 问的是「教练角色分配」而非「禁区防守能力」,这正是 2K 数值比对发现 B、C 两轴系统性低估中锋的根本原因之一(见 2026-10 讨论);改版后每题都直接问「成功率/把握度」这种表现型描述,不再需要用 reverse_scored 去扭转站位类问题的方向。添加题目如果又要用「字面频率跟轴方向相反」的写法,一样可以加这个字段,但建议优先改写成直接的表现型问法。axis_positioning 题目可以选填 \"also_measures_skill\": \"<skill_id>\"——代表这题跟 skill_behavior 里某个技能问的是同一件事(2026-10 发现 4 组重复题后添加),该技能就不用再出现在 skill_behavior 里,build_priority_items 算这个技能的现况水准时会直接借用这题的分数。加新的 also_measures_skill 之前要先确认 skill_behavior 里真的没有重复的题目,不然同一个技能会被算两次现况水准。",
   "axis_positioning": [
     {
       "id": "axis_a_1",
@@ -53,6 +53,7 @@
     {
       "id": "axis_b2_1",
       "axis": "B2",
+      "also_measures_skill": "post_up",
       "prompt": "背框拿球、防守者卡在你跟篮框中间时,你能靠脚步或低位技巧直接得分的比例是?",
       "anchors": {
         "1": "几乎不会背框进攻",
@@ -89,6 +90,7 @@
     {
       "id": "axis_c1_2",
       "axis": "C1",
+      "also_measures_skill": "perimeter_switch_defense",
       "prompt": "换防后守到外线射手时,你能不被轻易拉开空档投篮的比例是?",
       "anchors": {
         "1": "几乎都会被轻易拉开",
@@ -113,6 +115,7 @@
     {
       "id": "axis_c2_2",
       "axis": "C2",
+      "also_measures_skill": "rim_protection",
       "prompt": "对手持球攻击禁区、由你正面协防或补位时,你能靠干扰、封阻影响到对方出手的比例是?",
       "anchors": {
         "1": "几乎帮不上忙,常常慢一步或犯规",
@@ -125,6 +128,7 @@
     {
       "id": "axis_d_1",
       "axis": "D",
+      "also_measures_skill": "transition_finishing",
       "prompt": "快攻时,你能第一个冲到前场完成终结(上篮/扣篮)的频率是?",
       "anchors": {
         "1": "几乎从不是我",
@@ -175,49 +179,13 @@
     {
       "id": "skill_high_post_playmaking_1",
       "skill_id": "high_post_playmaking",
-      "prompt": "高位接球后被包夹,你的第一反应是?",
+      "prompt": "站在高位(罚球线附近)接球,防守还没包夹过来时,你通常怎么处理球?",
       "anchors": {
-        "1": "一定失误",
-        "2": "常勉强运球",
-        "3": "能传出但慢",
-        "4": "能传到空档",
-        "5": "能传到下一个空档"
-      }
-    },
-    {
-      "id": "skill_rim_protection_1",
-      "skill_id": "rim_protection",
-      "prompt": "对手持球正面攻击禁区、由你正面对位时,你能守下(抄截/封盖/迫使投失)的比例是?",
-      "anchors": {
-        "1": "从不,几乎都被得分或造成犯规",
-        "2": "很少守下",
-        "3": "一半时间能守下",
-        "4": "常常能守下",
-        "5": "几乎都能守下,对手很少能轻松得手"
-      }
-    },
-    {
-      "id": "skill_perimeter_switch_defense_1",
-      "skill_id": "perimeter_switch_defense",
-      "prompt": "换防到外线持球者后,你能全程贴身跟防、不被轻易拉开空档的比例是?",
-      "anchors": {
-        "1": "从不,换防后马上被拉开",
-        "2": "很少能跟住",
-        "3": "一半时间能跟住",
-        "4": "常常能跟住",
-        "5": "几乎都能跟住,对手很难靠换防打我"
-      }
-    },
-    {
-      "id": "skill_post_up_1",
-      "skill_id": "post_up",
-      "prompt": "背框拿球,防守者卡在你跟篮框中间时,你会怎么做?",
-      "anchors": {
-        "1": "直接传出去或放弃背框,不会尝试强攻",
-        "2": "很少强攻,而且大多以失败收场",
-        "3": "偶尔强攻,成功率大约一半",
-        "4": "常常强攻,而且大多能完成或造犯规",
-        "5": "一定强攻,对手很难单防守住我"
+        "1": "几乎只会自己往禁区单打,不会特别找机会传球",
+        "2": "偶尔会分球,但通常只看得到正前方那一个人",
+        "3": "能看到一个空档就传,但常常没注意到还有更好的选择",
+        "4": "能同时注意两侧空档,大多会选择把球喂给更好的机会",
+        "5": "能连续做出两次以上的传导(先吸引防守再找到真正的空档),经常直接制造出队友的得分机会"
       }
     },
     {
@@ -242,18 +210,6 @@
         "3": "一半时间能利用掩护跑出空档",
         "4": "常常能利用掩护跑出空档接球",
         "5": "几乎每次都能读懂防守,跑到最有利的空档"
-      }
-    },
-    {
-      "id": "skill_transition_finishing_1",
-      "skill_id": "transition_finishing",
-      "prompt": "快攻中你是第一个冲到篮下的人时,你能稳定完成终结的比例是?",
-      "anchors": {
-        "1": "几乎都会失误或被封盖",
-        "2": "很少能稳定完成",
-        "3": "一半时间能完成",
-        "4": "常常能完成",
-        "5": "几乎都能完成,而且常常造成额外犯规"
       }
     },
     {
