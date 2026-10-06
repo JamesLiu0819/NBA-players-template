@@ -79,68 +79,6 @@
           "question_id": "axis_d_2",
           "score": 4
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 4
-        }
       ]
     },
     {
@@ -218,68 +156,6 @@
         },
         {
           "question_id": "axis_d_2",
-          "score": 4
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
           "score": 4
         }
       ]
@@ -361,68 +237,6 @@
           "question_id": "axis_d_2",
           "score": 4
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 5
-        }
       ]
     },
     {
@@ -502,68 +316,6 @@
           "question_id": "axis_d_2",
           "score": 1
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 3
-        }
       ]
     },
     {
@@ -641,68 +393,6 @@
         },
         {
           "question_id": "axis_d_2",
-          "score": 2
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
           "score": 2
         }
       ]
@@ -784,68 +474,6 @@
           "question_id": "axis_d_2",
           "score": 4
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 2
-        }
       ]
     },
     {
@@ -925,68 +553,6 @@
           "question_id": "axis_d_2",
           "score": 1
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 2
-        }
       ]
     },
     {
@@ -1064,68 +630,6 @@
         },
         {
           "question_id": "axis_d_2",
-          "score": 5
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
           "score": 5
         }
       ]
@@ -1207,68 +711,6 @@
           "question_id": "axis_d_2",
           "score": 4
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 4
-        }
       ]
     },
     {
@@ -1346,68 +788,6 @@
         },
         {
           "question_id": "axis_d_2",
-          "score": 4
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
           "score": 4
         }
       ]
@@ -1489,68 +869,6 @@
           "question_id": "axis_d_2",
           "score": 5
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 4
-        }
       ]
     },
     {
@@ -1629,68 +947,6 @@
         {
           "question_id": "axis_d_2",
           "score": 3
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 2
         }
       ]
     },
@@ -1771,68 +1027,6 @@
           "question_id": "axis_d_2",
           "score": 5
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 4
-        }
       ]
     },
     {
@@ -1911,68 +1105,6 @@
         {
           "question_id": "axis_d_2",
           "score": 5
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 4
         }
       ]
     },
@@ -2053,68 +1185,6 @@
           "question_id": "axis_d_2",
           "score": 4
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 3
-        }
       ]
     },
     {
@@ -2194,68 +1264,6 @@
           "question_id": "axis_d_2",
           "score": 4
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 3
-        }
       ]
     },
     {
@@ -2333,68 +1341,6 @@
         },
         {
           "question_id": "axis_d_2",
-          "score": 2
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
           "score": 2
         }
       ]
@@ -2476,68 +1422,6 @@
           "question_id": "axis_d_2",
           "score": 3
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 3
-        }
       ]
     },
     {
@@ -2616,68 +1500,6 @@
         {
           "question_id": "axis_d_2",
           "score": 1
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 4
         }
       ]
     },
@@ -2758,68 +1580,6 @@
           "question_id": "axis_d_2",
           "score": 3
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 2
-        }
       ]
     },
     {
@@ -2897,68 +1657,6 @@
         },
         {
           "question_id": "axis_d_2",
-          "score": 4
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
           "score": 4
         }
       ]
@@ -3040,68 +1738,6 @@
           "question_id": "axis_d_2",
           "score": 2
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 2
-        }
       ]
     },
     {
@@ -3180,68 +1816,6 @@
         {
           "question_id": "axis_d_2",
           "score": 3
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 4
         }
       ]
     },
@@ -3322,68 +1896,6 @@
           "question_id": "axis_d_2",
           "score": 1
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 1
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 1
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 1
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 1
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 1
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 2
-        }
       ]
     },
     {
@@ -3461,68 +1973,6 @@
         },
         {
           "question_id": "axis_d_2",
-          "score": 4
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
           "score": 4
         }
       ]
@@ -3604,68 +2054,6 @@
           "question_id": "axis_d_2",
           "score": 4
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 3
-        }
       ]
     },
     {
@@ -3744,68 +2132,6 @@
         {
           "question_id": "axis_d_2",
           "score": 4
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 3
         }
       ]
     },
@@ -3886,68 +2212,6 @@
           "question_id": "axis_d_2",
           "score": 5
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 3
-        }
       ]
     },
     {
@@ -4026,68 +2290,6 @@
         {
           "question_id": "axis_d_2",
           "score": 4
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 3
         }
       ]
     },
@@ -4168,68 +2370,6 @@
           "question_id": "axis_d_2",
           "score": 4
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 3
-        }
       ]
     },
     {
@@ -4307,68 +2447,6 @@
         },
         {
           "question_id": "axis_d_2",
-          "score": 5
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
           "score": 5
         }
       ]
@@ -4450,68 +2528,6 @@
           "question_id": "axis_d_2",
           "score": 4
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 5
-        }
       ]
     },
     {
@@ -4590,68 +2606,6 @@
         {
           "question_id": "axis_d_2",
           "score": 1
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 3
         }
       ]
     },
@@ -4732,68 +2686,6 @@
           "question_id": "axis_d_2",
           "score": 3
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 4
-        }
       ]
     },
     {
@@ -4871,68 +2763,6 @@
         },
         {
           "question_id": "axis_d_2",
-          "score": 5
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
           "score": 5
         }
       ]
@@ -5014,68 +2844,6 @@
           "question_id": "axis_d_2",
           "score": 4
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 4
-        }
       ]
     },
     {
@@ -5153,68 +2921,6 @@
         },
         {
           "question_id": "axis_d_2",
-          "score": 4
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
           "score": 4
         }
       ]
@@ -5296,68 +3002,6 @@
           "question_id": "axis_d_2",
           "score": 1
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 2
-        }
       ]
     },
     {
@@ -5436,68 +3080,6 @@
         {
           "question_id": "axis_d_2",
           "score": 5
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 4
         }
       ]
     },
@@ -5578,68 +3160,6 @@
           "question_id": "axis_d_2",
           "score": 2
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 3
-        }
       ]
     },
     {
@@ -5718,68 +3238,6 @@
         {
           "question_id": "axis_d_2",
           "score": 2
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 3
         }
       ]
     },
@@ -5860,68 +3318,6 @@
           "question_id": "axis_d_2",
           "score": 5
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 4
-        }
       ]
     },
     {
@@ -5999,68 +3395,6 @@
         },
         {
           "question_id": "axis_d_2",
-          "score": 4
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
           "score": 4
         }
       ]
@@ -6142,68 +3476,6 @@
           "question_id": "axis_d_2",
           "score": 1
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 2
-        }
       ]
     },
     {
@@ -6281,68 +3553,6 @@
         },
         {
           "question_id": "axis_d_2",
-          "score": 1
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 1
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 1
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 1
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 1
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 1
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 1
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 1
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 1
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
           "score": 1
         }
       ]
@@ -6424,68 +3634,6 @@
           "question_id": "axis_d_2",
           "score": 1
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 2
-        }
       ]
     },
     {
@@ -6563,68 +3711,6 @@
         },
         {
           "question_id": "axis_d_2",
-          "score": 2
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
           "score": 2
         }
       ]
@@ -6706,68 +3792,6 @@
           "question_id": "axis_d_2",
           "score": 1
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 2
-        }
       ]
     },
     {
@@ -6847,68 +3871,6 @@
           "question_id": "axis_d_2",
           "score": 1
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 2
-        }
       ]
     },
     {
@@ -6986,68 +3948,6 @@
         },
         {
           "question_id": "axis_d_2",
-          "score": 4
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
           "score": 4
         }
       ]
@@ -7129,68 +4029,6 @@
           "question_id": "axis_d_2",
           "score": 4
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 4
-        }
       ]
     },
     {
@@ -7270,68 +4108,6 @@
           "question_id": "axis_d_2",
           "score": 3
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 1
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 2
-        }
       ]
     },
     {
@@ -7409,68 +4185,6 @@
         },
         {
           "question_id": "axis_d_2",
-          "score": 2
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
           "score": 2
         }
       ]
@@ -7552,68 +4266,6 @@
           "question_id": "axis_d_2",
           "score": 4
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 4
-        }
       ]
     },
     {
@@ -7691,68 +4343,6 @@
         },
         {
           "question_id": "axis_d_2",
-          "score": 2
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
           "score": 2
         }
       ]
@@ -7834,68 +4424,6 @@
           "question_id": "axis_d_2",
           "score": 2
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 3
-        }
       ]
     },
     {
@@ -7974,68 +4502,6 @@
         {
           "question_id": "axis_d_2",
           "score": 2
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 3
         }
       ]
     },
@@ -8116,68 +4582,6 @@
           "question_id": "axis_d_2",
           "score": 1
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 2
-        }
       ]
     },
     {
@@ -8255,68 +4659,6 @@
         },
         {
           "question_id": "axis_d_2",
-          "score": 4
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
           "score": 4
         }
       ]
@@ -8398,68 +4740,6 @@
           "question_id": "axis_d_2",
           "score": 1
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 2
-        }
       ]
     },
     {
@@ -8538,68 +4818,6 @@
         {
           "question_id": "axis_d_2",
           "score": 4
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 5
         }
       ]
     },
@@ -8680,68 +4898,6 @@
           "question_id": "axis_d_2",
           "score": 2
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 4
-        }
       ]
     },
     {
@@ -8820,68 +4976,6 @@
         {
           "question_id": "axis_d_2",
           "score": 3
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 4
         }
       ]
     },
@@ -8962,68 +5056,6 @@
           "question_id": "axis_d_2",
           "score": 3
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 2
-        }
       ]
     },
     {
@@ -9101,68 +5133,6 @@
         },
         {
           "question_id": "axis_d_2",
-          "score": 3
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
           "score": 3
         }
       ]
@@ -9244,68 +5214,6 @@
           "question_id": "axis_d_2",
           "score": 3
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 3
-        }
       ]
     },
     {
@@ -9384,68 +5292,6 @@
         {
           "question_id": "axis_d_2",
           "score": 1
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 1
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 3
         }
       ]
     },
@@ -9526,68 +5372,6 @@
           "question_id": "axis_d_2",
           "score": 2
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 3
-        }
       ]
     },
     {
@@ -9666,68 +5450,6 @@
         {
           "question_id": "axis_d_2",
           "score": 4
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 4
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 2
         }
       ]
     },
@@ -9808,68 +5530,6 @@
           "question_id": "axis_d_2",
           "score": 3
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 2
-        }
       ]
     },
     {
@@ -9949,68 +5609,6 @@
           "question_id": "axis_d_2",
           "score": 3
         }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 4
-        }
       ]
     },
     {
@@ -10089,68 +5687,6 @@
         {
           "question_id": "axis_d_2",
           "score": 3
-        }
-      ],
-      "mock_skill_answers": [
-        {
-          "question_id": "skill_perimeter_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_face_up_first_step_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_high_post_playmaking_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_rim_protection_1",
-          "score": 2
-        },
-        {
-          "question_id": "skill_perimeter_switch_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_post_up_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_pick_and_roll_ball_handling_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_off_ball_movement_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_transition_finishing_1",
-          "score": 5
-        },
-        {
-          "question_id": "skill_free_throw_shooting_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_offensive_rebounding_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_on_ball_perimeter_defense_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_help_defense_rotation_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_defensive_rebounding_boxout_1",
-          "score": 3
-        },
-        {
-          "question_id": "skill_decision_making_turnover_control_1",
-          "score": 4
         }
       ]
     }

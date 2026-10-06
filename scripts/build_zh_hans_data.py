@@ -32,6 +32,7 @@ FILENAME_MAP = {
     "原型.json": "原型.json",
     "球員.json": "球员.json",
     "歷史球員.json": "历史球员.json",
+    "訓練菜單.json": "训练菜单.json",
 }
 
 converter = OpenCC("tw2sp")

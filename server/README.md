@@ -38,5 +38,5 @@ cd server
 
 ## 架構提醒
 
-- `server/app.py` 不重寫任何計算邏輯,直接 import `src/engine` 跟 `scripts/run_priority.py`、`scripts/run_player_match.py` 裡已經拆出來的函數。改 engine 的計算規則要去改 `src/engine`,不要在這裡加。
-- `data/answers/` 目錄(真實使用者的個人作答存檔)刻意沒有被任何路由公開服務——`server/app.py` 只透過 `/api/form-data` 回傳題庫跟技能名稱(渲染問卷用),不會把整個 `data/` 目錄當靜態檔案吐出去。
+- `server/app.py` 不重寫任何計算邏輯,直接 import `src/engine` 跟 `scripts/run_player_match.py` 裡已經拆出來的函數。改 engine 的計算規則要去改 `src/engine`,不要在這裡加。
+- `data/answers/` 目錄(真實使用者的個人作答存檔)刻意沒有被任何路由公開服務——`server/app.py` 只透過 `/api/form-data` 回傳題庫(渲染問卷用),不會把整個 `data/` 目錄當靜態檔案吐出去。

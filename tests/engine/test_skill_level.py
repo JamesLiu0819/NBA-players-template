@@ -1,98 +1,58 @@
-# 用途：測試 score_skill_current_level(BARS 作答→技能現況水準)、
-# score_skill_current_level_from_single_answer(單題作答直接借用為技能現況水準,
-# 給 also_measures_skill 重複題合併機制用)跟 compute_gap(現況→缺口 G_i)
-# 這幾個函數的計算邏輯與邊界情況。
-# 可手動調整的變數：無——QUESTIONS 是固定的測試用假資料,不是要調的參數。
+# 用途：測試 skill_gap()——技能缺口 G 的計算。
+# 可手動調整的變數：無——這裡的座標跟權重都是為了驗證公式而設計的測試數字。
 
 import unittest
 
-from engine.skill_level import (
-    compute_gap,
-    score_skill_current_level,
-    score_skill_current_level_from_single_answer,
-)
+from engine.skill_level import skill_gap
 
-QUESTIONS = [
-    {"id": "shoot1", "skill_id": "perimeter_shooting", "prompt": "..."},
-    {"id": "shoot2", "skill_id": "perimeter_shooting", "prompt": "..."},
-    {"id": "rim1", "skill_id": "rim_protection", "prompt": "..."},
-]
+ALL_ZERO = {"A": 0.0, "B1": 0.0, "B2": 0.0, "C1": 0.0, "C2": 0.0, "D": 0.0}
 
 
-class ScoreSkillCurrentLevelTest(unittest.TestCase):
-    def test_averages_all_answers_for_the_skill(self):
-        answers = [
-            {"question_id": "shoot1", "score": 4},
-            {"question_id": "shoot2", "score": 2},
-            {"question_id": "rim1", "score": 5},  # different skill, must be ignored
-        ]
+class SkillGapTest(unittest.TestCase):
+    def test_gap_is_relevance_times_positive_difference_on_one_axis(self):
+        relevance = dict(ALL_ZERO, A=1.0)
+        user = dict(ALL_ZERO, A=40.0)
+        target = dict(ALL_ZERO, A=70.0)
 
-        level = score_skill_current_level(QUESTIONS, answers, "perimeter_shooting")
+        self.assertAlmostEqual(skill_gap(relevance, user, target), 30.0)
 
-        self.assertEqual(level, 3.0)
+    def test_gap_is_zero_when_user_already_matches_or_exceeds_target(self):
+        relevance = dict(ALL_ZERO, A=1.0)
+        user = dict(ALL_ZERO, A=80.0)
+        target = dict(ALL_ZERO, A=50.0)
 
-    def test_single_question_skill(self):
-        answers = [{"question_id": "rim1", "score": 5}]
+        self.assertEqual(skill_gap(relevance, user, target), 0.0)
 
-        level = score_skill_current_level(QUESTIONS, answers, "rim_protection")
+    def test_gap_is_weighted_sum_across_several_trainable_axes(self):
+        relevance = {"A": 0.5, "B1": 1.0, "B2": 0.0, "C1": 0.0, "C2": 0.0, "D": 0.0}
+        user = {"A": 50.0, "B1": 20.0, "B2": 0.0, "C1": 0.0, "C2": 0.0, "D": 0.0}
+        target = {"A": 60.0, "B1": 50.0, "B2": 0.0, "C1": 0.0, "C2": 0.0, "D": 0.0}
 
-        self.assertEqual(level, 5.0)
+        # 0.5 × (60 − 50) + 1.0 × (50 − 20) = 5 + 30
+        self.assertAlmostEqual(skill_gap(relevance, user, target), 35.0)
 
-    def test_unknown_skill_id_raises(self):
-        answers = [{"question_id": "shoot1", "score": 4}]
+    def test_d_axis_never_contributes_to_gap(self):
+        relevance = dict(ALL_ZERO, D=1.0)
+        user = dict(ALL_ZERO, D=0.0)
+        target = dict(ALL_ZERO, D=100.0)
 
-        with self.assertRaises(ValueError):
-            score_skill_current_level(QUESTIONS, answers, "does_not_exist")
+        self.assertEqual(skill_gap(relevance, user, target), 0.0)
 
-    def test_no_answers_for_skill_raises(self):
-        answers = [{"question_id": "rim1", "score": 5}]
+    def test_target_not_above_user_on_any_trainable_axis_gives_zero_total(self):
+        relevance = {"A": 0.3, "B1": 0.9, "B2": 0.1, "C1": 0.1, "C2": 0.1, "D": 0.2}
+        user = {"A": 90.0, "B1": 90.0, "B2": 90.0, "C1": 90.0, "C2": 90.0, "D": 10.0}
+        target = {"A": 80.0, "B1": 80.0, "B2": 80.0, "C1": 80.0, "C2": 80.0, "D": 100.0}
 
-        with self.assertRaises(ValueError):
-            score_skill_current_level(QUESTIONS, answers, "perimeter_shooting")
+        self.assertEqual(skill_gap(relevance, user, target), 0.0)
 
-    def test_score_out_of_range_raises(self):
-        answers = [{"question_id": "rim1", "score": 0}]
+    def test_same_input_gives_same_output(self):
+        relevance = {"A": 0.3, "B1": 0.9, "B2": 0.1, "C1": 0.1, "C2": 0.1, "D": 0.2}
+        user = {"A": 40.0, "B1": 30.0, "B2": 20.0, "C1": 60.0, "C2": 10.0, "D": 50.0}
+        target = {"A": 70.0, "B1": 80.0, "B2": 50.0, "C1": 60.0, "C2": 40.0, "D": 90.0}
 
-        with self.assertRaises(ValueError):
-            score_skill_current_level(QUESTIONS, answers, "rim_protection")
-
-
-class ScoreSkillCurrentLevelFromSingleAnswerTest(unittest.TestCase):
-    def test_returns_the_matching_answers_score(self):
-        answers = [
-            {"question_id": "axis_b2_1", "score": 4},
-            {"question_id": "shoot1", "score": 2},
-        ]
-
-        level = score_skill_current_level_from_single_answer(answers, "axis_b2_1")
-
-        self.assertEqual(level, 4)
-
-    def test_no_matching_answer_raises(self):
-        answers = [{"question_id": "shoot1", "score": 4}]
-
-        with self.assertRaises(ValueError):
-            score_skill_current_level_from_single_answer(answers, "axis_b2_1")
-
-    def test_score_out_of_range_raises(self):
-        answers = [{"question_id": "axis_b2_1", "score": 0}]
-
-        with self.assertRaises(ValueError):
-            score_skill_current_level_from_single_answer(answers, "axis_b2_1")
-
-
-class ComputeGapTest(unittest.TestCase):
-    def test_gap_is_target_minus_current(self):
-        self.assertEqual(compute_gap(current=2, target=5), 3)
-
-    def test_default_target_is_mastery_level_5(self):
-        self.assertEqual(compute_gap(current=2), 3)
-
-    def test_gap_clamped_to_zero_when_current_exceeds_target(self):
-        self.assertEqual(compute_gap(current=4, target=3), 0)
-
-    def test_fully_mastered_skill_has_zero_gap(self):
-        self.assertEqual(compute_gap(current=5, target=5), 0)
+        first = skill_gap(relevance, user, target)
+        second = skill_gap(relevance, user, target)
+        self.assertEqual(first, second)
 
 
 if __name__ == "__main__":

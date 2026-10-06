@@ -1,12 +1,11 @@
 # 用途：測試 mock_axis_answers(把目標六軸座標反推成一組合理的 1-5 模擬作答)
-# 跟 mock_skill_answers(用 axis_relevance 加權跟招牌技能推算技能行為模擬作答)
-# 這兩個 v2 球員資料生成用的推導函數。
+# 這個 v2 球員資料生成用的推導函數。
 # 可手動調整的變數：無——這支檔案裡的題目/座標資料都是為了驗證公式而設計的
 # 測試案例,不是要調的參數。
 
 import unittest
 
-from scripts.mock_answers import mock_axis_answers, mock_skill_answers
+from scripts.mock_answers import mock_axis_answers
 
 AXES = ("A", "B1", "B2", "C1", "C2", "D")
 
@@ -101,54 +100,6 @@ class MockAxisAnswersTest(unittest.TestCase):
         recomputed = score_axis_coordinates(questions, answers)
 
         self.assertAlmostEqual(recomputed["B1"], target["B1"], delta=15)
-
-
-SKILL_QUESTIONS = [
-    {"id": "skill_post_up_1", "skill_id": "post_up"},
-    {"id": "skill_perimeter_shooting_1", "skill_id": "perimeter_shooting"},
-]
-
-# Single-axis weights (rather than skills.json's real multi-axis mix) so the
-# expected compute_relevance() output is exact (relevance == that axis's
-# coordinate / 100), not something that needs re-deriving by hand per test.
-ZERO_RELEVANCE = {axis: 0 for axis in AXES}
-SKILLS_BY_ID = {
-    "post_up": {"axis_relevance": dict(ZERO_RELEVANCE, B2=1.0)},
-    "perimeter_shooting": {"axis_relevance": dict(ZERO_RELEVANCE, A=1.0)},
-}
-
-
-class MockSkillAnswersTest(unittest.TestCase):
-    def test_low_relevance_axis_profile_gives_a_low_score(self):
-        coordinates = dict(ALL_50, B2=0)
-        answers = mock_skill_answers(SKILL_QUESTIONS, SKILLS_BY_ID, coordinates, signature_skill_id=None)
-        post_up = next(a for a in answers if a["question_id"] == "skill_post_up_1")
-        self.assertEqual(post_up["score"], 1)
-
-    def test_high_relevance_axis_profile_gives_a_high_score(self):
-        coordinates = dict(ALL_50, B2=100)
-        answers = mock_skill_answers(SKILL_QUESTIONS, SKILLS_BY_ID, coordinates, signature_skill_id=None)
-        post_up = next(a for a in answers if a["question_id"] == "skill_post_up_1")
-        self.assertEqual(post_up["score"], 5)
-
-    def test_signature_skill_is_forced_to_five_regardless_of_relevance(self):
-        # B2=0 means post_up's relevance-derived score would be at the
-        # bottom, but this player's signature move IS post_up -- the mock
-        # answer should reflect their known specialty, not just the
-        # axis-relevance guess.
-        coordinates = dict(ALL_50, A=0, B2=0)
-        answers = mock_skill_answers(
-            SKILL_QUESTIONS, SKILLS_BY_ID, coordinates, signature_skill_id="post_up"
-        )
-        post_up = next(a for a in answers if a["question_id"] == "skill_post_up_1")
-        self.assertEqual(post_up["score"], 5)
-        perimeter = next(a for a in answers if a["question_id"] == "skill_perimeter_shooting_1")
-        self.assertEqual(perimeter["score"], 1)
-
-    def test_every_question_id_appears_exactly_once(self):
-        answers = mock_skill_answers(SKILL_QUESTIONS, SKILLS_BY_ID, ALL_50, signature_skill_id=None)
-        ids = [a["question_id"] for a in answers]
-        self.assertEqual(sorted(ids), sorted(q["id"] for q in SKILL_QUESTIONS))
 
 
 if __name__ == "__main__":

@@ -1,9 +1,7 @@
-# 用途：測試兩支 API endpoint。POST /api/template-results 只吃六軸定位(12題)
-# 跟身材數值(6題,其中身高、體重必填,其餘 4 題可省略),回傳定位/3位深度模板/
-# 10人對照表——刻意不需要技能行為跟環境權重,因為很多使用者沒在打正式比賽,
-# 只想知道自己的球員模板是誰。
-# POST /api/priority-results 才吃技能行為(15題)跟環境權重,回傳優先訓練順序,
-# 是使用者自己選擇要不要看的「進階」分析。
+# 用途：測試 API endpoint。POST /api/template-results 只吃六軸定位(12題)跟身材數值
+# (6題,其中身高、體重必填,其餘 4 題可省略),回傳定位/3位深度模板/10人對照表,
+# 每位球員附三種聯賽環境的訓練計劃(training_plans)。已經沒有技能題跟
+# /api/priority-results,那支路由的測試移除,改成確認它真的不存在。
 # 用 Flask 內建的 test_client,不需要真的啟動伺服器。
 # 執行方式(跟主要的 engine 測試套件分開跑,因為需要 Flask,不是純標準函式庫)：
 #   cd server && ../.venv/bin/python3 -m unittest test_app -v
@@ -46,12 +44,7 @@ def build_required_body_answers(questions):
     ]
 
 
-def build_skill_answers(questions):
-    return [{"question_id": q["id"], "score": 3} for q in questions["skill_behavior"]]
-
-
-def build_env(skills):
-    return {s["id"]: 1.0 for s in skills}
+ENV_CODES = ("collapsed_no_shooters", "tight_perimeter_opp_shooters", "zone_defense")
 
 
 class TemplateResultsTest(unittest.TestCase):
@@ -78,9 +71,7 @@ class TemplateResultsTest(unittest.TestCase):
         self.assertNotIn("priorities", data)
         self.assertNotIn("dominant_factor_sentence", data)
 
-    def test_works_without_skill_answers_or_env_in_the_request(self):
-        # the whole point of this endpoint: no BARS skill self-assessment,
-        # no league environment, and it still produces a full result.
+    def test_one_survey_produces_a_full_result_without_any_skill_questions(self):
         payload = {
             "axis_answers": build_axis_answers(self.questions),
             "body_answers": build_required_body_answers(self.questions),
@@ -151,30 +142,49 @@ class TemplateResultsTest(unittest.TestCase):
             {
                 "rank", "name", "team", "coordinates", "distance", "fit_stars",
                 "notable_traits", "dominant_diff_axis", "growth_recommendation",
-                "training_breakdown",
+                "training_plans",
             },
         )
         self.assertEqual(top_player["rank"], 1)
         self.assertEqual(set(top_player["coordinates"].keys()), {"A", "B1", "B2", "C1", "C2", "D"})
 
-    def test_top_10_training_breakdown_covers_all_six_axes(self):
+    def test_every_top_10_player_has_training_plans_for_all_three_environments(self):
         payload = {
             "axis_answers": build_axis_answers(self.questions),
             "body_answers": build_required_body_answers(self.questions),
         }
 
         response = self.client.post("/api/template-results", json=payload)
-        breakdown = response.get_json()["top_10"][0]["training_breakdown"]
 
-        self.assertEqual(len(breakdown), 6)
-        self.assertEqual(
-            {row["axis"] for row in breakdown}, {"A", "B1", "B2", "C1", "C2", "D"}
-        )
-        for row in breakdown:
-            self.assertIn("your_value", row)
-            self.assertIn("player_value", row)
-            self.assertIn("diff", row)
-            self.assertIn("skill_action", row)
+        for row in response.get_json()["top_10"]:
+            self.assertEqual(set(row["training_plans"].keys()), set(ENV_CODES))
+            for plan in row["training_plans"].values():
+                self.assertLessEqual(len(plan), 5)
+
+    def test_training_plan_items_have_the_expected_shape(self):
+        payload = {
+            "axis_answers": build_axis_answers(self.questions),
+            "body_answers": build_required_body_answers(self.questions),
+        }
+
+        response = self.client.post("/api/template-results", json=payload)
+        items = [
+            item
+            for row in response.get_json()["top_10"]
+            for plan in row["training_plans"].values()
+            for item in plan
+        ]
+
+        self.assertTrue(items, "expected at least one trainable skill across the top 10")
+        for item in items:
+            self.assertEqual(
+                set(item.keys()), {"skill_id", "name_zh", "P", "level", "metric", "drills"}
+            )
+            self.assertIn(item["level"], {"entry", "advanced", "mastery"})
+            self.assertEqual(
+                set(item["metric"].keys()), {"action", "denominator", "direction", "threshold"}
+            )
+            self.assertIsInstance(item["drills"], list)
 
     def test_response_includes_archetype_and_scouting_report(self):
         payload = {
@@ -285,86 +295,27 @@ class TemplateResultsTest(unittest.TestCase):
         self.assertTrue(top_10_names.issubset(zh_names))
 
 
-class PriorityResultsTest(unittest.TestCase):
-    def setUp(self):
-        self.client = app.test_client()
-        self.questions = load_json(ROOT / "data" / "zh" / "題庫.json")
-        self.skills = load_json(ROOT / "data" / "zh" / "技能.json")["skills"]
+class RemovedPriorityEndpointTest(unittest.TestCase):
+    def test_priority_results_endpoint_no_longer_exists(self):
+        rules = {rule.rule for rule in app.url_map.iter_rules()}
 
-    def build_full_payload(self):
-        return {
-            "axis_answers": build_axis_answers(self.questions),
-            "skill_answers": build_skill_answers(self.questions),
-            "env": build_env(self.skills),
-        }
-
-    def test_full_payload_returns_200_with_expected_shape(self):
-        response = self.client.post("/api/priority-results", json=self.build_full_payload())
-
-        self.assertEqual(response.status_code, 200)
-        data = response.get_json()
-        self.assertEqual(set(data["coordinates"].keys()), {"A", "B1", "B2", "C1", "C2", "D"})
-        self.assertEqual(len(data["priorities"]), 15)
-        self.assertNotIn("dominant_factor_sentence", data)
-        self.assertTrue(all("action" in p for p in data["priorities"]))
-        # this endpoint is priority-only -- template/matching fields don't belong here
-        self.assertNotIn("top_10", data)
-        self.assertNotIn("deep_templates", data)
-
-    def test_missing_skill_answers_returns_400(self):
-        payload = self.build_full_payload()
-        del payload["skill_answers"]
-
-        response = self.client.post("/api/priority-results", json=payload)
-
-        self.assertEqual(response.status_code, 400)
-        self.assertIn("error", response.get_json())
-
-    def test_missing_env_returns_400(self):
-        payload = self.build_full_payload()
-        del payload["env"]
-
-        response = self.client.post("/api/priority-results", json=payload)
-
-        self.assertEqual(response.status_code, 400)
-        self.assertIn("error", response.get_json())
-
-    def test_incomplete_env_returns_400_not_a_dropped_connection(self):
-        # env present but missing one skill's weight used to raise SystemExit
-        # in build_priority_items(), which isn't caught by the route's
-        # except (ValueError, KeyError) -- the Flask dev server just dropped
-        # the connection instead of returning a clean 400 (final-review
-        # Finding 3). Regression test for the ValueError fix.
-        payload = self.build_full_payload()
-        del payload["env"][self.skills[0]["id"]]
-
-        response = self.client.post("/api/priority-results", json=payload)
-
-        self.assertEqual(response.status_code, 400)
-        self.assertIn("error", response.get_json())
-
-    def test_non_json_body_returns_400(self):
-        response = self.client.post("/api/priority-results", data="not json", content_type="text/plain")
-
-        self.assertEqual(response.status_code, 400)
+        self.assertNotIn("/api/priority-results", rules)
 
 
 class FormDataAndStaticTest(unittest.TestCase):
     def setUp(self):
         self.client = app.test_client()
 
-    def test_form_data_exposes_questions_and_slim_skills_only(self):
+    def test_form_data_exposes_axis_and_body_questions_only(self):
         response = self.client.get("/api/form-data")
 
         self.assertEqual(response.status_code, 200)
         data = response.get_json()
         self.assertEqual(
             set(data["questions"].keys()),
-            {"axis_positioning", "skill_behavior", "body_measurements"},
+            {"axis_positioning", "body_measurements"},
         )
-        self.assertEqual(len(data["skills"]), 15)
-        # only id/name_zh -- not axis_relevance, cost_C, metric, etc.
-        self.assertEqual(set(data["skills"][0].keys()), {"id", "name_zh"})
+        self.assertNotIn("skills", data)
 
     def test_serves_index_html_at_root(self):
         response = self.client.get("/")

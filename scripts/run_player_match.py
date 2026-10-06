@@ -109,53 +109,6 @@ def describe_growth_recommendation(player, skills_by_id, lang="zh"):
     return GROWTH_ACTION_TEMPLATE[lang].format(action=action)
 
 
-def describe_training_breakdown(player, skills_by_id, lang="zh"):
-    """Full six-axis gap breakdown for "how do I train to become this
-    player" -- unlike describe_growth_recommendation (which only reports
-    the single dominant-diff axis), this reports all six so a user who
-    clicks into one specific template player can see the whole picture,
-    not just the biggest gap (2026-10 discussion).
-
-    player: a ranked player dict from rank_similar_players_by_style_and_body
-        (must have "coordinates" and "diff", both {axis: float} covering
-        every axis in AXES).
-
-    Returns a list of six dicts, one per axis in AXES order:
-        {"axis": str, "your_value": float, "player_value": float,
-         "diff": float, "skill_action": str | None}
-    skill_action is None when diff <= 0 (the user already matches or
-    exceeds the player on that axis -- nothing to train there). For D,
-    a positive diff always uses D_AXIS_GROWTH_TEMPLATE instead of a skill
-    action, same as describe_growth_recommendation -- athleticism isn't
-    something a specific drill closes.
-    """
-    breakdown = []
-    for axis in AXES:
-        diff = player["diff"][axis]
-        player_value = player["coordinates"][axis]
-        your_value = player_value - diff
-
-        if diff <= 0:
-            skill_action = None
-        elif axis == "D":
-            skill_action = D_AXIS_GROWTH_TEMPLATE[lang]
-        else:
-            skill_id = matching_skill_id(axis, player.get("signature_skill_id"), skills_by_id)
-            if not skill_id:
-                skill_id = representative_skill_id_for_axis(axis, skills_by_id)
-            action = skills_by_id[skill_id]["metric"]["action"]
-            skill_action = GROWTH_ACTION_TEMPLATE[lang].format(action=action)
-
-        breakdown.append({
-            "axis": axis,
-            "your_value": your_value,
-            "player_value": player_value,
-            "diff": diff,
-            "skill_action": skill_action,
-        })
-    return breakdown
-
-
 def build_scouting_report(archetype):
     """One-line "scouting report": the archetype's flavor text -- the
     shareable headline the results page leads with instead of four bare

@@ -1,6 +1,6 @@
 {
-  "_description": "問診題庫。axis_positioning 是六軸定位 12 題(A/B1/B2/C1/C2/D 各 2 題,2026-10 從四軸 16 題改版——B 拆成 B1 外線投射/B2 禁區低位得分,C 拆成 C1 外圍防守/C2 禁區護框防守,理由跟校準依據見下方 _editable_fields 與 docs/superpowers/plans),skill_behavior 是 15 項技能(SPEC.md §3.3)裡,問法會跟 axis_positioning 明顯重複的 4 項已經移除(post_up/perimeter_switch_defense/rim_protection/transition_finishing,這 4 項的現況水準改直接借用對應 axis_positioning 題的分數,見該題的 also_measures_skill 欄位跟 scripts/run_priority.py 的 build_priority_items),所以目前是 11 題,不是 15 題(2026-10 討論)。body_measurements 是 SPEC.md §5.2 身材類的 6 題數值題(給「3 位深度模板」的身體最貼合用)。目前合計 29 題。axis_positioning/skill_behavior 都是 BARS(行為錨定評分量表,見 SPEC.md §5.1)——問的是具體行為/頻率,不是自評能力高低;body_measurements 例外,是直接填數值,不是 BARS。",
-  "_editable_fields": "axis_positioning/skill_behavior 每題的 prompt(題目文字)跟 anchors(1-5 每個分數對應的行為描述)可以照 BARS 精神修改用詞,body_measurements 每題的 prompt/unit/min/max 可以依實際需求調整,但改的時候要小心三件事:(1) id 一旦被其他地方引用(例如 skill_behavior 的 skill_id 對應 skills.json 的技能 id;body_measurements 的 field 對應 players.json 的 body 欄位名)就不要改,否則資料兜不起來;(2) 每題的 anchors 必須維持 1-5 五個完整的行為描述,不能只改數字不改文字,否則就違背了 BARS 的設計目的;(3) body_measurements 的 field 全部六項(height_cm/wingspan_cm/weight_kg/standing_reach_cm/running_vertical_reach_cm/sprint_100m_seconds)都已經對應到 players.json 每個球員的 body 欄位,新增題目要小心維持這個對應關係。要新增題目就照現有的物件格式加進對應的陣列。body_measurements 的 body_height/body_weight 標了 required:true——身高、體重是原型分類(engine/archetype.py 的體型分數)的必要輸入,沒填無法算,所以改成必填,其餘四題(臂展/摸高/衝刺)維持選填,省略 required 等同 false(2026-10 討論,見 engine/body_fit.py 的 missing_required_body_fields)。axis_positioning 支援 \"reverse_scored\": true(見 engine/axis_position.py 的 score_axis_coordinates,分數會自動 6-score 反轉再平均),但目前這 12 題沒有一題用到——六軸改版時發現舊版 B 軸(axis_b1-b4)問的其實是「站位偏好」而非「投籃實力」、舊版 axis_c1 問的是「教練角色分配」而非「禁區防守能力」,這正是 2K 數值比對發現 B、C 兩軸系統性低估中鋒的根本原因之一(見 2026-10 討論);改版後每題都直接問「成功率/把握度」這種表現型描述,不再需要用 reverse_scored 去扭轉站位類問題的方向。新增題目如果又要用「字面頻率跟軸方向相反」的寫法,一樣可以加這個欄位,但建議優先改寫成直接的表現型問法。axis_positioning 題目可以選填 \"also_measures_skill\": \"<skill_id>\"——代表這題跟 skill_behavior 裡某個技能問的是同一件事(2026-10 發現 4 組重複題後新增),該技能就不用再出現在 skill_behavior 裡,build_priority_items 算這個技能的現況水準時會直接借用這題的分數。加新的 also_measures_skill 之前要先確認 skill_behavior 裡真的沒有重複的題目,不然同一個技能會被算兩次現況水準。",
+  "_description": "問診題庫,共 18 題。axis_positioning 是六軸定位 12 題(A/B1/B2/C1/C2/D 各 2 題)。B 軸拆成 B1 外線投射/B2 禁區低位得分,C 軸拆成 C1 外圍防守/C2 禁區護框防守(2026-10 改版,理由見下方 _editable_fields)。body_measurements 是身材類數值題 6 題,給「3 位深度模板」的身體最貼合和原型體型分數用。已經移除原本的技能行為題(skill_behavior):技能的訓練優先序不再來自技能自評,改由六軸差距與目標球員推導(見 src/engine/skill_level.py),所以不需要再問。axis_positioning 與 body_measurements 都是 BARS(行為錨定評分量表,見 SPEC.md §5.1)的題目——問的是具體行為或頻率,不是自評能力高低;body_measurements 例外,是直接填數值。",
+  "_editable_fields": "axis_positioning 每題的 prompt(題目文字)跟 anchors(1-5 每個分數對應的行為描述)可以照 BARS 精神修改用詞,但每題的 anchors 必須維持 1-5 五個完整的行為描述,不能只改數字不改文字,否則就違背了 BARS 的設計目的。axis_positioning 支援 \"reverse_scored\": true(見 engine/axis_position.py 的 score_axis_coordinates,分數會自動 6-score 反轉再平均),但目前這 12 題沒有一題用到——六軸改版時發現舊版 B/C 軸的題目問的其實是「站位/角色分配」而非「表現好壞」,改版後每題都直接問表現型描述,不再需要反轉。body_measurements 每題的 prompt/unit/min/max 可以依實際需求調整,但改的時候要小心:(1) id 一旦被其他地方引用就不要改;(2) body_measurements 的 field 全部六項(height_cm/wingspan_cm/weight_kg/standing_reach_cm/running_vertical_reach_cm/sprint_100m_seconds)都已經對應到 players.json 每個球員的 body 欄位,新增題目要維持這個對應關係。body_measurements 的 body_height/body_weight 標了 required:true——身高、體重是原型分類(engine/archetype.py 的體型分數)的必要輸入,其餘四題維持選填(見 engine/body_fit.py 的 missing_required_body_fields)。要新增題目就照現有的物件格式加進對應的陣列。",
   "axis_positioning": [
     {
       "id": "axis_a_1",
@@ -53,7 +53,6 @@
     {
       "id": "axis_b2_1",
       "axis": "B2",
-      "also_measures_skill": "post_up",
       "prompt": "Backing a defender down with the ball, with them wedged between you and the rim, what portion of the time can you score directly off footwork or a post move?",
       "anchors": {
         "1": "I almost never post up",
@@ -90,7 +89,6 @@
     {
       "id": "axis_c1_2",
       "axis": "C1",
-      "also_measures_skill": "perimeter_switch_defense",
       "prompt": "After switching onto a perimeter shooter, what portion of the time can you prevent them from getting an easy open look?",
       "anchors": {
         "1": "They almost always get separation easily",
@@ -115,7 +113,6 @@
     {
       "id": "axis_c2_2",
       "axis": "C2",
-      "also_measures_skill": "rim_protection",
       "prompt": "When you step in to help or contest a direct rim attack, what portion of the time do you actually disrupt or alter the shot?",
       "anchors": {
         "1": "I rarely help -- I'm usually a step late or pick up a foul",
@@ -128,7 +125,6 @@
     {
       "id": "axis_d_1",
       "axis": "D",
-      "also_measures_skill": "transition_finishing",
       "prompt": "On fast breaks, how often are you the first one down the floor to finish (layup / dunk)?",
       "anchors": {
         "1": "Almost never me",
@@ -148,140 +144,6 @@
         "3": "2-3 times",
         "4": "4-5 times",
         "5": "6+ times -- it's one of my regular weapons"
-      }
-    }
-  ],
-  "skill_behavior": [
-    {
-      "id": "skill_perimeter_shooting_1",
-      "skill_id": "perimeter_shooting",
-      "prompt": "When the defender sags off and leaves you open beyond the three-point line, do you take the shot?",
-      "anchors": {
-        "1": "Never -- I'll take one more dribble or pass instead",
-        "2": "Rarely take the shot",
-        "3": "Take the shot about half the time",
-        "4": "Often take the shot, and with real confidence",
-        "5": "Always take the shot -- if I see the rim, I feel it's going in"
-      }
-    },
-    {
-      "id": "skill_face_up_first_step_1",
-      "skill_id": "face_up_first_step",
-      "prompt": "Facing up with the ball against a defender in a set stance, do you actively try to beat them off the first step?",
-      "anchors": {
-        "1": "Never -- I'll pass or pull up for a mid-range shot instead",
-        "2": "Rarely try, and mostly fail when I do",
-        "3": "Occasionally try, with roughly a fifty-fifty success rate",
-        "4": "Often try, and usually get by or draw a foul",
-        "5": "Always try, and defenders struggle to stay in front of me with positioning alone"
-      }
-    },
-    {
-      "id": "skill_high_post_playmaking_1",
-      "skill_id": "high_post_playmaking",
-      "prompt": "Catching the ball at the high post (around the free-throw line) before the defense collapses on you, what do you usually do with it?",
-      "anchors": {
-        "1": "I almost always just attack the rim myself -- I'm not really looking to pass",
-        "2": "I'll pass occasionally, but usually only see the man directly in front of me",
-        "3": "I'll pass if I spot one opening, but I often miss a better option elsewhere",
-        "4": "I can track openings on both sides and usually find the better pass",
-        "5": "I can string together two or more reads (draw the defense, then find the real opening), regularly setting up a teammate's basket"
-      }
-    },
-    {
-      "id": "skill_pick_and_roll_ball_handling_1",
-      "skill_id": "pick_and_roll_ball_handling",
-      "prompt": "The moment a ball-screen opens up and the defense switches or hedges, what do you usually do?",
-      "anchors": {
-        "1": "I can't react in time -- I often dribble into a body or get stripped",
-        "2": "I only have one go-to option (always drive, or always shoot), regardless of the coverage",
-        "3": "I can pick between two options depending on the situation, but I'm often a beat slow",
-        "4": "I can make the right choice among pass / shoot / drive based on the coverage",
-        "5": "I can read the defensive gap and make the best choice almost instantly, nearly every time"
-      }
-    },
-    {
-      "id": "skill_off_ball_movement_1",
-      "skill_id": "off_ball_movement",
-      "prompt": "When a teammate sets a screen to try to spring you open, what do you do?",
-      "anchors": {
-        "1": "I often stand still or cut the wrong way, wasting the screen",
-        "2": "I rarely come out of it truly open",
-        "3": "I use the screen to get open about half the time",
-        "4": "I often use the screen well and get open for the catch",
-        "5": "I almost always read the defense and get to the best possible spot"
-      }
-    },
-    {
-      "id": "skill_free_throw_shooting_1",
-      "skill_id": "free_throw_shooting",
-      "prompt": "Standing at the free-throw line, how confident are you that it's going in?",
-      "anchors": {
-        "1": "Not confident at all -- I miss often",
-        "2": "Not very confident -- my percentage is on the low side",
-        "3": "Roughly fifty-fifty",
-        "4": "Confident -- I usually make it",
-        "5": "Practically automatic, even in high-pressure clutch situations"
-      }
-    },
-    {
-      "id": "skill_offensive_rebounding_1",
-      "skill_id": "offensive_rebounding",
-      "prompt": "The instant a teammate's shot misses, what do you do?",
-      "anchors": {
-        "1": "I rarely crash the paint for the offensive board",
-        "2": "I occasionally crash, but mostly come up empty",
-        "3": "I crash in about half the time, and often come away with it",
-        "4": "I often crash the offensive glass on purpose, with a decent success rate",
-        "5": "I almost always box out and crash on purpose, and consistently come away with the ball"
-      }
-    },
-    {
-      "id": "skill_on_ball_perimeter_defense_1",
-      "skill_id": "on_ball_perimeter_defense",
-      "prompt": "Guarding the ball-handler one-on-one as they try to drive past you, what portion of the time do you keep them in front of you without getting beaten easily?",
-      "anchors": {
-        "1": "I can barely hold my ground -- beaten on the first step almost every time",
-        "2": "I can rarely hold my ground",
-        "3": "I can hold my ground about half the time",
-        "4": "I can often hold my ground",
-        "5": "I can almost always hold my ground -- opponents struggle to beat me one-on-one"
-      }
-    },
-    {
-      "id": "skill_help_defense_rotation_1",
-      "skill_id": "help_defense_rotation",
-      "prompt": "When a teammate gets beaten and needs your help defense, what portion of the time do you rotate to the right spot in time?",
-      "anchors": {
-        "1": "I'm almost always late or rotate to the wrong spot",
-        "2": "I can rarely rotate to the right spot in time",
-        "3": "I rotate correctly about half the time",
-        "4": "I often rotate to the right spot in time",
-        "5": "I almost always rotate correctly in time, and can still recover to my own man"
-      }
-    },
-    {
-      "id": "skill_defensive_rebounding_boxout_1",
-      "skill_id": "defensive_rebounding_boxout",
-      "prompt": "The instant the opponent takes a shot, what do you do?",
-      "anchors": {
-        "1": "I rarely box out first -- opponents often slip behind me for the rebound",
-        "2": "I occasionally box out, but often lose the position battle",
-        "3": "I box out about half the time, and often win the position battle",
-        "4": "I often box out on purpose, and usually win the position battle",
-        "5": "I almost always seal good position -- opponents struggle to get around me for the board"
-      }
-    },
-    {
-      "id": "skill_decision_making_turnover_control_1",
-      "skill_id": "decision_making_turnover_control",
-      "prompt": "When you're trapped with the ball or facing high-pressure defense, how often do you turn it over on the spot?",
-      "anchors": {
-        "1": "I always turn it over",
-        "2": "I often barely squeeze out a dribble or force a bad pass",
-        "3": "I can hold onto the ball, but it often takes a long time to find a way out",
-        "4": "I can settle the ball quickly and usually handle it safely",
-        "5": "I almost never turn it over, and can even keep the offense efficient under pressure"
       }
     }
   ],

@@ -23,11 +23,7 @@
 # 座標」,不是最終輸出值。main() 會用 mock_axis_answers 把目標座標反推成一組
 # 1-5 模擬作答,再用跟真人使用者一模一樣的 score_axis_coordinates 算出真正
 # 要寫進 JSON 的 coordinates——不再是直接手打的連續值,而是跟真人作答一樣,
-# 受限於整數 Likert 平均值的離散網格,兩邊終於用同一套公式算分。同時用
-# mock_skill_answers 補上 15 題技能行為的模擬作答(依 axis_relevance 加權
-# 猜,招牌技能強制滿分),讓球員資料也有技能層級的細節可以比對,不再只有
-# 四軸座標——這是為了解決「使用者明明說自己不會背框單打,配對結果卻還是
-# Kobe Bryant」這種四軸太粗糙、抓不到技能相性的問題(見 2026-09-11 討論)。
+# 受限於整數 Likert 平均值的離散網格,兩邊終於用同一套公式算分。
 # 可手動調整的變數：PLAYERS(整份球員清單,每位球員的 coordinates/body/
 # notable_traits/signature_skill_id/learnability_flag 都可以直接改,
 # coordinates 現在的意義是「目標座標」,不是最終值)、derive_body_
@@ -55,7 +51,7 @@ sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT))
 
 from engine.axis_position import score_axis_coordinates  # noqa: E402
-from scripts.mock_answers import mock_axis_answers, mock_skill_answers  # noqa: E402
+from scripts.mock_answers import mock_axis_answers  # noqa: E402
 
 PLAYERS = [
     {
@@ -1377,19 +1373,12 @@ def derive_body_measurements(height_cm, wingspan_cm, coordinates):
 def main():
     questions = json.load(open(ROOT / "data" / "zh" / "題庫.json", encoding="utf-8"))
     axis_questions = questions["axis_positioning"]
-    skill_questions = questions["skill_behavior"]
-    skills_by_id = {
-        s["id"]: s for s in json.load(open(ROOT / "data" / "zh" / "技能.json", encoding="utf-8"))["skills"]
-    }
 
     for player in PLAYERS:
         target_coordinates = player["coordinates"]
         mock_axis = mock_axis_answers(axis_questions, target_coordinates)
         player["coordinates"] = score_axis_coordinates(axis_questions, mock_axis)
         player["mock_axis_answers"] = mock_axis
-        player["mock_skill_answers"] = mock_skill_answers(
-            skill_questions, skills_by_id, player["coordinates"], player["signature_skill_id"]
-        )
         player["body"].update(
             derive_body_measurements(
                 player["body"]["height_cm"], player["body"]["wingspan_cm"], player["coordinates"]
@@ -1404,9 +1393,7 @@ def main():
             "coordinates 不再是直接手打的座標,而是先用 mock_axis_answers 把"
             "PLAYERS 常數裡的手動估算座標反推成一組 1-5 模擬作答"
             "(mock_axis_answers 欄位),再用 score_axis_coordinates 算出來的——"
-            "跟真人使用者走同一套計算流程。mock_skill_answers 是用同樣邏輯"
-            "推算的 15 題技能行為模擬作答(依 axis_relevance 加權,招牌技能強制"
-            "滿分),讓球員資料也有技能層級細節可以比對。body 欄位裡的"
+            "跟真人使用者走同一套計算流程。body 欄位裡的"
             "height_cm/wingspan_cm 是手動估算,其餘 weight_kg/standing_reach_cm/"
             "running_vertical_reach_cm/sprint_100m_seconds 是由這兩項加上六軸座標"
             "裡的 D 軸、B1 軸公式推算出來的(見 scripts/build_players_seed.py 的"
@@ -1416,7 +1403,7 @@ def main():
             "整份 players 清單都可以改——調 coordinates 改變座標,調 notable_traits/"
             "signature_skill_id 改變輸出文案,調 learnability_flag(low/medium/high)"
             "留給之後的反面對照功能用。id 一旦被別的地方引用就不要改。coordinates/"
-            "mock_axis_answers/mock_skill_answers 是 build 產物,不要手改這三個"
+            "mock_axis_answers 是 build 產物,不要手改這兩個"
             "欄位——要調整就改 scripts/build_players_seed.py 的 PLAYERS 常數裡的"
             "目標座標,重跑腳本重新產生。"
         ),

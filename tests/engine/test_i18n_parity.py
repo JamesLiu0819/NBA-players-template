@@ -37,11 +37,6 @@ class QuestionsParityTest(unittest.TestCase):
         en_ids = {q["id"] for q in self.en["axis_positioning"]}
         self.assertEqual(zh_ids, en_ids)
 
-    def test_skill_behavior_ids_match(self):
-        zh_ids = {q["id"] for q in self.zh["skill_behavior"]}
-        en_ids = {q["id"] for q in self.en["skill_behavior"]}
-        self.assertEqual(zh_ids, en_ids)
-
     def test_body_measurements_ids_match(self):
         zh_ids = {q["id"] for q in self.zh["body_measurements"]}
         en_ids = {q["id"] for q in self.en["body_measurements"]}
@@ -57,12 +52,6 @@ class QuestionsParityTest(unittest.TestCase):
                 zh_q.get("reverse_scored", False), en_q.get("reverse_scored", False), qid
             )
 
-    def test_skill_behavior_non_text_fields_match(self):
-        zh_by_id = self._by_id(self.zh["skill_behavior"])
-        en_by_id = self._by_id(self.en["skill_behavior"])
-        for qid, zh_q in zh_by_id.items():
-            self.assertEqual(zh_q["skill_id"], en_by_id[qid]["skill_id"], qid)
-
     def test_body_measurements_non_text_fields_match(self):
         zh_by_id = self._by_id(self.zh["body_measurements"])
         en_by_id = self._by_id(self.en["body_measurements"])
@@ -75,7 +64,7 @@ class QuestionsParityTest(unittest.TestCase):
             self.assertEqual(zh_q.get("required", False), en_q.get("required", False), qid)
 
     def test_prompts_are_translated_not_copied(self):
-        for section in ("axis_positioning", "skill_behavior", "body_measurements"):
+        for section in ("axis_positioning", "body_measurements"):
             zh_by_id = self._by_id(self.zh[section])
             en_by_id = self._by_id(self.en[section])
             for qid, zh_q in zh_by_id.items():
@@ -84,7 +73,7 @@ class QuestionsParityTest(unittest.TestCase):
                 self.assertNotEqual(zh_q["prompt"], en_q["prompt"], qid)
 
     def test_anchors_are_translated_not_copied(self):
-        for section in ("axis_positioning", "skill_behavior"):
+        for section in ("axis_positioning",):
             zh_by_id = self._by_id(self.zh[section])
             en_by_id = self._by_id(self.en[section])
             for qid, zh_q in zh_by_id.items():
@@ -167,7 +156,7 @@ class ArchetypesParityTest(unittest.TestCase):
 class PlayersParityTest(unittest.TestCase):
     NON_TEXT_FIELDS = (
         "id", "name", "team", "coordinates", "body", "signature_skill_id",
-        "learnability_flag", "mock_axis_answers", "mock_skill_answers",
+        "learnability_flag", "mock_axis_answers",
     )
 
     def setUp(self):
@@ -249,13 +238,13 @@ class ZhHansStructureParityTest(unittest.TestCase):
         self.players_alltime_zh_hans = load_json("zh-Hans", "历史球员.json")["players"]
 
     def test_question_ids_match_across_all_sections(self):
-        for section in ("axis_positioning", "skill_behavior", "body_measurements"):
+        for section in ("axis_positioning", "body_measurements"):
             zh_ids = {q["id"] for q in self.questions_zh[section]}
             zh_hans_ids = {q["id"] for q in self.questions_zh_hans[section]}
             self.assertEqual(zh_ids, zh_hans_ids, section)
 
     def test_question_prompts_and_anchors_are_present(self):
-        for section in ("axis_positioning", "skill_behavior"):
+        for section in ("axis_positioning",):
             for q in self.questions_zh_hans[section]:
                 self.assertTrue(q["prompt"].strip(), q["id"])
                 for score in ("1", "2", "3", "4", "5"):
@@ -305,3 +294,37 @@ class ZhHansStructureParityTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class DrillsParityTest(unittest.TestCase):
+    """三語的訓練菜單結構必須完全一致:id 集合跟所有非文字欄位相同。
+    文案欄位(name/steps/cue)只要求三邊都存在、型別正確;目前是空的,之後填寫,
+    文案不能跟其他語言相同的檢查留到填完之後再加。"""
+
+    NON_TEXT_FIELDS = ("skill_id", "level", "sets", "reps", "minutes",
+                       "court_required", "teammate_required")
+
+    def setUp(self):
+        self.zh = load_json("zh", "訓練菜單.json")["drills"]
+        self.zh_hans = load_json("zh-Hans", "训练菜单.json")["drills"]
+        self.en = load_json("en", "drills.json")["drills"]
+
+    def test_ids_match_across_languages(self):
+        zh_ids = {d["id"] for d in self.zh}
+        self.assertEqual(zh_ids, {d["id"] for d in self.zh_hans})
+        self.assertEqual(zh_ids, {d["id"] for d in self.en})
+
+    def test_non_text_fields_match_across_languages(self):
+        zh_by_id = {d["id"]: d for d in self.zh}
+        for other in (self.zh_hans, self.en):
+            other_by_id = {d["id"]: d for d in other}
+            for did, zh_d in zh_by_id.items():
+                for field in self.NON_TEXT_FIELDS:
+                    self.assertEqual(zh_d[field], other_by_id[did][field], f"{did}.{field}")
+
+    def test_text_fields_exist_with_correct_types(self):
+        for drills in (self.zh, self.zh_hans, self.en):
+            for d in drills:
+                self.assertIsInstance(d["name"], str, d["id"])
+                self.assertIsInstance(d["cue"], str, d["id"])
+                self.assertIsInstance(d["steps"], list, d["id"])

@@ -1,15 +1,12 @@
 <!--
-  用途：本機用的問診測試頁,收集 29 題作答(六軸定位 12 題 + 技能行為 11 題 +
-  身材數值 6 題;另有 4 個技能的現況水準借用六軸定位題的作答,見
-  also_measures_skill)、即時預覽排序、匯出 answers.json。不做任何決策——正式結果
-  一律以 scripts/run_priority.py(優先序)跟 scripts/run_player_match.py(球員
-  配對/深度模板)的輸出為準;身材數值題目前只用於匯出,這頁本身沒有身體最貼合
-  的即時預覽(那需要另外載入 players.json,只有 run_player_match.py 會算)。
-  可手動調整的變數：ENV_PRESETS(三組「環境權重」預設按鈕的數值,目前是暫定值,
-  必須跟 tests/engine/test_env_calibration.py 裡的 ENV_COLLAPSED_NO_SHOOTERS /
-  ENV_TIGHT_PERIMETER_OPP_SHOOTERS 手動保持一致)、AXIS_LABELS 跟 FACTOR_LABELS
-  (中文顯示用詞,可依習慣調整,不影響計算)。其餘的計算函數(scoreAxisCoordinates
-  等)是逐行對照 src/engine 寫的,不要為了改結果去動它們,應該去改 src/engine。
+  用途：本機用的問診測試頁,收集 18 題作答(六軸定位 12 題 + 身材數值 6 題)、
+  即時預覽六軸座標、匯出 answers.json。不做任何決策——正式結果一律以
+  scripts/run_player_match.py(球員配對/深度模板/訓練計劃)的輸出為準。
+  身材數值題目前只用於匯出,這頁本身沒有身體最貼合的即時預覽(那需要另外載入
+  players.json,只有 run_player_match.py 會算)。
+  可手動調整的變數：AXIS_LABELS(中文顯示用詞,可依習慣調整,不影響計算)。其餘的
+  計算函數(scoreAxisCoordinates 等)是逐行對照 src/engine 寫的,不要為了改結果去動它們,
+  應該去改 src/engine。
 
   tools/survey.html — local BARS survey + answers.json exporter.
 
@@ -22,12 +19,11 @@
       cd /Users/james/Desktop/NBA球員模板 && python3 -m http.server 8000
       open http://localhost:8000/tools/survey.html
 
-  Scope: this page collects answers, previews, and exports data/answers/*.json.
-  It does NOT decide anything — src/engine (via scripts/run_priority.py) is
-  the sole authority on the actual computed result. The preview section below
-  reimplements src/engine's math in JS purely so you can see numbers move
-  while you fill the form; see tools/README.md for how to double-check the
-  two never drift apart.
+  Scope: this page collects answers, previews the six axis coordinates, and
+  exports data/answers/*.json. It does NOT decide anything — src/engine is the
+  sole authority on the actual computed result. The axis preview reimplements
+  scoreAxisCoordinates in JS purely so you can see numbers move while you fill
+  the form; see tools/README.md for how to double-check the two never drift apart.
 -->
 <title>BARS 問診測試頁</title>
 <meta charset="utf-8" />
@@ -89,31 +85,12 @@
     border: 1px solid var(--border); border-radius: 6px; background: canvas; color: canvastext;
   }
   .body-question .unit { color: var(--ink-soft, inherit); opacity: .7; font-size: .85rem; }
-  .env-row {
-    display: flex; align-items: center; gap: .75rem;
-    padding: .35rem 0;
-  }
-  .env-row label { flex: 0 0 12em; }
-  .env-row input[type=range] { flex: 1; }
-  .env-row .env-value { width: 3em; text-align: right; font-variant-numeric: tabular-nums; }
-  .preset-buttons { display: flex; flex-wrap: wrap; gap: .5rem; margin: .75rem 0; }
-  .preset-buttons button { padding: .4rem .8rem; border-radius: 6px; border: 1px solid var(--border); cursor: pointer; background: var(--bg-soft); }
   .warning {
     background: var(--warn-bg); border: 1px solid var(--warn-border);
     border-radius: 6px; padding: .6rem .8rem; font-size: .9rem; margin-bottom: .75rem;
   }
   .axis-coords { display: flex; flex-wrap: wrap; gap: 1.5rem; font-size: 1.05rem; }
   .axis-coords strong { font-size: 1.3rem; }
-  .priority-row {
-    border: 1px solid var(--border); border-radius: 8px;
-    padding: .5rem .8rem; margin-bottom: .5rem;
-  }
-  .priority-row .headline { display: flex; justify-content: space-between; align-items: center; }
-  .priority-row .rank { font-weight: 700; margin-right: .5rem; }
-  .priority-row .p-value { font-variant-numeric: tabular-nums; opacity: .8; }
-  .priority-row details { margin-top: .4rem; font-size: .9rem; opacity: .85; }
-  .priority-row table.factors { width: 100%; border-collapse: collapse; margin-top: .3rem; }
-  .priority-row table.factors td { padding: .15rem .4rem; border-top: 1px solid var(--border); }
   .preview-pending { opacity: .6; font-style: italic; }
   .export-controls { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; }
   button.primary {
@@ -131,13 +108,13 @@
 
 <h1>問診測試頁（本機用）</h1>
 <p>
-  六軸定位 12 題 + 技能行為 15 題 + 身材數值 6 題，共 33 題。六軸定位跟技能行為題請選
+  六軸定位 12 題 + 身材數值 6 題，共 18 題。六軸定位題請選
   「哪句描述最像我」，<strong>不是憑感覺打分數</strong>——這是 BARS（行為錨定評分量表）的
   重點，見 <code>SPEC.md §5.1</code>。身材數值題例外，直接填實際數字就好。
 </p>
 
 <div class="sticky-progress">
-  <span id="progress-text">已填 0 / 33</span>
+  <span id="progress-text">已填 0 / 18</span>
   <div class="progress-bar"><div class="progress-bar-fill" id="progress-fill"></div></div>
 </div>
 
@@ -146,11 +123,6 @@
 <section id="axis-section" style="display:none">
   <h2>A. 六軸定位（12 題）</h2>
   <div id="axis-questions"></div>
-</section>
-
-<section id="skill-section" style="display:none">
-  <h2>技能行為（15 題）</h2>
-  <div id="skill-questions"></div>
 </section>
 
 <section id="body-section" style="display:none">
@@ -162,32 +134,13 @@
   <div id="body-questions"></div>
 </section>
 
-<section id="env-section" style="display:none">
-  <h2>B. 環境權重（暫定值）</h2>
-  <div class="warning">
-    ⚠️ <code>data/env_weights.json</code> 尚未建立（SPEC.md §12 未決問題 #2，需要領域專家填寫完整的
-    5 維 × 3 檔倍率表）。下面三組預設按鈕的數值是<strong>依常理暫定</strong>，僅供測試優先序公式的排序邏輯，
-    不是正式權重，之後會被 <code>env_weights.json</code> 取代。
-  </div>
-  <div class="preset-buttons">
-    <button type="button" data-preset="collapsed_no_shooters">內縮防守 / 缺乏射手</button>
-    <button type="button" data-preset="tight_perimeter_opp_shooters">貼外線 / 對手有射手</button>
-    <button type="button" data-preset="zone_defense">區域防守為主</button>
-  </div>
-  <div id="env-controls"></div>
-</section>
-
 <section id="preview-section">
-  <h2>C. 即時預覽 — 預覽值，以 <code>run_priority.py</code> 輸出為準</h2>
+  <h2>C. 即時預覽 — 六軸座標</h2>
   <p style="font-size:.9rem;opacity:.75">
-    這裡的數字是瀏覽器用 JavaScript 即時重算的，僅供邊填邊看趨勢。正式結果請用
-    <code>python3 scripts/run_priority.py</code> 讀匯出的作答檔計算，兩者的公式邏輯必須一致
-    （見 <code>tools/README.md</code> 的手動比對步驟）。
+    這裡的數字是瀏覽器用 JavaScript 即時重算的，僅供邊填邊看趨勢。六軸座標的計算邏輯
+    必須跟 <code>src/engine/axis_position.py</code> 一致（見 <code>tools/README.md</code> 的手動比對步驟）。
   </p>
-  <h3>六軸座標</h3>
   <div id="axis-preview" class="axis-coords"><p class="preview-pending">尚未開始作答</p></div>
-  <h3 style="margin-top:1rem">優先序</h3>
-  <div id="priority-preview"><p class="preview-pending">尚未開始作答</p></div>
 </section>
 
 <section id="export-section">
@@ -212,47 +165,11 @@
     A: "A 持球創造", B1: "B1 外線投射", B2: "B2 禁區得分",
     C1: "C1 外圍防守", C2: "C2 禁區防守", D: "D 運動能力層級",
   };
-  const FACTOR_LABELS = { G: "能力缺口 G", E: "環境權重 E", R: "相關性 R", C: "習得成本 C" };
-
-  // Provisional-only presets for the "環境權重" testing widget (SPEC.md §12
-  // issue #2 is the real, expert-authored env_weights.json — this is NOT that
-  // file, just a UI shortcut so ranking behavior can be sanity-checked).
-  // Kept in sync by hand with tests/engine/test_env_calibration.py.
-  const ENV_PRESETS = {
-    collapsed_no_shooters: {
-      perimeter_shooting: 1.8, face_up_first_step: 1.3, high_post_playmaking: 1.4,
-      rim_protection: 0.6, perimeter_switch_defense: 0.9,
-      post_up: 0.7, pick_and_roll_ball_handling: 1.3, off_ball_movement: 1.1,
-      transition_finishing: 1.0, free_throw_shooting: 1.0, offensive_rebounding: 0.9,
-      on_ball_perimeter_defense: 0.7, help_defense_rotation: 1.5,
-      defensive_rebounding_boxout: 1.1, decision_making_turnover_control: 1.0,
-    },
-    tight_perimeter_opp_shooters: {
-      perimeter_shooting: 0.8, face_up_first_step: 1.8, high_post_playmaking: 1.1,
-      rim_protection: 1.2, perimeter_switch_defense: 1.6,
-      post_up: 1.3, pick_and_roll_ball_handling: 1.8, off_ball_movement: 1.4,
-      transition_finishing: 1.0, free_throw_shooting: 1.0, offensive_rebounding: 1.3,
-      on_ball_perimeter_defense: 1.7, help_defense_rotation: 1.6,
-      defensive_rebounding_boxout: 1.1, decision_making_turnover_control: 1.0,
-    },
-    zone_defense: {
-      perimeter_shooting: 1.7, face_up_first_step: 0.8, high_post_playmaking: 1.6,
-      rim_protection: 1.2, perimeter_switch_defense: 0.6,
-      post_up: 1.0, pick_and_roll_ball_handling: 1.0, off_ball_movement: 1.3,
-      transition_finishing: 1.0, free_throw_shooting: 1.0, offensive_rebounding: 1.1,
-      on_ball_perimeter_defense: 0.8, help_defense_rotation: 1.2,
-      defensive_rebounding_boxout: 1.0, decision_making_turnover_control: 1.0,
-    },
-  };
-
   const state = {
     axisQuestions: [],
-    skillQuestions: [],
     bodyQuestions: [],
-    skills: [],
-    answers: {},     // question_id -> score (1-5), axis/skill questions only
+    answers: {},     // question_id -> score (1-5), axis questions only
     bodyAnswers: {}, // question_id -> numeric value, body_measurements questions only
-    env: {},         // skill_id -> E (0.5-2.0)
   };
 
   // ---- pure math mirrored line-by-line from src/engine (see file headers) ----
@@ -292,97 +209,15 @@
     return coordinates;
   }
 
-  // mirrors src/engine/skill_level.py: score_skill_current_level
-  function scoreSkillCurrentLevel(questions, answers, skillId) {
-    const questionIds = new Set(
-      questions.filter((q) => q.skill_id === skillId).map((q) => q.id)
-    );
-    if (questionIds.size === 0) {
-      throw new Error(`no questions defined for skill: ${skillId}`);
-    }
-    const scores = [];
-    for (const answer of answers) {
-      if (!questionIds.has(answer.question_id)) continue;
-      const score = answer.score;
-      if (!(score >= 1 && score <= 5)) {
-        throw new Error(`score out of range 1-5 for ${answer.question_id}: ${score}`);
-      }
-      scores.push(score);
-    }
-    if (scores.length === 0) {
-      throw new Error(`no answers found for skill: ${skillId}`);
-    }
-    return scores.reduce((a, b) => a + b, 0) / scores.length;
-  }
-
-  // mirrors src/engine/skill_level.py: compute_gap
-  function computeGap(current, target = 5.0) {
-    return Math.max(0.0, target - current);
-  }
-
-  // mirrors src/engine/skill_level.py: score_skill_current_level_from_single_answer
-  function scoreSkillCurrentLevelFromSingleAnswer(answers, questionId) {
-    for (const answer of answers) {
-      if (answer.question_id !== questionId) continue;
-      const score = answer.score;
-      if (!(score >= 1 && score <= 5)) {
-        throw new Error(`score out of range 1-5 for ${questionId}: ${score}`);
-      }
-      return score;
-    }
-    throw new Error(`no answer found for question: ${questionId}`);
-  }
-
-  // mirrors src/engine/relevance.py: compute_relevance
-  function computeRelevance(axisCoordinates, axisRelevance) {
-    const weightTotal = AXES.reduce((sum, axis) => sum + axisRelevance[axis], 0);
-    if (weightTotal === 0) {
-      throw new Error("axis_relevance weights sum to zero; relevance is undefined");
-    }
-    const weightedSum = AXES.reduce(
-      (sum, axis) => sum + axisRelevance[axis] * (axisCoordinates[axis] / 100),
-      0
-    );
-    const relevance = weightedSum / weightTotal;
-    return Math.min(1.0, Math.max(0.0, relevance));
-  }
-
-  // mirrors src/engine/priority.py: compute_priority
-  function computePriority(g, e, r, c) {
-    if (c <= 0) {
-      throw new Error(`cost C must be positive, got ${c}`);
-    }
-    return (g * e * r) / c;
-  }
-
-  // mirrors src/engine/priority.py: rank_priorities
-  function rankPriorities(items) {
-    const ranked = items.map((item) => ({
-      ...item,
-      P: computePriority(item.G, item.E, item.R, item.C),
-    }));
-    ranked.sort((a, b) => b.P - a.P);
-    return ranked;
-  }
-
   // ---- data loading ----
 
   async function loadData() {
-    const [questions, skills] = await Promise.all([
-      fetch("../data/zh/題庫.json").then((r) => {
-        if (!r.ok) throw new Error(`題庫.json: HTTP ${r.status}`);
-        return r.json();
-      }),
-      fetch("../data/zh/技能.json").then((r) => {
-        if (!r.ok) throw new Error(`技能.json: HTTP ${r.status}`);
-        return r.json();
-      }),
-    ]);
+    const questions = await fetch("../data/zh/題庫.json").then((r) => {
+      if (!r.ok) throw new Error(`題庫.json: HTTP ${r.status}`);
+      return r.json();
+    });
     state.axisQuestions = questions.axis_positioning;
-    state.skillQuestions = questions.skill_behavior;
     state.bodyQuestions = questions.body_measurements;
-    state.skills = skills.skills;
-    for (const skill of state.skills) state.env[skill.id] = 1.0; // neutral until a preset is picked
   }
 
   // ---- rendering: questions ----
@@ -405,7 +240,7 @@
       input.addEventListener("change", () => {
         state.answers[q.id] = score;
         updateProgress();
-        recomputePreview();
+        renderAxisPreview();
       });
       const num = document.createElement("span");
       num.className = "score-num";
@@ -431,21 +266,6 @@
       for (const q of state.axisQuestions.filter((q) => q.axis === axis)) {
         group.appendChild(renderQuestionCard(q));
       }
-      container.appendChild(group);
-    }
-  }
-
-  function renderSkillQuestions() {
-    const container = document.getElementById("skill-questions");
-    for (const skill of state.skills) {
-      const q = state.skillQuestions.find((q) => q.skill_id === skill.id);
-      if (!q) continue; // this skill has no behavior question in this minimal question set
-      const group = document.createElement("div");
-      group.className = "axis-group";
-      const h3 = document.createElement("h3");
-      h3.textContent = skill.name_zh;
-      group.appendChild(h3);
-      group.appendChild(renderQuestionCard(q));
       container.appendChild(group);
     }
   }
@@ -484,64 +304,14 @@
     }
   }
 
-  // ---- rendering: env weights ----
-
-  function renderEnvControls() {
-    const container = document.getElementById("env-controls");
-    container.innerHTML = "";
-    for (const skill of state.skills) {
-      const row = document.createElement("div");
-      row.className = "env-row";
-      const label = document.createElement("label");
-      label.textContent = skill.name_zh;
-      label.htmlFor = `env-${skill.id}`;
-      const range = document.createElement("input");
-      range.type = "range";
-      range.id = `env-${skill.id}`;
-      range.min = "0.5";
-      range.max = "2.0";
-      range.step = "0.1";
-      range.value = String(state.env[skill.id]);
-      const valueSpan = document.createElement("span");
-      valueSpan.className = "env-value";
-      valueSpan.textContent = Number(range.value).toFixed(1);
-      range.addEventListener("input", () => {
-        state.env[skill.id] = Number(range.value);
-        valueSpan.textContent = Number(range.value).toFixed(1);
-        recomputePreview();
-      });
-      row.appendChild(label);
-      row.appendChild(range);
-      row.appendChild(valueSpan);
-      container.appendChild(row);
-    }
-  }
-
-  function applyEnvPreset(presetKey) {
-    const preset = ENV_PRESETS[presetKey];
-    for (const skillId of Object.keys(preset)) {
-      state.env[skillId] = preset[skillId];
-      const input = document.getElementById(`env-${skillId}`);
-      if (input) {
-        input.value = String(preset[skillId]);
-        input.nextElementSibling.textContent = preset[skillId].toFixed(1);
-      }
-    }
-    recomputePreview();
-  }
-
   // ---- progress ----
 
   function totalQuestionCount() {
-    return state.axisQuestions.length + state.skillQuestions.length + state.bodyQuestions.length;
+    return state.axisQuestions.length + state.bodyQuestions.length;
   }
 
   function answeredCount() {
-    const allIds = new Set([
-      ...state.axisQuestions.map((q) => q.id),
-      ...state.skillQuestions.map((q) => q.id),
-    ]);
-    const barsAnswered = [...allIds].filter((id) => state.answers[id] !== undefined).length;
+    const barsAnswered = state.axisQuestions.filter((q) => state.answers[q.id] !== undefined).length;
     const bodyAnswered = state.bodyQuestions.filter(
       (q) => state.bodyAnswers[q.id] !== undefined
     ).length;
@@ -580,66 +350,6 @@
     }
   }
 
-  function renderPriorityRow(item, index) {
-    return `
-      <div class="priority-row">
-        <div class="headline">
-          <span><span class="rank">#${index + 1}</span>${item.name_zh}</span>
-          <span class="p-value">P = ${item.P.toFixed(3)}</span>
-        </div>
-        <details>
-          <summary>展開 G / E / R / C 分項</summary>
-          <table class="factors">
-            <tr><td>${FACTOR_LABELS.G}</td><td>${item.G.toFixed(2)}</td></tr>
-            <tr><td>${FACTOR_LABELS.E}</td><td>${item.E.toFixed(2)}</td></tr>
-            <tr><td>${FACTOR_LABELS.R}</td><td>${item.R.toFixed(2)}</td></tr>
-            <tr><td>${FACTOR_LABELS.C}</td><td>${item.C.toFixed(2)}</td></tr>
-          </table>
-        </details>
-      </div>`;
-  }
-
-  function renderPriorityPreview() {
-    const el = document.getElementById("priority-preview");
-    if (!lastCoords) {
-      el.innerHTML = `<p class="preview-pending">需先完成六軸定位題組</p>`;
-      return;
-    }
-    try {
-      const skillAnswers = collectAnswers(state.skillQuestions);
-      const axisAnswers = collectAnswers(state.axisQuestions);
-      // mirrors scripts/run_priority.py: build_priority_items's substitute_question_by_skill
-      const substituteQuestionBySkill = {};
-      for (const q of state.axisQuestions) {
-        if (q.also_measures_skill) substituteQuestionBySkill[q.also_measures_skill] = q.id;
-      }
-      const items = state.skills.map((skill) => {
-        const current = skill.id in substituteQuestionBySkill
-          ? scoreSkillCurrentLevelFromSingleAnswer(axisAnswers, substituteQuestionBySkill[skill.id])
-          : scoreSkillCurrentLevel(state.skillQuestions, skillAnswers, skill.id);
-        const gap = computeGap(current);
-        const relevance = computeRelevance(lastCoords, skill.axis_relevance);
-        return {
-          skill_id: skill.id,
-          name_zh: skill.name_zh,
-          G: gap,
-          E: state.env[skill.id],
-          R: relevance,
-          C: skill.cost_C,
-        };
-      });
-      const ranked = rankPriorities(items);
-      el.innerHTML = ranked.map((item, idx) => renderPriorityRow(item, idx)).join("");
-    } catch (err) {
-      el.innerHTML = `<p class="preview-pending">技能行為題組尚未填完（${err.message}）</p>`;
-    }
-  }
-
-  function recomputePreview() {
-    renderAxisPreview();
-    renderPriorityPreview();
-  }
-
   // ---- export / load ----
 
   function timestamp() {
@@ -652,9 +362,7 @@
     return {
       meta: { exported_at: new Date().toISOString(), tool: "tools/survey.html" },
       axis_answers: state.axisQuestions.map((q) => ({ question_id: q.id, score: state.answers[q.id] })),
-      skill_answers: state.skillQuestions.map((q) => ({ question_id: q.id, score: state.answers[q.id] })),
       body_answers: state.bodyQuestions.map((q) => ({ question_id: q.id, value: state.bodyAnswers[q.id] })),
-      env: { ...state.env },
     };
   }
 
@@ -702,12 +410,10 @@
   function applyLoadedPayload(payload) {
     state.answers = {};
     for (const a of payload.axis_answers || []) state.answers[a.question_id] = a.score;
-    for (const a of payload.skill_answers || []) state.answers[a.question_id] = a.score;
     state.bodyAnswers = {};
     for (const a of payload.body_answers || []) {
       if (a.value !== undefined && a.value !== null) state.bodyAnswers[a.question_id] = a.value;
     }
-    state.env = { ...state.env, ...(payload.env || {}) };
 
     // reflect into radio inputs
     for (const id of Object.keys(state.answers)) {
@@ -719,16 +425,8 @@
       const input = document.getElementById(id);
       if (input) input.value = String(state.bodyAnswers[id]);
     }
-    // reflect into env sliders
-    for (const skillId of Object.keys(state.env)) {
-      const input = document.getElementById(`env-${skillId}`);
-      if (input) {
-        input.value = String(state.env[skillId]);
-        input.nextElementSibling.textContent = Number(state.env[skillId]).toFixed(1);
-      }
-    }
     updateProgress();
-    recomputePreview();
+    renderAxisPreview();
   }
 
   async function loadLatestFromServer() {
@@ -782,20 +480,13 @@
     }
     document.getElementById("loading-message").style.display = "none";
     document.getElementById("axis-section").style.display = "";
-    document.getElementById("skill-section").style.display = "";
     document.getElementById("body-section").style.display = "";
-    document.getElementById("env-section").style.display = "";
 
     renderAxisQuestions();
-    renderSkillQuestions();
     renderBodyQuestions();
-    renderEnvControls();
     updateProgress();
-    recomputePreview();
+    renderAxisPreview();
 
-    document.querySelectorAll("[data-preset]").forEach((btn) => {
-      btn.addEventListener("click", () => applyEnvPreset(btn.dataset.preset));
-    });
     document.getElementById("export-btn").addEventListener("click", exportAnswers);
     document.getElementById("load-latest-btn").addEventListener("click", loadLatestFromServer);
     document.getElementById("load-file-input").addEventListener("change", (e) => {

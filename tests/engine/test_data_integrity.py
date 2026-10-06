@@ -1,53 +1,35 @@
-# 用途：驗證 data/zh/題庫.json 跟 data/zh/技能.json 的實際內容符合 engine
-# 預期的格式(題數、id 唯一、anchors 五個分數都有、技能欄位齊全等),並且用真實
-# 資料跑一次完整管線(六軸座標→缺口→相關性→優先序),確認資料檔跟四個 engine
-# 模組真的兜得起來,不是只有各自單獨測試通過。
+# 用途：驗證 data/zh/ 的題庫、技能、訓練菜單,以及 data/env_weights.json 的實際內容
+# 符合 engine 預期的格式(題數、id 唯一、anchors 五個分數都有、技能欄位齊全、每項技能
+# 三個難度都有訓練項目、每個環境都涵蓋全部技能),並且用真實資料跑一次完整的訓練計劃
+# 管線,確認資料檔跟 engine 真的兜得起來,不是只有各自單獨測試通過。
+# 文案是否為空先不檢查(訓練菜單的文案還沒填)。
 # 可手動調整的變數：無——這支檔案本身不含校準參數,它是在檢查別的檔案。
 
 import json
-import sys
 import unittest
 from pathlib import Path
 
 from engine.axis_position import AXES, score_axis_coordinates
-from engine.priority import rank_priorities
+from engine.training_plan import build_training_plan
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT))
-
-from scripts.run_priority import build_priority_items  # noqa: E402
-
 DATA_DIR = ROOT / "data" / "zh"
 
 REQUIRED_SKILL_FIELDS = {
-    "id",
-    "name_zh",
-    "category",
-    "cost_C",
-    "court_required",
-    "teammate_required",
-    "axis_relevance",
-    "video_tags",
-    "metric",
+    "id", "name_zh", "category", "cost_C", "court_required", "teammate_required",
+    "axis_relevance", "video_tags", "metric",
 }
 
 ALL_SKILL_IDS = {
-    "perimeter_shooting",
-    "face_up_first_step",
-    "high_post_playmaking",
-    "rim_protection",
-    "perimeter_switch_defense",
-    "post_up",
-    "pick_and_roll_ball_handling",
-    "off_ball_movement",
-    "transition_finishing",
-    "free_throw_shooting",
-    "offensive_rebounding",
-    "on_ball_perimeter_defense",
-    "help_defense_rotation",
-    "defensive_rebounding_boxout",
+    "perimeter_shooting", "face_up_first_step", "high_post_playmaking",
+    "rim_protection", "perimeter_switch_defense", "post_up",
+    "pick_and_roll_ball_handling", "off_ball_movement", "transition_finishing",
+    "free_throw_shooting", "offensive_rebounding", "on_ball_perimeter_defense",
+    "help_defense_rotation", "defensive_rebounding_boxout",
     "decision_making_turnover_control",
 }
+
+LEVELS = ("entry", "advanced", "mastery")
 
 
 def load_json(name):
@@ -59,12 +41,16 @@ class QuestionsDataTest(unittest.TestCase):
     def setUp(self):
         self.data = load_json("題庫.json")
 
-    def test_axis_positioning_has_two_questions_per_axis(self):
-        axis_questions = self.data["axis_positioning"]
-        self.assertEqual(len(axis_questions), 12)
+    def test_no_skill_behavior_section_remains(self):
+        self.assertNotIn("skill_behavior", self.data)
 
+    def test_total_question_count_is_eighteen(self):
+        total = len(self.data["axis_positioning"]) + len(self.data["body_measurements"])
+        self.assertEqual(total, 18)
+
+    def test_axis_positioning_has_two_questions_per_axis(self):
         counts = {axis: 0 for axis in AXES}
-        for q in axis_questions:
+        for q in self.data["axis_positioning"]:
             counts[q["axis"]] += 1
         self.assertEqual(counts, {axis: 2 for axis in AXES})
 
@@ -75,45 +61,12 @@ class QuestionsDataTest(unittest.TestCase):
             seen_ids.add(q["id"])
             self.assertEqual(set(q["anchors"].keys()), {"1", "2", "3", "4", "5"})
 
-    def test_skill_behavior_plus_also_measures_skill_covers_all_fifteen_skills(self):
-        # 4 skills no longer have their own skill_behavior question (removed
-        # as 2026-10 duplicates of an axis_positioning question) -- they're
-        # covered instead via "also_measures_skill" on the substitute axis
-        # question. Every skill must have exactly one source of its current
-        # level, never both and never neither.
-        skill_behavior_ids = {q["skill_id"] for q in self.data["skill_behavior"]}
-        substituted_ids = {
-            q["also_measures_skill"]
-            for q in self.data["axis_positioning"]
-            if q.get("also_measures_skill")
-        }
-
-        self.assertEqual(skill_behavior_ids & substituted_ids, set())
-        self.assertEqual(skill_behavior_ids | substituted_ids, ALL_SKILL_IDS)
-
-    def test_every_skill_behavior_question_has_five_bars_anchors(self):
-        for q in self.data["skill_behavior"]:
-            self.assertEqual(set(q["anchors"].keys()), {"1", "2", "3", "4", "5"})
-
-    def test_body_measurements_has_six_numeric_questions_with_unique_ids_and_fields(self):
+    def test_body_measurements_has_six_numeric_questions_covering_every_field(self):
         body_questions = self.data["body_measurements"]
         self.assertEqual(len(body_questions), 6)
-
-        ids = [q["id"] for q in body_questions]
-        fields = [q["field"] for q in body_questions]
-        self.assertEqual(len(ids), len(set(ids)))
-        self.assertEqual(len(fields), len(set(fields)))
-
         for q in body_questions:
             self.assertLess(q["min"], q["max"])
-
-    def test_body_measurements_covers_every_field_players_json_actually_has(self):
-        # See data/players.json's "body" schema -- body_distance/
-        # find_body_fit_template can only compare on fields both sides have,
-        # and every field's [min, max] here is also what
-        # scripts/build_players_seed.py's derived fields must stay inside.
-        fields = {q["field"] for q in self.data["body_measurements"]}
-        self.assertEqual(fields, {
+        self.assertEqual({q["field"] for q in body_questions}, {
             "height_cm", "weight_kg", "wingspan_cm",
             "standing_reach_cm", "running_vertical_reach_cm", "sprint_100m_seconds",
         })
@@ -130,7 +83,7 @@ class SkillsDataTest(unittest.TestCase):
         for skill in self.skills:
             self.assertTrue(REQUIRED_SKILL_FIELDS.issubset(skill.keys()), skill["id"])
 
-    def test_axis_relevance_covers_all_four_axes_in_zero_one_range(self):
+    def test_axis_relevance_covers_all_six_axes_in_zero_one_range(self):
         for skill in self.skills:
             relevance = skill["axis_relevance"]
             self.assertEqual(set(relevance.keys()), set(AXES))
@@ -143,57 +96,77 @@ class SkillsDataTest(unittest.TestCase):
             self.assertGreaterEqual(skill["cost_C"], 1)
             self.assertLessEqual(skill["cost_C"], 5)
 
+    def test_every_metric_has_thresholds_for_all_three_levels(self):
+        for skill in self.skills:
+            self.assertEqual(set(skill["metric"]["thresholds"]), set(LEVELS), skill["id"])
 
-class FullPipelineIntegrationTest(unittest.TestCase):
-    """Wires questions.json + skills.json through every engine function for
-    one synthetic respondent, proving the two data files and the four engine
-    modules actually fit together end to end."""
+
+class DrillsDataTest(unittest.TestCase):
+    def setUp(self):
+        self.drills = load_json("訓練菜單.json")["drills"]
+
+    def test_every_skill_has_at_least_one_drill_per_level(self):
+        seen = {(d["skill_id"], d["level"]) for d in self.drills}
+        for skill_id in ALL_SKILL_IDS:
+            for level in LEVELS:
+                self.assertIn((skill_id, level), seen, f"{skill_id}/{level}")
+
+    def test_every_drill_points_at_a_real_skill_and_level(self):
+        for d in self.drills:
+            self.assertIn(d["skill_id"], ALL_SKILL_IDS, d["id"])
+            self.assertIn(d["level"], LEVELS, d["id"])
+
+    def test_drill_ids_are_unique(self):
+        ids = [d["id"] for d in self.drills]
+        self.assertEqual(len(ids), len(set(ids)))
+
+
+class EnvWeightsDataTest(unittest.TestCase):
+    def setUp(self):
+        with open(ROOT / "data" / "env_weights.json", encoding="utf-8") as f:
+            self.env = json.load(f)
+        self.codes = [k for k in self.env if not k.startswith("_")]
+
+    def test_has_the_three_provisional_environments(self):
+        self.assertEqual(set(self.codes), {
+            "collapsed_no_shooters", "tight_perimeter_opp_shooters", "zone_defense",
+        })
+
+    def test_every_environment_covers_all_fifteen_skills(self):
+        for code in self.codes:
+            self.assertEqual(set(self.env[code]), ALL_SKILL_IDS, code)
+
+    def test_every_multiplier_is_within_spec_range(self):
+        for code in self.codes:
+            for skill_id, value in self.env[code].items():
+                self.assertGreaterEqual(value, 0.5, f"{code}.{skill_id}")
+                self.assertLessEqual(value, 2.0, f"{code}.{skill_id}")
+
+
+class FullTrainingPlanIntegrationTest(unittest.TestCase):
+    """Wires 題庫.json + 技能.json + env_weights.json + 球員.json through the
+    engine for one synthetic respondent and a real template player."""
 
     def setUp(self):
         self.questions = load_json("題庫.json")
         self.skills = load_json("技能.json")["skills"]
+        with open(ROOT / "data" / "env_weights.json", encoding="utf-8") as f:
+            self.env = json.load(f)
+        self.player = load_json("球員.json")["players"][0]
 
-    def test_produces_a_ranked_priority_list_with_dominant_env_effect(self):
-        axis_answers = [
-            {"question_id": q["id"], "score": 2}
-            for q in self.questions["axis_positioning"]
-        ]
-        coordinates = score_axis_coordinates(
-            self.questions["axis_positioning"], axis_answers
-        )
-        self.assertEqual(set(coordinates.keys()), set(AXES))
+    def test_every_environment_yields_a_ranked_plan_of_at_most_five_items(self):
+        axis_answers = [{"question_id": q["id"], "score": 2} for q in self.questions["axis_positioning"]]
+        user = score_axis_coordinates(self.questions["axis_positioning"], axis_answers)
 
-        skill_answers = [
-            {"question_id": q["id"], "score": 3}
-            for q in self.questions["skill_behavior"]
-        ]
-
-        # Simulate an environment vector (SPEC §3.2) that hugely favors
-        # perimeter shooting and suppresses rim protection, e.g. a
-        # collapsed-defense, loose-whistle league like SPEC.md §11's fixture.
-        # Every other skill defaults to a neutral 1.0 -- this test only
-        # cares that the pipeline plumbs E through correctly end to end for
-        # all 15 skills, not that every skill has a hand-tuned value here.
-        env_multiplier = {skill["id"]: 1.0 for skill in self.skills}
-        env_multiplier.update({
-            "perimeter_shooting": 1.8,
-            "face_up_first_step": 1.4,
-            "high_post_playmaking": 1.5,
-            "rim_protection": 0.6,
-            "perimeter_switch_defense": 1.0,
-        })
-
-        _, priority_inputs = build_priority_items(
-            self.questions, self.skills, axis_answers, skill_answers, env_multiplier
-        )
-
-        ranked = rank_priorities(priority_inputs)
-
-        self.assertEqual(len(ranked), 15)
-        for item in ranked:
-            self.assertGreaterEqual(item["P"], 0)
-        priorities = [item["P"] for item in ranked]
-        self.assertEqual(priorities, sorted(priorities, reverse=True))
+        for code in self.env:
+            if code.startswith("_"):
+                continue
+            plan = build_training_plan(self.skills, self.env[code], user, self.player["coordinates"])
+            self.assertLessEqual(len(plan), 5, code)
+            priorities = [item["P"] for item in plan]
+            self.assertEqual(priorities, sorted(priorities, reverse=True), code)
+            for item in plan:
+                self.assertGreater(item["G"], 0, code)
 
 
 if __name__ == "__main__":

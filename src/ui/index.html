@@ -66,7 +66,7 @@
      元素的最上緣貼齊 viewport y=0,結果被 sticky 導覽列蓋住一截,看起來
      像「捲過頭」,其實是目標本身被擋住了(2026-10 討論)。這裡統一留出導覽
      列的高度,不用每個捲動目標各自處理。 */
-  #archetype-headline, #priority-report, #stage1-form, #stage2-block, #stage2-env-section {
+  #archetype-headline, #training-section, #stage1-form {
     scroll-margin-top: 72px;
   }
 
@@ -529,17 +529,6 @@
 
   section.block { margin-top: 2.75rem; }
 
-  /* 聯賽環境區塊原本直接坐在 body 的織布紋理上,滑桿一多整片紋理毫無遮擋地
-     露出來,比其他地方都明顯;改成跟回答問題時的 .wizard-card 一樣用純色卡片
-     包起來,視覺上才跟作答流程其他畫面一致(2026-10 討論)。 */
-  #stage2-env-section {
-    background: var(--paper-raised);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 1.5rem 1.4rem 1.3rem;
-    box-shadow: var(--shadow);
-  }
-
   .section-head {
     display: flex;
     align-items: baseline;
@@ -753,8 +742,7 @@
     gap: 0.6rem;
   }
 
-  #stage1-submit-block,
-  #stage2-submit-block {
+  #stage1-submit-block {
     align-items: center;
     text-align: center;
   }
@@ -822,39 +810,6 @@
   @keyframes fade-up {
     from { opacity: 0; transform: translateY(6px); }
     to { opacity: 1; transform: none; }
-  }
-
-  .priority-columns {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 0 1rem;
-  }
-
-  .priority-row {
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    background: var(--paper-raised);
-    padding: 0.6rem 0.9rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .priority-row .headline { display: flex; justify-content: space-between; align-items: baseline; gap: 0.75rem; }
-  .priority-row .rank { font-family: var(--mono); font-weight: 800; color: var(--accent-ink); margin-right: 0.5rem; }
-
-  .priority-row-top {
-    border-color: var(--accent);
-    padding: 0.9rem 1.1rem;
-    margin-bottom: 1rem;
-  }
-
-  .priority-row-top .headline { font-size: 1.05rem; font-weight: 700; flex-wrap: wrap; }
-  .priority-row-top .rank { font-size: 1.1rem; }
-
-  .priority-action {
-    font-size: 0.85rem;
-    font-weight: 400;
-    color: var(--ink-soft);
-    text-align: right;
   }
 
   .low-similarity-note {
@@ -1036,52 +991,79 @@
   .card .callout .axis-tag, .top-match .callout .axis-tag { font-weight: 700; color: var(--ink); }
   .card .callout .growth, .top-match .callout .growth { color: var(--ink-soft); }
 
-  .card-trigger { cursor: pointer; display: flex; flex-direction: column; gap: 0.5rem; }
-  .card-trigger:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
-  .toggle-label {
-    align-self: flex-start;
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
+  /* ---------- SECTION 3 訓練計劃 ---------- */
+
+  .training-controls { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.25rem; }
+
+  .training-control-label {
     font-size: 0.78rem;
     font-weight: 600;
+    color: var(--ink-soft);
+    margin-bottom: 0.45rem;
+  }
+
+  .selectable { cursor: pointer; }
+  .selectable:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .selectable.is-selected { box-shadow: 0 0 0 2px var(--accent); }
+
+  .training-body {
+    display: grid;
+    grid-template-columns: 1fr 1.75fr;
+    gap: 1.25rem;
+    align-items: start;
+  }
+  .training-radar, .training-skills { min-width: 0; }
+  .training-empty { margin: 0; font-size: 0.9rem; color: var(--ink-soft); }
+  .training-radar svg { display: block; width: 100%; max-width: 200px; height: auto; margin: 0 auto; }
+
+  .skill-item {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--paper-raised);
+    padding: 0.8rem 0.95rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .skill-item-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+  .skill-item-name { font-weight: 700; color: var(--ink); }
+
+  .skill-level-tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--accent-ink);
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    padding: 0.1rem 0.55rem;
+  }
+
+  .drill { margin-top: 0.6rem; font-size: 0.86rem; color: var(--ink-soft); }
+  .drill-name { font-weight: 600; color: var(--ink); margin-bottom: 0.25rem; }
+  .drill-label {
+    display: inline-block;
+    margin-right: 0.45rem;
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .drill-steps { margin: 0.2rem 0 0.35rem 1.2rem; padding: 0; }
+  .drill-line { margin: 0.25rem 0 0; }
+
+  .skill-threshold {
+    margin: 0.7rem 0 0;
+    padding-left: 0.55rem;
+    border-left: 2px solid var(--accent);
+    font-size: 0.84rem;
     color: var(--accent-ink);
   }
-  .expand-caret {
-    font-size: 0.7rem;
-    color: var(--ink-soft);
-    transition: transform 0.15s ease;
-  }
-  .card-trigger[aria-expanded="true"] .expand-caret { transform: rotate(180deg); }
 
-  /* 1 : 1.75 左右分欄(使用者指定的比例)——左邊放跟分享圖同一套 buildRadarSvg
-     的縮小版(mini:true,拿掉軸標籤節省窄欄位空間,但保留圖例讓使用者看得出
-     顏色對應),右邊放差距最大的前三項技能建議,不列數字(2026-10 討論:
-     數字對使用者沒有意義)。
-     display:none 寫在基礎規則、.training-breakdown:not([hidden]) 才切回
-     grid——不能只靠 [hidden] 屬性,因為 CSS 裡任何對同一個 class 寫死的
-     display 值,specificity 都會蓋掉瀏覽器內建的 [hidden]{display:none},
-     等於 hidden 屬性形同虛設,面板會一直是展開的(2026-10 discovered this
-     bug:原本的寫法就是這樣,從來沒有真的收合過)。 */
-  .training-breakdown {
-    display: none;
-    margin-top: 0.3rem;
-    padding-top: 0.8rem;
-    border-top: 1px solid var(--line);
-    grid-template-columns: 1fr 1.75fr;
-    gap: 1rem;
-    align-items: center;
-  }
-  .training-breakdown:not([hidden]) { display: grid; }
-  .breakdown-radar { min-width: 0; }
-  .breakdown-skills { display: flex; flex-direction: column; gap: 0.5rem; justify-content: center; min-width: 0; }
-  .skill-pill {
-    font-size: 0.78rem;
-    line-height: 1.4;
-    color: var(--ink-soft);
-    background: var(--paper-sunken);
-    border-radius: 8px;
-    padding: 0.5rem 0.7rem;
+  @media (max-width: 640px) {
+    .training-body { grid-template-columns: 1fr; }
   }
 
   footer.disclosure {
@@ -1093,39 +1075,7 @@
     line-height: 1.6;
   }
 
-  .cta-card {
-    margin-top: 2.5rem;
-    border: 1px dashed var(--accent);
-    border-radius: var(--radius);
-    background: var(--accent-wash);
-    padding: 1.25rem 1.4rem;
-    text-align: center;
-  }
 
-  .cta-card h3 {
-    margin: 0 0 0.4rem;
-    font-size: 1.05rem;
-    font-weight: 800;
-  }
-
-  .cta-card p {
-    margin: 0 0 1rem;
-    font-size: 0.86rem;
-    color: var(--ink-soft);
-  }
-
-  button.secondary-cta {
-    background: transparent;
-    color: var(--accent-ink);
-    border: 1px solid var(--accent);
-    padding: 0.7rem 1.4rem;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    font-weight: 700;
-    cursor: pointer;
-  }
-
-  #stage2-block { display: none; }
 </style>
 <script>
   (function () {
@@ -1215,54 +1165,6 @@
 
   <div id="template-report"></div>
 
-  <div class="cta-card" id="cta-card" style="display:none">
-    <h3 id="cta-heading">想知道自己該優先練什麼嗎？</h3>
-    <p id="cta-body">這需要再多填 11 題技能行為題，並且選擇你的聯賽防守環境——不想看訓練建議的話，到這裡就結束了。</p>
-    <button type="button" class="secondary-cta" id="cta-btn">分析我的訓練優先序</button>
-  </div>
-
-  <div id="stage2-block">
-    <div class="ledger" id="stage2-ledger">
-      <div class="ledger-row">
-        <span id="stage2-progress-label">作答進度</span>
-        <span class="count mono"><span id="stage2-progress-count">0</span> / <span id="stage2-progress-total">11</span></span>
-      </div>
-      <div class="ledger-rule" id="stage2-ledger-rule"></div>
-    </div>
-
-    <form id="stage2-form">
-
-      <div class="wizard-phase-title" id="stage2-phase-title"></div>
-      <div id="stage2-wizard"></div>
-
-      <section class="block" id="stage2-env-section" style="display:none">
-        <div class="section-head">
-          <span class="section-tag">SECTION D</span>
-          <h2 id="env-section-title">聯賽環境(暫定值)</h2>
-        </div>
-        <div class="preset-row" id="preset-row">
-          <button type="button" data-preset="collapsed_no_shooters">內縮防守 / 缺乏射手</button>
-          <button type="button" data-preset="tight_perimeter_opp_shooters">貼外線 / 對手有射手</button>
-          <button type="button" data-preset="zone_defense">區域防守為主</button>
-        </div>
-      </section>
-
-      <div class="submit-block" id="stage2-submit-block" style="display:none">
-        <button type="submit" class="primary" id="stage2-submit-btn" disabled>產生訓練優先序</button>
-        <span id="stage2-submit-hint"><span id="stage2-submit-hint-text"></span></span>
-        <span id="stage2-submit-error"></span>
-      </div>
-
-    </form>
-
-    <div id="stage2-processing" style="display:none">
-      <div class="eyebrow" id="stage2-processing-label">整理報告中</div>
-      <div class="scan-line"></div>
-    </div>
-  </div>
-
-  <div id="priority-report"></div>
-
   <footer class="disclosure">
     <a href="#" id="restart-link" style="display:none">重新填一次</a>
   </footer>
@@ -1273,32 +1175,9 @@
 (() => {
   "use strict";
 
-  const ENV_PRESETS = {
-    collapsed_no_shooters: {
-      perimeter_shooting: 1.8, face_up_first_step: 1.3, high_post_playmaking: 1.4,
-      rim_protection: 0.6, perimeter_switch_defense: 0.9,
-      post_up: 0.7, pick_and_roll_ball_handling: 1.3, off_ball_movement: 1.1,
-      transition_finishing: 1.0, free_throw_shooting: 1.0, offensive_rebounding: 0.9,
-      on_ball_perimeter_defense: 0.7, help_defense_rotation: 1.5,
-      defensive_rebounding_boxout: 1.1, decision_making_turnover_control: 1.0,
-    },
-    tight_perimeter_opp_shooters: {
-      perimeter_shooting: 0.8, face_up_first_step: 1.8, high_post_playmaking: 1.1,
-      rim_protection: 1.2, perimeter_switch_defense: 1.6,
-      post_up: 1.3, pick_and_roll_ball_handling: 1.8, off_ball_movement: 1.4,
-      transition_finishing: 1.0, free_throw_shooting: 1.0, offensive_rebounding: 1.3,
-      on_ball_perimeter_defense: 1.7, help_defense_rotation: 1.6,
-      defensive_rebounding_boxout: 1.1, decision_making_turnover_control: 1.0,
-    },
-    zone_defense: {
-      perimeter_shooting: 1.7, face_up_first_step: 0.8, high_post_playmaking: 1.6,
-      rim_protection: 1.2, perimeter_switch_defense: 0.6,
-      post_up: 1.0, pick_and_roll_ball_handling: 1.0, off_ball_movement: 1.3,
-      transition_finishing: 1.0, free_throw_shooting: 1.0, offensive_rebounding: 1.1,
-      on_ball_perimeter_defense: 0.8, help_defense_rotation: 1.2,
-      defensive_rebounding_boxout: 1.0, decision_making_turnover_control: 1.0,
-    },
-  };
+  // 三組聯賽環境代碼,順序就是畫面上的順序(第一個是預設)。數字在 data/env_weights.json,
+  // 這裡只列代碼;顯示文字在 UI_STRINGS.envLabels。
+  const ENV_CODES = ["collapsed_no_shooters", "tight_perimeter_opp_shooters", "zone_defense"];
 
   function deepTemplateMeta() {
     const strings = t();
@@ -1333,18 +1212,10 @@
       themeToggleToDark: "切換成深色主題",
       visitCounterLabel: "使用人數：",
       loadingLabel: "載入題庫中…",
-      ctaHeading: "想知道自己該優先練什麼嗎？",
-      ctaBody: "這需要再多填 11 題技能行為題，並且選擇你的聯賽防守環境——不想看訓練建議的話，到這裡就結束了。",
-      ctaButton: "分析我的訓練優先序",
       progressLabel: "作答進度",
       stage1SubmitButton: "查看我的球員模板",
-      stage2SubmitButton: "產生訓練優先序",
       remainingQuestions: (n) => `還差 ${n} 題`,
       processingLabel: "整理報告中",
-      envSectionTitle: "聯賽環境",
-      envPreset1: "內縮防守 / 缺乏射手",
-      envPreset2: "貼外線 / 對手有射手",
-      envPreset3: "區域防守為主",
       restartLink: "重新填一次",
       deepTemplateSkillFitLabel: "技術模板",
       deepTemplateSkillFitCaption: "排除運動能力，技術層面與打法風格跟你最接近的球員",
@@ -1356,14 +1227,13 @@
       growthNotePrefix: " → 可以注意：",
       radarAriaLabel: (matchLabel) => `六角雷達圖：你跟${matchLabel}的比較`,
       youLabel: "你",
-      trainingBreakdownToggleLabel: (name) => `如何成為 ${name}`,
       shareImageHeader: "🏀 球探報告",
       shareImageDisclaimer: "非真人球探評測，僅供參考",
       shareImageFilename: (name) => `球探報告-${name}.png`,
       shareButtonLabel: "📥 下載分享圖",
       section1Title: "3 位深度模板",
       section2Title: "10 人對照表",
-      section3Title: "優先訓練順序",
+      section3Title: "訓練計劃",
       submitErrorTemplate: (msg) => `送出失敗：${msg}`,
       loadErrorTemplate: (msg) => `題庫載入失敗：${msg}`,
       poolLabels: { current: "現役球員模板", alltime: "歷史球員模板(All-time)" },
@@ -1372,14 +1242,26 @@
       nextButtonLabel: "下一題 →",
       phaseAxisPositioning: "球風定位",
       phaseBodyMeasurements: "身材數值(身高/體重必填)",
-      phaseSkillBehavior: "技能行為",
       bodyMeasurementNote: "身高、體重為必填，其餘身材數值選填，填寫越完整，身材模板與運動能力比對會越準確。",
       stepperIncreaseAriaTemplate: (prompt) => `${prompt}加 1`,
       stepperDecreaseAriaTemplate: (prompt) => `${prompt}減 1`,
-      priorityActionTemplate: (action) => `具體可以從「${action}」開始練習`,
       similarityLabel: "相似度",
       lowSimilarityNote: "你的球風或身材獨特，目前球員池裡還沒有非常接近的對照組，所以相似度星等整體偏低",
       mostSuitable: "最貼合",
+      envControlLabel: "聯賽環境",
+      playerControlLabel: "目標球員",
+      envLabels: { collapsed_no_shooters: "內縮防守 / 缺乏射手", tight_perimeter_opp_shooters: "貼外線 / 對手有射手", zone_defense: "區域防守為主" },
+      levelLabels: { entry: "入門", advanced: "進階", mastery: "精熟" },
+      trainingEmpty: "在這個聯賽環境下,這位球員的技能項目你都已經達到或超過,目前沒有需要補強的地方。",
+      drillStepsLabel: "步驟",
+      drillCueLabel: "提醒",
+      drillVolumeLabel: "訓練量",
+      volumeSetsReps: (sets, reps) => `${sets} 組 × ${reps} 次`,
+      volumeSets: (n) => `${n} 組`,
+      volumeReps: (n) => `${n} 次`,
+      volumeMinutes: (n) => `${n} 分鐘`,
+      passMakesAtLeast: (action, denominator, threshold) => `過關標準：${action}，${denominator} 次中做到 ${threshold} 次以上`,
+      passErrorsAtMost: (action, denominator, threshold) => `過關標準：${action}，${denominator} 次中失誤不超過 ${threshold} 次`,
     },
     "zh-Hans": {
       pageTitle: "球探报告",
@@ -1402,18 +1284,10 @@
       themeToggleToDark: "切换成深色主题",
       visitCounterLabel: "使用人数：",
       loadingLabel: "加载题库中…",
-      ctaHeading: "想知道自己该优先练什么吗？",
-      ctaBody: "这需要再多填 11 题技能行为题，并且选择你的联赛防守环境——不想看训练建议的话，到这里就结束了。",
-      ctaButton: "分析我的训练优先序",
       progressLabel: "作答进度",
       stage1SubmitButton: "查看我的球员模板",
-      stage2SubmitButton: "产生训练优先序",
       remainingQuestions: (n) => `还差 ${n} 题`,
       processingLabel: "整理报告中",
-      envSectionTitle: "联赛环境",
-      envPreset1: "内缩防守 / 缺乏射手",
-      envPreset2: "贴外线 / 对手有射手",
-      envPreset3: "区域防守为主",
       restartLink: "重新填一次",
       deepTemplateSkillFitLabel: "技术模板",
       deepTemplateSkillFitCaption: "排除运动能力，技术层面与打法风格跟你最接近的球员",
@@ -1425,14 +1299,13 @@
       growthNotePrefix: " → 可以注意：",
       radarAriaLabel: (matchLabel) => `六角雷达图：你跟${matchLabel}的比较`,
       youLabel: "你",
-      trainingBreakdownToggleLabel: (name) => `如何成为 ${name}`,
       shareImageHeader: "🏀 球探报告",
       shareImageDisclaimer: "非真人球探评测，仅供参考",
       shareImageFilename: (name) => `球探报告-${name}.png`,
       shareButtonLabel: "📥 下载分享图",
       section1Title: "3 位深度模板",
       section2Title: "10 人对照表",
-      section3Title: "优先训练顺序",
+      section3Title: "训练计划",
       submitErrorTemplate: (msg) => `送出失败：${msg}`,
       loadErrorTemplate: (msg) => `题库加载失败：${msg}`,
       poolLabels: { current: "现役球员模板", alltime: "历史球员模板(All-time)" },
@@ -1441,14 +1314,26 @@
       nextButtonLabel: "下一题 →",
       phaseAxisPositioning: "球风定位",
       phaseBodyMeasurements: "身材数值(身高/体重必填)",
-      phaseSkillBehavior: "技能行为",
       bodyMeasurementNote: "身高、体重为必填，其余身材数值选填，填写越完整，身材模板与运动能力比对会越准确。",
       stepperIncreaseAriaTemplate: (prompt) => `${prompt}加 1`,
       stepperDecreaseAriaTemplate: (prompt) => `${prompt}减 1`,
-      priorityActionTemplate: (action) => `具体可以从「${action}」开始练习`,
       similarityLabel: "相似度",
       lowSimilarityNote: "你的球风或身材独特，目前球员池里还没有非常接近的对照组，所以相似度星等整体偏低",
       mostSuitable: "最贴合",
+      envControlLabel: "联赛环境",
+      playerControlLabel: "目标球员",
+      envLabels: { collapsed_no_shooters: "内缩防守 / 缺乏射手", tight_perimeter_opp_shooters: "贴外线 / 对手有射手", zone_defense: "区域防守为主" },
+      levelLabels: { entry: "入门", advanced: "进阶", mastery: "精熟" },
+      trainingEmpty: "在这个联赛环境下,这位球员的技能项目你都已经达到或超过,目前没有需要补强的地方。",
+      drillStepsLabel: "步骤",
+      drillCueLabel: "提醒",
+      drillVolumeLabel: "训练量",
+      volumeSetsReps: (sets, reps) => `${sets} 组 × ${reps} 次`,
+      volumeSets: (n) => `${n} 组`,
+      volumeReps: (n) => `${n} 次`,
+      volumeMinutes: (n) => `${n} 分钟`,
+      passMakesAtLeast: (action, denominator, threshold) => `过关标准：${action}，${denominator} 次中做到 ${threshold} 次以上`,
+      passErrorsAtMost: (action, denominator, threshold) => `过关标准：${action}，${denominator} 次中失误不超过 ${threshold} 次`,
     },
     en: {
       pageTitle: "Scouting Report",
@@ -1471,18 +1356,10 @@
       themeToggleToDark: "Switch to dark theme",
       visitCounterLabel: "Users: ",
       loadingLabel: "Loading questions…",
-      ctaHeading: "Want to know what to prioritize?",
-      ctaBody: "Answer 11 more skill-behavior questions and choose your league's defensive environment -- if you don't want training suggestions, you can stop here.",
-      ctaButton: "Analyze My Training Priorities",
       progressLabel: "Progress",
       stage1SubmitButton: "See My Player Template",
-      stage2SubmitButton: "Generate Training Priorities",
       remainingQuestions: (n) => `${n} more question${n === 1 ? "" : "s"} to go`,
       processingLabel: "Preparing your report…",
-      envSectionTitle: "League Environment",
-      envPreset1: "Packed Defense / No Shooters",
-      envPreset2: "Tight Perimeter / Opponent Has Shooters",
-      envPreset3: "Zone Defense",
       restartLink: "Start Over",
       deepTemplateSkillFitLabel: "Skill-Fit Template",
       deepTemplateSkillFitCaption: "Excluding athleticism, the player closest to you in technique and playstyle",
@@ -1494,14 +1371,13 @@
       growthNotePrefix: " → Try: ",
       radarAriaLabel: (matchLabel) => `Hexagon radar chart: you vs ${matchLabel}`,
       youLabel: "You",
-      trainingBreakdownToggleLabel: (name) => `How to become ${name}`,
       shareImageHeader: "🏀 Scouting Report",
       shareImageDisclaimer: "Not a real scout's evaluation -- for reference only",
       shareImageFilename: (name) => `scouting-report-${name}.png`,
       shareButtonLabel: "📥 Download Share Image",
       section1Title: "3 Deep-Dive Templates",
       section2Title: "10-Player Comparison",
-      section3Title: "Training Priority Order",
+      section3Title: "Training Plan",
       submitErrorTemplate: (msg) => `Submission failed: ${msg}`,
       loadErrorTemplate: (msg) => `Failed to load questions: ${msg}`,
       poolLabels: { current: "Current Players", alltime: "All-Time Players" },
@@ -1510,29 +1386,39 @@
       nextButtonLabel: "Next →",
       phaseAxisPositioning: "Play Style",
       phaseBodyMeasurements: "Body Measurements (height/weight required)",
-      phaseSkillBehavior: "Skill Behavior",
       bodyMeasurementNote: "Height and weight are required; other body measurements are optional. The more complete they are, the more accurate your body-fit template and athleticism comparison will be.",
       stepperIncreaseAriaTemplate: (prompt) => `${prompt}, increase by 1`,
       stepperDecreaseAriaTemplate: (prompt) => `${prompt}, decrease by 1`,
-      priorityActionTemplate: (action) => `A concrete starting point: ${action}`,
       similarityLabel: "Similarity",
       lowSimilarityNote: "Your playstyle or body type is distinctive enough that the player pool doesn't have a very close comp yet, so your similarity stars are lower across the board.",
       mostSuitable: "Best Match",
+      envControlLabel: "League Environment",
+      playerControlLabel: "Target Player",
+      envLabels: { collapsed_no_shooters: "Packed Defense / No Shooters", tight_perimeter_opp_shooters: "Tight Perimeter / Opponent Has Shooters", zone_defense: "Zone Defense" },
+      levelLabels: { entry: "Entry", advanced: "Advanced", mastery: "Mastery" },
+      trainingEmpty: "In this environment you already match or beat this player on every skill here, so there's nothing to close right now.",
+      drillStepsLabel: "Steps",
+      drillCueLabel: "Cue",
+      drillVolumeLabel: "Volume",
+      volumeSetsReps: (sets, reps) => `${sets} sets × ${reps} reps`,
+      volumeSets: (n) => `${n} sets`,
+      volumeReps: (n) => `${n} reps`,
+      volumeMinutes: (n) => `${n} min`,
+      passMakesAtLeast: (action, denominator, threshold) => `Pass: ${action}, at least ${threshold} out of ${denominator}`,
+      passErrorsAtMost: (action, denominator, threshold) => `Pass: ${action}, no more than ${threshold} errors in ${denominator}`,
     },
   };
 
   const state = {
     axisQuestions: [],
-    skillQuestions: [],
     bodyQuestions: [],
-    skills: [],
     answers: {},
     bodyAnswers: {},
-    env: {},
-    selectedPreset: null,
+    results: null,
+    selectedEnv: ENV_CODES[0],
+    selectedPlayerIndex: 0,
     pool: "current",
     stage1StepIndex: 0,
-    stage2StepIndex: 0,
     lang: SUPPORTED_LANGUAGES.includes(localStorage.getItem("lang"))
       ? localStorage.getItem("lang")
       : "zh",
@@ -1582,30 +1468,8 @@
     document.getElementById("stage1-submit-hint").style.display = done < total ? "" : "none";
   }
 
-  // ---- stage 2 progress: 技能行為(15) only -- 聯賽環境用預設值,不列入計數 ----
-
-  function stage2Total() {
-    return state.skillQuestions.length;
-  }
-
-  function stage2Answered() {
-    return state.skillQuestions.filter((q) => state.answers[q.id] !== undefined).length;
-  }
-
-  function updateStage2Progress() {
-    const total = stage2Total();
-    const done = stage2Answered();
-    document.getElementById("stage2-progress-count").textContent = done;
-    document.getElementById("stage2-progress-total").textContent = total;
-    document.getElementById("stage2-ledger-rule").style.setProperty("--progress", `${(done / total) * 100}%`);
-    document.getElementById("stage2-submit-hint-text").textContent = t().remainingQuestions(total - done);
-    document.getElementById("stage2-submit-btn").disabled = done < total;
-    document.getElementById("stage2-submit-hint").style.display = done < total ? "" : "none";
-  }
-
   // ---- single-question wizard: renders exactly one question card into a
-  // mount point, wired to auto-advance -- shared by stage1(axis+body) and
-  // stage2(skill) so people don't have to scroll through a long list to
+  // mount point, wired to auto-advance -- used by stage1(axis+body) so people don't have to scroll through a long list to
   // find the next question (2026-09-13 討論)。
 
   function renderWizardStep(mountId, { eyebrow, index, total, onBack, buildBody }) {
@@ -1867,48 +1731,6 @@
     }
   }
 
-  function renderStage2Wizard() {
-    const steps = state.skillQuestions;
-    const total = steps.length;
-    const idx = state.stage2StepIndex;
-
-    if (idx >= total) {
-      document.getElementById("stage2-phase-title").textContent = "";
-      document.getElementById("stage2-wizard").innerHTML = "";
-      document.getElementById("stage2-env-section").style.display = "block";
-      document.getElementById("stage2-submit-block").style.display = "block";
-      updateStage2Progress();
-      document.getElementById("stage2-env-section").scrollIntoView({ behavior: "smooth", block: "start" });
-      return;
-    }
-    document.getElementById("stage2-env-section").style.display = "none";
-    document.getElementById("stage2-submit-block").style.display = "none";
-    document.getElementById("stage2-phase-title").textContent = t().phaseSkillBehavior;
-
-    const q = steps[idx];
-    const skillById = Object.fromEntries(state.skills.map((s) => [s.id, s]));
-    const eyebrow = skillById[q.skill_id] ? skillById[q.skill_id].name_zh : q.skill_id;
-    const back = () => {
-      state.stage2StepIndex = Math.max(0, idx - 1);
-      renderStage2Wizard();
-    };
-    const advance = () => {
-      updateStage2Progress();
-      state.stage2StepIndex = idx + 1;
-      renderStage2Wizard();
-    };
-
-    renderRadioStep("stage2-wizard", q, eyebrow, idx, total, back, advance);
-  }
-
-  function applyPreset(key) {
-    state.selectedPreset = key;
-    state.env = { ...ENV_PRESETS[key] };
-    document.querySelectorAll("#preset-row button").forEach((btn) => {
-      btn.classList.toggle("selected", btn.dataset.preset === key);
-    });
-  }
-
   function buildTemplatePayload() {
     return {
       axis_answers: state.axisQuestions.map((q) => ({ question_id: q.id, score: state.answers[q.id] })),
@@ -1919,15 +1741,6 @@
         .filter((q) => state.bodyAnswers[q.id] !== undefined)
         .map((q) => ({ question_id: q.id, value: state.bodyAnswers[q.id] })),
       pool: state.pool,
-      lang: state.lang,
-    };
-  }
-
-  function buildPriorityPayload() {
-    return {
-      axis_answers: state.axisQuestions.map((q) => ({ question_id: q.id, score: state.answers[q.id] })),
-      skill_answers: state.skillQuestions.map((q) => ({ question_id: q.id, score: state.answers[q.id] })),
-      env: state.env,
       lang: state.lang,
     };
   }
@@ -2232,41 +2045,113 @@
       </div>`;
   }
 
-  // 列出六軸裡每一軸對應的技能建議,不帶數字——數字對使用者沒有意義,他們要
-  // 的是「練什麼」不是「差多少」(2026-10 討論)。D 軸(運動表現)排除在外:
-  // 它沒有真正的技能可以練,差距大時只會顯示「身體天賦有落差」這種無法執行
-  // 的訊息,放進訓練清單裡沒有意義。回傳空陣列代表扣掉 D 軸後,其餘五軸
-  // 使用者都已經領先或打平,呼叫端(matchListHtml)要用這個判斷整個「如何
-  // 成為...」區塊要不要出現,不是這支函式自己決定要顯示什麼替代文字。
-  function trainableSkills(m) {
-    return m.training_breakdown
-      .filter((row) => row.skill_action && row.axis !== "D")
-      .sort((a, b) => b.diff - a.diff);
+  // ---- SECTION 3 訓練計劃(2026-10 重構):放在結果頁最底部。環境與目標球員都在
+  // 這裡切換,不用重新作答。內容全部來自 /api/template-results 回傳的
+  // training_plans[環境代碼],前端只負責排版,不做任何計算。
+
+  function choiceButtonHtml(attr, value, label, selected) {
+    return `<button type="button" ${attr}="${value}" aria-pressed="${selected}"${selected ? ' class="selected"' : ""}>${label}</button>`;
   }
 
-  // 左邊搭一個縮小版雷達圖(跟分享圖同一套 buildRadarSvg,mini:true)。只會
-  // 在 skills 非空時被呼叫,所以不用處理「沒東西可練」的情況。
-  function renderTrainingBreakdown(skills, userCoords, m) {
-    const skillsHtml = skills.map((row) => `<div class="skill-pill">${row.skill_action}</div>`).join("");
-    const radarHtml = buildRadarSvg(userCoords, m.coordinates, m.name, { mini: true });
-    return `
-      <div class="training-breakdown" hidden>
-        <div class="breakdown-radar">${radarHtml}</div>
-        <div class="breakdown-skills">${skillsHtml}</div>
-      </div>`;
+  function drillVolumeText(drill) {
+    const s = t();
+    const pieces = [];
+    if (drill.sets && drill.reps) pieces.push(s.volumeSetsReps(drill.sets, drill.reps));
+    else if (drill.sets) pieces.push(s.volumeSets(drill.sets));
+    else if (drill.reps) pieces.push(s.volumeReps(drill.reps));
+    if (drill.minutes) pieces.push(s.volumeMinutes(drill.minutes));
+    return pieces.join(" · ");
   }
 
-  function renderPriorityRow(item, rank) {
+  // 欄位是空字串或 null 就整行不畫,不留「提醒:」之類的空標籤(訓練菜單文案還沒填)。
+  function renderDrill(drill) {
+    const s = t();
+    const parts = [];
+    if (drill.name) parts.push(`<div class="drill-name">${drill.name}</div>`);
+    if (drill.steps && drill.steps.length > 0) {
+      parts.push(`<div class="drill-label">${s.drillStepsLabel}</div>`);
+      parts.push(`<ol class="drill-steps">${drill.steps.map((step) => `<li>${step}</li>`).join("")}</ol>`);
+    }
+    if (drill.cue) parts.push(`<p class="drill-line"><span class="drill-label">${s.drillCueLabel}</span>${drill.cue}</p>`);
+    const volume = drillVolumeText(drill);
+    if (volume) parts.push(`<p class="drill-line"><span class="drill-label">${s.drillVolumeLabel}</span>${volume}</p>`);
+    return parts.length > 0 ? `<div class="drill">${parts.join("")}</div>` : "";
+  }
+
+  function renderSkillItem(item) {
+    const s = t();
+    const m = item.metric;
+    const passSentence = m.direction === "errors_at_most"
+      ? s.passErrorsAtMost(m.action, m.denominator, m.threshold)
+      : s.passMakesAtLeast(m.action, m.denominator, m.threshold);
     return `
-      <div class="priority-row">
-        <div class="headline">
-          <span><span class="rank">#${rank}</span>${item.name_zh}</span>
+      <div class="skill-item">
+        <div class="skill-item-head">
+          <span class="skill-item-name">${item.name_zh}</span>
+          <span class="skill-level-tag">${s.levelLabels[item.level]}</span>
         </div>
+        ${item.drills.map(renderDrill).join("")}
+        <p class="skill-threshold">${passSentence}</p>
       </div>`;
+  }
+
+  function renderTrainingBody(player, plan) {
+    const radarHtml = buildRadarSvg(state.results.coordinates, player.coordinates, player.name, { mini: true });
+    const skillsHtml = plan.length === 0
+      ? `<p class="training-empty">${t().trainingEmpty}</p>`
+      : plan.map(renderSkillItem).join("");
+    return `
+      <div class="training-body">
+        <div class="training-radar">${radarHtml}</div>
+        <div class="training-skills">${skillsHtml}</div>
+      </div>`;
+  }
+
+  function renderTrainingSection() {
+    const data = state.results;
+    const player = data.top_10[state.selectedPlayerIndex];
+    const s = t();
+
+    document.getElementById("env-row").innerHTML = ENV_CODES
+      .map((code) => choiceButtonHtml("data-env", code, s.envLabels[code], code === state.selectedEnv))
+      .join("");
+    document.getElementById("player-row").innerHTML = data.top_10
+      .map((m, i) => choiceButtonHtml("data-player-index", String(i), m.name, i === state.selectedPlayerIndex))
+      .join("");
+
+    const body = document.getElementById("training-body");
+    if (!player) {
+      body.innerHTML = "";
+      return;
+    }
+    body.innerHTML = renderTrainingBody(player, player.training_plans[state.selectedEnv]);
+
+    document.querySelectorAll(".match-list [data-player-index]").forEach((card) => {
+      card.classList.toggle("is-selected", Number(card.dataset.playerIndex) === state.selectedPlayerIndex);
+    });
+  }
+
+  function handleReportClick(e) {
+    const envBtn = e.target.closest("[data-env]");
+    if (envBtn) {
+      state.selectedEnv = envBtn.dataset.env;
+      renderTrainingSection();
+      return;
+    }
+    const playerEl = e.target.closest("[data-player-index]");
+    if (!playerEl) return;
+    state.selectedPlayerIndex = Number(playerEl.dataset.playerIndex);
+    renderTrainingSection();
+    // 點球員卡片才捲到訓練計劃;下面的球員按鈕本來就在訓練區旁邊,不用捲。
+    if (playerEl.closest(".match-list")) {
+      document.getElementById("training-section").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   }
 
   function renderTemplateReport(data) {
     const el = document.getElementById("template-report");
+    state.results = data;
+    state.selectedPlayerIndex = Math.min(state.selectedPlayerIndex, data.top_10.length - 1);
 
     const meta = deepTemplateMeta();
     const templateCards = ["skill_fit", "body_fit", "ceiling"].map((key) => {
@@ -2283,17 +2168,7 @@
     const matchListHtml = data.top_10.map((m, i) => {
       const cardClass = i === 0 ? "top-match" : "card";
       const badge = i === 0 ? `<span class="top-match-badge">${t().mostSuitable}</span>` : "";
-      const cardInner = renderMatchCardInner(i + 1, m);
-      const skills = trainableSkills(m);
-      // 扣掉 D 軸之後,其餘五軸使用者都已經領先或打平:沒有東西可以練,整個
-      // 「如何成為...」的點擊區塊就不出現,不用留一句「已經領先」佔位
-      // (2026-10 討論)。
-      if (skills.length === 0) {
-        return `<div class="${cardClass}">${badge}${cardInner}</div>`;
-      }
-      const toggleLabel = t().trainingBreakdownToggleLabel(m.name);
-      const breakdownHtml = renderTrainingBreakdown(skills, data.coordinates, m);
-      return `<div class="${cardClass}">${badge}<div class="card-trigger" role="button" tabindex="0" aria-expanded="false" aria-label="${toggleLabel}">${cardInner}<span class="toggle-label">${toggleLabel}<span class="expand-caret" aria-hidden="true">▾</span></span></div>${breakdownHtml}</div>`;
+      return `<div class="${cardClass} selectable" data-player-index="${i}" tabindex="0" role="button">${badge}${renderMatchCardInner(i + 1, m)}</div>`;
     }).join("");
 
     const topMatch = data.top_10[0] || null;
@@ -2327,6 +2202,21 @@
         ${lowSimilarityNoteHtml}
         <div class="match-list">${matchListHtml}</div>
       </section>
+
+      <section class="block report-fade" id="training-section" style="animation-delay:.15s">
+        <div class="section-head"><span class="section-tag">SECTION 3</span><h2>${t().section3Title}</h2></div>
+        <div class="training-controls">
+          <div>
+            <div class="training-control-label">${t().envControlLabel}</div>
+            <div class="preset-row" id="env-row"></div>
+          </div>
+          <div>
+            <div class="training-control-label">${t().playerControlLabel}</div>
+            <div class="preset-row" id="player-row"></div>
+          </div>
+        </div>
+        <div id="training-body"></div>
+      </section>
     `;
 
     const shareBtn = document.getElementById("share-btn");
@@ -2334,42 +2224,29 @@
       shareBtn.addEventListener("click", () => downloadShareImage(data, topMatch));
     }
 
-    document.querySelectorAll(".card-trigger").forEach((trigger) => {
-      const toggle = () => {
-        const expanded = trigger.getAttribute("aria-expanded") === "true";
-        trigger.setAttribute("aria-expanded", String(!expanded));
-        trigger.nextElementSibling.hidden = expanded;
-      };
-      trigger.addEventListener("click", toggle);
-      trigger.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          toggle();
-        }
-      });
-    });
+    renderTrainingSection();
   }
 
-  function renderPriorityReport(data) {
-    const el = document.getElementById("priority-report");
-    const [first, ...rest] = data.priorities.slice(0, 5);
+  async function requestTemplateResults() {
+    const res = await fetch("/api/template-results", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(buildTemplatePayload()),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+    return data;
+  }
 
-    const topHtml = first ? `
-      <div class="priority-row priority-row-top">
-        <div class="headline">
-          <span><span class="rank">#1</span>${first.name_zh}</span>
-          <span class="priority-action">${t().priorityActionTemplate(first.action)}</span>
-        </div>
-      </div>` : "";
-    const restHtml = rest.map((item, i) => renderPriorityRow(item, i + 2)).join("");
-
-    el.innerHTML = `
-      <section class="block report-fade">
-        <div class="section-head"><span class="section-tag">SECTION 3</span><h2>${t().section3Title}</h2></div>
-        ${topHtml}
-        <div class="priority-columns">${restHtml}</div>
-      </section>
-    `;
+  // 語言切換時,結果頁的球員名稱、技能、訓練項目文字都是後端依 lang 產生的,
+  // 所以要重新打一次 API;沿用目前選到的環境與球員。失敗就保留舊畫面。
+  async function refreshTemplateReport() {
+    if (!state.results) return;
+    try {
+      renderTemplateReport(await requestTemplateResults());
+    } catch (err) {
+      // 保留目前畫面,不打斷使用者
+    }
   }
 
   async function handleStage1Submit(e) {
@@ -2382,18 +2259,12 @@
     document.getElementById("stage1-processing").style.display = "block";
 
     try {
-      const res = await fetch("/api/template-results", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(buildTemplatePayload()),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
-
+      const data = await requestTemplateResults();
       document.getElementById("stage1-processing").style.display = "none";
+      state.selectedEnv = ENV_CODES[0];
+      state.selectedPlayerIndex = 0;
       renderTemplateReport(data);
       document.getElementById("template-report").style.display = "block";
-      document.getElementById("cta-card").style.display = "block";
       document.getElementById("restart-link").style.display = "inline";
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
@@ -2403,47 +2274,6 @@
       errorEl.textContent = t().submitErrorTemplate(err.message);
       errorEl.style.display = "block";
     }
-  }
-
-  async function handleStage2Submit(e) {
-    e.preventDefault();
-    const errorEl = document.getElementById("stage2-submit-error");
-    errorEl.style.display = "none";
-
-    document.getElementById("stage2-form").style.display = "none";
-    document.getElementById("stage2-ledger").style.display = "none";
-    document.getElementById("stage2-processing").style.display = "block";
-
-    try {
-      const res = await fetch("/api/priority-results", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(buildPriorityPayload()),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
-
-      document.getElementById("stage2-processing").style.display = "none";
-      document.getElementById("stage2-block").style.display = "none";
-      renderPriorityReport(data);
-      document.getElementById("priority-report").style.display = "block";
-      document.getElementById("priority-report").scrollIntoView({ behavior: "smooth", block: "start" });
-    } catch (err) {
-      document.getElementById("stage2-processing").style.display = "none";
-      document.getElementById("stage2-form").style.display = "block";
-      document.getElementById("stage2-ledger").style.display = "block";
-      errorEl.textContent = t().submitErrorTemplate(err.message);
-      errorEl.style.display = "block";
-    }
-  }
-
-  function revealStage2() {
-    document.getElementById("cta-card").style.display = "none";
-    document.getElementById("stage2-block").style.display = "block";
-    state.stage2StepIndex = 0;
-    renderStage2Wizard();
-    updateStage2Progress();
-    document.getElementById("stage2-block").scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   function revealQuiz(pool) {
@@ -2541,33 +2371,19 @@
 
     document.getElementById("loading").textContent = strings.loadingLabel;
 
-    document.getElementById("cta-heading").textContent = strings.ctaHeading;
-    document.getElementById("cta-body").textContent = strings.ctaBody;
-    document.getElementById("cta-btn").textContent = strings.ctaButton;
-
     document.getElementById("stage1-submit-btn").textContent = strings.stage1SubmitButton;
-    document.getElementById("stage2-submit-btn").textContent = strings.stage2SubmitButton;
     document.getElementById("stage1-processing-label").textContent = strings.processingLabel;
-    document.getElementById("stage2-processing-label").textContent = strings.processingLabel;
 
-    document.getElementById("stage2-progress-label").textContent = strings.progressLabel;
     const poolLabelEl = document.getElementById("active-pool-label");
     poolLabelEl.textContent = document.getElementById("stage1-ledger").style.display !== "none"
       ? `${strings.poolLabels[state.pool]} · ${strings.progressLabel}`
       : strings.progressLabel;
 
-    document.getElementById("env-section-title").textContent = strings.envSectionTitle;
-    const presetButtons = document.querySelectorAll("#preset-row button");
-    presetButtons[0].textContent = strings.envPreset1;
-    presetButtons[1].textContent = strings.envPreset2;
-    presetButtons[2].textContent = strings.envPreset3;
-
     document.getElementById("restart-link").textContent = strings.restartLink;
 
     // 逐題精靈的送出提示(還差 N 題)也是語言相關文字,語言切換時要一併刷新
-    // (這兩個函式本身是 idempotent 的,單純重算目前進度不會有副作用)。
+    // (這個函式本身是 idempotent 的,單純重算目前進度不會有副作用)。
     updateStage1Progress();
-    updateStage2Progress();
   }
 
   async function setLang(lang) {
@@ -2585,9 +2401,7 @@
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const payload = await res.json();
       state.axisQuestions = payload.questions.axis_positioning;
-      state.skillQuestions = payload.questions.skill_behavior;
       state.bodyQuestions = payload.questions.body_measurements;
-      state.skills = payload.skills;
     } catch (err) {
       // 題庫重抓失敗就沿用舊語言的題庫內容,至少畫面上的固定文案(選單、按鈕
       // 等)還是會切換成新語言,不會整個卡死。
@@ -2599,10 +2413,7 @@
     if (document.getElementById("stage1-form").style.display !== "none") {
       renderStage1Wizard();
     }
-    if (document.getElementById("stage2-block").style.display !== "none"
-        && document.getElementById("stage2-block").style.display !== undefined) {
-      renderStage2Wizard();
-    }
+    await refreshTemplateReport();
   }
 
   async function main() {
@@ -2625,10 +2436,7 @@
     }
 
     state.axisQuestions = payload.questions.axis_positioning;
-    state.skillQuestions = payload.questions.skill_behavior;
     state.bodyQuestions = payload.questions.body_measurements;
-    state.skills = payload.skills;
-    applyPreset("collapsed_no_shooters");
 
     renderLangSwitch();
     applyUiStrings();
@@ -2637,12 +2445,15 @@
     document.getElementById("mode-current-btn").disabled = false;
     document.getElementById("mode-alltime-btn").disabled = false;
 
-    document.querySelectorAll("#preset-row button").forEach((btn) => {
-      btn.addEventListener("click", () => applyPreset(btn.dataset.preset));
-    });
     document.getElementById("stage1-form").addEventListener("submit", handleStage1Submit);
-    document.getElementById("stage2-form").addEventListener("submit", handleStage2Submit);
-    document.getElementById("cta-btn").addEventListener("click", revealStage2);
+    const reportEl = document.getElementById("template-report");
+    reportEl.addEventListener("click", handleReportClick);
+    reportEl.addEventListener("keydown", (e) => {
+      if ((e.key === "Enter" || e.key === " ") && e.target.classList.contains("selectable")) {
+        e.preventDefault();
+        e.target.click();
+      }
+    });
     document.getElementById("restart-link").addEventListener("click", (e) => {
       e.preventDefault();
       window.location.reload();
@@ -2683,12 +2494,9 @@
   document.getElementById("topnav-tab-priority").addEventListener("click", (e) => {
     e.preventDefault();
     setActiveTopnavTab("topnav-tab-priority");
-    const priorityEl = document.getElementById("priority-report");
-    const stage2El = document.getElementById("stage2-block");
-    if (priorityEl.innerHTML.trim() !== "") {
-      priorityEl.scrollIntoView({ behavior: "smooth", block: "start" });
-    } else if (stage2El.style.display !== "none") {
-      stage2El.scrollIntoView({ behavior: "smooth", block: "start" });
+    const trainingEl = document.getElementById("training-section");
+    if (trainingEl) {
+      trainingEl.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   });
 
