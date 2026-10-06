@@ -536,14 +536,26 @@
     -moz-appearance: textfield;
   }
 
+  /* 作答進度列跟頁面背景合為一體:同樣的底色加上同樣的紋理圖層(body::after 的做法),
+     紋理用 0 0 對齊,而進度列 sticky 貼在視窗頂端,所以跟背景的紋理位置一致。 */
   .ledger {
     position: sticky;
     top: 0;
     z-index: 20;
     margin: 0 -1.25rem;
     padding: 0.75rem 1.25rem 0.6rem;
-    background-color: var(--paper-sunken);
+    background-color: var(--paper);
     border-bottom: 1px solid var(--line);
+  }
+
+  .ledger::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url("fabric-texture.jpg") 0 0 / 360px 360px;
+    opacity: 0.12;
+    pointer-events: none;
+    z-index: -1;
   }
 
   .ledger-row {
@@ -913,6 +925,10 @@
   .radar-grid { fill: none; stroke: var(--line); stroke-width: 1; }
   .radar-axis-line { stroke: var(--line); stroke-width: 1; }
   .radar-axis-label { fill: var(--ink-soft); font-size: 10px; font-family: var(--sans); }
+  .radar-skill-label {
+    font-size: 11px;
+    fill: var(--ink-soft);
+  }
   .radar-poly { stroke-width: 2; }
   .radar-poly-user { fill: rgba(217, 160, 63, 0.35); stroke: var(--accent); }
   .radar-poly-match { fill: rgba(91, 155, 213, 0.25); stroke: #5b9bd5; }
@@ -1084,7 +1100,7 @@
     font-weight: 400;
   }
   .training-empty { margin: 0; font-size: 0.9rem; color: var(--ink-soft); }
-  .training-radar svg { display: block; width: 100%; max-width: 200px; height: auto; margin: 0 auto; }
+  .training-radar svg { display: block; width: 100%; max-width: 300px; height: auto; margin: 0 auto; }
 
   .skill-item {
     border: 1px solid var(--line);
@@ -2076,7 +2092,7 @@
   // (使用者希望每張卡片都能看出六角形裡哪個顏色是誰,不能只在最上面的主要
   // 雷達圖講一次)——圖例排版改直排,見 .radar-legend-mini。用在每張球員卡片
   // 展開後左邊那個縮小版雷達圖(2026-10 討論)。
-  function buildRadarSvg(userCoords, matchCoords, matchLabel, { mini = false } = {}) {
+  function buildRadarSvg(userCoords, matchCoords, matchLabel, { mini = false, axisSkills = null } = {}) {
     const size = mini ? 160 : 300;
     const center = size / 2;
     const maxRadius = mini ? size / 2 - 10 : size / 2 - 75;
@@ -2100,12 +2116,18 @@
       return `<line x1="${center}" y1="${center}" x2="${x}" y2="${y}" class="radar-axis-line" />`;
     }).join("");
 
+    // axisSkills({axis: 技能名}) 有給的時候,每個頂點的軸名下面再標一行代表技能(訓練計劃用);
+    // D 軸不是可訓練的軸,沒有技能,只標軸名。
     const axisLabels = mini ? "" : RADAR_AXES.map((axis, i) => {
       const angle = radarAngle(i);
       const labelR = maxRadius + 25;
       const x = center + labelR * Math.cos(angle);
-      const y = center + labelR * Math.sin(angle);
-      return `<text x="${x}" y="${y}" class="radar-axis-label" text-anchor="middle" dominant-baseline="middle">${t().axisLabels[axis]}</text>`;
+      const skill = axisSkills ? axisSkills[axis] : null;
+      const y = center + labelR * Math.sin(angle) - (skill ? 7 : 0);
+      const skillLine = skill
+        ? `<tspan x="${x}" dy="1.25em" class="radar-skill-label">${skill}</tspan>`
+        : "";
+      return `<text x="${x}" y="${y}" class="radar-axis-label" text-anchor="middle" dominant-baseline="middle">${t().axisLabels[axis]}${skillLine}</text>`;
     }).join("");
 
     // mini 版圖例改直排(見 .radar-legend-mini)——窄欄位放不下橫排,球員名字
@@ -2384,7 +2406,9 @@
   }
 
   function renderTrainingBody(player, plan) {
-    const radarHtml = buildRadarSvg(state.results.coordinates, player.coordinates, player.name, { mini: true });
+    const radarHtml = buildRadarSvg(state.results.coordinates, player.coordinates, player.name, {
+      axisSkills: state.results.axis_skills,
+    });
     const skillsHtml = plan.length === 0
       ? `<p class="training-empty">${t().trainingEmpty}</p>`
       : plan.map(renderSkillItem).join("");

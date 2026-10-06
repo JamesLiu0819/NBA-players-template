@@ -344,6 +344,21 @@ class SiteVisitTest(unittest.TestCase):
         self.assertEqual(second, first + 1)
 
 
+class AxisSkillsTest(unittest.TestCase):
+    def test_every_trainable_axis_gets_a_representative_skill_name(self):
+        client = app.test_client()
+        questions = load_json(ROOT / "data" / "zh" / "題庫.json")
+        payload = {
+            "axis_answers": build_axis_answers(questions),
+            "body_answers": build_body_answers(questions),
+            "pool": "current",
+            "lang": "zh",
+        }
+        data = client.post("/api/template-results", json=payload).get_json()
+        self.assertEqual(set(data["axis_skills"]), {"A", "B1", "B2", "C1", "C2"})
+        self.assertTrue(all(isinstance(name, str) and name for name in data["axis_skills"].values()))
+
+
 class FeedbackTest(unittest.TestCase):
     def setUp(self):
         import db

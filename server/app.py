@@ -102,7 +102,7 @@ from engine.player_matching import (  # noqa: E402
     find_skill_fit_template,
     rank_similar_players_by_style_and_body,
 )
-from engine.training_plan import build_training_plan  # noqa: E402
+from engine.training_plan import build_training_plan, representative_skill_by_axis  # noqa: E402
 from scripts.run_player_match import (  # noqa: E402
     build_scouting_report,
     describe_growth_recommendation,
@@ -260,6 +260,11 @@ def compute_template_results(payload, questions, players, skills, archetypes, dr
 
     return {
         "coordinates": coordinates,
+        # 六角圖每個頂點旁邊標的代表技能(各可訓練軸權重最高的那一項),依語言顯示
+        "axis_skills": {
+            axis: skills_by_id[skill_id]["name_zh"]
+            for axis, skill_id in representative_skill_by_axis(skills).items()
+        },
         "archetype": {"name_zh": archetype["name_zh"], "flavor": archetype["flavor"]},
         "scouting_report": (
             build_scouting_report(archetype) if ranked_players else None
