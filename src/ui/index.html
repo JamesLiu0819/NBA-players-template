@@ -1537,8 +1537,6 @@
       volumeSets: (n) => `${n} 組`,
       volumeReps: (n) => `${n} 次`,
       volumeMinutes: (n) => `${n} 分鐘`,
-      passMakesAtLeast: (action, denominator, threshold) => `過關標準：${action}，${denominator} 次中做到 ${threshold} 次以上`,
-      passErrorsAtMost: (action, denominator, threshold) => `過關標準：${action}，${denominator} 次中失誤不超過 ${threshold} 次`,
     },
     "zh-Hans": {
       pageTitle: "球探报告",
@@ -1621,8 +1619,6 @@
       volumeSets: (n) => `${n} 组`,
       volumeReps: (n) => `${n} 次`,
       volumeMinutes: (n) => `${n} 分钟`,
-      passMakesAtLeast: (action, denominator, threshold) => `过关标准：${action}，${denominator} 次中做到 ${threshold} 次以上`,
-      passErrorsAtMost: (action, denominator, threshold) => `过关标准：${action}，${denominator} 次中失误不超过 ${threshold} 次`,
     },
     en: {
       pageTitle: "Scouting Report",
@@ -1705,8 +1701,6 @@
       volumeSets: (n) => `${n} sets`,
       volumeReps: (n) => `${n} reps`,
       volumeMinutes: (n) => `${n} min`,
-      passMakesAtLeast: (action, denominator, threshold) => `Pass: ${action}, at least ${threshold} out of ${denominator}`,
-      passErrorsAtMost: (action, denominator, threshold) => `Pass: ${action}, no more than ${threshold} errors in ${denominator}`,
     },
   };
 
@@ -2370,7 +2364,8 @@
   }
 
   // 欄位是空字串或 null 就整行不畫,不留「提醒:」之類的空標籤(訓練菜單文案還沒填)。
-  function renderDrill(drill) {
+  // 黃色區塊:訓練菜單的內容(名稱、步驟、提醒)。訓練量另外放在區塊上面。
+  function renderDrillContent(drill) {
     const s = t();
     const parts = [];
     if (drill.name) parts.push(`<div class="drill-name">${escapeHtml(drill.name)}</div>`);
@@ -2379,25 +2374,25 @@
       parts.push(`<ol class="drill-steps">${drill.steps.map((step) => `<li>${escapeHtml(step)}</li>`).join("")}</ol>`);
     }
     if (drill.cue) parts.push(`<p class="drill-line"><span class="drill-label">${s.drillCueLabel}</span>${escapeHtml(drill.cue)}</p>`);
-    const volume = drillVolumeText(drill);
-    if (volume) parts.push(`<p class="drill-line"><span class="drill-label">${s.drillVolumeLabel}</span>${escapeHtml(volume)}</p>`);
-    return parts.length > 0 ? `<div class="drill">${parts.join("")}</div>` : "";
+    return parts.join("");
   }
 
   function renderSkillItem(item) {
     const s = t();
-    const m = item.metric;
-    const passSentence = m.direction === "errors_at_most"
-      ? s.passErrorsAtMost(m.action, m.denominator, m.threshold)
-      : s.passMakesAtLeast(m.action, m.denominator, m.threshold);
+    const volumeHtml = item.drills
+      .map((drill) => drillVolumeText(drill))
+      .filter((volume) => volume)
+      .map((volume) => `<p class="drill-line"><span class="drill-label">${s.drillVolumeLabel}</span>${escapeHtml(volume)}</p>`)
+      .join("");
+    const contentHtml = item.drills.map(renderDrillContent).join("");
     return `
       <div class="skill-item">
         <div class="skill-item-head">
           <span class="skill-item-name">${escapeHtml(item.name_zh)}</span>
           <span class="skill-level-tag">${s.levelLabels[item.level]}</span>
         </div>
-        ${item.drills.map(renderDrill).join("")}
-        <p class="skill-threshold">${escapeHtml(passSentence)}</p>
+        ${volumeHtml ? `<div class="drill">${volumeHtml}</div>` : ""}
+        ${contentHtml ? `<div class="skill-threshold">${contentHtml}</div>` : ""}
       </div>`;
   }
 
