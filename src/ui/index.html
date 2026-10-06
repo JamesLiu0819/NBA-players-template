@@ -247,12 +247,16 @@
 
   .theme-toggle:hover { color: var(--accent-ink); border-color: var(--accent); }
 
+  /* 手機版:字級整體縮小(所有 rem 都跟著變)、區塊間距收緊。導覽列左右留白要夠大,
+     不然 iPhone 的圓角螢幕會把最左邊的籃球和最右邊的主題按鈕切掉。 */
   @media (max-width: 560px) {
-    .topnav-inner { gap: 0.5rem; padding: 0 0.75rem; }
+    html { font-size: 14px; }
+    .topnav-inner { gap: 0.5rem; padding: 0 1.1rem; }
     .topnav-name { display: none; }
     .topnav-tabs { gap: 0.55rem; }
     .topnav-tab { font-size: 0.74rem; }
     .topnav-actions { gap: 0.4rem; }
+    section.block { margin-top: 1.6rem; }
   }
 
   /* 顏色維持 --paper 不變。織布紋理規則拉出來給 body 跟 .ledger(作答進度那條
