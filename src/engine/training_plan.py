@@ -12,7 +12,7 @@ Pure functions only.
 
 from engine.player_matching import skill_dominant_axis
 from engine.priority import rank_priorities
-from engine.skill_level import TRAINABLE_AXES, skill_gap
+from engine.skill_level import skill_gap
 
 LEVEL_ENTRY = "entry"
 LEVEL_ADVANCED = "advanced"
@@ -63,20 +63,3 @@ def build_training_plan(skills, env_weights, user_coords, target_coords, top_n=5
     for item in ranked:
         item["level"] = skill_difficulty_level(item["user_axis_score"])
     return ranked
-
-
-def representative_skill_by_axis(skills):
-    """For each trainable axis, the skill that leans on it most.
-
-    Among skills whose dominant axis is that axis, pick the one with the
-    highest weight there; ties break on skill id so the result is stable.
-    Returns {axis: skill_id}. D is never trainable, so it is not included.
-    """
-    result = {}
-    for axis in TRAINABLE_AXES:
-        candidates = [s for s in skills if skill_dominant_axis(s["axis_relevance"]) == axis]
-        if not candidates:
-            candidates = list(skills)
-        best_weight = max(s["axis_relevance"][axis] for s in candidates)
-        result[axis] = min(s["id"] for s in candidates if s["axis_relevance"][axis] == best_weight)
-    return result

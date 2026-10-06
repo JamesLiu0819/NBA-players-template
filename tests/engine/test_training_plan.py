@@ -9,7 +9,6 @@ from engine.training_plan import (
     LEVEL_ENTRY,
     LEVEL_MASTERY,
     build_training_plan,
-    representative_skill_by_axis,
     skill_difficulty_level,
 )
 
@@ -91,34 +90,6 @@ class BuildTrainingPlanTest(unittest.TestCase):
     def test_missing_environment_weight_raises(self):
         with self.assertRaises(ValueError):
             build_training_plan(SKILLS, {"shooting": 1.0}, USER, TARGET)
-
-
-def _skill(skill_id, **weights):
-    relevance = {axis: 0.0 for axis in ("A", "B1", "B2", "C1", "C2", "D")}
-    relevance.update(weights)
-    return {"id": skill_id, "cost_C": 2, "axis_relevance": relevance}
-
-
-class RepresentativeSkillByAxisTest(unittest.TestCase):
-    def test_picks_the_skill_with_the_highest_weight_among_those_dominant_on_the_axis(self):
-        skills = [_skill("weak_a", A=0.6), _skill("strong_a", A=0.9), _skill("b_only", B1=1.0)]
-        self.assertEqual(representative_skill_by_axis(skills)["A"], "strong_a")
-
-    def test_ties_break_on_skill_id(self):
-        skills = [_skill("zeta", A=0.9), _skill("alpha", A=0.9)]
-        self.assertEqual(representative_skill_by_axis(skills)["A"], "alpha")
-
-    def test_falls_back_to_highest_weight_when_no_skill_is_dominant_on_the_axis(self):
-        skills = [_skill("lean_b1", A=0.3, B1=0.5), _skill("lean_a", A=0.9)]
-        # lean_b1 is dominant on B1, so for B2 (no dominant skill) the highest B2 weight wins
-        skills.append(_skill("some_b2", B2=0.4, A=0.5))
-        self.assertEqual(representative_skill_by_axis(skills)["B2"], "some_b2")
-
-    def test_never_returns_d_and_covers_every_trainable_axis(self):
-        skills = [_skill("a", A=1.0), _skill("b1", B1=1.0), _skill("b2", B2=1.0),
-                  _skill("c1", C1=1.0), _skill("c2", C2=1.0), _skill("d", D=1.0)]
-        mapping = representative_skill_by_axis(skills)
-        self.assertEqual(set(mapping), {"A", "B1", "B2", "C1", "C2"})
 
 
 if __name__ == "__main__":
