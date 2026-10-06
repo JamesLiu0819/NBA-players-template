@@ -262,11 +262,21 @@
      CC0 授權,已轉灰階、裁成正方形、壓縮到 512px/~124KB,見 src/ui/fabric-
      texture.jpg)。用灰階照片 + overlay 疊色模式蓋在 --paper 上,照片本身
      不含顏色,疊色模式會自動配合深色/米白主題的底色,兩個主題不用準備兩張圖。 */
+  /* 紋理不用 background-blend-mode:overlay(2026-10 iPhone Safari 會整片不繪製),
+     改成 body::after 的固定圖層:半透明的灰階紋理疊在純色底上,z-index 在底色之上、
+     內容之下。.ledger 因為會蓋住捲過的內容,保持純色底。 */
   body, .ledger {
     background-color: var(--paper);
-    background-image: url("fabric-texture.jpg");
-    background-size: 360px 360px;
-    background-blend-mode: overlay;
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: url("fabric-texture.jpg") 0 0 / 360px 360px;
+    opacity: 0.12;
+    pointer-events: none;
+    z-index: -1;
   }
 
   body {
@@ -289,15 +299,14 @@
     bottom: -4vmin;
     width: 52vmin;
     height: 52vmin;
-    background: url("silhouettes/dunk-black.png") no-repeat bottom right / contain;
+    background: url("silhouettes/dunk-white.png") no-repeat bottom right / contain;
     opacity: 0.05;
-    filter: invert(1);
     pointer-events: none;
     z-index: -1;
   }
 
   :root[data-theme="light"] body::before {
-    filter: none;
+    background-image: url("silhouettes/dunk-black.png");
   }
 
   .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
