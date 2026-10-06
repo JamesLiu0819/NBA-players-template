@@ -1029,34 +1029,44 @@
 
   .card-trigger { cursor: pointer; display: flex; flex-direction: column; gap: 0.5rem; }
   .card-trigger:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
-  .expand-caret {
+  .toggle-label {
     align-self: center;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--accent-ink);
+  }
+  .expand-caret {
     font-size: 0.7rem;
     color: var(--ink-soft);
     transition: transform 0.15s ease;
   }
   .card-trigger[aria-expanded="true"] .expand-caret { transform: rotate(180deg); }
 
+  /* 1 : 1.75 左右分欄(使用者指定的比例)——左邊放跟分享圖同一套 buildRadarSvg
+     的縮小版(mini:true,不帶軸標籤/圖例,節省窄欄位空間),右邊放差距最大的
+     前三項技能建議,不列數字(2026-10 討論:數字對使用者沒有意義)。 */
   .training-breakdown {
     margin-top: 0.3rem;
-    padding-top: 0.6rem;
+    padding-top: 0.8rem;
     border-top: 1px solid var(--line);
-    display: flex;
-    flex-direction: column;
-    gap: 0.45rem;
+    display: grid;
+    grid-template-columns: 1fr 1.75fr;
+    gap: 1rem;
+    align-items: center;
   }
-  .breakdown-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.25rem 0.6rem;
+  .breakdown-radar { min-width: 0; }
+  .breakdown-skills { display: flex; flex-direction: column; gap: 0.5rem; justify-content: center; min-width: 0; }
+  .skill-pill {
     font-size: 0.78rem;
+    line-height: 1.4;
+    color: var(--ink-soft);
+    background: var(--paper-sunken);
+    border-radius: 8px;
+    padding: 0.5rem 0.7rem;
   }
-  .breakdown-row .axis { font-weight: 700; color: var(--ink); flex: 0 0 4rem; }
-  .breakdown-row .values { color: var(--ink-soft); }
-  .breakdown-row .diff-gap { color: var(--accent-ink); font-weight: 700; }
-  .breakdown-row .diff-lead { color: var(--ink-soft); }
-  .breakdown-row .action { color: var(--ink-soft); flex-basis: 100%; }
 
   footer.disclosure {
     margin-top: 3rem;
@@ -1191,7 +1201,7 @@
 
   <div class="cta-card" id="cta-card" style="display:none">
     <h3 id="cta-heading">想知道自己該優先練什麼嗎？</h3>
-    <p id="cta-body">這需要再多填 15 題技能行為題，並且選擇你的聯賽防守環境——不想看訓練建議的話，到這裡就結束了。</p>
+    <p id="cta-body">這需要再多填 11 題技能行為題，並且選擇你的聯賽防守環境——不想看訓練建議的話，到這裡就結束了。</p>
     <button type="button" class="secondary-cta" id="cta-btn">分析我的訓練優先序</button>
   </div>
 
@@ -1199,7 +1209,7 @@
     <div class="ledger" id="stage2-ledger">
       <div class="ledger-row">
         <span id="stage2-progress-label">作答進度</span>
-        <span class="count mono"><span id="stage2-progress-count">0</span> / <span id="stage2-progress-total">15</span></span>
+        <span class="count mono"><span id="stage2-progress-count">0</span> / <span id="stage2-progress-total">11</span></span>
       </div>
       <div class="ledger-rule" id="stage2-ledger-rule"></div>
     </div>
@@ -1308,7 +1318,7 @@
       visitCounterLabel: "使用人數：",
       loadingLabel: "載入題庫中…",
       ctaHeading: "想知道自己該優先練什麼嗎？",
-      ctaBody: "這需要再多填 15 題技能行為題，並且選擇你的聯賽防守環境——不想看訓練建議的話，到這裡就結束了。",
+      ctaBody: "這需要再多填 11 題技能行為題，並且選擇你的聯賽防守環境——不想看訓練建議的話，到這裡就結束了。",
       ctaButton: "分析我的訓練優先序",
       progressLabel: "作答進度",
       stage1SubmitButton: "查看我的球員模板",
@@ -1331,8 +1341,7 @@
       radarAriaLabel: (matchLabel) => `六角雷達圖：你跟${matchLabel}的比較`,
       youLabel: "你",
       trainingBreakdownAlreadyAhead: "已經領先",
-      trainingBreakdownGapLabel: "差距",
-      trainingBreakdownToggleAriaLabel: (name) => `查看${name}的訓練方式`,
+      trainingBreakdownToggleLabel: (name) => `如何成為「${name}」：`,
       shareImageHeader: "🏀 球探報告",
       shareImageDisclaimer: "非真人球探評測，僅供參考",
       shareImageFilename: (name) => `球探報告-${name}.png`,
@@ -1379,7 +1388,7 @@
       visitCounterLabel: "使用人数：",
       loadingLabel: "加载题库中…",
       ctaHeading: "想知道自己该优先练什么吗？",
-      ctaBody: "这需要再多填 15 题技能行为题，并且选择你的联赛防守环境——不想看训练建议的话，到这里就结束了。",
+      ctaBody: "这需要再多填 11 题技能行为题，并且选择你的联赛防守环境——不想看训练建议的话，到这里就结束了。",
       ctaButton: "分析我的训练优先序",
       progressLabel: "作答进度",
       stage1SubmitButton: "查看我的球员模板",
@@ -1402,8 +1411,7 @@
       radarAriaLabel: (matchLabel) => `六角雷达图：你跟${matchLabel}的比较`,
       youLabel: "你",
       trainingBreakdownAlreadyAhead: "已经领先",
-      trainingBreakdownGapLabel: "差距",
-      trainingBreakdownToggleAriaLabel: (name) => `查看${name}的训练方式`,
+      trainingBreakdownToggleLabel: (name) => `如何成为「${name}」：`,
       shareImageHeader: "🏀 球探报告",
       shareImageDisclaimer: "非真人球探评测，仅供参考",
       shareImageFilename: (name) => `球探报告-${name}.png`,
@@ -1450,7 +1458,7 @@
       visitCounterLabel: "Users: ",
       loadingLabel: "Loading questions…",
       ctaHeading: "Want to know what to prioritize?",
-      ctaBody: "Answer 15 more skill-behavior questions and choose your league's defensive environment -- if you don't want training suggestions, you can stop here.",
+      ctaBody: "Answer 11 more skill-behavior questions and choose your league's defensive environment -- if you don't want training suggestions, you can stop here.",
       ctaButton: "Analyze My Training Priorities",
       progressLabel: "Progress",
       stage1SubmitButton: "See My Player Template",
@@ -1473,8 +1481,7 @@
       radarAriaLabel: (matchLabel) => `Hexagon radar chart: you vs ${matchLabel}`,
       youLabel: "You",
       trainingBreakdownAlreadyAhead: "Already ahead",
-      trainingBreakdownGapLabel: "Gap",
-      trainingBreakdownToggleAriaLabel: (name) => `View training plan for ${name}`,
+      trainingBreakdownToggleLabel: (name) => `How to become "${name}":`,
       shareImageHeader: "🏀 Scouting Report",
       shareImageDisclaimer: "Not a real scout's evaluation -- for reference only",
       shareImageFilename: (name) => `scouting-report-${name}.png`,
@@ -1951,10 +1958,13 @@
     return [centerX + r * Math.cos(angle), centerY + r * Math.sin(angle)];
   }
 
-  function buildRadarSvg(userCoords, matchCoords, matchLabel) {
-    const size = 300;
+  // mini: true 拿掉軸標籤文字(10px 字在窄欄位會縮到看不清楚)跟圖例(10 張
+  // 卡片各放一次會太重複,顏色對應已經在上面主要的雷達圖那邊講過了) -- 用在
+  // 每張球員卡片展開後左邊那個縮小版雷達圖(2026-10 討論)。
+  function buildRadarSvg(userCoords, matchCoords, matchLabel, { mini = false } = {}) {
+    const size = mini ? 160 : 300;
     const center = size / 2;
-    const maxRadius = size / 2 - 75;
+    const maxRadius = mini ? size / 2 - 10 : size / 2 - 75;
 
     const polygonPoints = (coords) =>
       RADAR_AXES.map((axis) => radarPoint(center, center, maxRadius, coords, axis).join(",")).join(" ");
@@ -1975,13 +1985,19 @@
       return `<line x1="${center}" y1="${center}" x2="${x}" y2="${y}" class="radar-axis-line" />`;
     }).join("");
 
-    const axisLabels = RADAR_AXES.map((axis, i) => {
+    const axisLabels = mini ? "" : RADAR_AXES.map((axis, i) => {
       const angle = radarAngle(i);
       const labelR = maxRadius + 25;
       const x = center + labelR * Math.cos(angle);
       const y = center + labelR * Math.sin(angle);
       return `<text x="${x}" y="${y}" class="radar-axis-label" text-anchor="middle" dominant-baseline="middle">${t().axisLabels[axis]}</text>`;
     }).join("");
+
+    const legendHtml = mini ? "" : `
+      <div class="radar-legend">
+        <span class="legend-item"><span class="legend-swatch legend-swatch-user"></span>${t().youLabel}</span>
+        <span class="legend-item"><span class="legend-swatch legend-swatch-match"></span>${matchLabel}</span>
+      </div>`;
 
     return `
       <svg viewBox="0 0 ${size} ${size}" class="radar-svg" role="img" aria-label="${t().radarAriaLabel(matchLabel)}">
@@ -1990,11 +2006,7 @@
         <polygon points="${polygonPoints(matchCoords)}" class="radar-poly radar-poly-match"></polygon>
         <polygon points="${polygonPoints(userCoords)}" class="radar-poly radar-poly-user"></polygon>
         ${axisLabels}
-      </svg>
-      <div class="radar-legend">
-        <span class="legend-item"><span class="legend-swatch legend-swatch-user"></span>${t().youLabel}</span>
-        <span class="legend-item"><span class="legend-swatch legend-swatch-match"></span>${matchLabel}</span>
-      </div>`;
+      </svg>${legendHtml}`;
   }
 
   function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight) {
@@ -2204,21 +2216,23 @@
       </div>`;
   }
 
-  function renderTrainingBreakdown(m) {
-    const rows = m.training_breakdown.map((row) => {
-      const diffText = (row.diff > 0 ? "+" : "") + row.diff.toFixed(1);
-      const diffClass = row.diff > 0 ? "diff-gap" : "diff-lead";
-      const actionHtml = row.skill_action
-        ? `${t().growthNotePrefix}${row.skill_action}`
-        : t().trainingBreakdownAlreadyAhead;
-      return `
-        <div class="breakdown-row">
-          <span class="axis">${t().axisLabels[row.axis]}</span>
-          <span class="values mono">${t().youLabel} ${row.your_value.toFixed(1)} → ${m.name} ${row.player_value.toFixed(1)}（${t().trainingBreakdownGapLabel} <span class="${diffClass}">${diffText}</span>）</span>
-          <span class="action">${actionHtml}</span>
-        </div>`;
-    }).join("");
-    return `<div class="training-breakdown" hidden>${rows}</div>`;
+  // 只列差距最大的前三項技能建議,不帶數字——數字對使用者沒有意義,他們要的
+  // 是「練什麼」不是「差多少」(2026-10 討論)。左邊搭一個縮小版雷達圖
+  // (跟分享圖同一套 buildRadarSvg,mini:true)。
+  function renderTrainingBreakdown(m, userCoords) {
+    const topSkills = m.training_breakdown
+      .filter((row) => row.skill_action)
+      .sort((a, b) => b.diff - a.diff)
+      .slice(0, 3);
+    const skillsHtml = topSkills.length > 0
+      ? topSkills.map((row) => `<div class="skill-pill">${row.skill_action}</div>`).join("")
+      : `<div class="skill-pill">${t().trainingBreakdownAlreadyAhead}</div>`;
+    const radarHtml = buildRadarSvg(userCoords, m.coordinates, m.name, { mini: true });
+    return `
+      <div class="training-breakdown" hidden>
+        <div class="breakdown-radar">${radarHtml}</div>
+        <div class="breakdown-skills">${skillsHtml}</div>
+      </div>`;
   }
 
   function renderPriorityRow(item, rank) {
@@ -2248,8 +2262,8 @@
     const matchListHtml = data.top_10.map((m, i) => {
       const cardClass = i === 0 ? "top-match" : "card";
       const badge = i === 0 ? `<span class="top-match-badge">${t().mostSuitable}</span>` : "";
-      const ariaLabel = t().trainingBreakdownToggleAriaLabel(m.name);
-      return `<div class="${cardClass}">${badge}<div class="card-trigger" role="button" tabindex="0" aria-expanded="false" aria-label="${ariaLabel}">${renderMatchCardInner(i + 1, m)}<span class="expand-caret" aria-hidden="true">▾</span></div>${renderTrainingBreakdown(m)}</div>`;
+      const toggleLabel = t().trainingBreakdownToggleLabel(m.name);
+      return `<div class="${cardClass}">${badge}<div class="card-trigger" role="button" tabindex="0" aria-expanded="false" aria-label="${toggleLabel}">${renderMatchCardInner(i + 1, m)}<span class="toggle-label">${toggleLabel}<span class="expand-caret" aria-hidden="true">▾</span></span></div>${renderTrainingBreakdown(m, data.coordinates)}</div>`;
     }).join("");
 
     const topMatch = data.top_10[0] || null;
