@@ -1091,13 +1091,28 @@
     .training-body { grid-template-columns: 1fr; }
   }
 
-  footer.disclosure {
-    margin-top: 3rem;
-    padding-top: 1.25rem;
+  /* 所有頁面共用的底部列,在 .pages 之外,所以每一頁的最底下都看得到。 */
+  .site-footer {
+    flex: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.5rem;
+    padding: 0.7rem 1rem;
     border-top: 1px solid var(--line);
-    font-size: 0.76rem;
-    color: var(--ink-soft);
-    line-height: 1.6;
+    background: var(--paper-sunken);
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+
+  .site-footer a {
+    color: var(--accent-ink);
+    text-decoration: none;
+  }
+
+  .site-footer a:hover {
+    text-decoration: underline;
   }
 
 
@@ -1119,7 +1134,6 @@
     </a>
     <div class="topnav-tabs">
       <a href="#" class="topnav-tab" id="topnav-tab-home">首頁</a>
-      <a href="#" class="topnav-tab" id="topnav-tab-quiz" aria-disabled="true">問題</a>
       <a href="#" class="topnav-tab" id="topnav-tab-template" aria-disabled="true">我的模板</a>
       <a href="#" class="topnav-tab" id="topnav-tab-training" aria-disabled="true">訓練計劃</a>
     </div>
@@ -1205,9 +1219,6 @@
   <div class="page">
   <div id="template-report"></div>
 
-  <footer class="disclosure">
-    <a href="#" id="restart-link" style="display:none">重新填一次</a>
-  </footer>
   </div>
   </section>
 
@@ -1218,6 +1229,11 @@
   </section>
 
 </main>
+
+<footer class="site-footer">
+  <a href="#" id="restart-link">重新填一次</a>
+  <a href="https://github.com/JamesLiu0819/NBA-players-template/issues/new" target="_blank" rel="noopener" id="feedback-link">提供使用意見</a>
+</footer>
 
 <script>
 (() => {
@@ -1256,7 +1272,6 @@
       brandName: "球探報告",
       navMyTemplate: "我的模板",
       navHome: "首頁",
-      navQuiz: "問題",
       goTrainingButton: "查看訓練計劃",
       navTrainingPlan: "訓練計劃",
       themeToggleToLight: "切換成米白主題",
@@ -1268,6 +1283,7 @@
       remainingQuestions: (n) => `還差 ${n} 題`,
       processingLabel: "整理報告中",
       restartLink: "重新填一次",
+      feedbackLink: "提供使用意見",
       deepTemplateSkillFitLabel: "技術模板",
       deepTemplateSkillFitCaption: "排除運動能力，技術層面與打法風格跟你最接近的球員",
       deepTemplateBodyFitLabel: "身材模板",
@@ -1331,7 +1347,6 @@
       brandName: "球探报告",
       navMyTemplate: "我的模板",
       navHome: "首页",
-      navQuiz: "问题",
       goTrainingButton: "查看训练计划",
       navTrainingPlan: "训练计划",
       themeToggleToLight: "切换成米白主题",
@@ -1343,6 +1358,7 @@
       remainingQuestions: (n) => `还差 ${n} 题`,
       processingLabel: "整理报告中",
       restartLink: "重新填一次",
+      feedbackLink: "提供使用意见",
       deepTemplateSkillFitLabel: "技术模板",
       deepTemplateSkillFitCaption: "排除运动能力，技术层面与打法风格跟你最接近的球员",
       deepTemplateBodyFitLabel: "身材模板",
@@ -1406,7 +1422,6 @@
       brandName: "Scouting Report",
       navMyTemplate: "My Template",
       navHome: "Home",
-      navQuiz: "Quiz",
       goTrainingButton: "View Training Plan",
       navTrainingPlan: "Training Plan",
       themeToggleToLight: "Switch to light theme",
@@ -1418,6 +1433,7 @@
       remainingQuestions: (n) => `${n} more question${n === 1 ? "" : "s"} to go`,
       processingLabel: "Preparing your report…",
       restartLink: "Start Over",
+      feedbackLink: "Send Feedback",
       deepTemplateSkillFitLabel: "Skill-Fit Template",
       deepTemplateSkillFitCaption: "Excluding athleticism, the player closest to you in technique and playstyle",
       deepTemplateBodyFitLabel: "Body-Fit Template",
@@ -1472,7 +1488,6 @@
     answers: {},
     bodyAnswers: {},
     results: null,
-    started: false,
     selectedEnv: ENV_CODES[0],
     selectedPlayerIndex: 0,
     pool: "current",
@@ -2330,7 +2345,6 @@
       state.selectedEnv = ENV_CODES[0];
       state.selectedPlayerIndex = 0;
       renderTemplateReport(data);
-      document.getElementById("restart-link").style.display = "inline";
       updateTabAvailability();
       showPage("template");
     } catch (err) {
@@ -2343,6 +2357,7 @@
   }
 
   const PAGE_IDS = ["home", "quiz", "template", "training"];
+  const TAB_IDS = ["home", "template", "training"];
 
   function showPage(name) {
     for (const id of PAGE_IDS) {
@@ -2350,12 +2365,13 @@
     }
     document.getElementById(`page-${name}`).scrollTop = 0;
     document.querySelectorAll(".topnav-tab").forEach((tab) => tab.classList.remove("active"));
-    document.getElementById(`topnav-tab-${name}`).classList.add("active");
+    const tab = document.getElementById(`topnav-tab-${name}`);
+    if (tab) tab.classList.add("active");
   }
 
-  // 「問題」要開始作答後才能點;「我的模板」「訓練計劃」要送出過才能點(沒有結果就沒東西可看)。
+  // 「我的模板」「訓練計劃」要送出過才能點(沒有結果就沒東西可看)。問題頁只從首頁開始。
   function updateTabAvailability() {
-    const enabled = { quiz: state.started, template: state.results !== null, training: state.results !== null };
+    const enabled = { template: state.results !== null, training: state.results !== null };
     for (const [name, on] of Object.entries(enabled)) {
       document.getElementById(`topnav-tab-${name}`).setAttribute("aria-disabled", String(!on));
     }
@@ -2363,7 +2379,6 @@
 
   function openQuiz(pool) {
     state.pool = pool;
-    state.started = true;
     document.getElementById("active-pool-label").textContent = `${t().poolLabels[pool]} · ${t().progressLabel}`;
     document.getElementById("stage1-ledger").style.display = "block";
     document.getElementById("stage1-form").style.display = "block";
@@ -2371,7 +2386,6 @@
     state.stage1StepIndex = 0;
     renderStage1Wizard();
     updateStage1Progress();
-    updateTabAvailability();
     showPage("quiz");
   }
 
@@ -2380,13 +2394,11 @@
     state.answers = {};
     state.bodyAnswers = {};
     state.results = null;
-    state.started = false;
     state.selectedEnv = ENV_CODES[0];
     state.selectedPlayerIndex = 0;
     state.stage1StepIndex = 0;
     document.getElementById("template-report").innerHTML = "";
     document.getElementById("training-report").innerHTML = "";
-    document.getElementById("restart-link").style.display = "none";
     updateTabAvailability();
     showPage("home");
   }
@@ -2462,7 +2474,6 @@
     document.getElementById("topnav-brand-name").textContent = strings.brandName;
     document.getElementById("topnav-tab-template").textContent = strings.navMyTemplate;
     document.getElementById("topnav-tab-home").textContent = strings.navHome;
-    document.getElementById("topnav-tab-quiz").textContent = strings.navQuiz;
     document.getElementById("topnav-tab-training").textContent = strings.navTrainingPlan;
     applyTheme(state.theme);
 
@@ -2482,6 +2493,7 @@
       : strings.progressLabel;
 
     document.getElementById("restart-link").textContent = strings.restartLink;
+    document.getElementById("feedback-link").textContent = strings.feedbackLink;
 
     // 逐題精靈的送出提示(還差 N 題)也是語言相關文字,語言切換時要一併刷新
     // (這個函式本身是 idempotent 的,單純重算目前進度不會有副作用)。
@@ -2574,12 +2586,11 @@
     showPage("home");
   });
 
-  for (const name of PAGE_IDS) {
+  for (const name of TAB_IDS) {
     document.getElementById(`topnav-tab-${name}`).addEventListener("click", (e) => {
       e.preventDefault();
       if (e.currentTarget.getAttribute("aria-disabled") === "true") return;
-      if (name === "quiz") openQuiz(state.pool);
-      else showPage(name);
+      showPage(name);
     });
   }
 
