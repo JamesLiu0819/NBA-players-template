@@ -37,6 +37,8 @@
 #                             但技術更成熟的球員(2026-09-11 重新設計,原本的
 #                             反面對照段落因為用同一套「D 軸差距最大」邏輯、
 #                             找到的其實是天賦不同的人而非天花板,已經移除)。
+#   POST /api/feedback          站內使用意見:1-5 星準確度(選填)+ 50 字以內的文字
+#                             (選填),匿名存進 feedback 表,不收聯絡方式。
 #   POST /api/site-visit        每次呼叫讓瀏覽人次計數器 +1,回傳遞增後的
 #                             總數,給首頁右上角顯示用(2026-09-15 新增,見
 #                             docs/superpowers/specs/2026-09-15-visit-counter-design.md)。
@@ -84,7 +86,7 @@ sys.path.insert(0, str(ROOT))
 
 from flask import Flask, jsonify, request, send_from_directory  # noqa: E402
 
-from db import increment_visit_count, init_db  # noqa: E402
+from db import increment_visit_count, init_db, save_feedback  # noqa: E402
 from engine.archetype import classify_archetype_by_majority, compute_player_sizes  # noqa: E402
 from engine.axis_position import score_axis_coordinates  # noqa: E402
 from engine.body_fit import (  # noqa: E402
@@ -324,6 +326,44 @@ def api_template_results():
         return jsonify({"error": str(e)}), 400
 
     return jsonify(results)
+
+
+FEEDBACK_MAX_MESSAGE = 50
+
+
+@app.route("/api/feedback", methods=["POST"])
+def api_feedback():
+    payload = request.get_json(silent=True)
+    if payload is None:
+        return jsonify({"error": "request body must be JSON"}), 400
+
+    # 蜜罐欄位:前端隱藏、真人不會填。機器人會把所有欄位都填滿,填了就假裝成功、不存。
+    if payload.get("website"):
+        return jsonify({"ok": True})
+
+    rating = payload.get("rating")
+    if rating is not None and (isinstance(rating, bool) or not isinstance(rating, int) or not 1 <= rating <= 5):
+        return jsonify({"error": "rating must be an integer from 1 to 5"}), 400
+
+    raw_message = payload.get("message") or ""
+    if not isinstance(raw_message, str):
+        return jsonify({"error": "message must be a string"}), 400
+    message = raw_message.strip()
+    if rating is None and not message:
+        return jsonify({"error": "give a rating or a message"}), 400
+    if len(message) > FEEDBACK_MAX_MESSAGE:
+        return jsonify({"error": f"message must be {FEEDBACK_MAX_MESSAGE} characters or fewer"}), 400
+
+    lang = payload.get("lang", "zh")
+    if lang not in SUPPORTED_LANGUAGES:
+        return jsonify({"error": f"invalid lang: {lang}"}), 400
+
+    try:
+        save_feedback(rating, message or None, lang)
+    except Exception as e:
+        print(f"save_feedback failed: {e}", file=sys.stderr)
+        return jsonify({"error": "could not save feedback, please try again later"}), 503
+    return jsonify({"ok": True})
 
 
 @app.route("/api/site-visit", methods=["POST"])

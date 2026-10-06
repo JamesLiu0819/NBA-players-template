@@ -1126,13 +1126,141 @@
     font-weight: 600;
   }
 
-  .site-footer a {
+  .site-footer a,
+  .link-button {
     color: var(--accent-ink);
     text-decoration: none;
+    font: inherit;
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
   }
 
-  .site-footer a:hover {
+  .site-footer a:hover,
+  .link-button:hover {
     text-decoration: underline;
+  }
+
+  /* 使用意見視窗。display 寫在基礎規則、:not([hidden]) 才切回 flex(同 .app-page)。 */
+  .feedback-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .feedback-modal:not([hidden]) {
+    display: flex;
+  }
+
+  .feedback-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+  }
+
+  .feedback-dialog {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    max-height: calc(100dvh - 2rem);
+    overflow-y: auto;
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.25rem 1.2rem;
+  }
+
+  .feedback-dialog h2 {
+    margin: 0 0 0.75rem;
+    font-size: 1.1rem;
+  }
+
+  .feedback-rating {
+    border: 0;
+    padding: 0;
+    margin: 0 0 1rem;
+  }
+
+  .feedback-rating legend {
+    padding: 0;
+    margin-bottom: 0.5rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+  }
+
+  .feedback-stars {
+    display: flex;
+    gap: 0.3rem;
+  }
+
+  .feedback-star {
+    background: none;
+    border: 0;
+    padding: 0.1rem;
+    font-size: 1.9rem;
+    line-height: 1;
+    color: var(--line);
+    cursor: pointer;
+  }
+
+  .feedback-star.on {
+    color: var(--accent);
+  }
+
+  .feedback-scale {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.25rem;
+    font-size: 0.74rem;
+    color: var(--ink-soft);
+  }
+
+  .feedback-field {
+    display: block;
+    margin-bottom: 0.8rem;
+  }
+
+  .feedback-field > span {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-size: 0.84rem;
+    color: var(--ink-soft);
+  }
+
+  .feedback-field textarea,
+  .feedback-field input {
+    width: 100%;
+    font: inherit;
+    font-size: 0.92rem;
+    padding: 0.5rem 0.6rem;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper-sunken);
+    color: var(--ink);
+  }
+
+  .feedback-honeypot {
+    display: none;
+  }
+
+  #feedback-status {
+    min-height: 1.3em;
+    margin: 0.2rem 0 0.6rem;
+    font-size: 0.85rem;
+    color: var(--accent-ink);
+  }
+
+  .feedback-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
   }
 
 
@@ -1252,8 +1380,33 @@
 
 <footer class="site-footer">
   <a href="#" id="restart-link">重新填一次</a>
-  <a href="https://github.com/JamesLiu0819/NBA-players-template/issues/new" target="_blank" rel="noopener" id="feedback-link">提供使用意見</a>
+  <button type="button" class="link-button" id="feedback-link">提供使用意見</button>
 </footer>
+
+<div class="feedback-modal" id="feedback-modal" hidden>
+  <div class="feedback-backdrop" id="feedback-backdrop"></div>
+  <div class="feedback-dialog" role="dialog" aria-modal="true" aria-labelledby="feedback-title">
+    <h2 id="feedback-title">提供使用意見</h2>
+    <form id="feedback-form" novalidate>
+      <fieldset class="feedback-rating">
+        <legend id="feedback-rating-legend">這次的配對結果準確嗎？</legend>
+        <div class="feedback-stars" id="feedback-stars"></div>
+        <div class="feedback-scale"><span id="feedback-scale-low">很不準</span><span id="feedback-scale-high">很準</span></div>
+      </fieldset>
+      <label class="feedback-field"><span id="feedback-message-label">想說的話（選填）</span>
+        <textarea id="feedback-message" maxlength="50" rows="3"></textarea>
+      </label>
+      <label class="feedback-honeypot" aria-hidden="true">website
+        <input id="feedback-website" name="website" type="text" tabindex="-1" autocomplete="off">
+      </label>
+      <p id="feedback-status" role="status"></p>
+      <div class="feedback-actions">
+        <button type="button" class="link-button" id="feedback-cancel">取消</button>
+        <button type="submit" class="primary" id="feedback-submit">送出</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 <script>
 (() => {
@@ -1304,6 +1457,17 @@
       processingLabel: "整理報告中",
       restartLink: "重新填一次",
       feedbackLink: "提供使用意見",
+      feedbackTitle: "提供使用意見",
+      feedbackRatingQuestion: "這次的配對結果準確嗎？",
+      feedbackRatingLow: "很不準",
+      feedbackRatingHigh: "很準",
+      feedbackStarLabel: (n) => `${n} 顆星`,
+      feedbackMessageLabel: "想說的話（選填，50 字內）",
+      feedbackSubmit: "送出",
+      feedbackCancel: "取消",
+      feedbackNeedInput: "請至少選一顆星，或寫點內容再送出",
+      feedbackThanks: "已收到，謝謝你的意見！",
+      feedbackError: "送出失敗，請稍後再試",
       deepTemplateSkillFitLabel: "技術模板",
       deepTemplateSkillFitCaption: "排除運動能力，技術層面與打法風格跟你最接近的球員",
       deepTemplateBodyFitLabel: "身材模板",
@@ -1379,6 +1543,17 @@
       processingLabel: "整理报告中",
       restartLink: "重新填一次",
       feedbackLink: "提供使用意见",
+      feedbackTitle: "提供使用意见",
+      feedbackRatingQuestion: "这次的配对结果准确吗？",
+      feedbackRatingLow: "很不准",
+      feedbackRatingHigh: "很准",
+      feedbackStarLabel: (n) => `${n} 颗星`,
+      feedbackMessageLabel: "想说的话（选填，50 字内）",
+      feedbackSubmit: "送出",
+      feedbackCancel: "取消",
+      feedbackNeedInput: "请至少选一颗星，或写点内容再送出",
+      feedbackThanks: "已收到，谢谢你的意见！",
+      feedbackError: "送出失败，请稍后再试",
       deepTemplateSkillFitLabel: "技术模板",
       deepTemplateSkillFitCaption: "排除运动能力，技术层面与打法风格跟你最接近的球员",
       deepTemplateBodyFitLabel: "身材模板",
@@ -1454,6 +1629,17 @@
       processingLabel: "Preparing your report…",
       restartLink: "Start Over",
       feedbackLink: "Send Feedback",
+      feedbackTitle: "Send Feedback",
+      feedbackRatingQuestion: "How accurate were these matches?",
+      feedbackRatingLow: "Not accurate",
+      feedbackRatingHigh: "Very accurate",
+      feedbackStarLabel: (n) => `${n} star${n === 1 ? "" : "s"}`,
+      feedbackMessageLabel: "Message (optional, 50 characters max)",
+      feedbackSubmit: "Send",
+      feedbackCancel: "Cancel",
+      feedbackNeedInput: "Please pick a star rating or write something before sending.",
+      feedbackThanks: "Thanks, we got your feedback!",
+      feedbackError: "Sending failed, please try again later.",
       deepTemplateSkillFitLabel: "Skill-Fit Template",
       deepTemplateSkillFitCaption: "Excluding athleticism, the player closest to you in technique and playstyle",
       deepTemplateBodyFitLabel: "Body-Fit Template",
@@ -2514,6 +2700,14 @@
 
     document.getElementById("restart-link").textContent = strings.restartLink;
     document.getElementById("feedback-link").textContent = strings.feedbackLink;
+    document.getElementById("feedback-title").textContent = strings.feedbackTitle;
+    document.getElementById("feedback-rating-legend").textContent = strings.feedbackRatingQuestion;
+    document.getElementById("feedback-scale-low").textContent = strings.feedbackRatingLow;
+    document.getElementById("feedback-scale-high").textContent = strings.feedbackRatingHigh;
+    document.getElementById("feedback-message-label").textContent = strings.feedbackMessageLabel;
+    document.getElementById("feedback-submit").textContent = strings.feedbackSubmit;
+    document.getElementById("feedback-cancel").textContent = strings.feedbackCancel;
+    renderFeedbackStars();
 
     // 逐題精靈的送出提示(還差 N 題)也是語言相關文字,語言切換時要一併刷新
     // (這個函式本身是 idempotent 的,單純重算目前進度不會有副作用)。
@@ -2590,12 +2784,90 @@
         e.target.click();
       }
     });
+    document.getElementById("feedback-link").addEventListener("click", openFeedback);
+    document.getElementById("feedback-cancel").addEventListener("click", closeFeedback);
+    document.getElementById("feedback-backdrop").addEventListener("click", closeFeedback);
+    document.getElementById("feedback-form").addEventListener("submit", submitFeedback);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !document.getElementById("feedback-modal").hidden) closeFeedback();
+    });
     document.getElementById("restart-link").addEventListener("click", (e) => {
       e.preventDefault();
       resetSession();
     });
     document.getElementById("mode-current-btn").addEventListener("click", () => openQuiz("current"));
     document.getElementById("mode-alltime-btn").addEventListener("click", () => openQuiz("alltime"));
+  }
+
+  // ---- 使用意見視窗:1–5 星準確度(選填)+ 文字 + 聯絡方式,送到 /api/feedback ----
+
+  let feedbackRating = null;
+
+  function renderFeedbackStars() {
+    const wrap = document.getElementById("feedback-stars");
+    wrap.innerHTML = "";
+    for (let n = 1; n <= 5; n++) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = `feedback-star${feedbackRating !== null && n <= feedbackRating ? " on" : ""}`;
+      btn.textContent = "★";
+      btn.setAttribute("aria-label", t().feedbackStarLabel(n));
+      btn.setAttribute("aria-pressed", String(feedbackRating === n));
+      btn.addEventListener("click", () => {
+        feedbackRating = n;
+        renderFeedbackStars();
+      });
+      wrap.appendChild(btn);
+    }
+  }
+
+  function openFeedback() {
+    document.getElementById("feedback-status").textContent = "";
+    document.getElementById("feedback-modal").hidden = false;
+    document.getElementById("feedback-message").focus();
+  }
+
+  function closeFeedback() {
+    document.getElementById("feedback-modal").hidden = true;
+  }
+
+  function resetFeedbackForm() {
+    feedbackRating = null;
+    document.getElementById("feedback-message").value = "";
+    renderFeedbackStars();
+  }
+
+  async function submitFeedback(e) {
+    e.preventDefault();
+    const status = document.getElementById("feedback-status");
+    const submitBtn = document.getElementById("feedback-submit");
+    const message = document.getElementById("feedback-message").value.trim();
+    if (feedbackRating === null && !message) {
+      status.textContent = t().feedbackNeedInput;
+      return;
+    }
+
+    submitBtn.disabled = true;
+    try {
+      const res = await fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          rating: feedbackRating,
+          message,
+          website: document.getElementById("feedback-website").value,
+          lang: state.lang,
+        }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      status.textContent = t().feedbackThanks;
+      resetFeedbackForm();
+      window.setTimeout(closeFeedback, 1500);
+    } catch (err) {
+      status.textContent = t().feedbackError;
+    } finally {
+      submitBtn.disabled = false;
+    }
   }
 
   // ---- 上方導覽列:四個頁面(首頁/問題/我的模板/訓練計劃)彼此獨立,切換不重整頁面。

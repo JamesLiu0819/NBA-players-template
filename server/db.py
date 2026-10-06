@@ -10,6 +10,7 @@ import os
 import sys
 
 _memory_visit_count = 0
+_memory_feedback = []
 
 
 def _get_connection():
@@ -46,6 +47,17 @@ def init_db():
                 cur.execute(
                     "INSERT INTO site_stats (id, visit_count) VALUES (1, 0) ON CONFLICT (id) DO NOTHING"
                 )
+                cur.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS feedback (
+                        id BIGSERIAL PRIMARY KEY,
+                        created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+                        rating SMALLINT,
+                        message TEXT,
+                        lang TEXT NOT NULL
+                    )
+                    """
+                )
             conn.commit()
         finally:
             conn.close()
@@ -74,5 +86,26 @@ def increment_visit_count():
             new_count = cur.fetchone()[0]
         conn.commit()
         return new_count
+    finally:
+        conn.close()
+
+
+def save_feedback(rating, message, lang):
+    """Store one feedback row. Postgres when DATABASE_URL is set; otherwise
+    an in-memory list (local dev / tests). Errors are raised to the caller,
+    which turns them into a retryable response -- unlike the visit counter,
+    a feedback write that silently disappears would lose the user's input.
+    """
+    conn = _get_connection()
+    if conn is None:
+        _memory_feedback.append({"rating": rating, "message": message, "lang": lang})
+        return
+    try:
+        with conn.cursor() as cur:
+            cur.execute(
+                "INSERT INTO feedback (rating, message, lang) VALUES (%s, %s, %s)",
+                (rating, message, lang),
+            )
+        conn.commit()
     finally:
         conn.close()

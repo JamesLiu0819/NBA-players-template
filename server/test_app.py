@@ -344,5 +344,65 @@ class SiteVisitTest(unittest.TestCase):
         self.assertEqual(second, first + 1)
 
 
+class FeedbackTest(unittest.TestCase):
+    def setUp(self):
+        import db
+        self.db = db
+        self.db._memory_feedback.clear()
+        self.client = app.test_client()
+
+    def test_saves_rating_and_message(self):
+        response = self.client.post("/api/feedback", json={"rating": 4, "message": "很準", "lang": "zh"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.db._memory_feedback, [{"rating": 4, "message": "很準", "lang": "zh"}])
+
+    def test_rating_only_is_accepted(self):
+        response = self.client.post("/api/feedback", json={"rating": 2})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.db._memory_feedback[0]["rating"], 2)
+        self.assertIsNone(self.db._memory_feedback[0]["message"])
+
+    def test_message_only_is_accepted(self):
+        response = self.client.post("/api/feedback", json={"message": "希望能多幾位球員"})
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNone(self.db._memory_feedback[0]["rating"])
+
+    def test_contact_is_not_collected(self):
+        self.client.post("/api/feedback", json={"rating": 5, "contact": "a@example.com"})
+        self.assertNotIn("contact", self.db._memory_feedback[0])
+
+    def test_accepts_a_message_of_exactly_fifty_characters(self):
+        response = self.client.post("/api/feedback", json={"message": "字" * 50})
+        self.assertEqual(response.status_code, 200)
+
+    def test_rejects_out_of_range_or_non_integer_rating(self):
+        for bad in (0, 6, 3.5, "4", True):
+            response = self.client.post("/api/feedback", json={"rating": bad, "message": "x"})
+            self.assertEqual(response.status_code, 400, bad)
+        self.assertEqual(self.db._memory_feedback, [])
+
+    def test_rejects_empty_submission(self):
+        response = self.client.post("/api/feedback", json={"message": "   "})
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(self.db._memory_feedback, [])
+
+    def test_rejects_message_longer_than_fifty_characters(self):
+        self.assertEqual(self.client.post("/api/feedback", json={"message": "字" * 51}).status_code, 400)
+        self.assertEqual(self.db._memory_feedback, [])
+
+    def test_rejects_unknown_language(self):
+        response = self.client.post("/api/feedback", json={"rating": 3, "lang": "fr"})
+        self.assertEqual(response.status_code, 400)
+
+    def test_honeypot_pretends_success_but_stores_nothing(self):
+        response = self.client.post("/api/feedback", json={"rating": 5, "website": "http://spam"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.db._memory_feedback, [])
+
+    def test_rejects_non_json_body(self):
+        response = self.client.post("/api/feedback", data="not json", content_type="text/plain")
+        self.assertEqual(response.status_code, 400)
+
+
 if __name__ == "__main__":
     unittest.main()
