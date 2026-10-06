@@ -202,22 +202,24 @@ class FitStarsForDistanceTest(unittest.TestCase):
         # + percentile_normalize_body, matching the real request pipeline),
         # 40 trials x top-10 distances = 400 samples, thresholds at rank
         # i*400/9 for i=1..8.
+        # 2026-10: every boundary shifted +7 (see module header); updated here.
         self.assertEqual(fit_stars_for_distance(48), 5)
-        self.assertEqual(fit_stars_for_distance(49), 4.5)
+        self.assertEqual(fit_stars_for_distance(55), 5)
         self.assertEqual(fit_stars_for_distance(56), 4.5)
-        self.assertEqual(fit_stars_for_distance(57), 4)
-        self.assertEqual(fit_stars_for_distance(59), 4)
-        self.assertEqual(fit_stars_for_distance(60), 3.5)
-        self.assertEqual(fit_stars_for_distance(62), 3.5)
-        self.assertEqual(fit_stars_for_distance(63), 3)
-        self.assertEqual(fit_stars_for_distance(65), 3)
-        self.assertEqual(fit_stars_for_distance(66), 2.5)
-        self.assertEqual(fit_stars_for_distance(69), 2.5)
-        self.assertEqual(fit_stars_for_distance(70), 2)
-        self.assertEqual(fit_stars_for_distance(73), 2)
-        self.assertEqual(fit_stars_for_distance(74), 1.5)
+        self.assertEqual(fit_stars_for_distance(63), 4.5)
+        self.assertEqual(fit_stars_for_distance(64), 4)
+        self.assertEqual(fit_stars_for_distance(66), 4)
+        self.assertEqual(fit_stars_for_distance(67), 3.5)
+        self.assertEqual(fit_stars_for_distance(69), 3.5)
+        self.assertEqual(fit_stars_for_distance(70), 3)
+        self.assertEqual(fit_stars_for_distance(72), 3)
+        self.assertEqual(fit_stars_for_distance(73), 2.5)
+        self.assertEqual(fit_stars_for_distance(76), 2.5)
+        self.assertEqual(fit_stars_for_distance(77), 2)
+        self.assertEqual(fit_stars_for_distance(80), 2)
         self.assertEqual(fit_stars_for_distance(81), 1.5)
-        self.assertEqual(fit_stars_for_distance(82), 1)
+        self.assertEqual(fit_stars_for_distance(88), 1.5)
+        self.assertEqual(fit_stars_for_distance(89), 1)
 
     def test_alltime_pool_thresholds_are_looser_than_current_pool(self):
         # Same raw distance should never score worse under the sparser

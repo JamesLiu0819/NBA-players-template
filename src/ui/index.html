@@ -1038,6 +1038,26 @@
     align-items: start;
   }
   .training-radar, .training-skills { min-width: 0; }
+
+  /* 球員選擇固定 5 欄 × 2 列(10 人)。選中時不加粗,字寬不變,就不會因為某一個
+     人被選中而擠到第三列;長名字在格子內換行,不截斷。 */
+  #player-row {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.4rem;
+  }
+
+  #player-row button {
+    padding: 0.45rem 0.2rem;
+    font-size: 0.7rem;
+    line-height: 1.25;
+    text-align: center;
+    white-space: normal;
+  }
+
+  #player-row button.selected {
+    font-weight: 400;
+  }
   .training-empty { margin: 0; font-size: 0.9rem; color: var(--ink-soft); }
   .training-radar svg { display: block; width: 100%; max-width: 200px; height: auto; margin: 0 auto; }
 
