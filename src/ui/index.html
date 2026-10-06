@@ -1030,7 +1030,7 @@
   .card-trigger { cursor: pointer; display: flex; flex-direction: column; gap: 0.5rem; }
   .card-trigger:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
   .toggle-label {
-    align-self: center;
+    align-self: flex-start;
     display: flex;
     align-items: center;
     gap: 0.3rem;
@@ -1047,16 +1047,22 @@
 
   /* 1 : 1.75 左右分欄(使用者指定的比例)——左邊放跟分享圖同一套 buildRadarSvg
      的縮小版(mini:true,不帶軸標籤/圖例,節省窄欄位空間),右邊放差距最大的
-     前三項技能建議,不列數字(2026-10 討論:數字對使用者沒有意義)。 */
+     前三項技能建議,不列數字(2026-10 討論:數字對使用者沒有意義)。
+     display:none 寫在基礎規則、.training-breakdown:not([hidden]) 才切回
+     grid——不能只靠 [hidden] 屬性,因為 CSS 裡任何對同一個 class 寫死的
+     display 值,specificity 都會蓋掉瀏覽器內建的 [hidden]{display:none},
+     等於 hidden 屬性形同虛設,面板會一直是展開的(2026-10 discovered this
+     bug:原本的寫法就是這樣,從來沒有真的收合過)。 */
   .training-breakdown {
+    display: none;
     margin-top: 0.3rem;
     padding-top: 0.8rem;
     border-top: 1px solid var(--line);
-    display: grid;
     grid-template-columns: 1fr 1.75fr;
     gap: 1rem;
     align-items: center;
   }
+  .training-breakdown:not([hidden]) { display: grid; }
   .breakdown-radar { min-width: 0; }
   .breakdown-skills { display: flex; flex-direction: column; gap: 0.5rem; justify-content: center; min-width: 0; }
   .skill-pill {
@@ -1340,8 +1346,7 @@
       growthNotePrefix: " → 可以注意：",
       radarAriaLabel: (matchLabel) => `六角雷達圖：你跟${matchLabel}的比較`,
       youLabel: "你",
-      trainingBreakdownAlreadyAhead: "已經領先",
-      trainingBreakdownToggleLabel: (name) => `如何成為「${name}」：`,
+      trainingBreakdownToggleLabel: (name) => `如何成為 ${name}`,
       shareImageHeader: "🏀 球探報告",
       shareImageDisclaimer: "非真人球探評測，僅供參考",
       shareImageFilename: (name) => `球探報告-${name}.png`,
@@ -1410,8 +1415,7 @@
       growthNotePrefix: " → 可以注意：",
       radarAriaLabel: (matchLabel) => `六角雷达图：你跟${matchLabel}的比较`,
       youLabel: "你",
-      trainingBreakdownAlreadyAhead: "已经领先",
-      trainingBreakdownToggleLabel: (name) => `如何成为「${name}」：`,
+      trainingBreakdownToggleLabel: (name) => `如何成为 ${name}`,
       shareImageHeader: "🏀 球探报告",
       shareImageDisclaimer: "非真人球探评测，仅供参考",
       shareImageFilename: (name) => `球探报告-${name}.png`,
@@ -1480,8 +1484,7 @@
       growthNotePrefix: " → Try: ",
       radarAriaLabel: (matchLabel) => `Hexagon radar chart: you vs ${matchLabel}`,
       youLabel: "You",
-      trainingBreakdownAlreadyAhead: "Already ahead",
-      trainingBreakdownToggleLabel: (name) => `How to become "${name}":`,
+      trainingBreakdownToggleLabel: (name) => `How to become ${name}`,
       shareImageHeader: "🏀 Scouting Report",
       shareImageDisclaimer: "Not a real scout's evaluation -- for reference only",
       shareImageFilename: (name) => `scouting-report-${name}.png`,
@@ -2217,16 +2220,20 @@
   }
 
   // 只列差距最大的前三項技能建議,不帶數字——數字對使用者沒有意義,他們要的
-  // 是「練什麼」不是「差多少」(2026-10 討論)。左邊搭一個縮小版雷達圖
-  // (跟分享圖同一套 buildRadarSvg,mini:true)。
-  function renderTrainingBreakdown(m, userCoords) {
-    const topSkills = m.training_breakdown
+  // 是「練什麼」不是「差多少」(2026-10 討論)。回傳空陣列代表六軸全部已經
+  // 領先或打平,呼叫端(matchListHtml)要用這個判斷整個「如何成為...」區塊
+  // 要不要出現,不是這支函式自己決定要顯示什麼替代文字。
+  function topTrainingSkills(m) {
+    return m.training_breakdown
       .filter((row) => row.skill_action)
       .sort((a, b) => b.diff - a.diff)
       .slice(0, 3);
-    const skillsHtml = topSkills.length > 0
-      ? topSkills.map((row) => `<div class="skill-pill">${row.skill_action}</div>`).join("")
-      : `<div class="skill-pill">${t().trainingBreakdownAlreadyAhead}</div>`;
+  }
+
+  // 左邊搭一個縮小版雷達圖(跟分享圖同一套 buildRadarSvg,mini:true)。只會
+  // 在 topSkills 非空時被呼叫,所以不用處理「沒東西可練」的情況。
+  function renderTrainingBreakdown(topSkills, userCoords, m) {
+    const skillsHtml = topSkills.map((row) => `<div class="skill-pill">${row.skill_action}</div>`).join("");
     const radarHtml = buildRadarSvg(userCoords, m.coordinates, m.name, { mini: true });
     return `
       <div class="training-breakdown" hidden>
@@ -2262,8 +2269,16 @@
     const matchListHtml = data.top_10.map((m, i) => {
       const cardClass = i === 0 ? "top-match" : "card";
       const badge = i === 0 ? `<span class="top-match-badge">${t().mostSuitable}</span>` : "";
+      const cardInner = renderMatchCardInner(i + 1, m);
+      const topSkills = topTrainingSkills(m);
+      // 六軸全部已經領先或打平:沒有東西可以練,整個「如何成為...」的點擊
+      // 區塊就不出現,不用留一句「已經領先」佔位(2026-10 討論)。
+      if (topSkills.length === 0) {
+        return `<div class="${cardClass}">${badge}${cardInner}</div>`;
+      }
       const toggleLabel = t().trainingBreakdownToggleLabel(m.name);
-      return `<div class="${cardClass}">${badge}<div class="card-trigger" role="button" tabindex="0" aria-expanded="false" aria-label="${toggleLabel}">${renderMatchCardInner(i + 1, m)}<span class="toggle-label">${toggleLabel}<span class="expand-caret" aria-hidden="true">▾</span></span></div>${renderTrainingBreakdown(m, data.coordinates)}</div>`;
+      const breakdownHtml = renderTrainingBreakdown(topSkills, data.coordinates, m);
+      return `<div class="${cardClass}">${badge}<div class="card-trigger" role="button" tabindex="0" aria-expanded="false" aria-label="${toggleLabel}">${cardInner}<span class="toggle-label">${toggleLabel}<span class="expand-caret" aria-hidden="true">▾</span></span></div>${breakdownHtml}</div>`;
     }).join("");
 
     const topMatch = data.top_10[0] || null;
