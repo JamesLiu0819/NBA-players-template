@@ -2232,21 +2232,22 @@
       </div>`;
   }
 
-  // 只列差距最大的前三項技能建議,不帶數字——數字對使用者沒有意義,他們要的
-  // 是「練什麼」不是「差多少」(2026-10 討論)。回傳空陣列代表六軸全部已經
-  // 領先或打平,呼叫端(matchListHtml)要用這個判斷整個「如何成為...」區塊
-  // 要不要出現,不是這支函式自己決定要顯示什麼替代文字。
-  function topTrainingSkills(m) {
+  // 列出六軸裡每一軸對應的技能建議,不帶數字——數字對使用者沒有意義,他們要
+  // 的是「練什麼」不是「差多少」(2026-10 討論)。D 軸(運動表現)排除在外:
+  // 它沒有真正的技能可以練,差距大時只會顯示「身體天賦有落差」這種無法執行
+  // 的訊息,放進訓練清單裡沒有意義。回傳空陣列代表扣掉 D 軸後,其餘五軸
+  // 使用者都已經領先或打平,呼叫端(matchListHtml)要用這個判斷整個「如何
+  // 成為...」區塊要不要出現,不是這支函式自己決定要顯示什麼替代文字。
+  function trainableSkills(m) {
     return m.training_breakdown
-      .filter((row) => row.skill_action)
-      .sort((a, b) => b.diff - a.diff)
-      .slice(0, 3);
+      .filter((row) => row.skill_action && row.axis !== "D")
+      .sort((a, b) => b.diff - a.diff);
   }
 
   // 左邊搭一個縮小版雷達圖(跟分享圖同一套 buildRadarSvg,mini:true)。只會
-  // 在 topSkills 非空時被呼叫,所以不用處理「沒東西可練」的情況。
-  function renderTrainingBreakdown(topSkills, userCoords, m) {
-    const skillsHtml = topSkills.map((row) => `<div class="skill-pill">${row.skill_action}</div>`).join("");
+  // 在 skills 非空時被呼叫,所以不用處理「沒東西可練」的情況。
+  function renderTrainingBreakdown(skills, userCoords, m) {
+    const skillsHtml = skills.map((row) => `<div class="skill-pill">${row.skill_action}</div>`).join("");
     const radarHtml = buildRadarSvg(userCoords, m.coordinates, m.name, { mini: true });
     return `
       <div class="training-breakdown" hidden>
@@ -2283,14 +2284,15 @@
       const cardClass = i === 0 ? "top-match" : "card";
       const badge = i === 0 ? `<span class="top-match-badge">${t().mostSuitable}</span>` : "";
       const cardInner = renderMatchCardInner(i + 1, m);
-      const topSkills = topTrainingSkills(m);
-      // 六軸全部已經領先或打平:沒有東西可以練,整個「如何成為...」的點擊
-      // 區塊就不出現,不用留一句「已經領先」佔位(2026-10 討論)。
-      if (topSkills.length === 0) {
+      const skills = trainableSkills(m);
+      // 扣掉 D 軸之後,其餘五軸使用者都已經領先或打平:沒有東西可以練,整個
+      // 「如何成為...」的點擊區塊就不出現,不用留一句「已經領先」佔位
+      // (2026-10 討論)。
+      if (skills.length === 0) {
         return `<div class="${cardClass}">${badge}${cardInner}</div>`;
       }
       const toggleLabel = t().trainingBreakdownToggleLabel(m.name);
-      const breakdownHtml = renderTrainingBreakdown(topSkills, data.coordinates, m);
+      const breakdownHtml = renderTrainingBreakdown(skills, data.coordinates, m);
       return `<div class="${cardClass}">${badge}<div class="card-trigger" role="button" tabindex="0" aria-expanded="false" aria-label="${toggleLabel}">${cardInner}<span class="toggle-label">${toggleLabel}<span class="expand-caret" aria-hidden="true">▾</span></span></div>${breakdownHtml}</div>`;
     }).join("");
 
