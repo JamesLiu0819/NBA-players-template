@@ -54,7 +54,10 @@
     touch-action: pan-y;
   }
 
+  /* 100vh 是給不認得 dvh 的舊手機瀏覽器(舊 iPhone、部分 Android WebView)用的備援。
+     那些瀏覽器會丟掉 100dvh 這一行,body 沒有高度,.pages 會變 0 高,所有頁面都看不到。 */
   body {
+    height: 100vh;
     height: 100dvh;
     display: flex;
     flex-direction: column;
