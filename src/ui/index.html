@@ -765,7 +765,8 @@
     gap: 0.6rem;
   }
 
-  #stage1-submit-block {
+  #stage1-submit-block,
+  #go-training-block {
     align-items: center;
     text-align: center;
   }
@@ -1256,6 +1257,7 @@
       navMyTemplate: "我的模板",
       navHome: "首頁",
       navQuiz: "問題",
+      goTrainingButton: "查看訓練計劃",
       navTrainingPlan: "訓練計劃",
       themeToggleToLight: "切換成米白主題",
       themeToggleToDark: "切換成深色主題",
@@ -1330,6 +1332,7 @@
       navMyTemplate: "我的模板",
       navHome: "首页",
       navQuiz: "问题",
+      goTrainingButton: "查看训练计划",
       navTrainingPlan: "训练计划",
       themeToggleToLight: "切换成米白主题",
       themeToggleToDark: "切换成深色主题",
@@ -1404,6 +1407,7 @@
       navMyTemplate: "My Template",
       navHome: "Home",
       navQuiz: "Quiz",
+      goTrainingButton: "View Training Plan",
       navTrainingPlan: "Training Plan",
       themeToggleToLight: "Switch to light theme",
       themeToggleToDark: "Switch to dark theme",
@@ -2256,6 +2260,10 @@
         ${lowSimilarityNoteHtml}
         <div class="match-list">${matchListHtml}</div>
       </section>
+
+      <div class="submit-block" id="go-training-block">
+        <button type="button" class="primary" id="go-training-btn">${t().goTrainingButton}</button>
+      </div>
     `;
 
     // 訓練計劃是獨立的一頁,放在另一個容器裡(切換頁面用 showPage,不是捲動)
@@ -2280,6 +2288,7 @@
     if (shareBtn) {
       shareBtn.addEventListener("click", () => downloadShareImage(data, topMatch));
     }
+    document.getElementById("go-training-btn").addEventListener("click", () => showPage("training"));
 
     renderTrainingSection();
   }
