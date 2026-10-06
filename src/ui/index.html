@@ -920,6 +920,15 @@
     color: var(--ink-soft);
   }
 
+  /* 縮小版雷達圖(球員卡片展開後左邊那個)用直排圖例,橫排在窄欄位會擠在一起,
+     球員名字長一點(例如 Shai Gilgeous-Alexander)更明顯(2026-10 討論)。 */
+  .radar-legend-mini {
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: 0.68rem;
+    margin-top: 0.4rem;
+  }
+
   .legend-item { display: flex; align-items: center; gap: 0.35rem; }
   .legend-swatch { width: 0.7rem; height: 0.7rem; border-radius: 3px; display: inline-block; flex: none; }
   .legend-swatch-user { background: var(--accent); }
@@ -1046,8 +1055,9 @@
   .card-trigger[aria-expanded="true"] .expand-caret { transform: rotate(180deg); }
 
   /* 1 : 1.75 左右分欄(使用者指定的比例)——左邊放跟分享圖同一套 buildRadarSvg
-     的縮小版(mini:true,不帶軸標籤/圖例,節省窄欄位空間),右邊放差距最大的
-     前三項技能建議,不列數字(2026-10 討論:數字對使用者沒有意義)。
+     的縮小版(mini:true,拿掉軸標籤節省窄欄位空間,但保留圖例讓使用者看得出
+     顏色對應),右邊放差距最大的前三項技能建議,不列數字(2026-10 討論:
+     數字對使用者沒有意義)。
      display:none 寫在基礎規則、.training-breakdown:not([hidden]) 才切回
      grid——不能只靠 [hidden] 屬性,因為 CSS 裡任何對同一個 class 寫死的
      display 值,specificity 都會蓋掉瀏覽器內建的 [hidden]{display:none},
@@ -1961,9 +1971,10 @@
     return [centerX + r * Math.cos(angle), centerY + r * Math.sin(angle)];
   }
 
-  // mini: true 拿掉軸標籤文字(10px 字在窄欄位會縮到看不清楚)跟圖例(10 張
-  // 卡片各放一次會太重複,顏色對應已經在上面主要的雷達圖那邊講過了) -- 用在
-  // 每張球員卡片展開後左邊那個縮小版雷達圖(2026-10 討論)。
+  // mini: true 拿掉軸標籤文字(10px 字在窄欄位會縮到看不清楚),但保留圖例
+  // (使用者希望每張卡片都能看出六角形裡哪個顏色是誰,不能只在最上面的主要
+  // 雷達圖講一次)——圖例排版改直排,見 .radar-legend-mini。用在每張球員卡片
+  // 展開後左邊那個縮小版雷達圖(2026-10 討論)。
   function buildRadarSvg(userCoords, matchCoords, matchLabel, { mini = false } = {}) {
     const size = mini ? 160 : 300;
     const center = size / 2;
@@ -1996,8 +2007,10 @@
       return `<text x="${x}" y="${y}" class="radar-axis-label" text-anchor="middle" dominant-baseline="middle">${t().axisLabels[axis]}</text>`;
     }).join("");
 
-    const legendHtml = mini ? "" : `
-      <div class="radar-legend">
+    // mini 版圖例改直排(見 .radar-legend-mini)——窄欄位放不下橫排,球員名字
+    // 長一點(例如 Shai Gilgeous-Alexander)會擠在一起(2026-10 討論)。
+    const legendHtml = `
+      <div class="radar-legend${mini ? " radar-legend-mini" : ""}">
         <span class="legend-item"><span class="legend-swatch legend-swatch-user"></span>${t().youLabel}</span>
         <span class="legend-item"><span class="legend-swatch legend-swatch-match"></span>${matchLabel}</span>
       </div>`;
