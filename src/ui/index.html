@@ -257,6 +257,10 @@
     .topnav-tab { font-size: 0.74rem; }
     .topnav-actions { gap: 0.4rem; }
     section.block { margin-top: 1.6rem; }
+    .topnav-inner { padding: 0 1.25rem; }
+    .topnav-tabs { flex: 1; justify-content: center; }
+    /* iOS Safari 會在輸入框字級小於 16px 時自動放大頁面,鍵盤彈出後畫面右移、滑不回去。 */
+    input, textarea { font-size: 16px; }
   }
 
   /* 顏色維持 --paper 不變。織布紋理規則拉出來給 body 跟 .ledger(作答進度那條
@@ -536,7 +540,9 @@
     position: sticky;
     top: 0;
     z-index: 20;
-    padding: 0.75rem 0 0.6rem;
+    margin: 0 -1.25rem;
+    padding: 0.75rem 1.25rem 0.6rem;
+    background-color: var(--paper-sunken);
     border-bottom: 1px solid var(--line);
   }
 
@@ -738,7 +744,7 @@
     height: 2.3rem;
     text-align: center;
     padding: 0.4rem 0.5rem;
-    font-size: 1rem;
+    font-size: 16px; /* 不用 rem:手機版 html 字級縮小後會小於 16px,iOS 會放大頁面 */
     font-family: var(--mono);
     border: 1px solid var(--line);
     border-radius: 6px;
