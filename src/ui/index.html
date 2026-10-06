@@ -55,8 +55,12 @@
   }
 
   /* 100vh 是給不認得 dvh 的舊手機瀏覽器(舊 iPhone、部分 Android WebView)用的備援。
-     那些瀏覽器會丟掉 100dvh 這一行,body 沒有高度,.pages 會變 0 高,所有頁面都看不到。 */
+     那些瀏覽器會丟掉 100dvh 這一行,body 沒有高度,.pages 會變 0 高,所有頁面都看不到。
+     body 固定在視窗上(position: fixed):iOS Safari 有時會忽略 overflow: hidden,
+     把整個文件推走,只剩 body::before 的背景剪影;固定之後文件本身沒有可以被推動的空間。 */
   body {
+    position: fixed;
+    inset: 0;
     height: 100vh;
     height: 100dvh;
     display: flex;
