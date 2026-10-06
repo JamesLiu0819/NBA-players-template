@@ -262,14 +262,21 @@
      CC0 授權,已轉灰階、裁成正方形、壓縮到 512px/~124KB,見 src/ui/fabric-
      texture.jpg)。用灰階照片 + overlay 疊色模式蓋在 --paper 上,照片本身
      不含顏色,疊色模式會自動配合深色/米白主題的底色,兩個主題不用準備兩張圖。 */
-  /* 織布紋理規則拉出來給 body 跟 .ledger(作答進度那條 sticky 列)共用,避免兩個背景
-     看起來不一致(2026-10 討論)。用灰階照片 + overlay 疊色模式蓋在 --paper 上,照片本身
-     不含顏色,疊色模式會自動配合深色/米白主題的底色。 */
+  /* 紋理不用 background-blend-mode:overlay:iPhone Safari 會把混色後的紋理畫成很亮的噪點,
+     而且導覽列也不見(2026-10 實機確認)。改成 body::after 的固定圖層:半透明的灰階紋理
+     疊在純色底上,z-index 在底色之上、內容之下。.ledger 會蓋住捲過的內容,保持純色底。 */
   body, .ledger {
     background-color: var(--paper);
-    background-image: url("fabric-texture.jpg");
-    background-size: 360px 360px;
-    background-blend-mode: overlay;
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: url("fabric-texture.jpg") 0 0 / 360px 360px;
+    opacity: 0.12;
+    pointer-events: none;
+    z-index: -1;
   }
 
   body {
@@ -528,7 +535,6 @@
     padding: 0.75rem 0 0.6rem;
     border-bottom: 1px solid var(--line);
   }
-
 
   .ledger-row {
     display: flex;
@@ -1203,12 +1209,6 @@
     font-weight: 600;
   }
 
-  /* 星星列和它下面的文字共用同一個寬度,「很準」才會落在第五顆星正下方。 */
-  .feedback-rating-row {
-    display: inline-flex;
-    flex-direction: column;
-  }
-
   .feedback-stars {
     display: flex;
     gap: 0.3rem;
@@ -1226,15 +1226,6 @@
 
   .feedback-star.on {
     color: var(--accent);
-  }
-
-  .feedback-scale {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-top: 0.25rem;
-    font-size: 0.74rem;
-    color: var(--ink-soft);
   }
 
   .feedback-field {
@@ -1278,7 +1269,6 @@
     align-items: center;
     gap: 1rem;
   }
-
 
 </style>
 <script>
@@ -1406,10 +1396,7 @@
     <form id="feedback-form" novalidate>
       <fieldset class="feedback-rating">
         <legend id="feedback-rating-legend">這次的配對結果準確嗎？</legend>
-        <div class="feedback-rating-row">
-          <div class="feedback-stars" id="feedback-stars"></div>
-          <div class="feedback-scale"><span id="feedback-scale-low">很不準</span><span id="feedback-scale-high">很準</span></div>
-        </div>
+        <div class="feedback-stars" id="feedback-stars"></div>
       </fieldset>
       <label class="feedback-field"><span id="feedback-message-label">想說的話（選填）</span>
         <textarea id="feedback-message" maxlength="50" rows="3"></textarea>
@@ -1477,8 +1464,6 @@
       feedbackLink: "提供使用意見",
       feedbackTitle: "提供使用意見",
       feedbackRatingQuestion: "這次的配對結果準確嗎？",
-      feedbackRatingLow: "很不準",
-      feedbackRatingHigh: "很準",
       feedbackStarLabel: (n) => `${n} 顆星`,
       feedbackMessageLabel: "想說的話（選填，50 字內）",
       feedbackSubmit: "送出",
@@ -1563,8 +1548,6 @@
       feedbackLink: "提供使用意见",
       feedbackTitle: "提供使用意见",
       feedbackRatingQuestion: "这次的配对结果准确吗？",
-      feedbackRatingLow: "很不准",
-      feedbackRatingHigh: "很准",
       feedbackStarLabel: (n) => `${n} 颗星`,
       feedbackMessageLabel: "想说的话（选填，50 字内）",
       feedbackSubmit: "送出",
@@ -1649,8 +1632,6 @@
       feedbackLink: "Send Feedback",
       feedbackTitle: "Send Feedback",
       feedbackRatingQuestion: "How accurate were these matches?",
-      feedbackRatingLow: "Not accurate",
-      feedbackRatingHigh: "Very accurate",
       feedbackStarLabel: (n) => `${n} star${n === 1 ? "" : "s"}`,
       feedbackMessageLabel: "Message (optional, 50 characters max)",
       feedbackSubmit: "Send",
@@ -2720,8 +2701,6 @@
     document.getElementById("feedback-link").textContent = strings.feedbackLink;
     document.getElementById("feedback-title").textContent = strings.feedbackTitle;
     document.getElementById("feedback-rating-legend").textContent = strings.feedbackRatingQuestion;
-    document.getElementById("feedback-scale-low").textContent = strings.feedbackRatingLow;
-    document.getElementById("feedback-scale-high").textContent = strings.feedbackRatingHigh;
     document.getElementById("feedback-message-label").textContent = strings.feedbackMessageLabel;
     document.getElementById("feedback-submit").textContent = strings.feedbackSubmit;
     document.getElementById("feedback-cancel").textContent = strings.feedbackCancel;
