@@ -1,5 +1,5 @@
 {
-  "_description": "历史球员种子数据(退役、广为人知的球星,涵盖 1960s-2010s)。跟data/players.json(现役球员池)同一套 schema,是「历史球员模板(All-time)」模式用的数据源。同样是手动估算,不是真实数据推导的结果(每位球员的 _estimate_basis 都有说明)。\"team\" 字段放的是代表年份(字符串),不是球队缩写。v2(2026-09-11)：coordinates 是用PLAYERS 常数里的目标座标反推成仿真作答(mock_axis_answers)、再用score_axis_coordinates 算出来的,不是直接手打的座标;mock_skill_answers 是同样逻辑推算的 15 题技能行为仿真作答。body字段里的 height_cm/wingspan_cm 是手动估算,其余四项是用跟现役球员池一样的公式(scripts/build_players_seed.py 的derive_body_measurements)推算出来的。",
+  "_description": "历史球员种子数据(退役、广为人知的球星,涵盖 1960s-2010s)。跟data/players.json(现役球员池)同一套 schema,是「历史球员模板(All-time)」模式用的数据源。同样是手动估算,不是真实数据推导的结果(每位球员的 _estimate_basis 都有说明)。\"team\" 字段放的是代表年份(字符串),不是球队缩写。v2(2026-09-11)：coordinates 是用PLAYERS 常数里的目标座标反推成仿真作答(mock_axis_answers)、再用score_axis_coordinates 算出来的,不是直接手打的座标;body字段里的 height_cm/wingspan_cm 是手动估算,其余四项是用跟现役球员池一样的公式(scripts/build_players_seed.py 的derive_body_measurements)推算出来的。",
   "_editable_fields": "整份 players 清单都可以改,规则跟 data/players.json 一样——调coordinates 改变座标,调 notable_traits/signature_skill_id 改变输出文案,调 learnability_flag(low/medium/high)。id 一旦被别的地方引用就不要改。coordinates/mock_axis_answers/mock_skill_answers 是 build 产物,不要手改——要调整就改 PLAYERS 常数里的目标座标,重跑脚本重新产生。",
   "players": [
     {
