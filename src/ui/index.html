@@ -45,7 +45,20 @@
 
   * { box-sizing: border-box; }
 
-  html { scrollbar-gutter: stable; }
+  /* 四個頁面(首頁/問題/我的模板/訓練計劃)各自是獨立的捲動區。整個視窗本身不捲動,
+     手指滑動只作用在目前這一頁裡面,不會滑到別的頁面;左右方向也鎖住,不會出現
+     橫向捲動(尤其手機版)。 */
+  html, body {
+    overflow: hidden;
+    overscroll-behavior: none;
+    touch-action: pan-y;
+  }
+
+  body {
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
 
   /* ---------- top nav bar ---------- */
   /* logo/首頁/我的模板/訓練計劃已經接上導覽邏輯(2026-09-13 討論);原本的
@@ -55,19 +68,11 @@
      功能規劃好了再回來重新設計(2026-10 討論)。 */
 
   .topnav {
-    position: sticky;
-    top: 0;
+    flex: none;
+    position: relative;
     z-index: 30;
     background: var(--paper-sunken);
     border-bottom: 1px solid var(--line);
-  }
-
-  /* 導覽列是 sticky 56px 高,scrollIntoView({block:"start"}) 預設會把目標
-     元素的最上緣貼齊 viewport y=0,結果被 sticky 導覽列蓋住一截,看起來
-     像「捲過頭」,其實是目標本身被擋住了(2026-10 討論)。這裡統一留出導覽
-     列的高度,不用每個捲動目標各自處理。 */
-  #archetype-headline, #training-section, #stage1-form {
-    scroll-margin-top: 72px;
   }
 
   .topnav-inner {
@@ -109,7 +114,6 @@
     gap: 1.2rem;
     flex: none;
     min-width: 0;
-    overflow-x: auto;
   }
 
   .topnav-tab {
@@ -128,6 +132,11 @@
 
   .topnav-tab.active {
     color: var(--accent-ink);
+  }
+
+  .topnav-tab[aria-disabled="true"] {
+    opacity: 0.4;
+    pointer-events: none;
   }
 
   .topnav-actions {
@@ -232,10 +241,11 @@
   .theme-toggle:hover { color: var(--accent-ink); border-color: var(--accent); }
 
   @media (max-width: 560px) {
-    .topnav-inner { gap: 0.75rem; }
+    .topnav-inner { gap: 0.5rem; padding: 0 0.75rem; }
     .topnav-name { display: none; }
-    .topnav-tabs { gap: 0.7rem; }
-    .topnav-tab { font-size: 0.78rem; }
+    .topnav-tabs { gap: 0.55rem; }
+    .topnav-tab { font-size: 0.74rem; }
+    .topnav-actions { gap: 0.4rem; }
   }
 
   /* 顏色維持 --paper 不變。織布紋理規則拉出來給 body 跟 .ledger(作答進度那條
@@ -297,14 +307,33 @@
     font-size: inherit;
   }
 
+  /* 每一頁是 .app-page:固定填滿導覽列以下的區域,內容超出時只在這一頁裡面捲動。
+     切換頁面用 hidden 屬性;display 寫在基礎規則、:not([hidden]) 才切回 block,
+     不能只靠 [hidden] 屬性(理由同 .training-breakdown 的舊註解)。 */
+  .pages {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .app-page {
+    display: none;
+    position: absolute;
+    inset: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+  }
+
+  .app-page:not([hidden]) {
+    display: block;
+  }
+
   .page {
     max-width: 720px;
     margin: 0 auto;
-    /* 底部留白至少半個視窗高:scrollIntoView({block:"start"}) 沒辦法把
-       太靠近頁尾的區塊(例如訓練計劃)捲到視窗最上緣,如果區塊後面剩下的
-       內容不夠一個視窗高——捲動會卡在半路,看起來像「跳到奇怪的位置」
-       (2026-10 討論,訓練計劃分頁捲動跳太下面的真正原因)。 */
-    padding: 0 1.25rem max(5rem, 100vh);
+    padding: 0 1.25rem 3rem;
   }
 
   /* ---------- masthead + ledger progress ---------- */
@@ -491,12 +520,6 @@
     border-bottom: 1px solid var(--line);
   }
 
-  /* 點「現役球員模板」後 scrollIntoView 的捲動目標——留出跟 sticky
-     .ledger 一樣高的空間,不然 SECTION A 標題會被浮動的作答進度條蓋住
-     (2026-09-11 討論)。 */
-  #stage1-form {
-    scroll-margin-top: 120px;
-  }
 
   .ledger-row {
     display: flex;
@@ -878,10 +901,11 @@
   /* 縮小版雷達圖(球員卡片展開後左邊那個)用直排圖例,橫排在窄欄位會擠在一起,
      球員名字長一點(例如 Shai Gilgeous-Alexander)更明顯(2026-10 討論)。 */
   .radar-legend-mini {
-    flex-direction: column;
-    gap: 0.25rem;
-    font-size: 0.68rem;
-    margin-top: 0.4rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.9rem;
+    font-size: 0.72rem;
+    margin-top: 0.5rem;
   }
 
   .legend-item { display: flex; align-items: center; gap: 0.35rem; }
@@ -1093,8 +1117,10 @@
       <span class="topnav-name" id="topnav-brand-name">球探報告</span>
     </a>
     <div class="topnav-tabs">
-      <a href="#" class="topnav-tab" id="topnav-tab-template">我的模板</a>
-      <a href="#" class="topnav-tab" id="topnav-tab-priority">訓練計劃</a>
+      <a href="#" class="topnav-tab" id="topnav-tab-home">首頁</a>
+      <a href="#" class="topnav-tab" id="topnav-tab-quiz" aria-disabled="true">問題</a>
+      <a href="#" class="topnav-tab" id="topnav-tab-template" aria-disabled="true">我的模板</a>
+      <a href="#" class="topnav-tab" id="topnav-tab-training" aria-disabled="true">訓練計劃</a>
     </div>
     <div class="topnav-actions">
       <span class="visit-counter" id="visit-counter" style="display:none"></span>
@@ -1104,7 +1130,10 @@
   </div>
 </nav>
 
-<div class="page">
+<main class="pages" id="pages">
+
+  <section class="app-page" id="page-home">
+  <div class="page">
 
   <header class="masthead">
     <div class="eyebrow">Self-Scouting Report</div>
@@ -1136,6 +1165,11 @@
 
   <div id="loading">載入題庫中…</div>
   <div id="load-error" style="display:none; color:var(--accent-ink)"></div>
+  </div>
+  </section>
+
+  <section class="app-page" id="page-quiz" hidden>
+  <div class="page">
 
   <div class="ledger" id="stage1-ledger" style="display:none">
     <div class="ledger-row">
@@ -1163,13 +1197,26 @@
     <div class="scan-line"></div>
   </div>
 
+  </div>
+  </section>
+
+  <section class="app-page" id="page-template" hidden>
+  <div class="page">
   <div id="template-report"></div>
 
   <footer class="disclosure">
     <a href="#" id="restart-link" style="display:none">重新填一次</a>
   </footer>
+  </div>
+  </section>
 
-</div>
+  <section class="app-page" id="page-training" hidden>
+  <div class="page">
+  <div id="training-report"></div>
+  </div>
+  </section>
+
+</main>
 
 <script>
 (() => {
@@ -1207,6 +1254,8 @@
       axisLabels: { A: "持球創造", B1: "外線投射", B2: "禁區得分", C1: "外圍防守", C2: "禁區防守", D: "運動表現" },
       brandName: "球探報告",
       navMyTemplate: "我的模板",
+      navHome: "首頁",
+      navQuiz: "問題",
       navTrainingPlan: "訓練計劃",
       themeToggleToLight: "切換成米白主題",
       themeToggleToDark: "切換成深色主題",
@@ -1279,6 +1328,8 @@
       axisLabels: { A: "持球创造", B1: "外线投射", B2: "禁区得分", C1: "外围防守", C2: "禁区防守", D: "运动表现" },
       brandName: "球探报告",
       navMyTemplate: "我的模板",
+      navHome: "首页",
+      navQuiz: "问题",
       navTrainingPlan: "训练计划",
       themeToggleToLight: "切换成米白主题",
       themeToggleToDark: "切换成深色主题",
@@ -1351,6 +1402,8 @@
       axisLabels: { A: "Creation", B1: "Perimeter Scoring", B2: "Paint Scoring", C1: "Perimeter D", C2: "Rim D", D: "Athleticism" },
       brandName: "Scouting Report",
       navMyTemplate: "My Template",
+      navHome: "Home",
+      navQuiz: "Quiz",
       navTrainingPlan: "Training Plan",
       themeToggleToLight: "Switch to light theme",
       themeToggleToDark: "Switch to dark theme",
@@ -1415,6 +1468,7 @@
     answers: {},
     bodyAnswers: {},
     results: null,
+    started: false,
     selectedEnv: ENV_CODES[0],
     selectedPlayerIndex: 0,
     pool: "current",
@@ -2142,9 +2196,9 @@
     if (!playerEl) return;
     state.selectedPlayerIndex = Number(playerEl.dataset.playerIndex);
     renderTrainingSection();
-    // 點球員卡片才捲到訓練計劃;下面的球員按鈕本來就在訓練區旁邊,不用捲。
+    // 點球員卡片就切到訓練計劃那一頁;訓練頁裡的球員按鈕只換選擇,不切頁。
     if (playerEl.closest(".match-list")) {
-      document.getElementById("training-section").scrollIntoView({ behavior: "smooth", block: "start" });
+      showPage("training");
     }
   }
 
@@ -2202,8 +2256,11 @@
         ${lowSimilarityNoteHtml}
         <div class="match-list">${matchListHtml}</div>
       </section>
+    `;
 
-      <section class="block report-fade" id="training-section" style="animation-delay:.15s">
+    // 訓練計劃是獨立的一頁,放在另一個容器裡(切換頁面用 showPage,不是捲動)
+    document.getElementById("training-report").innerHTML = `
+      <section class="block report-fade" id="training-section">
         <div class="section-head"><span class="section-tag">SECTION 3</span><h2>${t().section3Title}</h2></div>
         <div class="training-controls">
           <div>
@@ -2264,9 +2321,9 @@
       state.selectedEnv = ENV_CODES[0];
       state.selectedPlayerIndex = 0;
       renderTemplateReport(data);
-      document.getElementById("template-report").style.display = "block";
       document.getElementById("restart-link").style.display = "inline";
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      updateTabAvailability();
+      showPage("template");
     } catch (err) {
       document.getElementById("stage1-processing").style.display = "none";
       document.getElementById("stage1-form").style.display = "block";
@@ -2276,19 +2333,53 @@
     }
   }
 
-  function revealQuiz(pool) {
-    state.pool = pool;
-    document.getElementById("active-pool-label").textContent = `${t().poolLabels[pool]} · ${t().progressLabel}`;
+  const PAGE_IDS = ["home", "quiz", "template", "training"];
 
-    document.getElementById("mode-select").style.display = "none";
+  function showPage(name) {
+    for (const id of PAGE_IDS) {
+      document.getElementById(`page-${id}`).hidden = id !== name;
+    }
+    document.getElementById(`page-${name}`).scrollTop = 0;
+    document.querySelectorAll(".topnav-tab").forEach((tab) => tab.classList.remove("active"));
+    document.getElementById(`topnav-tab-${name}`).classList.add("active");
+  }
+
+  // 「問題」要開始作答後才能點;「我的模板」「訓練計劃」要送出過才能點(沒有結果就沒東西可看)。
+  function updateTabAvailability() {
+    const enabled = { quiz: state.started, template: state.results !== null, training: state.results !== null };
+    for (const [name, on] of Object.entries(enabled)) {
+      document.getElementById(`topnav-tab-${name}`).setAttribute("aria-disabled", String(!on));
+    }
+  }
+
+  function openQuiz(pool) {
+    state.pool = pool;
+    state.started = true;
+    document.getElementById("active-pool-label").textContent = `${t().poolLabels[pool]} · ${t().progressLabel}`;
     document.getElementById("stage1-ledger").style.display = "block";
     document.getElementById("stage1-form").style.display = "block";
-
+    document.getElementById("stage1-processing").style.display = "none";
     state.stage1StepIndex = 0;
     renderStage1Wizard();
     updateStage1Progress();
+    updateTabAvailability();
+    showPage("quiz");
+  }
 
-    document.getElementById("stage1-form").scrollIntoView({ behavior: "smooth", block: "start" });
+  // 重新填一次:清掉作答跟結果,回到首頁。不重新整理頁面。
+  function resetSession() {
+    state.answers = {};
+    state.bodyAnswers = {};
+    state.results = null;
+    state.started = false;
+    state.selectedEnv = ENV_CODES[0];
+    state.selectedPlayerIndex = 0;
+    state.stage1StepIndex = 0;
+    document.getElementById("template-report").innerHTML = "";
+    document.getElementById("training-report").innerHTML = "";
+    document.getElementById("restart-link").style.display = "none";
+    updateTabAvailability();
+    showPage("home");
   }
 
   const LANG_BUTTON_LABELS = { zh: "繁", "zh-Hans": "简", en: "EN" };
@@ -2361,7 +2452,9 @@
 
     document.getElementById("topnav-brand-name").textContent = strings.brandName;
     document.getElementById("topnav-tab-template").textContent = strings.navMyTemplate;
-    document.getElementById("topnav-tab-priority").textContent = strings.navTrainingPlan;
+    document.getElementById("topnav-tab-home").textContent = strings.navHome;
+    document.getElementById("topnav-tab-quiz").textContent = strings.navQuiz;
+    document.getElementById("topnav-tab-training").textContent = strings.navTrainingPlan;
     applyTheme(state.theme);
 
     const visitCounterEl = document.getElementById("visit-counter");
@@ -2440,15 +2533,17 @@
 
     renderLangSwitch();
     applyUiStrings();
+    showPage("home");
+    updateTabAvailability();
 
     document.getElementById("loading").style.display = "none";
     document.getElementById("mode-current-btn").disabled = false;
     document.getElementById("mode-alltime-btn").disabled = false;
 
     document.getElementById("stage1-form").addEventListener("submit", handleStage1Submit);
-    const reportEl = document.getElementById("template-report");
-    reportEl.addEventListener("click", handleReportClick);
-    reportEl.addEventListener("keydown", (e) => {
+    const pagesEl = document.getElementById("pages");
+    pagesEl.addEventListener("click", handleReportClick);
+    pagesEl.addEventListener("keydown", (e) => {
       if ((e.key === "Enter" || e.key === " ") && e.target.classList.contains("selectable")) {
         e.preventDefault();
         e.target.click();
@@ -2456,49 +2551,28 @@
     });
     document.getElementById("restart-link").addEventListener("click", (e) => {
       e.preventDefault();
-      window.location.reload();
+      resetSession();
     });
-    document.getElementById("mode-current-btn").addEventListener("click", () => revealQuiz("current"));
-    document.getElementById("mode-alltime-btn").addEventListener("click", () => revealQuiz("alltime"));
+    document.getElementById("mode-current-btn").addEventListener("click", () => openQuiz("current"));
+    document.getElementById("mode-alltime-btn").addEventListener("click", () => openQuiz("alltime"));
   }
 
-  // ---- 上方導覽列(2026-09-13 討論)----
-  // logo：回到最一開始的首頁(現役/歷史選項那頁)——直接重新整理頁面是最
-  // 保險的做法,保證所有作答狀態都清空,跟「最一開始」字面意思一致。首頁分頁
-  // 已經移除(2026-10 討論:按 logo/標題就能回首頁,不需要多一個分頁做一樣
-  // 的事)。我的模板/訓練計劃分頁：捲到對應的報告區塊,報告還沒產生就不做事
-  // (畫面上還沒有東西可以捲過去)。
-
-  function setActiveTopnavTab(activeId) {
-    document.querySelectorAll(".topnav-tab").forEach((tab) => tab.classList.remove("active"));
-    document.getElementById(activeId).classList.add("active");
-  }
+  // ---- 上方導覽列:四個頁面(首頁/問題/我的模板/訓練計劃)彼此獨立,切換不重整頁面。
+  // logo 回首頁,不重新整理頁面(會清掉作答)。要重新開始請用結果頁底下的「重新填一次」。
 
   document.getElementById("topnav-logo").addEventListener("click", (e) => {
     e.preventDefault();
-    window.location.reload();
+    showPage("home");
   });
 
-  document.getElementById("topnav-tab-template").addEventListener("click", (e) => {
-    e.preventDefault();
-    setActiveTopnavTab("topnav-tab-template");
-    // 捲到原型名稱+六角圖那個卡片,不是整個 template-report 容器的最上緣
-    // (容器裡最上面其實就是這張卡,但加個明確的錨點目標,之後要在上面插其他
-    // 區塊也不會不小心改掉捲動位置——2026-10 討論)。
-    const headlineEl = document.getElementById("archetype-headline");
-    if (headlineEl) {
-      headlineEl.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  });
-
-  document.getElementById("topnav-tab-priority").addEventListener("click", (e) => {
-    e.preventDefault();
-    setActiveTopnavTab("topnav-tab-priority");
-    const trainingEl = document.getElementById("training-section");
-    if (trainingEl) {
-      trainingEl.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  });
+  for (const name of PAGE_IDS) {
+    document.getElementById(`topnav-tab-${name}`).addEventListener("click", (e) => {
+      e.preventDefault();
+      if (e.currentTarget.getAttribute("aria-disabled") === "true") return;
+      if (name === "quiz") openQuiz(state.pool);
+      else showPage(name);
+    });
+  }
 
   document.getElementById("theme-toggle-btn").addEventListener("click", () => {
     applyTheme(state.theme === "light" ? "dark" : "light");
