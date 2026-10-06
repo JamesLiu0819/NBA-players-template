@@ -640,7 +640,7 @@
 
   /* ---------- single-question wizard ---------- */
   /* 一次只顯示一題,選完(或身材選填題按下一題)自動跳到下一題,不用滑動找
-     下一題(2026-09-13 討論)。身材數值題移到球風定位 16 題之後,跟軸定位題
+     下一題(2026-09-13 討論)。身材數值題移到球風定位 12 題之後,跟軸定位題
      共用同一套逐題流程。 */
 
   .wizard-phase-title {
@@ -1529,7 +1529,7 @@
       playerControlLabel: "目標球員",
       envLabels: { collapsed_no_shooters: "內縮防守 / 缺乏射手", tight_perimeter_opp_shooters: "貼外線 / 對手有射手", zone_defense: "區域防守為主" },
       levelLabels: { entry: "入門", advanced: "進階", mastery: "精熟" },
-      trainingEmpty: "在這個聯賽環境下,這位球員的技能項目你都已經達到或超過,目前沒有需要補強的地方。",
+      trainingEmpty: "在這個聯賽環境下，這位球員的技能項目你都已經達到或超過，目前沒有需要補強的地方。",
       drillStepsLabel: "步驟",
       drillCueLabel: "提醒",
       drillVolumeLabel: "訓練量",
@@ -1613,7 +1613,7 @@
       playerControlLabel: "目标球员",
       envLabels: { collapsed_no_shooters: "内缩防守 / 缺乏射手", tight_perimeter_opp_shooters: "贴外线 / 对手有射手", zone_defense: "区域防守为主" },
       levelLabels: { entry: "入门", advanced: "进阶", mastery: "精熟" },
-      trainingEmpty: "在这个联赛环境下,这位球员的技能项目你都已经达到或超过,目前没有需要补强的地方。",
+      trainingEmpty: "在这个联赛环境下，这位球员的技能项目你都已经达到或超过，目前没有需要补强的地方。",
       drillStepsLabel: "步骤",
       drillCueLabel: "提醒",
       drillVolumeLabel: "训练量",
@@ -1739,7 +1739,7 @@
     return UI_STRINGS[state.lang];
   }
 
-  // ---- stage 1 progress: 球風定位(16 題)一定算,身材數值題大多選填、不列入
+  // ---- stage 1 progress: 球風定位(12 題)一定算,身材數值題大多選填、不列入
   // 進度/送出門檻(2026-09-11 討論)——但身高、體重是例外,兩題標了 required,
   // 是原型分類體型分數的必要輸入,沒填後端會直接 400,所以這兩題也要算進門檻
   // (2026-10 討論)。
@@ -2046,6 +2046,11 @@
     };
   }
 
+  // 把會插進 innerHTML 的資料值跳脫,避免 < > & " ' 被當成 HTML 解析。
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[ch]);
+  }
+
   function starMarkup(n) {
     let out = "";
     for (let i = 0; i < 5; i++) {
@@ -2331,18 +2336,18 @@
       <div class="card-head">
         <div class="who">
           <span class="rank mono">#${rank}</span>
-          <span class="name">${m.name}</span>
-          <span class="team mono">${m.team}</span>
+          <span class="name">${escapeHtml(m.name)}</span>
+          <span class="team mono">${escapeHtml(m.team)}</span>
         </div>
         <div class="stat-line">
           <span class="stat-label">${t().similarityLabel}</span>
           <span class="stars">${starMarkup(m.fit_stars)}</span>
         </div>
       </div>
-      <div class="traits">${m.notable_traits.map((tr) => `<span class="trait">${tr}</span>`).join("")}</div>
+      <div class="traits">${m.notable_traits.map((tr) => `<span class="trait">${escapeHtml(tr)}</span>`).join("")}</div>
       <div class="callout">
         <span class="axis-tag">${t().dominantAxisGap(t().axisLabels[m.dominant_diff_axis])}</span>
-        <span class="growth">${t().growthNotePrefix}${m.growth_recommendation}</span>
+        <span class="growth">${t().growthNotePrefix}${escapeHtml(m.growth_recommendation)}</span>
       </div>`;
   }
 
@@ -2351,7 +2356,7 @@
   // training_plans[環境代碼],前端只負責排版,不做任何計算。
 
   function choiceButtonHtml(attr, value, label, selected) {
-    return `<button type="button" ${attr}="${value}" aria-pressed="${selected}"${selected ? ' class="selected"' : ""}>${label}</button>`;
+    return `<button type="button" ${attr}="${escapeHtml(value)}" aria-pressed="${selected}"${selected ? ' class="selected"' : ""}>${escapeHtml(label)}</button>`;
   }
 
   function drillVolumeText(drill) {
@@ -2368,14 +2373,14 @@
   function renderDrill(drill) {
     const s = t();
     const parts = [];
-    if (drill.name) parts.push(`<div class="drill-name">${drill.name}</div>`);
+    if (drill.name) parts.push(`<div class="drill-name">${escapeHtml(drill.name)}</div>`);
     if (drill.steps && drill.steps.length > 0) {
       parts.push(`<div class="drill-label">${s.drillStepsLabel}</div>`);
-      parts.push(`<ol class="drill-steps">${drill.steps.map((step) => `<li>${step}</li>`).join("")}</ol>`);
+      parts.push(`<ol class="drill-steps">${drill.steps.map((step) => `<li>${escapeHtml(step)}</li>`).join("")}</ol>`);
     }
-    if (drill.cue) parts.push(`<p class="drill-line"><span class="drill-label">${s.drillCueLabel}</span>${drill.cue}</p>`);
+    if (drill.cue) parts.push(`<p class="drill-line"><span class="drill-label">${s.drillCueLabel}</span>${escapeHtml(drill.cue)}</p>`);
     const volume = drillVolumeText(drill);
-    if (volume) parts.push(`<p class="drill-line"><span class="drill-label">${s.drillVolumeLabel}</span>${volume}</p>`);
+    if (volume) parts.push(`<p class="drill-line"><span class="drill-label">${s.drillVolumeLabel}</span>${escapeHtml(volume)}</p>`);
     return parts.length > 0 ? `<div class="drill">${parts.join("")}</div>` : "";
   }
 
@@ -2388,16 +2393,16 @@
     return `
       <div class="skill-item">
         <div class="skill-item-head">
-          <span class="skill-item-name">${item.name_zh}</span>
+          <span class="skill-item-name">${escapeHtml(item.name_zh)}</span>
           <span class="skill-level-tag">${s.levelLabels[item.level]}</span>
         </div>
         ${item.drills.map(renderDrill).join("")}
-        <p class="skill-threshold">${passSentence}</p>
+        <p class="skill-threshold">${escapeHtml(passSentence)}</p>
       </div>`;
   }
 
   function renderTrainingBody(player, plan) {
-    const radarHtml = buildRadarSvg(state.results.coordinates, player.coordinates, player.name);
+    const radarHtml = buildRadarSvg(state.results.coordinates, player.coordinates, escapeHtml(player.name));
     const skillsHtml = plan.length === 0
       ? `<p class="training-empty">${t().trainingEmpty}</p>`
       : plan.map(renderSkillItem).join("");
@@ -2457,7 +2462,7 @@
     const meta = deepTemplateMeta();
     const templateCards = ["skill_fit", "body_fit", "ceiling"].map((key) => {
       const m = data.deep_templates[key];
-      const who = m ? `${m.name} (${m.team})` : t().noMatchingPlayer;
+      const who = m ? `${escapeHtml(m.name)} (${escapeHtml(m.team)})` : t().noMatchingPlayer;
       return `
         <div class="template-card">
           <div class="kind">${meta[key].label}</div>
@@ -2473,7 +2478,7 @@
     }).join("");
 
     const topMatch = data.top_10[0] || null;
-    const radarHtml = topMatch ? buildRadarSvg(data.coordinates, topMatch.coordinates, topMatch.name) : "";
+    const radarHtml = topMatch ? buildRadarSvg(data.coordinates, topMatch.coordinates, escapeHtml(topMatch.name)) : "";
     // 相似度星星是距離算出來的,跟球員強不強完全無關——但「星星」這個符號很
     // 容易被看成評分,打法/身材比較極端的使用者可能整組對照表都偏低分,容易
     // 誤以為是自己很差,而不是球員池剛好沒有很接近的對照組。只在真的發生時
@@ -2486,8 +2491,8 @@
     el.innerHTML = `
       <section class="block report-fade">
         <div class="headline-card" id="archetype-headline">
-          <div class="archetype-name">${data.archetype.name_zh}</div>
-          <p class="scouting-report">${data.scouting_report || ""}</p>
+          <div class="archetype-name">${escapeHtml(data.archetype.name_zh)}</div>
+          <p class="scouting-report">${escapeHtml(data.scouting_report || "")}</p>
           <div class="radar-wrap">${radarHtml}</div>
           <button type="button" class="share-btn" id="share-btn">${t().shareButtonLabel}</button>
         </div>

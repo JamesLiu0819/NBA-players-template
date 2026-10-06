@@ -23,7 +23,11 @@ cd server
 ../.venv/bin/python3 -m unittest test_app -v
 ```
 
-這組測試需要 Flask,所以跟主要的 `tests/` 套件(純標準函式庫,`PYTHONPATH=src python3 -m unittest discover ...`)分開跑,不會互相干擾。
+這組測試需要 Flask,所以跟主要的 `tests/` 套件分開跑,不會互相干擾。主要套件從專案根目錄跑(必須加 `-t .`,否則 `tests/scripts/` 會蓋掉標準庫裡的 `scripts` 套件名,導致 import 失敗):
+
+```bash
+PYTHONPATH=src python3 -m unittest discover -s tests -t . -v
+```
 
 ## 部署到 Render
 
