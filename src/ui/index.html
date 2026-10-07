@@ -1078,10 +1078,15 @@
   #player-search-input {
     flex: 1;
     min-width: 0;
-    font: inherit;
-    padding: 0.5rem 0.6rem;
+    font-family: inherit;
+    /* 不要用 font: inherit(含 font-size: inherit)——那是 ID 選擇器宣告,
+       specificity 比手機版「輸入框固定 16px」的保護規則還高,會蓋掉保護,
+       等於又把 iOS 對焦自動放大頁面的問題找回來(2026-10 發現,順手也修了
+       下面意見回饋輸入框同一個問題)。 */
+    font-size: 16px;
+    padding: 0.4rem 0.9rem;
     border: 1px solid var(--line);
-    border-radius: 8px;
+    border-radius: 999px;
     background: var(--paper-sunken);
     color: var(--ink);
   }
@@ -1128,17 +1133,6 @@
     color: var(--ink-soft);
   }
 
-  .player-search-selected {
-    margin-top: 0.45rem;
-    font-size: 0.82rem;
-    color: var(--ink-soft);
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    flex-wrap: wrap;
-  }
-
-  .player-search-selected strong { color: var(--accent-ink); font-weight: 700; }
 
   .selectable { cursor: pointer; }
   .selectable:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -1372,8 +1366,8 @@
   .feedback-field textarea,
   .feedback-field input {
     width: 100%;
-    font: inherit;
-    font-size: 0.92rem;
+    font-family: inherit;
+    font-size: 16px; /* 不是 0.92rem——手機上會小於 16px,iOS 對焦時整頁會自動放大 */
     padding: 0.5rem 0.6rem;
     border: 1px solid var(--line);
     border-radius: 8px;
@@ -1633,10 +1627,8 @@
       mostSuitable: "最貼合",
       envControlLabel: "聯賽環境",
       playerControlLabel: "目標球員",
-      playerSearchPlaceholder: "搜尋球員（不限於上方 10 位）",
+      playerSearchPlaceholder: "搜尋其他球員",
       playerSearchNoResults: "沒有符合的球員",
-      playerSearchClear: "清除",
-      playerSearchSelectedLabel: (name) => `自選：<strong>${name}</strong>`,
       trainingPlanError: "訓練計劃讀取失敗，請再試一次。",
       trainingPlanLoading: "讀取訓練計劃中…",
       envLabels: { collapsed_no_shooters: "內縮防守 / 缺乏射手", tight_perimeter_opp_shooters: "貼外線 / 對手有射手", zone_defense: "區域防守為主", no_environment: "無（不套用環境加權）" },
@@ -1722,10 +1714,8 @@
       mostSuitable: "最贴合",
       envControlLabel: "联赛环境",
       playerControlLabel: "目标球员",
-      playerSearchPlaceholder: "搜索球员（不限于上方 10 位）",
+      playerSearchPlaceholder: "搜索其他球员",
       playerSearchNoResults: "没有符合的球员",
-      playerSearchClear: "清除",
-      playerSearchSelectedLabel: (name) => `自选：<strong>${name}</strong>`,
       trainingPlanError: "训练计划读取失败，请再试一次。",
       trainingPlanLoading: "读取训练计划中…",
       envLabels: { collapsed_no_shooters: "内缩防守 / 缺乏射手", tight_perimeter_opp_shooters: "贴外线 / 对手有射手", zone_defense: "区域防守为主", no_environment: "无（不套用环境加权）" },
@@ -1811,10 +1801,8 @@
       mostSuitable: "Best Match",
       envControlLabel: "League Environment",
       playerControlLabel: "Target Player",
-      playerSearchPlaceholder: "Search any player (not just the 10 above)",
+      playerSearchPlaceholder: "Search other players",
       playerSearchNoResults: "No matching players",
-      playerSearchClear: "Clear",
-      playerSearchSelectedLabel: (name) => `Selected: <strong>${name}</strong>`,
       trainingPlanError: "Couldn't load the training plan. Please try again.",
       trainingPlanLoading: "Loading training plan…",
       envLabels: { collapsed_no_shooters: "Packed Defense / No Shooters", tight_perimeter_opp_shooters: "Tight Perimeter / Opponent Has Shooters", zone_defense: "Zone Defense", no_environment: "None (no weighting)" },
@@ -2615,11 +2603,6 @@
     await renderTrainingSection();
   }
 
-  function clearCustomPlayer() {
-    state.customPlayerId = null;
-    renderTrainingSection();
-  }
-
   async function renderTrainingSection() {
     const data = state.results;
     const s = t();
@@ -2635,8 +2618,6 @@
     });
 
     const body = document.getElementById("training-body");
-    const selectedTag = document.getElementById("player-search-selected");
-    selectedTag.hidden = true; // 只有自選球員成功載入時才顯示(下面的 try 區塊會再打開)
 
     if (state.customPlayerId) {
       const id = state.customPlayerId;
@@ -2645,8 +2626,6 @@
         const custom = await fetchCustomPlayerTrainingPlan(id);
         if (state.customPlayerId !== id) return; // 等待時又換了別的球員/環境,這次結果已經過期
         body.innerHTML = renderTrainingBody(custom, custom.training_plan);
-        selectedTag.innerHTML = `${s.playerSearchSelectedLabel(escapeHtml(custom.name))} <button type="button" class="link-button" id="player-search-clear-btn">${s.playerSearchClear}</button>`;
-        selectedTag.hidden = false;
       } catch (err) {
         if (state.customPlayerId !== id) return;
         body.innerHTML = `<p class="training-empty">${s.trainingPlanError}</p>`;
@@ -2672,10 +2651,6 @@
     const searchResultBtn = e.target.closest("[data-custom-player-id]");
     if (searchResultBtn) {
       selectCustomPlayer(searchResultBtn.dataset.customPlayerId);
-      return;
-    }
-    if (e.target.closest("#player-search-clear-btn")) {
-      clearCustomPlayer();
       return;
     }
     const playerEl = e.target.closest("[data-player-index]");
@@ -2769,7 +2744,6 @@
                 <input type="text" id="player-search-input" placeholder="${t().playerSearchPlaceholder}" autocomplete="off">
               </div>
               <div class="player-search-results" id="player-search-results" hidden></div>
-              <div class="player-search-selected" id="player-search-selected" hidden></div>
             </div>
           </div>
         </div>
