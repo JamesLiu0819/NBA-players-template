@@ -1573,6 +1573,7 @@
       volumeSets: (n) => `${n} 組`,
       volumeReps: (n) => `${n} 次`,
       volumeMinutes: (n) => `${n} 分鐘`,
+      archetypeBodyOnlyLabel: (name) => `以你的身材，最適合往${name}方向發展`,
     },
     "zh-Hans": {
       pageTitle: "球探报告",
@@ -1656,6 +1657,7 @@
       volumeSets: (n) => `${n} 组`,
       volumeReps: (n) => `${n} 次`,
       volumeMinutes: (n) => `${n} 分钟`,
+      archetypeBodyOnlyLabel: (name) => `以你的身材，最适合往${name}方向发展`,
     },
     en: {
       pageTitle: "Scouting Report",
@@ -1739,6 +1741,7 @@
       volumeSets: (n) => `${n} sets`,
       volumeReps: (n) => `${n} reps`,
       volumeMinutes: (n) => `${n} min`,
+      archetypeBodyOnlyLabel: (name) => `Based on your build, you're best suited to develop toward ${name}`,
     },
   };
 
@@ -2526,7 +2529,11 @@
     el.innerHTML = `
       <section class="block report-fade">
         <div class="headline-card" id="archetype-headline">
-          <div class="archetype-name">${escapeHtml(data.archetype.name_zh)}</div>
+          <div class="archetype-name">${
+            data.archetype_mode === "body_only"
+              ? escapeHtml(t().archetypeBodyOnlyLabel(data.archetype.name_zh))
+              : escapeHtml(data.archetype.name_zh)
+          }</div>
           <p class="scouting-report">${escapeHtml(data.scouting_report || "")}</p>
           <div class="radar-wrap">${radarHtml}</div>
           <button type="button" class="share-btn" id="share-btn">${t().shareButtonLabel}</button>

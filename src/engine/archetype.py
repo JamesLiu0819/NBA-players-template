@@ -1,15 +1,18 @@
 # 用途：把使用者分類到最接近的球場定位原型(data/archetypes.json)。
 # classify_archetype 是最基本的最近鄰(Euclidean distance)比對,跟
 # player_matching.py 找最像球員的邏輯是同一套精神,只是比對對象換成原型
-# 錨點。classify_archetype_by_majority 是結果頁實際使用的版本：不直接拿
-# 使用者座標比對原型,而是把 10 人對照表裡前 N 位最相似的「真人球員」各自
-# 分類到最近的原型,再取多數決——理由是使用者座標 vs 原型錨點、使用者 vs
-# 真人球員資料庫這兩套比對邏輯,原本各自獨立計算,可能導致原型標籤跟結果頁
-# 顯示的球員對不上(例如標籤說背框中鋒,顯示的球員卻是控球後衛);改成多數決
-# 後,原型一定是從畫面上實際顯示的球員群裡投票出來的,保證兩者一致
-# (2026-09-13 討論)。
-# 可手動調整的變數：ARCHETYPE_MAJORITY_TOP_N(多數決要看前幾位最相似球員,
-# 目前 5——10 人對照表的前一半)。原型本身的數量/座標/文案在
+# 錨點。classify_archetype_for_user 是結果頁實際使用的版本,直接拿使用者
+# 自己的六軸座標比對原型(2026-10,spec item 5)——取代舊版「把 10 人對照表
+# 前 N 位最相似的真人球員各自分類到最近的原型,再取多數決」的設計：舊設計的
+# 問題是答案很平、沒有明顯風格的使用者,最後的原型標籤其實跟自己的座標無關,
+# 只是鄰近球員剛好多數落在哪個原型(2026-09-13 討論引入多數決,2026-10 發現
+# 這個根本缺陷後整個換掉)。新設計先用 style_axis_spread 判斷使用者在五個
+# 技術軸(不含 D)上有沒有明顯的主打方向：有(>= ARCHETYPE_SPREAD_THRESHOLD)
+# 就用「打法形狀」分類(_relative_strength_distance,雙方都先各自扣掉自己的
+# 五軸平均值,只比較相對強弱,整體水準高低不影響結果);沒有就改用身材分數
+# (compute_user_size)單獨比對,因為打法本身沒有訊號可用。
+# 可手動調整的變數：ARCHETYPE_SPREAD_THRESHOLD(多少才算「有明顯主打方向」,
+# 目前 25,見下方該常數旁的註解)。原型本身的數量/座標/文案在
 # data/archetypes.json 裡調整,不在這支檔案。
 #
 # size 參數(2026-10 討論)：classify_archetype 原本純看六軸(A/B1/B2/C1/C2/D),
@@ -32,14 +35,14 @@
 # 成內線型原型。所以 compute_player_sizes 必須吃「轉換前的原始 players 名單」
 # (每位球員的 body.height_cm/weight_kg 是公分/公斤原始值,不是已經換算過的
 # 百分位),在 percentile_normalize_body 把這些數字覆寫成另一種百分位之前就先
-# 算好,呼叫端(server/app.py、scripts/run_player_match.py)要自己保留這個時機
-# 差。archetypes.json 裡現有的 size 錨點數值(25-87)就是用這套「球員池內部
-# 排名」校準出來的,不用跟著改。
-# classify_archetype_by_majority 的計票也在同一次討論改成距離加權：原本不管
-# 名次一律 1 票,會出現「前 2 名最像的球員都同意 A 原型,但後 3 名更遠的球員湊
-# 3 票投給 B 原型,B 就贏」的情況——跟畫面上顯示最像的球員直接矛盾。改成第 1
-# 近的球員權重 top_n、第 2 近 top_n-1,以此類推,離使用者越近的球員意見越重,
-# 平票時的 tie-break 邏輯(選最近球員的原型)不變。
+# 算好。archetypes.json 裡現有的 size 錨點數值(25-87)就是用這套「球員池內部
+# 排名」校準出來的,不用跟著改。compute_player_sizes 現在只剩自己的測試在用
+# (2026-10,改用 classify_archetype_for_user 後,結果頁改用 compute_user_size
+# 算使用者自己的身材分數——同一份原始 players 名單、同一個「要在
+# percentile_normalize_body 之前算」的時機限制,邏輯寫在 compute_user_size
+# 自己的 docstring 裡,呼叫端是 server/app.py、scripts/run_player_match.py)。
+# spec 目前只要求移除 classify_archetype_by_majority,compute_player_sizes
+# 本身保留,沒有跟著刪。
 
 """L3-adjacent matching layer: nearest-neighbor archetype classification.
 
@@ -49,7 +52,6 @@ Pure functions only.
 import math
 
 AXES = ("A", "B1", "B2", "C1", "C2", "D")
-ARCHETYPE_MAJORITY_TOP_N = 5
 SIZE_AXIS_WEIGHT = 1.0
 
 
@@ -127,45 +129,150 @@ def compute_player_sizes(players):
     }
 
 
-def classify_archetype_by_majority(ranked_players, archetypes, player_sizes=None, top_n=ARCHETYPE_MAJORITY_TOP_N):
-    """Classify by distance-weighted vote: classify each of the top_n closest
-    ranked players (already sorted by distance to the user, ascending) into
-    its own nearest archetype via classify_archetype (size-aware when
-    player_sizes has an entry for that player), then return whichever
-    archetype the closer players favor most.
+ARCHETYPE_SPREAD_THRESHOLD = 25.0  # 暫定，見 spec item 5：每軸兩題平均，分數
+# 只會是 12.5 的倍數，高低差小於 25 代表五軸全部落在相鄰兩格以內。
+STYLE_AXES_FOR_SPREAD = ("A", "B1", "B2", "C1", "C2")  # D excluded -- athletic
+# ability isn't part of "which skill are you strongest at".
 
-    ranked_players: list of dicts, each with at least "id" and
-        "coordinates": {axis: 0-100 for axis in AXES}.
-    player_sizes: optional {player_id: size} from compute_player_sizes,
-        computed over the full pool ranked_players was drawn from (not just
-        this top_n slice). A player missing from player_sizes (or when
-        player_sizes itself is None) falls back to the plain style-only
-        distance for that player.
-        Each of the top_n players' votes is weighted by its rank -- the
-        closest player gets weight top_n, the next top_n-1, and so on --
-        so a plurality among the closest players outweighs a larger count
-        among more distant ones. Ties are broken by the archetype of the
-        single closest player among the tied archetypes, so the result
-        stays deterministic.
 
-    Raises ValueError if ranked_players is empty.
+def style_axis_spread(coordinates):
+    """max - min over the five trainable style axes (A/B1/B2/C1/C2) -- D is
+    excluded, same set skill_gap trains on. Used to decide whether a user
+    has a real standout strength (classify by shape) or not (classify by
+    body alone) -- see classify_archetype_for_user."""
+    values = [coordinates[axis] for axis in STYLE_AXES_FOR_SPREAD]
+    return max(values) - min(values)
+
+
+def _recentered(coordinates):
+    mean = sum(coordinates[axis] for axis in STYLE_AXES_FOR_SPREAD) / len(STYLE_AXES_FOR_SPREAD)
+    return {axis: coordinates[axis] - mean for axis in STYLE_AXES_FOR_SPREAD}
+
+
+def _relative_strength_distance(coordinates, archetype, size):
+    user_centered = _recentered(coordinates)
+    archetype_centered = _recentered(archetype["coordinates"])
+    squared = sum(
+        (user_centered[axis] - archetype_centered[axis]) ** 2 for axis in STYLE_AXES_FOR_SPREAD
+    )
+    if size is not None and "size" in archetype:
+        squared += (archetype["size"] - size) ** 2 * SIZE_AXIS_WEIGHT
+    return math.sqrt(squared)
+
+
+def _pool_normal_fit_percentile(value, pool_values):
+    """Percentile (0-100) of value under a normal distribution fit to
+    pool_values' OWN mean/sd (computed from pool_values itself, not a fixed
+    external constant), via the standard erf-based CDF.
+
+    Unlike a plain rank-within-pool percentile (compute_player_sizes'
+    method), this extrapolates smoothly below the pool's observed minimum
+    (or above its maximum) instead of collapsing every value past the edge
+    to the same 0 or 100 -- see compute_user_size's docstring for why this
+    matters (2026-10, Task 7 checkpoint finding).
+
+    Raises ValueError if pool_values has fewer than 2 values, or its
+    variance is 0 (a normal fit is undefined when every value is
+    identical).
     """
-    if not ranked_players:
-        raise ValueError("ranked_players must not be empty; classification is undefined")
+    if len(pool_values) < 2:
+        raise ValueError("pool must have at least 2 values; percentile fit is undefined")
+    mean = sum(pool_values) / len(pool_values)
+    variance = sum((v - mean) ** 2 for v in pool_values) / len(pool_values)
+    if variance == 0:
+        raise ValueError("pool has zero variance; normal fit is undefined")
+    sd = math.sqrt(variance)
+    z = (value - mean) / sd
+    return 50 * (1 + math.erf(z / math.sqrt(2)))
 
-    player_archetypes = [
-        classify_archetype(
-            player["coordinates"], archetypes,
-            size=(player_sizes.get(player["id"]) if player_sizes else None),
-        )
-        for player in ranked_players[:top_n]
+
+def compute_user_size(user_body, players):
+    """Return the user's body size (0-100) on the SAME 0-100 scale the
+    archetype "size" anchors (data/zh/原型.json, 25-87) were calibrated on.
+
+    2026-10 (Task 7 checkpoint finding): this does NOT rank the user within
+    the player pool the way compute_player_sizes ranks a player -- a plain
+    empirical rank collapses almost every self-reporting user to
+    percentile ~0, because a typical user (~175cm) falls below the
+    shortest real NBA player (~185cm), below the entire pool's observed
+    floor. Simulating 300 users with a flat answer profile (so this
+    function was the ONLY thing deciding their archetype) showed 99-100%
+    landing on the same single archetype regardless of their actual height
+    or weight -- the body-only branch carried no real signal.
+
+    Instead, this fits a NORMAL distribution to THIS SPECIFIC players
+    pool's own real height_cm/weight_kg (mean & sd computed from the pool
+    itself -- the current and all-time pools have different real
+    distributions, so this is never a fixed constant) and reads the user's
+    percentile off that curve via _pool_normal_fit_percentile. This agrees
+    closely with compute_player_sizes' empirical rank for values WITHIN the
+    pool's own observed range, but -- unlike that rank -- extrapolates
+    smoothly below/above the pool's floor/ceiling instead of collapsing
+    every out-of-range value to the same number.
+
+    Returns None if user_body is missing height_cm or weight_kg, if fewer
+    than 2 players in `players` have both fields, or if the pool's
+    height/weight values have zero variance (a degenerate pool where a
+    normal fit is undefined).
+    """
+    if "height_cm" not in user_body or "weight_kg" not in user_body:
+        return None
+    with_body = [
+        p for p in players
+        if "height_cm" in p.get("body", {}) and "weight_kg" in p.get("body", {})
     ]
+    if len(with_body) < 2:
+        return None
+    height_pool = [p["body"]["height_cm"] for p in with_body]
+    weight_pool = [p["body"]["weight_kg"] for p in with_body]
+    try:
+        height_pct = _pool_normal_fit_percentile(user_body["height_cm"], height_pool)
+        weight_pct = _pool_normal_fit_percentile(user_body["weight_kg"], weight_pool)
+    except ValueError:
+        return None
+    return (height_pct + weight_pct) / 2
 
-    weights = {}
-    for rank, archetype in enumerate(player_archetypes):
-        weight = top_n - rank
-        weights[archetype["id"]] = weights.get(archetype["id"], 0) + weight
-    max_weight = max(weights.values())
-    tied_ids = {archetype_id for archetype_id, weight in weights.items() if weight == max_weight}
 
-    return next(archetype for archetype in player_archetypes if archetype["id"] in tied_ids)
+def classify_archetype_for_user(coordinates, archetypes, size=None, spread_threshold=ARCHETYPE_SPREAD_THRESHOLD):
+    """Classify the USER's own coordinates directly against the archetype
+    anchors -- replaces the old neighbor-majority-vote approach (2026-10,
+    spec item 5): a user who answers every question the same way no longer
+    gets dumped into whatever archetype their nearest (equally-flat)
+    neighbors happen to be voted into.
+
+    style_axis_spread(coordinates) >= spread_threshold (a real standout
+    strength exists): classify by SHAPE -- both the user and each
+    archetype are recentered (each axis minus that entity's own five-axis
+    mean) before comparing, so overall level cancels out and only "which
+    block are you strongest in" matters. Body size still factors in
+    exactly as classify_archetype already does (added to the squared
+    distance when both `size` and the archetype's own "size" field are
+    present).
+
+    style_axis_spread(coordinates) < spread_threshold (no standout -- a
+    flat or near-flat answer profile): classify by BODY SIZE ALONE among
+    archetypes that have a "size" field, picking the closest; ties (or a
+    genuinely missing `size`) break on ascending archetype id for
+    determinism. If `size` itself is None (no body data to compare), this
+    falls back to the shape-based classification above instead -- there is
+    no signal to pick a body-only answer from.
+
+    Returns (archetype, mode) where mode is the literal string
+    "relative_strength" or "body_only", so callers can choose the matching
+    UI copy. Raises ValueError if archetypes is empty.
+    """
+    if not archetypes:
+        raise ValueError("archetypes must not be empty; classification is undefined")
+
+    spread = style_axis_spread(coordinates)
+    if spread >= spread_threshold or size is None:
+        winner = min(archetypes, key=lambda a: _relative_strength_distance(coordinates, a, size))
+        return winner, "relative_strength"
+
+    with_size = [a for a in archetypes if "size" in a]
+    if not with_size:
+        winner = min(archetypes, key=lambda a: _relative_strength_distance(coordinates, a, size))
+        return winner, "relative_strength"
+
+    winner = min(with_size, key=lambda a: (abs(a["size"] - size), a["id"]))
+    return winner, "body_only"

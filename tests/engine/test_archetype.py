@@ -1,15 +1,26 @@
 # 用途：測試 classify_archetype(把六軸座標分類到最接近的球場定位原型)的
-# 最近鄰計算邏輯與邊界情況,classify_archetype_by_majority(改用比對到的前 N
-# 位球員自己的原型多數決,取代直接拿使用者座標比對原型錨點),以及
-# compute_player_sizes(算每位球員身高體重在整份名單裡的排名百分位,供原型
-# 分類用——2026-10 發現這個百分位不能跟 body_fit.percentile_normalize_body
-# 給 10 人對照表用的百分位共用,見 archetype.py 檔頭)。
+# 最近鄰計算邏輯與邊界情況,style_axis_spread(判斷使用者有沒有明顯主打
+# 方向)、compute_user_size(對球員池的真實身高體重擬合常態分布,算使用者
+# 的身材百分位)、classify_archetype_for_user(2026-10,直接拿使用者自己的
+# 六軸座標分類——有明顯主打方向用打法形狀,沒有就用身材分數,取代舊版
+# classify_archetype_by_majority 的真人球員多數決設計,見 spec item 5),
+# 以及 compute_player_sizes(算每位球員身高體重在整份名單裡的排名百分位
+# ——2026-10 發現這個百分位不能跟 body_fit.percentile_normalize_body 給
+# 10 人對照表用的百分位共用,見 archetype.py 檔頭;這支函式本身保留給
+# 自己的測試用,結果頁已經改用 compute_user_size)。
 # 可手動調整的變數：無——這支檔案裡的座標資料都是為了驗證公式而設計的
 # 測試案例,不是要調的參數。
 
 import unittest
 
-from engine.archetype import classify_archetype, classify_archetype_by_majority, compute_player_sizes
+from engine.archetype import (
+    ARCHETYPE_SPREAD_THRESHOLD,
+    classify_archetype,
+    classify_archetype_for_user,
+    compute_player_sizes,
+    compute_user_size,
+    style_axis_spread,
+)
 
 
 class ClassifyArchetypeTest(unittest.TestCase):
@@ -72,134 +83,151 @@ class ClassifyArchetypeTest(unittest.TestCase):
         self.assertEqual(result["id"], "a")
 
 
-class ClassifyArchetypeByMajorityTest(unittest.TestCase):
+class StyleAxisSpreadTest(unittest.TestCase):
+    def test_max_minus_min_over_the_five_style_axes_only(self):
+        # D is deliberately excluded -- a huge D-axis gap must not count.
+        coords = {"A": 10, "B1": 90, "B2": 50, "C1": 50, "C2": 50, "D": 0}
+        self.assertEqual(style_axis_spread(coords), 80)
+
+    def test_flat_answers_give_zero_spread(self):
+        coords = {"A": 50, "B1": 50, "B2": 50, "C1": 50, "C2": 50, "D": 50}
+        self.assertEqual(style_axis_spread(coords), 0)
+
+
+class ComputeUserSizeTest(unittest.TestCase):
+    # 2026-10 Task 7 checkpoint finding: ranking the user's raw height/weight
+    # within the player pool (the same method compute_player_sizes uses for
+    # players) collapses almost every simulated user to percentile ~0,
+    # because a typical self-reporting user (~175cm) falls below the
+    # shortest real NBA player (~185cm) -- see the plan's Task 7 report.
+    # compute_user_size instead fits a NORMAL distribution to the pool's own
+    # real height_cm/weight_kg (mean/sd from the pool itself) and reads the
+    # user's percentile off that curve, so it extrapolates smoothly below
+    # the pool's observed floor instead of collapsing everyone there to the
+    # same value. This is still the SAME 0-100 scale the archetype "size"
+    # anchors in data/zh/原型.json were calibrated on (compute_player_sizes'
+    # empirical rank and this normal approximation agree closely for values
+    # WITHIN the pool's own range; they diverge only below/above it, which is
+    # exactly the case compute_player_sizes couldn't handle).
+    POOL = [
+        {"id": "a", "body": {"height_cm": 190, "weight_kg": 90}},
+        {"id": "b", "body": {"height_cm": 210, "weight_kg": 110}},
+    ]
+    # height pool mean=200/sd=10, weight pool mean=100/sd=10 (by construction).
+
+    def test_user_at_the_pools_mean_gets_the_50th_percentile(self):
+        user_size = compute_user_size({"height_cm": 200, "weight_kg": 100}, self.POOL)
+
+        self.assertAlmostEqual(user_size, 50.0)
+
+    def test_user_below_the_pools_observed_minimum_gets_a_small_but_nonzero_value(self):
+        # 180cm is below BOTH pool members (190, 210) -- an empirical rank
+        # (compute_player_sizes' method) would give exactly 0 here. The
+        # normal-fit extrapolation must NOT collapse to 0.
+        user_size = compute_user_size({"height_cm": 180, "weight_kg": 80}, self.POOL)
+
+        self.assertGreater(user_size, 0.0)
+        self.assertLess(user_size, 10.0)  # still clearly "small" -- a long way below the mean
+        # hand-computed: z = (180-200)/10 = -2.0 for both fields ->
+        # 50*(1+erf(-2/sqrt(2))) = 50*(1+erf(-1.41421356)) ~= 2.275
+        self.assertAlmostEqual(user_size, 2.275, places=2)
+
+    def test_two_users_below_the_floor_still_get_different_differentiated_values(self):
+        # the whole point of the fix: two users BOTH below the pool's
+        # observed minimum must still get two DIFFERENT percentiles,
+        # ordered the same way their actual height/weight are ordered --
+        # not both collapsed to the same floor value.
+        higher = compute_user_size({"height_cm": 180, "weight_kg": 80}, self.POOL)
+        lower = compute_user_size({"height_cm": 160, "weight_kg": 60}, self.POOL)
+
+        self.assertGreater(higher, lower)
+        self.assertGreater(lower, 0.0)
+
+    def test_returns_none_when_user_body_missing_height_or_weight(self):
+        self.assertIsNone(compute_user_size({"height_cm": 180}, self.POOL))
+        self.assertIsNone(compute_user_size({}, self.POOL))
+
+    def test_returns_none_when_no_player_has_body_data(self):
+        players = [{"id": "a"}]
+        self.assertIsNone(compute_user_size({"height_cm": 180, "weight_kg": 75}, players))
+
+    def test_returns_none_when_fewer_than_two_players_have_body_data(self):
+        players = [{"id": "a", "body": {"height_cm": 190, "weight_kg": 90}}]
+        self.assertIsNone(compute_user_size({"height_cm": 180, "weight_kg": 75}, players))
+
+    def test_returns_none_when_pool_has_zero_variance(self):
+        # every player in the pool has the exact same height/weight -> sd=0
+        # -> a normal-distribution fit is undefined, not a division-by-zero
+        # crash.
+        players = [
+            {"id": "a", "body": {"height_cm": 200, "weight_kg": 100}},
+            {"id": "b", "body": {"height_cm": 200, "weight_kg": 100}},
+        ]
+        self.assertIsNone(compute_user_size({"height_cm": 190, "weight_kg": 90}, players))
+
+
+class ClassifyArchetypeForUserTest(unittest.TestCase):
     def setUp(self):
         self.archetypes = [
-            {"id": "a", "name_zh": "原型A", "flavor": "文案A", "coordinates": {"A": 90, "B1": 10, "B2": 0, "C1": 10, "C2": 0, "D": 10}},
-            {"id": "b", "name_zh": "原型B", "flavor": "文案B", "coordinates": {"A": 10, "B1": 90, "B2": 0, "C1": 10, "C2": 0, "D": 10}},
+            {"id": "guard_shape", "name_zh": "控球型", "coordinates": {"A": 90, "B1": 50, "B2": 10, "C1": 50, "C2": 10, "D": 50}, "size": 20},
+            {"id": "big_shape", "name_zh": "低位型", "coordinates": {"A": 10, "B1": 10, "B2": 90, "C1": 10, "C2": 50, "D": 50}, "size": 80},
         ]
 
-    def test_returns_the_archetype_shared_by_most_of_the_top_n_players(self):
-        ranked_players = [
-            {"coordinates": {"A": 88, "B1": 12, "B2": 0, "C1": 10, "C2": 0, "D": 10}},  # -> a
-            {"coordinates": {"A": 12, "B1": 88, "B2": 0, "C1": 10, "C2": 0, "D": 10}},  # -> b
-            {"coordinates": {"A": 85, "B1": 15, "B2": 0, "C1": 10, "C2": 0, "D": 10}},  # -> a
-            {"coordinates": {"A": 15, "B1": 85, "B2": 0, "C1": 10, "C2": 0, "D": 10}},  # -> b
-            {"coordinates": {"A": 92, "B1": 8, "B2": 0, "C1": 10, "C2": 0, "D": 10}},   # -> a
+    def test_high_spread_user_classified_by_relative_strength_ignoring_overall_level(self):
+        # overall level is very high across the board, but the SHAPE (A is
+        # the standout, by 50+ points over every other style axis) matches
+        # guard_shape's shape, not big_shape's -- a plain (non-recentered)
+        # distance would be dominated by the uniformly-high level instead.
+        coordinates = {"A": 95, "B1": 60, "B2": 20, "C1": 60, "C2": 20, "D": 60}
+        self.assertGreaterEqual(style_axis_spread(coordinates), ARCHETYPE_SPREAD_THRESHOLD)
+
+        archetype, mode = classify_archetype_for_user(coordinates, self.archetypes, size=25)
+
+        self.assertEqual(archetype["id"], "guard_shape")
+        self.assertEqual(mode, "relative_strength")
+
+    def test_low_spread_user_classified_by_size_alone(self):
+        # every style axis is close together (spread < 25) -- the shape
+        # carries no signal, so only size should decide the outcome.
+        coordinates = {"A": 50, "B1": 55, "B2": 52, "C1": 48, "C2": 53, "D": 50}
+        self.assertLess(style_axis_spread(coordinates), ARCHETYPE_SPREAD_THRESHOLD)
+
+        archetype, mode = classify_archetype_for_user(coordinates, self.archetypes, size=18)
+
+        self.assertEqual(archetype["id"], "guard_shape")  # size 20 is closer to 18 than 80 is
+        self.assertEqual(mode, "body_only")
+
+    def test_spread_exactly_at_threshold_uses_relative_strength(self):
+        # spec: >= 25 is relative-strength, so the boundary itself is inclusive.
+        coordinates = {"A": 50 + ARCHETYPE_SPREAD_THRESHOLD, "B1": 50, "B2": 50, "C1": 50, "C2": 50, "D": 50}
+        self.assertEqual(style_axis_spread(coordinates), ARCHETYPE_SPREAD_THRESHOLD)
+
+        _, mode = classify_archetype_for_user(coordinates, self.archetypes, size=50)
+
+        self.assertEqual(mode, "relative_strength")
+
+    def test_body_only_tie_breaks_on_ascending_archetype_id(self):
+        tied_archetypes = [
+            {"id": "z_archetype", "coordinates": {"A": 50, "B1": 50, "B2": 50, "C1": 50, "C2": 50, "D": 50}, "size": 40},
+            {"id": "a_archetype", "coordinates": {"A": 50, "B1": 50, "B2": 50, "C1": 50, "C2": 50, "D": 50}, "size": 60},
         ]
+        coordinates = {"A": 50, "B1": 50, "B2": 50, "C1": 50, "C2": 50, "D": 50}
 
-        result = classify_archetype_by_majority(ranked_players, self.archetypes, top_n=5)
+        archetype, mode = classify_archetype_for_user(coordinates, tied_archetypes, size=50)
 
-        self.assertEqual(result["id"], "a")
+        self.assertEqual(archetype["id"], "a_archetype")
+        self.assertEqual(mode, "body_only")
 
-    def test_ties_are_broken_by_the_closest_players_archetype(self):
-        # a genuine weight tie: rank-1 player alone gives "b" weight 4 (top_n),
-        # ranks 2+3 give "a" weight 3+2=5 -- not a tie. Use a split that ties
-        # under rank-weighting instead: rank1(b)=3, rank2(a)=2, rank3(a)=1 ->
-        # a=3, b=3. The #1 (closest) player belongs to "b", so "b" wins.
-        ranked_players = [
-            {"coordinates": {"A": 12, "B1": 88, "B2": 0, "C1": 10, "C2": 0, "D": 10}},  # -> b, rank 1, weight 3
-            {"coordinates": {"A": 88, "B1": 12, "B2": 0, "C1": 10, "C2": 0, "D": 10}},  # -> a, rank 2, weight 2
-            {"coordinates": {"A": 85, "B1": 15, "B2": 0, "C1": 10, "C2": 0, "D": 10}},  # -> a, rank 3, weight 1
-        ]
+    def test_body_only_falls_back_to_relative_strength_when_size_is_none(self):
+        coordinates = {"A": 50, "B1": 55, "B2": 52, "C1": 48, "C2": 53, "D": 50}
 
-        result = classify_archetype_by_majority(ranked_players, self.archetypes, top_n=3)
+        archetype, mode = classify_archetype_for_user(coordinates, self.archetypes, size=None)
 
-        self.assertEqual(result["id"], "b")
+        self.assertEqual(mode, "relative_strength")
 
-    def test_closer_players_outweigh_a_larger_count_of_farther_players(self):
-        # the top 2 (closest) players both say "a"; the next 3 (farther)
-        # all say "b" -- a plain unweighted vote would give "b" 3 votes to
-        # 2, but the closer pair's opinion should count for more (2026-10
-        # fix: a plurality among distant neighbors used to outvote a clear
-        # agreement among the closest, closer-displayed players).
-        ranked_players = [
-            {"coordinates": {"A": 88, "B1": 12, "B2": 0, "C1": 10, "C2": 0, "D": 10}},  # -> a, rank 1, weight 5
-            {"coordinates": {"A": 85, "B1": 15, "B2": 0, "C1": 10, "C2": 0, "D": 10}},  # -> a, rank 2, weight 4
-            {"coordinates": {"A": 12, "B1": 88, "B2": 0, "C1": 10, "C2": 0, "D": 10}},  # -> b, rank 3, weight 3
-            {"coordinates": {"A": 15, "B1": 85, "B2": 0, "C1": 10, "C2": 0, "D": 10}},  # -> b, rank 4, weight 2
-            {"coordinates": {"A": 18, "B1": 82, "B2": 0, "C1": 10, "C2": 0, "D": 10}},  # -> b, rank 5, weight 1
-        ]
-
-        result = classify_archetype_by_majority(ranked_players, self.archetypes, top_n=5)
-
-        self.assertEqual(result["id"], "a")
-
-    def test_uses_player_sizes_when_present(self):
-        archetypes = [
-            {"id": "a", "coordinates": {"A": 50, "B1": 50, "B2": 0, "C1": 50, "C2": 0, "D": 50}, "size": 20},
-            {"id": "b", "coordinates": {"A": 50, "B1": 50, "B2": 0, "C1": 50, "C2": 0, "D": 50}, "size": 80},
-        ]
-        ranked_players = [
-            {"id": "p1", "coordinates": {"A": 50, "B1": 50, "B2": 0, "C1": 50, "C2": 0, "D": 50}},
-        ]
-
-        result = classify_archetype_by_majority(ranked_players, archetypes, player_sizes={"p1": 15}, top_n=1)
-
-        self.assertEqual(result["id"], "a")
-
-    def test_falls_back_to_style_only_when_player_sizes_is_none(self):
-        archetypes = [
-            {"id": "a", "coordinates": {"A": 90, "B1": 10, "B2": 0, "C1": 10, "C2": 0, "D": 10}, "size": 80},
-            {"id": "b", "coordinates": {"A": 10, "B1": 90, "B2": 0, "C1": 10, "C2": 0, "D": 10}, "size": 20},
-        ]
-        ranked_players = [
-            {"id": "p1", "coordinates": {"A": 88, "B1": 12, "B2": 0, "C1": 10, "C2": 0, "D": 10}},
-        ]
-
-        result = classify_archetype_by_majority(ranked_players, archetypes, player_sizes=None, top_n=1)
-
-        self.assertEqual(result["id"], "a")
-
-    def test_falls_back_to_style_only_when_player_missing_from_player_sizes(self):
-        archetypes = [
-            {"id": "a", "coordinates": {"A": 90, "B1": 10, "B2": 0, "C1": 10, "C2": 0, "D": 10}, "size": 80},
-            {"id": "b", "coordinates": {"A": 10, "B1": 90, "B2": 0, "C1": 10, "C2": 0, "D": 10}, "size": 20},
-        ]
-        ranked_players = [
-            {"id": "p1", "coordinates": {"A": 88, "B1": 12, "B2": 0, "C1": 10, "C2": 0, "D": 10}},
-        ]
-
-        # player_sizes is non-empty but has no entry for "p1" specifically.
-        result = classify_archetype_by_majority(ranked_players, archetypes, player_sizes={"someone_else": 50}, top_n=1)
-
-        self.assertEqual(result["id"], "a")
-
-    def test_only_considers_the_top_n_players_not_the_full_list(self):
-        ranked_players = [
-            {"coordinates": {"A": 88, "B1": 12, "B2": 0, "C1": 10, "C2": 0, "D": 10}},  # -> a
-            {"coordinates": {"A": 85, "B1": 15, "B2": 0, "C1": 10, "C2": 0, "D": 10}},  # -> a
-            {"coordinates": {"A": 92, "B1": 8, "B2": 0, "C1": 10, "C2": 0, "D": 10}},   # -> a
-            {"coordinates": {"A": 12, "B1": 88, "B2": 0, "C1": 10, "C2": 0, "D": 10}},  # -> b, excluded by top_n=3
-        ]
-
-        result = classify_archetype_by_majority(ranked_players, self.archetypes, top_n=3)
-
-        self.assertEqual(result["id"], "a")
-
-    def test_works_with_fewer_players_than_top_n(self):
-        ranked_players = [
-            {"coordinates": {"A": 88, "B1": 12, "B2": 0, "C1": 10, "C2": 0, "D": 10}},
-        ]
-
-        result = classify_archetype_by_majority(ranked_players, self.archetypes, top_n=5)
-
-        self.assertEqual(result["id"], "a")
-
-    def test_raises_when_ranked_players_is_empty(self):
+    def test_raises_when_archetypes_is_empty(self):
         with self.assertRaises(ValueError):
-            classify_archetype_by_majority([], self.archetypes, top_n=5)
-
-    def test_default_top_n_is_five(self):
-        ranked_players = (
-            [{"coordinates": {"A": 88, "B1": 12, "B2": 0, "C1": 10, "C2": 0, "D": 10}}] * 3
-            + [{"coordinates": {"A": 12, "B1": 88, "B2": 0, "C1": 10, "C2": 0, "D": 10}}] * 2
-            + [{"coordinates": {"A": 12, "B1": 88, "B2": 0, "C1": 10, "C2": 0, "D": 10}}] * 10
-        )
-
-        result = classify_archetype_by_majority(ranked_players, self.archetypes)
-
-        self.assertEqual(result["id"], "a")
+            classify_archetype_for_user({"A": 50, "B1": 50, "B2": 50, "C1": 50, "C2": 50, "D": 50}, [])
 
 
 class ComputePlayerSizesTest(unittest.TestCase):
