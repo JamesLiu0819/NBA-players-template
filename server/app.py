@@ -11,18 +11,13 @@
 #                             的訓練計劃(training_plans,依環境代碼分三組,每組
 #                             前 5 項技能,內含難度級別與訓練菜單內容)。
 #                             不需要使用者另外作答技能行為題或選環境,環境是
-#                             前端在結果頁底部切換,不用重新送出。原型直接拿使用者
-#                             自己的六軸座標比對 archetypes.json 的原型錨點
-#                             (engine/archetype.py 的 classify_archetype_for_user),
-#                             不再透過 10 人對照表的真人球員投票(舊設計的問題：
-#                             答案很平的使用者會被分類到鄰近球員剛好落在哪個
-#                             原型,跟使用者自己的特質無關)。座標高低差(五個
-#                             技術軸,不含 D)達到門檻(ARCHETYPE_SPREAD_THRESHOLD)
-#                             代表使用者有明顯主打方向,用「打法形狀」分類
-#                             (兩邊都先各自去除自己的五軸平均值,只比較相對強弱);
-#                             沒有明顯主打方向就改用身材分數單獨比對,回傳的
-#                             archetype_mode 會標示是哪一種(2026-10 討論,詳見
-#                             spec item 5)。一句話球探報告就是原型的
+#                             前端在結果頁底部切換,不用重新送出。原型不是直接拿使用者
+#                             座標比對 archetypes.json 的原型錨點,而是
+#                             把 10 人對照表前 5 位最相似的真人球員各自分類到
+#                             最近的原型後投票多數決(engine/archetype.py 的
+#                             classify_archetype_by_majority),確保原型標籤
+#                             一定跟畫面上顯示的球員一致,不會各算各的
+#                             (2026-09-13 討論)。一句話球探報告就是原型的
 #                             flavor 文案,不含成長建議——成長建議已經會顯示
 #                             在 10 人表#1 的卡片上,headline 再講一次是重複
 #                             資訊(2026-10 清掉 build_scouting_report 裡算了
@@ -92,7 +87,7 @@ sys.path.insert(0, str(ROOT))
 from flask import Flask, jsonify, request, send_from_directory  # noqa: E402
 
 from db import increment_visit_count, init_db, save_feedback  # noqa: E402
-from engine.archetype import classify_archetype_for_user, compute_user_size  # noqa: E402
+from engine.archetype import classify_archetype_by_majority, compute_player_sizes  # noqa: E402
 from engine.axis_position import score_axis_coordinates  # noqa: E402
 from engine.body_fit import (  # noqa: E402
     collect_body_measurements,
@@ -228,7 +223,7 @@ def compute_template_results(payload, questions, players, skills, archetypes, dr
         if body_answers else {}
     )
     body_field_ranges = {q["field"]: (q["min"], q["max"]) for q in questions["body_measurements"]}
-    user_size = compute_user_size(user_body, players)
+    player_sizes = compute_player_sizes(players)
     user_body_pct, players_pct, body_field_ranges_pct = percentile_normalize_body(
         user_body, players, body_field_ranges
     )
@@ -262,12 +257,11 @@ def compute_template_results(payload, questions, players, skills, archetypes, dr
             },
         })
 
-    archetype, archetype_mode = classify_archetype_for_user(coordinates, archetypes, size=user_size)
+    archetype = classify_archetype_by_majority(ranked_players, archetypes, player_sizes=player_sizes)
 
     return {
         "coordinates": coordinates,
         "archetype": {"name_zh": archetype["name_zh"], "flavor": archetype["flavor"]},
-        "archetype_mode": archetype_mode,
         "scouting_report": (
             build_scouting_report(archetype) if ranked_players else None
         ),

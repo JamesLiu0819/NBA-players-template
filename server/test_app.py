@@ -71,17 +71,6 @@ class TemplateResultsTest(unittest.TestCase):
         self.assertNotIn("priorities", data)
         self.assertNotIn("dominant_factor_sentence", data)
 
-    def test_response_includes_an_archetype_mode(self):
-        payload = {
-            "axis_answers": build_axis_answers(self.questions),
-            "body_answers": build_body_answers(self.questions),
-        }
-
-        response = self.client.post("/api/template-results", json=payload)
-        data = response.get_json()
-
-        self.assertIn(data["archetype_mode"], ("relative_strength", "body_only"))
-
     def test_one_survey_produces_a_full_result_without_any_skill_questions(self):
         payload = {
             "axis_answers": build_axis_answers(self.questions),

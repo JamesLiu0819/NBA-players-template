@@ -21,9 +21,7 @@
   zh/                  # 繁體中文，預設語言
     球員.json           # 現役球員庫（離線建置產物，勿手改，改 scripts/）
     歷史球員.json        # 歷史球員庫，同一套 schema，team 欄位改放代表年份
-    原型.json           # 球場定位原型錨點（直接比對使用者座標分類用，見 engine/archetype.py
-                        # 的 classify_archetype_for_user；2026-10 以前是真人球員多數決分類，
-                        # 已移除）
+    原型.json           # 球場定位原型錨點（多數決分類用，見 engine/archetype.py）
     技能.json           # 技能庫 + 成本 C_i + 驗收指標
     題庫.json           # 問診題庫 + 分支規則（目前 18 題，見檔案內 _description）
     訓練菜單.json        # 技能 × 難度（entry/advanced/mastery）的訓練項目骨架，文案待填
