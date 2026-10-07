@@ -214,7 +214,7 @@
     },
     {
       "id": "off_ball_movement",
-      "name_zh": "Off-Ball Movement / Screen Usage",
+      "name_zh": "Off-Ball Movement via Screens",
       "category": "offense",
       "cost_C": 2,
       "court_required": true,

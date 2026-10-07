@@ -214,7 +214,7 @@
     },
     {
       "id": "off_ball_movement",
-      "name_zh": "无球跑动/利用掩护",
+      "name_zh": "掩护无球跑动",
       "category": "offense",
       "cost_C": 2,
       "court_required": true,
