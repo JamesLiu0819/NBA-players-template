@@ -131,6 +131,50 @@ def _normal_cdf_percentile(value, mean, sd):
 
 TALL_ATHLETE_THRESHOLD_Z = 1.25
 
+# 2026-10 分段比較門檻（spec item 1）：使用者在門檻以下時，球員用「在自己
+# 那個球員池內排第幾」取代常態分布百分位，避免身材比重幾乎占滿距離平方的
+# 六成、把所有使用者拉向池子裡最矮最輕的幾位球員。兩組門檻各以現有的
+# TALL_ATHLETE_THRESHOLD_Z 門檻（190cm／93kg）為中心，前後 10 個單位線性
+# 過渡，是暫定值，之後要調整就直接改這四個數字。
+HEIGHT_TRANSITION_LOW = 185.0
+HEIGHT_TRANSITION_HIGH = 195.0
+WEIGHT_TRANSITION_LOW = 88.0
+WEIGHT_TRANSITION_HIGH = 98.0
+
+TRANSITION_BOUNDS = {
+    "height_cm": (HEIGHT_TRANSITION_LOW, HEIGHT_TRANSITION_HIGH),
+    "weight_kg": (WEIGHT_TRANSITION_LOW, WEIGHT_TRANSITION_HIGH),
+}
+
+
+def _transition_weight(value, low, high):
+    """0 at/below low, 1 at/above high, linear in between -- how much a
+    player's percentile for this field should come from the population
+    curve (_tail_capped_percentile) versus from ranking within the player
+    pool (_empirical_percentile_within_pool), based on the USER's own raw
+    value for this field."""
+    if value <= low:
+        return 0.0
+    if value >= high:
+        return 1.0
+    return (value - low) / (high - low)
+
+
+def _empirical_percentile_within_pool(value, pool_values):
+    """Percentile (0-100) of value within pool_values, mean-rank method (a
+    tie counts as half a rank) -- mirrors engine/archetype.py's
+    _empirical_percentile, duplicated here rather than imported: this
+    module stays self-contained (L1, no cross-module dependency), and the
+    two percentiles serve different purposes even though the formula is
+    the same shape.
+
+    A single-element pool returns 50.0 (the value is simultaneously the
+    pool's min and max; there is no meaningful rank to report).
+    """
+    below = sum(1 for v in pool_values if v < value)
+    equal = sum(1 for v in pool_values if v == value)
+    return (below + 0.5 * equal) / len(pool_values) * 100
+
 
 def _tail_capped_percentile(value, mean, sd, field_max, threshold_z=TALL_ATHLETE_THRESHOLD_Z):
     """Percentile (0-100) of value under a normal(mean, sd) distribution,
@@ -167,6 +211,19 @@ def percentile_normalize_body(user_body, players, field_ranges):
     why using two different curves (continuous for the user, empirical
     rank-within-pool for players) produced incomparable numbers.
 
+    2026-10 (spec item 1): a player's percentile for height_cm/weight_kg is
+    no longer always the population tail-capped curve. It's a blend between
+    that curve and the player's rank WITHIN THIS SPECIFIC players POOL
+    (_empirical_percentile_within_pool), weighted by where the USER's own
+    raw value for that field falls relative to TRANSITION_BOUNDS[field]: at
+    or below the low bound, players are ranked purely within the pool (a
+    "how do you compare to other recreational players" framing on both
+    sides); at or above the high bound, this reproduces today's behavior
+    exactly (both sides on the same population curve); linear in between.
+    The user's OWN percentile is never blended -- always the plain
+    population curve, as before. Only height_cm/weight_kg are affected;
+    every other field is untouched, same as before.
+
     Only fields present in both GENERAL_POPULATION_BODY_STATS and
     field_ranges are converted; every other field (wingspan_cm,
     standing_reach_cm, running_vertical_reach_cm, sprint_100m_seconds --
@@ -181,7 +238,7 @@ def percentile_normalize_body(user_body, players, field_ranges):
     if not percentile_fields:
         return user_body, players, field_ranges
 
-    def to_percentile(field, raw_value):
+    def tail_pct(field, raw_value):
         mean, sd = GENERAL_POPULATION_BODY_STATS[field]
         field_max = field_ranges[field][1]
         return _tail_capped_percentile(raw_value, mean, sd, field_max)
@@ -190,15 +247,34 @@ def percentile_normalize_body(user_body, players, field_ranges):
     new_field_ranges = dict(field_ranges)
     for field in percentile_fields:
         if field in user_body:
-            new_user_body[field] = to_percentile(field, user_body[field])
+            new_user_body[field] = tail_pct(field, user_body[field])
         new_field_ranges[field] = (0, 100)
+
+    # Pool of raw values per field, collected BEFORE any conversion -- needed
+    # for the within-pool percentile and must never see already-converted
+    # values from a previous call.
+    pool_raw_values = {
+        field: [player["body"][field] for player in players if field in player.get("body", {})]
+        for field in percentile_fields
+    }
+    transition_weight = {
+        field: (
+            _transition_weight(user_body[field], *TRANSITION_BOUNDS[field])
+            if field in user_body else 1.0  # no user value to decide the blend -> old behavior
+        )
+        for field in percentile_fields
+    }
 
     new_players = []
     for player in players:
         body = dict(player.get("body", {}))
         for field in percentile_fields:
-            if field in body:
-                body[field] = to_percentile(field, body[field])
+            if field not in body:
+                continue
+            w = transition_weight[field]
+            pool_pct = _empirical_percentile_within_pool(body[field], pool_raw_values[field])
+            population_pct = tail_pct(field, body[field])
+            body[field] = (1 - w) * pool_pct + w * population_pct
         new_players.append({**player, "body": body})
 
     return new_user_body, new_players, new_field_ranges

@@ -8,8 +8,14 @@ import unittest
 from engine.body_fit import (
     GENERAL_POPULATION_BODY_STATS,
     TALL_ATHLETE_THRESHOLD_Z,
+    HEIGHT_TRANSITION_HIGH,
+    HEIGHT_TRANSITION_LOW,
+    WEIGHT_TRANSITION_HIGH,
+    WEIGHT_TRANSITION_LOW,
+    _empirical_percentile_within_pool,
     _normal_cdf_percentile,
     _tail_capped_percentile,
+    _transition_weight,
     body_distance,
     collect_body_measurements,
     missing_required_body_fields,
@@ -196,14 +202,24 @@ class PercentileNormalizeBodyTest(unittest.TestCase):
         )
         self.assertEqual(new_user_body["wingspan_cm"], 193)
 
-        self.assertAlmostEqual(
-            new_players[0]["body"]["height_cm"],
-            _tail_capped_percentile(190, height_mean, height_sd, field_max=230),
-        )
-        self.assertAlmostEqual(
-            new_players[1]["body"]["height_cm"],
-            _tail_capped_percentile(210, height_mean, height_sd, field_max=230),
-        )
+        # User height 188 is in transition zone (185-195), so players are blended
+        w_height = _transition_weight(188, HEIGHT_TRANSITION_LOW, HEIGHT_TRANSITION_HIGH)
+        pool_heights = [190, 210]
+        pool_pct_p1 = _empirical_percentile_within_pool(190, pool_heights)
+        pop_pct_p1 = _tail_capped_percentile(190, height_mean, height_sd, field_max=230)
+        expected_p1_height = (1 - w_height) * pool_pct_p1 + w_height * pop_pct_p1
+        self.assertAlmostEqual(new_players[0]["body"]["height_cm"], expected_p1_height)
+
+        pool_pct_p2 = _empirical_percentile_within_pool(210, pool_heights)
+        pop_pct_p2 = _tail_capped_percentile(210, height_mean, height_sd, field_max=230)
+        expected_p2_height = (1 - w_height) * pool_pct_p2 + w_height * pop_pct_p2
+        self.assertAlmostEqual(new_players[1]["body"]["height_cm"], expected_p2_height)
+
+        # User weight 75 is below WEIGHT_TRANSITION_LOW (88), so players are pure pool rank
+        pool_weights = [80, 100]
+        pool_pct_w_p1 = _empirical_percentile_within_pool(80, pool_weights)
+        self.assertAlmostEqual(new_players[0]["body"]["weight_kg"], pool_pct_w_p1)
+
         self.assertEqual(new_players[0]["body"]["wingspan_cm"], 195)
         self.assertEqual(new_players[0]["id"], "p1")
 
@@ -234,6 +250,80 @@ class PercentileNormalizeBodyTest(unittest.TestCase):
         self.assertEqual(new_user_body, user_body)
         self.assertEqual(new_players, players)
         self.assertEqual(new_field_ranges, field_ranges)
+
+    def test_short_user_gets_players_ranked_within_pool_not_population_percentile(self):
+        # user height 175 is at/below HEIGHT_TRANSITION_LOW (185), so every
+        # player's height percentile must come ENTIRELY from
+        # _empirical_percentile_within_pool over this specific players list,
+        # not from _tail_capped_percentile against the general population.
+        field_ranges = {"height_cm": (140, 230), "weight_kg": (35, 160)}
+        user_body = {"height_cm": 175, "weight_kg": 70}
+        players = [
+            {"id": "shortest", "body": {"height_cm": 180, "weight_kg": 70}},
+            {"id": "middle", "body": {"height_cm": 200, "weight_kg": 90}},
+            {"id": "tallest", "body": {"height_cm": 220, "weight_kg": 110}},
+        ]
+
+        new_user_body, new_players, _ = percentile_normalize_body(user_body, players, field_ranges)
+
+        pool_heights = [180, 200, 220]
+        for player, raw_height in zip(new_players, pool_heights):
+            expected = _empirical_percentile_within_pool(raw_height, pool_heights)
+            self.assertAlmostEqual(player["body"]["height_cm"], expected)
+        # the user's own percentile is UNCHANGED -- still the population curve.
+        height_mean, height_sd = GENERAL_POPULATION_BODY_STATS["height_cm"]
+        self.assertAlmostEqual(
+            new_user_body["height_cm"],
+            _tail_capped_percentile(175, height_mean, height_sd, field_max=230),
+        )
+
+    def test_tall_user_gets_players_on_the_population_curve_same_as_before(self):
+        # user height 206 is at/above HEIGHT_TRANSITION_HIGH (195), so this
+        # must reproduce today's behavior exactly (the 2026-10 "two curves
+        # must agree" fix this module already has).
+        field_ranges = {"height_cm": (140, 230)}
+        user_body = {"height_cm": 206}
+        players = [{"id": "p1", "body": {"height_cm": 206}}]
+
+        new_user_body, new_players, _ = percentile_normalize_body(user_body, players, field_ranges)
+
+        self.assertAlmostEqual(new_user_body["height_cm"], new_players[0]["body"]["height_cm"])
+
+    def test_mid_transition_user_blends_both_curves(self):
+        field_ranges = {"height_cm": (140, 230)}
+        user_body = {"height_cm": 190}  # exact midpoint of 185-195
+        players = [{"id": "p1", "body": {"height_cm": 200}}]
+
+        new_user_body, new_players, _ = percentile_normalize_body(user_body, players, field_ranges)
+
+        height_mean, height_sd = GENERAL_POPULATION_BODY_STATS["height_cm"]
+        tail_pct = _tail_capped_percentile(200, height_mean, height_sd, field_max=230)
+        pool_pct = _empirical_percentile_within_pool(200, [200])
+        expected = 0.5 * pool_pct + 0.5 * tail_pct
+        self.assertAlmostEqual(new_players[0]["body"]["height_cm"], expected)
+
+    def test_height_and_weight_blend_independently(self):
+        # a user short in height (175, below HEIGHT_TRANSITION_LOW=185) but
+        # heavy (95kg, inside the WEIGHT transition band 88-98) must get a
+        # pure pool-rank blend for height and a genuinely mixed blend for
+        # weight in the SAME call -- the two fields must not share one
+        # overall "how tall-ish is this user" weight.
+        field_ranges = {"height_cm": (140, 230), "weight_kg": (35, 160)}
+        user_body = {"height_cm": 175, "weight_kg": 95}
+        players = [{"id": "p1", "body": {"height_cm": 200, "weight_kg": 100}}]
+
+        new_user_body, new_players, _ = percentile_normalize_body(user_body, players, field_ranges)
+
+        height_mean, height_sd = GENERAL_POPULATION_BODY_STATS["height_cm"]
+        weight_mean, weight_sd = GENERAL_POPULATION_BODY_STATS["weight_kg"]
+        expected_height = _empirical_percentile_within_pool(200, [200])  # w=0, pure pool rank
+        w_weight = _transition_weight(95, WEIGHT_TRANSITION_LOW, WEIGHT_TRANSITION_HIGH)
+        expected_weight = (
+            (1 - w_weight) * _empirical_percentile_within_pool(100, [100])
+            + w_weight * _tail_capped_percentile(100, weight_mean, weight_sd, field_max=160)
+        )
+        self.assertAlmostEqual(new_players[0]["body"]["height_cm"], expected_height)
+        self.assertAlmostEqual(new_players[0]["body"]["weight_kg"], expected_weight)
 
 
 REQUIRED_QUESTIONS = [
@@ -275,6 +365,33 @@ class MissingRequiredBodyFieldsTest(unittest.TestCase):
         result = missing_required_body_fields(QUESTIONS, [])
 
         self.assertEqual(result, [])
+
+
+class TransitionWeightTest(unittest.TestCase):
+    def test_at_or_below_low_bound_is_zero(self):
+        self.assertEqual(_transition_weight(180, 185, 195), 0.0)
+        self.assertEqual(_transition_weight(185, 185, 195), 0.0)
+
+    def test_at_or_above_high_bound_is_one(self):
+        self.assertEqual(_transition_weight(195, 185, 195), 1.0)
+        self.assertEqual(_transition_weight(210, 185, 195), 1.0)
+
+    def test_linear_in_between(self):
+        self.assertAlmostEqual(_transition_weight(190, 185, 195), 0.5)
+
+
+class EmpiricalPercentileWithinPoolTest(unittest.TestCase):
+    def test_lowest_value_in_pool_is_near_zero(self):
+        self.assertLess(_empirical_percentile_within_pool(170, [170, 180, 190, 200]), 20)
+
+    def test_highest_value_in_pool_is_near_100(self):
+        self.assertGreater(_empirical_percentile_within_pool(200, [170, 180, 190, 200]), 80)
+
+    def test_single_player_pool_does_not_crash(self):
+        self.assertEqual(_empirical_percentile_within_pool(190, [190]), 50.0)
+
+    def test_tied_values_count_as_half_rank(self):
+        self.assertEqual(_empirical_percentile_within_pool(190, [180, 190, 190, 200]), 50.0)
 
 
 if __name__ == "__main__":
