@@ -30,6 +30,13 @@
 # 裡標 "required": true 的題目)是 engine/archetype.py 體型分數的必要輸入,沒填
 # 就無法算,所以後端在算模板結果前要先擋掉;其餘身材題維持選填,省略不算錯
 # (2026-10 討論)。
+# 2026-10 分段比較門檻(spec item 1,解決上面「身材幾乎永遠配到池子裡最矮/最輕
+# 的球員」的問題):percentile_normalize_body 不再讓球員永遠套用上面同一套人口
+# 常態分布曲線,改成依「使用者自己」的身高/體重落在 HEIGHT_TRANSITION_LOW/HIGH、
+# WEIGHT_TRANSITION_LOW/HIGH 哪個區間,決定球員的百分位要用池內排名
+# (_empirical_percentile_within_pool)、人口常態分布,還是兩者線性混合——使用者
+# 自己的百分位永遠不變,還是用上面的常態分布曲線。細節跟四個新常數的說明見
+# TRANSITION_BOUNDS 定義前後的註解。
 
 """L1 body-measurement layer + a generic common-field distance function.
 

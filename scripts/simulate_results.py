@@ -36,6 +36,8 @@ from app import (  # noqa: E402
     load_data,
     load_drills,
 )
+from engine.archetype import classify_archetype_for_user, compute_user_size  # noqa: E402
+from engine.axis_position import score_axis_coordinates  # noqa: E402
 
 DEFAULT_HEIGHT_MEAN = 175.0
 DEFAULT_HEIGHT_SD = 7.0
@@ -152,13 +154,64 @@ def check_206_113_case(pool, lang="zh"):
     print(f"206cm/113kg body-fit template ({pool}): {body_fit}")
 
 
+def run_flat_answer_archetype_check(pool, n, seed, lang="zh", fixed_score=3):
+    """Spec item 5 / acceptance criterion: ~n users who answer every axis
+    question with the SAME fixed score (so style_axis_spread is always 0 --
+    everyone lands in classify_archetype_for_user's body-only branch), with
+    height/weight drawn from the same calibration distribution as the rest
+    of this harness. Reports the resulting archetype id distribution and the
+    max single-archetype share -- the acceptance bar is <= 40%. Uses the
+    exact same engine functions compute_template_results calls internally
+    (score_axis_coordinates, compute_user_size, classify_archetype_for_user),
+    just without the HTTP-shaped payload, so the archetype "id" (not exposed
+    on compute_template_results' trimmed response dict) is available to
+    tally directly.
+    """
+    rng = random.Random(seed)
+    questions, skills, players = load_data(pool=pool, lang=lang)
+    archetypes = load_archetypes(lang)
+    body_by_field = {q["field"]: q for q in questions["body_measurements"]}
+    height_q = body_by_field["height_cm"]
+    weight_q = body_by_field["weight_kg"]
+
+    archetype_counter = Counter()
+    mode_counter = Counter()
+    for _ in range(n):
+        axis_answers = [
+            {"question_id": q["id"], "score": fixed_score} for q in questions["axis_positioning"]
+        ]
+        coordinates = score_axis_coordinates(questions["axis_positioning"], axis_answers)
+        height = min(height_q["max"], max(height_q["min"], rng.gauss(DEFAULT_HEIGHT_MEAN, DEFAULT_HEIGHT_SD)))
+        weight = min(weight_q["max"], max(weight_q["min"], rng.gauss(DEFAULT_WEIGHT_MEAN, DEFAULT_WEIGHT_SD)))
+        user_body = {"height_cm": round(height, 1), "weight_kg": round(weight, 1)}
+        user_size = compute_user_size(user_body, players)
+        archetype, mode = classify_archetype_for_user(coordinates, archetypes, size=user_size)
+        archetype_counter[archetype["id"]] += 1
+        mode_counter[mode] += 1
+
+    print(f"pool={pool} n={n} seed={seed} fixed_score={fixed_score}")
+    print(f"  mode distribution: {dict(mode_counter)}")
+    print(f"  archetype distribution: {dict(sorted(archetype_counter.items(), key=lambda kv: -kv[1]))}")
+    top_id, top_count = archetype_counter.most_common(1)[0]
+    print(f"  max single-archetype share: {top_id} at {top_count / n * 100:.1f}%")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--pool", choices=["current", "alltime"], default="current")
     parser.add_argument("--n", type=int, default=900)
     parser.add_argument("--seed", type=int, default=20261007)
     parser.add_argument("--lang", default="zh")
+    parser.add_argument(
+        "--flat-answer-check", action="store_true",
+        help="run the flat-answer archetype distribution check instead of the main simulation",
+    )
+    parser.add_argument("--fixed-score", type=int, default=3, help="the fixed 1-5 score used by --flat-answer-check")
     args = parser.parse_args()
+
+    if args.flat_answer_check:
+        run_flat_answer_archetype_check(args.pool, args.n, args.seed, args.lang, args.fixed_score)
+        return
 
     run_simulation(args.pool, args.n, args.seed, args.lang)
     check_206_113_case(args.pool, args.lang)

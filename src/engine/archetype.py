@@ -43,6 +43,21 @@
 # 自己的 docstring 裡,呼叫端是 server/app.py、scripts/run_player_match.py)。
 # spec 目前只要求移除 classify_archetype_by_majority,compute_player_sizes
 # 本身保留,沒有跟著刪。
+#
+# 2026-10 Task 9 驗收發現（尚未修正，記錄給之後處理）：全選同一分數的使用者
+# （身材從 N(175,7)/N(70,12) 抽樣）在 compute_user_size 底下仍有約 99.7% 落在
+# 同一個原型（combo_scorer,size=25,全部原型裡最小的錨點）,遠超驗收標準的
+# 40% 上限。原因跟 Task 7 checkpoint 當時發現的問題同一個根源,只是沒有真正解決：
+# compute_user_size 是對「球員池自己的身高體重」(現役池平均約 200cm)擬合常態
+# 分布,一般使用者（平均 175cm）距離球員池平均 2-3 個標準差,算出來的 size 幾乎
+# 全部落在 0 附近,而 25-87 的原型錨點裡沒有比 25 更小的錨點可以再往下分——不管
+# 哪個使用者,只要 size 小於 28（combo_scorer 跟下一個錨點 floor_general=31 的
+# 中點）都會收斂到同一個 combo_scorer。換成對一般人口分布(GENERAL_POPULATION_
+# BODY_STATS)算百分位可以把 size 的分布拉開(0.97-94,平均約 31,12 個原型都會
+# 被選到),但最大單一佔比仍有約 51%,一樣超過 40%——因為原型錨點本身在小尺寸
+# 這端的密度不夠,換百分位算法本身不足以解決,需要連同 data/原型.json 的 size
+# 錨點分布一起檢討,不是這支檔案能單獨修完的範圍。見
+# .superpowers/sdd/2026-10-07-result-accuracy-fixes/task-9-report.md。
 
 """L3-adjacent matching layer: nearest-neighbor archetype classification.
 
@@ -111,8 +126,10 @@ def compute_player_sizes(players):
     a different percentile meant for a different purpose.
 
     Players missing height_cm or weight_kg are omitted from the result; look
-    up with player_sizes.get(player_id) and treat a miss as "no size data"
-    (classify_archetype_by_majority already does this).
+    up with player_sizes.get(player_id) and treat a miss as "no size data".
+    (This function has no caller left in production code since 2026-10's
+    classify_archetype_by_majority removal -- only its own tests use it now;
+    see the module header for why it's kept anyway.)
     """
     with_body = [
         p for p in players

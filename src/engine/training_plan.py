@@ -1,9 +1,17 @@
 # 用途：L4 訓練計劃。對一位目標球員、一個聯賽環境,挑出 P 最高的前幾項技能,
 # 並判定每項該練的難度(entry/advanced/mastery)。
-# 可手動調整的變數(兩個門檻都是暫定值,還沒有用真實資料校準過):
+# 可手動調整的變數(三個門檻都是暫定值,還沒有用真實資料校準過):
 #   DIFFICULTY_ENTRY_BELOW：使用者在該軸的分數低於這個數字 → entry(入門)。
 #   DIFFICULTY_MASTERY_ABOVE：分數高於這個數字 → mastery(精熟);介於兩者之間 → advanced。
-# 要改難度分界就改這兩個常數,不用改判定邏輯。
+#   TRAINING_PLAN_RELATIVE_THRESHOLD：其餘項目(非招牌技能)裡,P 低於「其餘
+#   項目中最高 P」乘上這個比例就不列出,目前 0.25(25%)。
+# 要改難度分界就改前兩個常數,要改相對門檻就改第三個,都不用改判定邏輯。
+# 2026-10(spec item 2/3/4)：build_training_plan 現在一定要帶 signature_skill_id
+# (目標球員的招牌技能)——這一項固定排在清單第一位,不管自己的差距、成本或上面
+# 的相對門檻,也不受「差距 <= 0 就排除」的規則限制,確保換目標球員一定會換到
+# 清單第一項,而且清單永遠不會是空的(其餘項目一個都沒有時,只顯示招牌技能
+# 這一項)。其餘項目才依差距 > 0、P = G × E ÷ C 排序,並套用上面的相對門檻,
+# 總數上限(含招牌技能)由 top_n 決定。
 
 """L4 training plan: top-N skills by priority, each with a difficulty level.
 
