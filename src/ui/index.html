@@ -1069,6 +1069,77 @@
     margin-bottom: 0.45rem;
   }
 
+  /* 自選目標球員:搜尋框 + 下拉結果清單,不限於上方 10 位球員(2026-10 新增)。
+     結果清單絕對定位蓋在底下的內容上面,不佔版面高度。 */
+  .player-search { position: relative; margin-top: 0.6rem; }
+
+  .player-search-input-row { display: flex; gap: 0.5rem; align-items: center; }
+
+  #player-search-input {
+    flex: 1;
+    min-width: 0;
+    font: inherit;
+    padding: 0.5rem 0.6rem;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper-sunken);
+    color: var(--ink);
+  }
+
+  .player-search-results {
+    position: absolute;
+    z-index: 10;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 0.3rem;
+    max-height: 260px;
+    overflow-y: auto;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper-raised);
+    box-shadow: var(--shadow);
+  }
+
+  .player-search-results[hidden] { display: none; }
+
+  .player-search-result {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 0.5rem 0.7rem;
+    border: 0;
+    border-top: 1px solid var(--line);
+    background: none;
+    font: inherit;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .player-search-result:first-child { border-top: 0; }
+  .player-search-result:hover,
+  .player-search-result:focus-visible { background: var(--accent-wash); }
+
+  .player-search-result .team { margin-left: 0.4rem; color: var(--ink-soft); font-size: 0.82rem; }
+
+  .player-search-empty {
+    padding: 0.6rem 0.7rem;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+  }
+
+  .player-search-selected {
+    margin-top: 0.45rem;
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .player-search-selected strong { color: var(--accent-ink); font-weight: 700; }
+
   .selectable { cursor: pointer; }
   .selectable:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .selectable.is-selected { box-shadow: 0 0 0 2px var(--accent); }
@@ -1562,6 +1633,12 @@
       mostSuitable: "最貼合",
       envControlLabel: "聯賽環境",
       playerControlLabel: "目標球員",
+      playerSearchPlaceholder: "搜尋球員（不限於上方 10 位）",
+      playerSearchNoResults: "沒有符合的球員",
+      playerSearchClear: "清除",
+      playerSearchSelectedLabel: (name) => `自選：<strong>${name}</strong>`,
+      trainingPlanError: "訓練計劃讀取失敗，請再試一次。",
+      trainingPlanLoading: "讀取訓練計劃中…",
       envLabels: { collapsed_no_shooters: "內縮防守 / 缺乏射手", tight_perimeter_opp_shooters: "貼外線 / 對手有射手", zone_defense: "區域防守為主", no_environment: "無（不套用環境加權）" },
       levelLabels: { entry: "入門", advanced: "進階", mastery: "精熟" },
       signatureSkillLabel: "招牌技能",
@@ -1645,6 +1722,12 @@
       mostSuitable: "最贴合",
       envControlLabel: "联赛环境",
       playerControlLabel: "目标球员",
+      playerSearchPlaceholder: "搜索球员（不限于上方 10 位）",
+      playerSearchNoResults: "没有符合的球员",
+      playerSearchClear: "清除",
+      playerSearchSelectedLabel: (name) => `自选：<strong>${name}</strong>`,
+      trainingPlanError: "训练计划读取失败，请再试一次。",
+      trainingPlanLoading: "读取训练计划中…",
       envLabels: { collapsed_no_shooters: "内缩防守 / 缺乏射手", tight_perimeter_opp_shooters: "贴外线 / 对手有射手", zone_defense: "区域防守为主", no_environment: "无（不套用环境加权）" },
       levelLabels: { entry: "入门", advanced: "进阶", mastery: "精熟" },
       signatureSkillLabel: "招牌技能",
@@ -1728,6 +1811,12 @@
       mostSuitable: "Best Match",
       envControlLabel: "League Environment",
       playerControlLabel: "Target Player",
+      playerSearchPlaceholder: "Search any player (not just the 10 above)",
+      playerSearchNoResults: "No matching players",
+      playerSearchClear: "Clear",
+      playerSearchSelectedLabel: (name) => `Selected: <strong>${name}</strong>`,
+      trainingPlanError: "Couldn't load the training plan. Please try again.",
+      trainingPlanLoading: "Loading training plan…",
       envLabels: { collapsed_no_shooters: "Packed Defense / No Shooters", tight_perimeter_opp_shooters: "Tight Perimeter / Opponent Has Shooters", zone_defense: "Zone Defense", no_environment: "None (no weighting)" },
       levelLabels: { entry: "Entry", advanced: "Advanced", mastery: "Mastery" },
       signatureSkillLabel: "Signature Skill",
@@ -1750,6 +1839,9 @@
     results: null,
     selectedEnv: ENV_CODES[0],
     selectedPlayerIndex: 0,
+    customPlayerId: null,       // 自選目標球員(不在 10 人對照表裡)的 id,設定時優先於 selectedPlayerIndex
+    allPlayersCache: null,      // { pool, lang, players: [{id,name,team}] },搜尋清單,依 pool+lang 快取
+    customPlanCache: new Map(), // `${pool}|${lang}|${env}|${id}` -> /api/player-training-plan 回傳值,換環境/球員來回切換不用重打
     pool: "current",
     stage1StepIndex: 0,
     lang: SUPPORTED_LANGUAGES.includes(localStorage.getItem("lang"))
@@ -2448,28 +2540,126 @@
       </div>`;
   }
 
-  function renderTrainingSection() {
+  // ---- 自選目標球員(2026-10 新增):搜尋全部球員(不限於 10 人對照表),
+  // 挑一位之後走跟 10 人對照表完全一樣的訓練計劃格式,只是資料來自
+  // /api/player-training-plan 而不是 /api/template-results 裡現成的 training_plans。
+
+  // 搜尋清單依 pool+lang 快取,訓練頁第一次打開就先抓,打字時不用等。
+  async function ensureAllPlayersLoaded() {
+    const cache = state.allPlayersCache;
+    if (cache && cache.pool === state.pool && cache.lang === state.lang) return cache.players;
+    const res = await fetch(`/api/players?pool=${state.pool}&lang=${state.lang}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    state.allPlayersCache = { pool: state.pool, lang: state.lang, players: data.players };
+    return data.players;
+  }
+
+  function hidePlayerSearchResults() {
+    const el = document.getElementById("player-search-results");
+    if (el) el.hidden = true;
+  }
+
+  function renderPlayerSearchResults(matches) {
+    const el = document.getElementById("player-search-results");
+    el.innerHTML = matches.length === 0
+      ? `<p class="player-search-empty">${t().playerSearchNoResults}</p>`
+      : matches
+          .map((p) => `<button type="button" class="player-search-result" data-custom-player-id="${escapeHtml(p.id)}">${escapeHtml(p.name)}<span class="team">${escapeHtml(p.team)}</span></button>`)
+          .join("");
+    el.hidden = false;
+  }
+
+  async function handlePlayerSearchInput(e) {
+    const query = e.target.value.trim().toLowerCase();
+    if (!query) {
+      hidePlayerSearchResults();
+      return;
+    }
+    let players;
+    try {
+      players = await ensureAllPlayersLoaded();
+    } catch (err) {
+      return; // 抓清單失敗就先不顯示結果,不要用一個空清單蓋掉使用者還在打的字
+    }
+    renderPlayerSearchResults(players.filter((p) => p.name.toLowerCase().includes(query)).slice(0, 8));
+  }
+
+  // 同一個(pool, lang, env, 球員)在一次作答結果裡的教學計劃不會變,來回切換
+  // 環境或球員不用重打——但換一次新的作答(renderTemplateReport)一定要清掉,
+  // 不然舊座標算出來的計劃會被誤認成新座標的結果。
+  async function fetchCustomPlayerTrainingPlan(id) {
+    const key = `${state.pool}|${state.lang}|${state.selectedEnv}|${id}`;
+    if (state.customPlanCache.has(key)) return state.customPlanCache.get(key);
+    const res = await fetch("/api/player-training-plan", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        player_id: id,
+        coordinates: state.results.coordinates,
+        env: state.selectedEnv,
+        pool: state.pool,
+        lang: state.lang,
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+    state.customPlanCache.set(key, data);
+    return data;
+  }
+
+  async function selectCustomPlayer(id) {
+    state.customPlayerId = id;
+    document.getElementById("player-search-input").value = "";
+    hidePlayerSearchResults();
+    await renderTrainingSection();
+  }
+
+  function clearCustomPlayer() {
+    state.customPlayerId = null;
+    renderTrainingSection();
+  }
+
+  async function renderTrainingSection() {
     const data = state.results;
-    const player = data.top_10[state.selectedPlayerIndex];
     const s = t();
 
     document.getElementById("env-row").innerHTML = ENV_CODES
       .map((code) => choiceButtonHtml("data-env", code, s.envLabels[code], code === state.selectedEnv))
       .join("");
     document.getElementById("player-row").innerHTML = data.top_10
-      .map((m, i) => choiceButtonHtml("data-player-index", String(i), m.name, i === state.selectedPlayerIndex))
+      .map((m, i) => choiceButtonHtml("data-player-index", String(i), m.name, !state.customPlayerId && i === state.selectedPlayerIndex))
       .join("");
+    document.querySelectorAll(".match-list [data-player-index]").forEach((card) => {
+      card.classList.toggle("is-selected", !state.customPlayerId && Number(card.dataset.playerIndex) === state.selectedPlayerIndex);
+    });
 
     const body = document.getElementById("training-body");
+    const selectedTag = document.getElementById("player-search-selected");
+    selectedTag.hidden = true; // 只有自選球員成功載入時才顯示(下面的 try 區塊會再打開)
+
+    if (state.customPlayerId) {
+      const id = state.customPlayerId;
+      body.innerHTML = `<p class="training-empty">${s.trainingPlanLoading}</p>`;
+      try {
+        const custom = await fetchCustomPlayerTrainingPlan(id);
+        if (state.customPlayerId !== id) return; // 等待時又換了別的球員/環境,這次結果已經過期
+        body.innerHTML = renderTrainingBody(custom, custom.training_plan);
+        selectedTag.innerHTML = `${s.playerSearchSelectedLabel(escapeHtml(custom.name))} <button type="button" class="link-button" id="player-search-clear-btn">${s.playerSearchClear}</button>`;
+        selectedTag.hidden = false;
+      } catch (err) {
+        if (state.customPlayerId !== id) return;
+        body.innerHTML = `<p class="training-empty">${s.trainingPlanError}</p>`;
+      }
+      return;
+    }
+
+    const player = data.top_10[state.selectedPlayerIndex];
     if (!player) {
       body.innerHTML = "";
       return;
     }
     body.innerHTML = renderTrainingBody(player, player.training_plans[state.selectedEnv]);
-
-    document.querySelectorAll(".match-list [data-player-index]").forEach((card) => {
-      card.classList.toggle("is-selected", Number(card.dataset.playerIndex) === state.selectedPlayerIndex);
-    });
   }
 
   function handleReportClick(e) {
@@ -2479,8 +2669,18 @@
       renderTrainingSection();
       return;
     }
+    const searchResultBtn = e.target.closest("[data-custom-player-id]");
+    if (searchResultBtn) {
+      selectCustomPlayer(searchResultBtn.dataset.customPlayerId);
+      return;
+    }
+    if (e.target.closest("#player-search-clear-btn")) {
+      clearCustomPlayer();
+      return;
+    }
     const playerEl = e.target.closest("[data-player-index]");
     if (!playerEl) return;
+    state.customPlayerId = null;
     state.selectedPlayerIndex = Number(playerEl.dataset.playerIndex);
     renderTrainingSection();
     // 點球員卡片就切到訓練計劃那一頁;訓練頁裡的球員按鈕只換選擇,不切頁。
@@ -2493,6 +2693,9 @@
     const el = document.getElementById("template-report");
     state.results = data;
     state.selectedPlayerIndex = Math.min(state.selectedPlayerIndex, data.top_10.length - 1);
+    // 新的一組結果(換語言也算,座標是重算過的)就讓自選球員的訓練計劃快取失效,
+    // 不然舊座標算出來的計劃會被誤認成新座標的結果。
+    state.customPlanCache.clear();
 
     const meta = deepTemplateMeta();
     const templateCards = ["skill_fit", "body_fit", "ceiling"].map((key) => {
@@ -2561,6 +2764,13 @@
           <div>
             <div class="training-control-label">${t().playerControlLabel}</div>
             <div class="preset-row" id="player-row"></div>
+            <div class="player-search">
+              <div class="player-search-input-row">
+                <input type="text" id="player-search-input" placeholder="${t().playerSearchPlaceholder}" autocomplete="off">
+              </div>
+              <div class="player-search-results" id="player-search-results" hidden></div>
+              <div class="player-search-selected" id="player-search-selected" hidden></div>
+            </div>
           </div>
         </div>
         <div id="training-body"></div>
@@ -2612,6 +2822,7 @@
       document.getElementById("stage1-processing").style.display = "none";
       state.selectedEnv = ENV_CODES[0];
       state.selectedPlayerIndex = 0;
+      state.customPlayerId = null;
       renderTemplateReport(data);
       updateTabAvailability();
       showPage("template");
@@ -2664,6 +2875,7 @@
     state.results = null;
     state.selectedEnv = ENV_CODES[0];
     state.selectedPlayerIndex = 0;
+    state.customPlayerId = null;
     state.stage1StepIndex = 0;
     document.getElementById("template-report").innerHTML = "";
     document.getElementById("training-report").innerHTML = "";
@@ -2716,12 +2928,15 @@
   }
 
   // 點選單以外的地方要把選單收起來——只加一次,不要每次 renderLangSwitch()
-  // 都重複掛一個新的 listener(2026-10 討論)。
-  document.addEventListener("click", () => {
+  // 都重複掛一個新的 listener(2026-10 討論)。自選球員的搜尋結果下拉也用同一個
+  // listener 收起來,但只在點擊發生在 .player-search 以外時才收(在裡面打字、
+  // 點結果都不該被這裡關掉)。
+  document.addEventListener("click", (e) => {
     const menu = document.querySelector(".lang-switch-menu");
     if (menu) menu.style.display = "none";
     const toggle = document.querySelector(".lang-switch-toggle");
     if (toggle) toggle.setAttribute("aria-expanded", "false");
+    if (!e.target.closest(".player-search")) hidePlayerSearchResults();
   });
 
   function applyUiStrings() {
@@ -2843,6 +3058,12 @@
         e.preventDefault();
         e.target.click();
       }
+      if (e.key === "Escape" && e.target.id === "player-search-input") hidePlayerSearchResults();
+    });
+    // 自選球員的搜尋框是在 renderTemplateReport() 裡動態插入的,跟其他訓練計劃
+    // 控制項一樣用 #pages 上的委派監聽,不用每次重新渲染都重掛一次。
+    pagesEl.addEventListener("input", (e) => {
+      if (e.target.id === "player-search-input") handlePlayerSearchInput(e);
     });
     document.getElementById("feedback-link").addEventListener("click", openFeedback);
     document.getElementById("feedback-cancel").addEventListener("click", closeFeedback);

@@ -311,6 +311,156 @@ class TemplateResultsTest(unittest.TestCase):
         self.assertTrue(top_10_names.issubset(zh_names))
 
 
+class PlayersSearchListTest(unittest.TestCase):
+    """GET /api/players -- the id/name/team list that backs 自選目標球員搜尋,
+    independent of the 10-player comparison table."""
+
+    def setUp(self):
+        self.client = app.test_client()
+
+    def test_returns_every_current_player_with_id_name_and_team_only(self):
+        response = self.client.get("/api/players")
+
+        self.assertEqual(response.status_code, 200)
+        data = response.get_json()["players"]
+        zh_players = load_json(ROOT / "data" / "zh" / "球員.json")["players"]
+        self.assertEqual(len(data), len(zh_players))
+        self.assertEqual({row["id"] for row in data}, {p["id"] for p in zh_players})
+        for row in data:
+            self.assertEqual(set(row), {"id", "name", "team"})
+
+    def test_alltime_pool_returns_the_smaller_historical_list(self):
+        response = self.client.get("/api/players?pool=alltime")
+
+        self.assertEqual(response.status_code, 200)
+        data = response.get_json()["players"]
+        zh_alltime = load_json(ROOT / "data" / "zh" / "歷史球員.json")["players"]
+        self.assertEqual(len(data), len(zh_alltime))
+        self.assertLess(len(data), 152)
+
+    def test_rejects_invalid_pool_and_lang(self):
+        self.assertEqual(self.client.get("/api/players?pool=bogus").status_code, 400)
+        self.assertEqual(self.client.get("/api/players?lang=fr").status_code, 400)
+
+
+class PlayerTrainingPlanTest(unittest.TestCase):
+    """POST /api/player-training-plan -- a training plan for any one player
+    from the full pool, not just the 10-player comparison table. Takes the
+    user's coordinates back from the client rather than re-deriving them
+    from raw answers (see the route's docstring)."""
+
+    NEUTRAL_COORDINATES = {"A": 50, "B1": 50, "B2": 50, "C1": 50, "C2": 50, "D": 50}
+
+    def setUp(self):
+        self.client = app.test_client()
+
+    def test_returns_a_plan_shaped_like_a_top_10_entry(self):
+        questions = load_json(ROOT / "data" / "zh" / "題庫.json")
+        template_payload = {
+            "axis_answers": build_axis_answers(questions),
+            "body_answers": build_required_body_answers(questions),
+        }
+        template = self.client.post("/api/template-results", json=template_payload).get_json()
+        top_player = template["top_10"][0]
+        top_item = top_player["training_plans"]["collapsed_no_shooters"][0]
+
+        response = self.client.post("/api/player-training-plan", json={
+            "player_id": "amen_thompson",
+            "coordinates": template["coordinates"],
+            "env": "collapsed_no_shooters",
+        })
+
+        self.assertEqual(response.status_code, 200)
+        data = response.get_json()
+        self.assertEqual(set(data), {"id", "name", "team", "coordinates", "training_plan"})
+        self.assertEqual(data["id"], "amen_thompson")
+        self.assertEqual(set(data["coordinates"]), {"A", "B1", "B2", "C1", "C2", "D"})
+        self.assertGreater(len(data["training_plan"]), 0)
+        self.assertEqual(set(data["training_plan"][0]), set(top_item))
+
+    def test_first_item_is_always_the_players_signature_skill(self):
+        response = self.client.post("/api/player-training-plan", json={
+            "player_id": "amen_thompson",
+            "coordinates": self.NEUTRAL_COORDINATES,
+            "env": "no_environment",
+        })
+
+        plan = response.get_json()["training_plan"]
+        self.assertEqual(plan[0]["skill_id"], "perimeter_switch_defense")
+        self.assertTrue(plan[0]["is_signature"])
+
+    def test_works_for_a_player_outside_the_top_10(self):
+        # amen_thompson is nowhere near the top of a neutral user's comparison
+        # table, which is exactly the point -- the endpoint must work for any
+        # of the full 152, not only players that already made the top 10.
+        response = self.client.post("/api/player-training-plan", json={
+            "player_id": "amen_thompson",
+            "coordinates": self.NEUTRAL_COORDINATES,
+            "env": "zone_defense",
+        })
+        self.assertEqual(response.status_code, 200)
+
+    def test_alltime_pool_looks_up_the_alltime_player_list(self):
+        response = self.client.post("/api/player-training-plan", json={
+            "player_id": "michael_jordan",
+            "coordinates": self.NEUTRAL_COORDINATES,
+            "env": "no_environment",
+            "pool": "alltime",
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get_json()["name"], "Michael Jordan")
+
+    def test_current_only_player_id_404s_against_the_alltime_pool(self):
+        response = self.client.post("/api/player-training-plan", json={
+            "player_id": "amen_thompson",
+            "coordinates": self.NEUTRAL_COORDINATES,
+            "env": "no_environment",
+            "pool": "alltime",
+        })
+        self.assertEqual(response.status_code, 404)
+
+    def test_unknown_player_id_404s(self):
+        response = self.client.post("/api/player-training-plan", json={
+            "player_id": "not_a_real_player",
+            "coordinates": self.NEUTRAL_COORDINATES,
+            "env": "no_environment",
+        })
+        self.assertEqual(response.status_code, 404)
+
+    def test_missing_required_fields_400s(self):
+        self.assertEqual(self.client.post("/api/player-training-plan", json={}).status_code, 400)
+        self.assertEqual(self.client.post("/api/player-training-plan", json={
+            "player_id": "amen_thompson", "env": "no_environment",
+        }).status_code, 400)
+
+    def test_invalid_env_400s(self):
+        response = self.client.post("/api/player-training-plan", json={
+            "player_id": "amen_thompson",
+            "coordinates": self.NEUTRAL_COORDINATES,
+            "env": "bogus_env",
+        })
+        self.assertEqual(response.status_code, 400)
+
+    def test_coordinates_missing_an_axis_400s(self):
+        bad = dict(self.NEUTRAL_COORDINATES)
+        del bad["D"]
+        response = self.client.post("/api/player-training-plan", json={
+            "player_id": "amen_thompson", "coordinates": bad, "env": "no_environment",
+        })
+        self.assertEqual(response.status_code, 400)
+
+    def test_out_of_range_coordinate_400s(self):
+        bad = dict(self.NEUTRAL_COORDINATES, A=101)
+        response = self.client.post("/api/player-training-plan", json={
+            "player_id": "amen_thompson", "coordinates": bad, "env": "no_environment",
+        })
+        self.assertEqual(response.status_code, 400)
+
+    def test_rejects_non_json_body(self):
+        response = self.client.post("/api/player-training-plan", data="not json", content_type="text/plain")
+        self.assertEqual(response.status_code, 400)
+
+
 class RemovedPriorityEndpointTest(unittest.TestCase):
     def test_priority_results_endpoint_no_longer_exists(self):
         rules = {rule.rule for rule in app.url_map.iter_rules()}

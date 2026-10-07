@@ -120,6 +120,8 @@ P_i = (G_i × E_i) / C_i
 
 2026-10（結果準確度修正）：每個聯賽環境的訓練清單第一項固定是目標球員的招牌技能（`signature_skill_id`），不管它自己的 `G_i`、`C_i` 或下面的門檻，確保清單永遠不會是空的，換目標球員一定會換到第一項。其餘項目才依 `P_i` 由高到低排，且只列出 `P_i` 不低於「其餘項目最高 P」的 `TRAINING_PLAN_RELATIVE_THRESHOLD`（目前 25%，暫定值）那些；總數（含招牌技能）上限是 5 項，其餘項目一個都沒有時只顯示招牌技能一項。細節見 `src/engine/training_plan.py`。
 
+2026-10（自選目標球員）：結果頁的訓練計劃不再限於 10 人對照表——`GET /api/players` 回傳該語言、該球員池（現役/歷史）全部球員的 id/name/team 做搜尋清單，`POST /api/player-training-plan` 吃使用者六軸座標（`/api/template-results` 已經算好、前端直接帶回來，不重新驗證作答）+ player_id + env，回傳跟 10 人對照表裡同一位球員會拿到的一樣格式。計算邏輯完全重用 `build_training_plan`，不是另一套公式。
+
 三個附帶產出：
 
 1. 排序自動化。

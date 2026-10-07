@@ -39,6 +39,16 @@
 #                             但技術更成熟的球員(2026-09-11 重新設計,原本的
 #                             反面對照段落因為用同一套「D 軸差距最大」邏輯、
 #                             找到的其實是天賦不同的人而非天花板,已經移除)。
+#   GET  /api/players          自選目標球員的搜尋清單:該語言、該球員池(現役/歷史)
+#                             全部球員的 id/name/team,只回傳這三欄,不含座標或
+#                             身材(2026-10 新增,訓練計劃分頁讓使用者搜尋全部球員,
+#                             不限於 10 人對照表)。
+#   POST /api/player-training-plan  自選目標球員的訓練計劃:吃使用者六軸座標
+#                             (/api/template-results 已經算好、前端直接帶回來,
+#                             不重新驗證作答)+ player_id + env,回傳該球員的
+#                             座標跟訓練計劃,格式跟 10 人對照表裡每位球員的
+#                             training_plans[env] 一樣,前端可以共用同一套渲染
+#                             函數(2026-10 新增)。
 #   POST /api/feedback          站內使用意見:1-5 星準確度(選填)+ 50 字以內的文字
 #                             (選填),匿名存進 feedback 表,不收聯絡方式。
 #   POST /api/site-visit        每次呼叫讓瀏覽人次計數器 +1,回傳遞增後的
@@ -90,7 +100,7 @@ from flask import Flask, jsonify, request, send_from_directory  # noqa: E402
 
 from db import increment_visit_count, init_db, save_feedback  # noqa: E402
 from engine.archetype import classify_archetype_by_majority, compute_player_sizes  # noqa: E402
-from engine.axis_position import score_axis_coordinates  # noqa: E402
+from engine.axis_position import AXES, score_axis_coordinates  # noqa: E402
 from engine.body_fit import (  # noqa: E402
     collect_body_measurements,
     missing_required_body_fields,
@@ -329,6 +339,86 @@ def api_template_results():
         return jsonify({"error": str(e)}), 400
 
     return jsonify(results)
+
+
+def player_search_entry(player):
+    return {"id": player["id"], "name": player["name"], "team": player["team"]}
+
+
+@app.route("/api/players", methods=["GET"])
+def api_players():
+    lang = request.args.get("lang", "zh")
+    if lang not in SUPPORTED_LANGUAGES:
+        return jsonify({"error": f"invalid lang: {lang}"}), 400
+
+    pool = request.args.get("pool", "current")
+    if pool not in POOLS:
+        return jsonify({"error": f"invalid pool: {pool}"}), 400
+
+    _questions, _skills, players = load_data(pool, lang)
+    return jsonify({"players": [player_search_entry(p) for p in players]})
+
+
+PLAYER_TRAINING_PLAN_REQUIRED_FIELDS = ("player_id", "coordinates", "env")
+
+
+def invalid_coordinates(coordinates):
+    """True unless coordinates is exactly {"A".."D": 0-100 number} -- the same
+    shape /api/template-results returns as "coordinates", which this endpoint
+    takes back in rather than re-deriving from raw answers (see header)."""
+    if not isinstance(coordinates, dict) or set(coordinates) != set(AXES):
+        return True
+    return any(
+        isinstance(value, bool) or not isinstance(value, (int, float)) or not 0 <= value <= 100
+        for value in coordinates.values()
+    )
+
+
+@app.route("/api/player-training-plan", methods=["POST"])
+def api_player_training_plan():
+    payload = request.get_json(silent=True)
+    if payload is None:
+        return jsonify({"error": "request body must be JSON"}), 400
+
+    missing = missing_fields(payload, PLAYER_TRAINING_PLAN_REQUIRED_FIELDS)
+    if missing:
+        return jsonify({"error": f"missing required field(s): {', '.join(missing)}"}), 400
+
+    pool = payload.get("pool", "current")
+    if pool not in POOLS:
+        return jsonify({"error": f"invalid pool: {pool}"}), 400
+
+    lang = payload.get("lang", "zh")
+    if lang not in SUPPORTED_LANGUAGES:
+        return jsonify({"error": f"invalid lang: {lang}"}), 400
+
+    env = payload.get("env")
+    if env not in environment_codes():
+        return jsonify({"error": f"invalid env: {env}"}), 400
+
+    coordinates = payload.get("coordinates")
+    if invalid_coordinates(coordinates):
+        return jsonify({"error": "coordinates must map each of A/B1/B2/C1/C2/D to a number from 0 to 100"}), 400
+
+    _questions, skills, players = load_data(pool, lang)
+    players_by_id = {p["id"]: p for p in players}
+    player = players_by_id.get(payload["player_id"])
+    if player is None:
+        return jsonify({"error": f"unknown player_id: {payload['player_id']}"}), 404
+
+    skills_by_id = {s["id"]: s for s in skills}
+    drills_by_key = load_drills(lang)
+    plan = build_training_plan(
+        skills, ENV_WEIGHTS[env], coordinates, player["coordinates"],
+        player["signature_skill_id"], top_n=TRAINING_PLAN_TOP_N,
+    )
+    return jsonify({
+        "id": player["id"],
+        "name": player["name"],
+        "team": player["team"],
+        "coordinates": player["coordinates"],
+        "training_plan": format_training_plan(plan, skills_by_id, drills_by_key),
+    })
 
 
 FEEDBACK_MAX_MESSAGE = 50
