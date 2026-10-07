@@ -1110,11 +1110,27 @@
   .skill-item-head {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
     gap: 0.6rem;
     flex-wrap: wrap;
   }
-  .skill-item-name { font-weight: 700; color: var(--ink); }
+
+  /* 技能名稱左邊的黃色槓槓用 ::before 畫,不用額外加一個 span。 */
+  .skill-item-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--accent-ink);
+  }
+  .skill-item-name::before {
+    content: "";
+    width: 3px;
+    align-self: stretch;
+    background: var(--accent);
+    border-radius: 2px;
+  }
 
   .skill-level-tag {
     font-size: 0.72rem;
@@ -1125,7 +1141,8 @@
     padding: 0.1rem 0.55rem;
   }
 
-  .drill { margin-top: 0.6rem; font-size: 0.86rem; color: var(--ink-soft); }
+  /* 訓練計劃(菜單內容)在技能名稱底下,不帶黃色槓槓——槓槓移到上面的技能名稱了。 */
+  .drill-plan { margin-top: 0.5rem; font-size: 0.86rem; color: var(--ink-soft); }
   .drill-name { font-weight: 600; color: var(--ink); margin-bottom: 0.25rem; }
   .drill-label {
     display: inline-block;
@@ -1137,12 +1154,15 @@
   .drill-steps { margin: 0.2rem 0 0.35rem 1.2rem; padding: 0; }
   .drill-line { margin: 0.25rem 0 0; }
 
-  .skill-threshold {
-    margin: 0.7rem 0 0;
-    padding-left: 0.55rem;
-    border-left: 2px solid var(--accent);
-    font-size: 0.84rem;
-    color: var(--accent-ink);
+  /* 訓練量放在訓練計劃下面,「訓練量」這個標籤跟後面的組數/次數同一個字級
+     (預設 .drill-label 是給步驟/提醒用的小標籤,這裡要蓋掉)。 */
+  .drill-volume {
+    margin-top: 0.6rem;
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+  }
+  .drill-volume .drill-label {
+    font-size: inherit;
   }
 
   @media (max-width: 640px) {
@@ -2379,20 +2399,20 @@
 
   function renderSkillItem(item) {
     const s = t();
+    const planHtml = item.drills.map(renderDrillContent).join("");
     const volumeHtml = item.drills
       .map((drill) => drillVolumeText(drill))
       .filter((volume) => volume)
       .map((volume) => `<p class="drill-line"><span class="drill-label">${s.drillVolumeLabel}</span>${escapeHtml(volume)}</p>`)
       .join("");
-    const contentHtml = item.drills.map(renderDrillContent).join("");
     return `
       <div class="skill-item">
         <div class="skill-item-head">
           <span class="skill-item-name">${escapeHtml(item.name_zh)}</span>
           <span class="skill-level-tag">${s.levelLabels[item.level]}</span>
         </div>
-        ${volumeHtml ? `<div class="drill">${volumeHtml}</div>` : ""}
-        ${contentHtml ? `<div class="skill-threshold">${contentHtml}</div>` : ""}
+        ${planHtml ? `<div class="drill-plan">${planHtml}</div>` : ""}
+        ${volumeHtml ? `<div class="drill-volume">${volumeHtml}</div>` : ""}
       </div>`;
   }
 
