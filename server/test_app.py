@@ -178,13 +178,29 @@ class TemplateResultsTest(unittest.TestCase):
         self.assertTrue(items, "expected at least one trainable skill across the top 10")
         for item in items:
             self.assertEqual(
-                set(item.keys()), {"skill_id", "name_zh", "P", "level", "metric", "drills"}
+                set(item.keys()),
+                {"skill_id", "name_zh", "P", "level", "is_signature", "metric", "drills"},
             )
             self.assertIn(item["level"], {"entry", "advanced", "mastery"})
+            self.assertIsInstance(item["is_signature"], bool)
             self.assertEqual(
                 set(item["metric"].keys()), {"action", "denominator", "direction", "threshold"}
             )
             self.assertIsInstance(item["drills"], list)
+
+    def test_every_top_10_training_plan_has_a_signature_item_first(self):
+        payload = {
+            "axis_answers": build_axis_answers(self.questions),
+            "body_answers": build_required_body_answers(self.questions),
+        }
+
+        response = self.client.post("/api/template-results", json=payload)
+        data = response.get_json()
+
+        for player in data["top_10"]:
+            for env_code, plan in player["training_plans"].items():
+                self.assertGreaterEqual(len(plan), 1, f"{player['name']} / {env_code} has an empty plan")
+                self.assertTrue(plan[0]["is_signature"], f"{player['name']} / {env_code} doesn't lead with the signature skill")
 
     def test_response_includes_archetype_and_scouting_report(self):
         payload = {

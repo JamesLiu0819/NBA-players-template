@@ -201,6 +201,7 @@ def format_training_plan(plan, skills_by_id, drills_by_key):
             "name_zh": skill["name_zh"],
             "P": item["P"],
             "level": level,
+            "is_signature": item["is_signature"],
             "metric": {
                 "action": metric["action"],
                 "denominator": metric["denominator"],
@@ -247,7 +248,7 @@ def compute_template_results(payload, questions, players, skills, archetypes, dr
                 env: format_training_plan(
                     build_training_plan(
                         skills, ENV_WEIGHTS[env], coordinates, player["coordinates"],
-                        top_n=TRAINING_PLAN_TOP_N,
+                        player["signature_skill_id"], top_n=TRAINING_PLAN_TOP_N,
                     ),
                     skills_by_id,
                     drills_by_key,

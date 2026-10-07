@@ -19,6 +19,8 @@
     --accent: #d9a03f;
     --accent-ink: #f0c76e;
     --accent-wash: rgba(217, 160, 63, 0.16);
+    --signature-accent: #4fb3a9;
+    --signature-accent-ink: #7fd6cc;
     --shadow: 0 2px 7px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.25);
     --radius: 10px;
     --sans: -apple-system, "Segoe UI", "PingFang TC", "Noto Sans TC", system-ui, sans-serif;
@@ -36,6 +38,8 @@
     --accent: #b06a1f;
     --accent-ink: #8a4f15;
     --accent-wash: rgba(176, 106, 31, 0.16);
+    --signature-accent: #1f7a72;
+    --signature-accent-ink: #15574f;
     --shadow: 0 2px 7px rgba(42, 35, 24, 0.14), 0 1px 2px rgba(42, 35, 24, 0.08);
   }
 
@@ -1141,6 +1145,17 @@
     padding: 0.1rem 0.55rem;
   }
 
+  /* 招牌技能徽章,跟上面的難度標籤(.skill-level-tag)同樣的視覺重量,
+     但用另一個色調(青綠色)區分,不會被看成第二個難度標籤。 */
+  .signature-tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--signature-accent-ink);
+    border: 1px solid var(--signature-accent);
+    border-radius: 999px;
+    padding: 0.1rem 0.55rem;
+  }
+
   /* 訓練計劃(菜單內容)在技能名稱底下,不帶黃色槓槓——槓槓移到上面的技能名稱了。 */
   .drill-plan { margin-top: 0.5rem; font-size: 0.86rem; color: var(--ink-soft); }
   .drill-name { font-weight: 600; color: var(--ink); margin-bottom: 0.25rem; }
@@ -1549,7 +1564,8 @@
       playerControlLabel: "目標球員",
       envLabels: { collapsed_no_shooters: "內縮防守 / 缺乏射手", tight_perimeter_opp_shooters: "貼外線 / 對手有射手", zone_defense: "區域防守為主" },
       levelLabels: { entry: "入門", advanced: "進階", mastery: "精熟" },
-      trainingEmpty: "在這個聯賽環境下，這位球員的技能項目你都已經達到或超過，目前沒有需要補強的地方。",
+      signatureSkillLabel: "招牌技能",
+      trainingEmpty: "你在這些面向已經不輸這位球員。",
       drillStepsLabel: "步驟",
       drillCueLabel: "提醒",
       drillVolumeLabel: "訓練量",
@@ -1631,7 +1647,8 @@
       playerControlLabel: "目标球员",
       envLabels: { collapsed_no_shooters: "内缩防守 / 缺乏射手", tight_perimeter_opp_shooters: "贴外线 / 对手有射手", zone_defense: "区域防守为主" },
       levelLabels: { entry: "入门", advanced: "进阶", mastery: "精熟" },
-      trainingEmpty: "在这个联赛环境下，这位球员的技能项目你都已经达到或超过，目前没有需要补强的地方。",
+      signatureSkillLabel: "招牌技能",
+      trainingEmpty: "你在这些面向已经不输这位球员。",
       drillStepsLabel: "步骤",
       drillCueLabel: "提醒",
       drillVolumeLabel: "训练量",
@@ -1713,7 +1730,8 @@
       playerControlLabel: "Target Player",
       envLabels: { collapsed_no_shooters: "Packed Defense / No Shooters", tight_perimeter_opp_shooters: "Tight Perimeter / Opponent Has Shooters", zone_defense: "Zone Defense" },
       levelLabels: { entry: "Entry", advanced: "Advanced", mastery: "Mastery" },
-      trainingEmpty: "In this environment you already match or beat this player on every skill here, so there's nothing to close right now.",
+      signatureSkillLabel: "Signature Skill",
+      trainingEmpty: "You already hold your own against this player in these areas.",
       drillStepsLabel: "Steps",
       drillCueLabel: "Cue",
       drillVolumeLabel: "Volume",
@@ -2409,6 +2427,7 @@
       <div class="skill-item">
         <div class="skill-item-head">
           <span class="skill-item-name">${escapeHtml(item.name_zh)}</span>
+          ${item.is_signature ? `<span class="signature-tag">${s.signatureSkillLabel}</span>` : ""}
           <span class="skill-level-tag">${s.levelLabels[item.level]}</span>
         </div>
         ${planHtml ? `<div class="drill-plan">${planHtml}</div>` : ""}
@@ -2420,7 +2439,8 @@
     const radarHtml = buildRadarSvg(state.results.coordinates, player.coordinates, escapeHtml(player.name));
     const skillsHtml = plan.length === 0
       ? `<p class="training-empty">${t().trainingEmpty}</p>`
-      : plan.map(renderSkillItem).join("");
+      : plan.map(renderSkillItem).join("")
+        + (plan.length === 1 && plan[0].is_signature ? `<p class="training-empty">${t().trainingEmpty}</p>` : "");
     return `
       <div class="training-body">
         <div class="training-radar">${radarHtml}</div>

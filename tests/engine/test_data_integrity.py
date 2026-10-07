@@ -161,11 +161,17 @@ class FullTrainingPlanIntegrationTest(unittest.TestCase):
         for code in self.env:
             if code.startswith("_"):
                 continue
-            plan = build_training_plan(self.skills, self.env[code], user, self.player["coordinates"])
+            plan = build_training_plan(
+                self.skills, self.env[code], user, self.player["coordinates"],
+                self.player["signature_skill_id"],
+            )
+            self.assertGreaterEqual(len(plan), 1, code)
             self.assertLessEqual(len(plan), 5, code)
-            priorities = [item["P"] for item in plan]
-            self.assertEqual(priorities, sorted(priorities, reverse=True), code)
-            for item in plan:
+            self.assertTrue(plan[0]["is_signature"], code)
+            self.assertEqual(plan[0]["skill_id"], self.player["signature_skill_id"], code)
+            other_priorities = [item["P"] for item in plan[1:]]
+            self.assertEqual(other_priorities, sorted(other_priorities, reverse=True), code)
+            for item in plan[1:]:
                 self.assertGreater(item["G"], 0, code)
 
 
