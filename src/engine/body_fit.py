@@ -214,9 +214,11 @@ def percentile_normalize_body(user_body, players, field_ranges):
 
     Both the user's and every player's percentile come from the SAME
     _tail_capped_percentile curve (GENERAL_POPULATION_BODY_STATS mean/sd,
-    field_ranges' max as the top of the linear tail) -- see file header for
-    why using two different curves (continuous for the user, empirical
-    rank-within-pool for players) produced incomparable numbers.
+    field_ranges' max as the top of the linear tail) ONLY when the user is
+    at or above the transition's high bound -- see the 2026-10 paragraph
+    below for what happens below it. See file header for why using two
+    different curves (continuous for the user, empirical rank-within-pool
+    for players) produced incomparable numbers in the first place.
 
     2026-10 (spec item 1): a player's percentile for height_cm/weight_kg is
     no longer always the population tail-capped curve. It's a blend between

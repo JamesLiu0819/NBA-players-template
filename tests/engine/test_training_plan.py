@@ -74,6 +74,20 @@ class BuildTrainingPlanTest(unittest.TestCase):
         self.assertEqual(signature["G"], 0.0)
         self.assertEqual(signature["level"], skill_difficulty_level(USER["D"]))
 
+    def test_non_signature_items_are_unaffected_by_the_signatures_own_d_axis_value(self):
+        # D is excluded from skill_gap() for every skill -- changing the
+        # TARGET's D value must not change which non-signature items appear
+        # or their order, as long as the signature skill itself is NOT the
+        # one whose axis_relevance is D-dominant (that's a separate case,
+        # already covered by test_signature_skill_on_the_d_axis_is_the_
+        # exception_to_d_being_untrainable above).
+        bigger_d_gap = dict(TARGET, D=100.0)
+
+        plan_with_normal_d = build_training_plan(SKILLS, EVEN_ENV, USER, TARGET, signature_skill_id="rim")
+        plan_with_bigger_d = build_training_plan(SKILLS, EVEN_ENV, USER, bigger_d_gap, signature_skill_id="rim")
+
+        self.assertEqual(plan_with_normal_d, plan_with_bigger_d)
+
     def test_other_items_sorted_by_priority_after_the_signature(self):
         plan = build_training_plan(SKILLS, EVEN_ENV, USER, TARGET, signature_skill_id="rim")
 
