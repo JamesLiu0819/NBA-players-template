@@ -153,7 +153,7 @@
       "field": "height_cm",
       "prompt": "身高(不穿鞋量測)",
       "unit": "cm",
-      "min": 165,
+      "min": 140,
       "max": 220,
       "required": true
     },
@@ -162,7 +162,7 @@
       "field": "weight_kg",
       "prompt": "體重",
       "unit": "kg",
-      "min": 50,
+      "min": 35,
       "max": 120,
       "required": true
     },
@@ -171,7 +171,7 @@
       "field": "wingspan_cm",
       "prompt": "臂展(雙臂完全張開指尖到指尖的距離)",
       "unit": "cm",
-      "min": 160,
+      "min": 135,
       "max": 235
     },
     {
@@ -179,7 +179,7 @@
       "field": "standing_reach_cm",
       "prompt": "立定摸高(雙腳不離地,單手往上摸到的高度)",
       "unit": "cm",
-      "min": 180,
+      "min": 175,
       "max": 320
     },
     {

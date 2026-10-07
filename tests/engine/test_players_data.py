@@ -24,15 +24,17 @@ def load_json(name):
 
 # Sanity bounds on derived player body data -- deliberately WIDER than
 # data/questions.json's body_measurements [min, max], which is the input
-# range for a *user* self-reporting their own body (see the 2026-09-11
-# narrowing to 165-220cm / 50-120kg). A handful of real players (e.g.
-# Victor Wembanyama at 224cm/128kg) legitimately fall outside that
-# self-report range -- these bounds only catch a broken/blown-up formula
-# output, not "does this fit what a typical user could type in".
+# range for a *user* self-reporting their own body (see the 2026-10
+# widening to 140-220cm / 35-120kg -- lower floors so a wider range of
+# self-reported body types don't get rejected before reaching the engine).
+# A handful of real players (e.g. Victor Wembanyama at 224cm/128kg)
+# legitimately fall outside that self-report range -- these bounds only
+# catch a broken/blown-up formula output, not "does this fit what a
+# typical user could type in".
 BODY_SANITY_RANGES = {
-    "height_cm": (150, 260),
-    "weight_kg": (50, 160),
-    "wingspan_cm": (150, 280),
+    "height_cm": (130, 260),
+    "weight_kg": (30, 160),
+    "wingspan_cm": (125, 280),
     "standing_reach_cm": (180, 340),
     "running_vertical_reach_cm": (200, 400),
     "sprint_100m_seconds": (8.0, 25.0),

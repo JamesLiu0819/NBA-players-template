@@ -153,7 +153,7 @@
       "field": "height_cm",
       "prompt": "Height (measured barefoot)",
       "unit": "cm",
-      "min": 165,
+      "min": 140,
       "max": 220,
       "required": true
     },
@@ -162,7 +162,7 @@
       "field": "weight_kg",
       "prompt": "Weight",
       "unit": "kg",
-      "min": 50,
+      "min": 35,
       "max": 120,
       "required": true
     },
@@ -171,7 +171,7 @@
       "field": "wingspan_cm",
       "prompt": "Wingspan (fingertip-to-fingertip with both arms fully extended)",
       "unit": "cm",
-      "min": 160,
+      "min": 135,
       "max": 235
     },
     {
@@ -179,7 +179,7 @@
       "field": "standing_reach_cm",
       "prompt": "Standing reach (feet flat on the ground, highest point one hand can reach)",
       "unit": "cm",
-      "min": 180,
+      "min": 175,
       "max": 320
     },
     {
