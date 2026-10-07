@@ -127,10 +127,16 @@ class EnvWeightsDataTest(unittest.TestCase):
             self.env = json.load(f)
         self.codes = [k for k in self.env if not k.startswith("_")]
 
-    def test_has_the_three_provisional_environments(self):
+    def test_has_the_four_environment_options(self):
         self.assertEqual(set(self.codes), {
             "collapsed_no_shooters", "tight_perimeter_opp_shooters", "zone_defense",
+            "no_environment",
         })
+
+    def test_no_environment_option_leaves_every_skill_unweighted(self):
+        # "無"(不套用任何環境加權)要讓 P 退化成 G/C,每項技能的倍率都必須是 1.0,
+        # 不是「隨便填一組接近 1 的數字」。
+        self.assertEqual(set(self.env["no_environment"].values()), {1.0})
 
     def test_every_environment_covers_all_fifteen_skills(self):
         for code in self.codes:

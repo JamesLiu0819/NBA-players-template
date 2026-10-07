@@ -44,7 +44,7 @@ def build_required_body_answers(questions):
     ]
 
 
-ENV_CODES = ("collapsed_no_shooters", "tight_perimeter_opp_shooters", "zone_defense")
+ENV_CODES = ("collapsed_no_shooters", "tight_perimeter_opp_shooters", "zone_defense", "no_environment")
 
 
 class TemplateResultsTest(unittest.TestCase):

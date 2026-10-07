@@ -1477,7 +1477,7 @@
 
   // 三組聯賽環境代碼,順序就是畫面上的順序(第一個是預設)。數字在 data/env_weights.json,
   // 這裡只列代碼;顯示文字在 UI_STRINGS.envLabels。
-  const ENV_CODES = ["collapsed_no_shooters", "tight_perimeter_opp_shooters", "zone_defense"];
+  const ENV_CODES = ["collapsed_no_shooters", "tight_perimeter_opp_shooters", "zone_defense", "no_environment"];
 
   function deepTemplateMeta() {
     const strings = t();
@@ -1562,7 +1562,7 @@
       mostSuitable: "最貼合",
       envControlLabel: "聯賽環境",
       playerControlLabel: "目標球員",
-      envLabels: { collapsed_no_shooters: "內縮防守 / 缺乏射手", tight_perimeter_opp_shooters: "貼外線 / 對手有射手", zone_defense: "區域防守為主" },
+      envLabels: { collapsed_no_shooters: "內縮防守 / 缺乏射手", tight_perimeter_opp_shooters: "貼外線 / 對手有射手", zone_defense: "區域防守為主", no_environment: "無（不套用環境加權）" },
       levelLabels: { entry: "入門", advanced: "進階", mastery: "精熟" },
       signatureSkillLabel: "招牌技能",
       trainingEmpty: "你在這些面向已經不輸這位球員。",
@@ -1645,7 +1645,7 @@
       mostSuitable: "最贴合",
       envControlLabel: "联赛环境",
       playerControlLabel: "目标球员",
-      envLabels: { collapsed_no_shooters: "内缩防守 / 缺乏射手", tight_perimeter_opp_shooters: "贴外线 / 对手有射手", zone_defense: "区域防守为主" },
+      envLabels: { collapsed_no_shooters: "内缩防守 / 缺乏射手", tight_perimeter_opp_shooters: "贴外线 / 对手有射手", zone_defense: "区域防守为主", no_environment: "无（不套用环境加权）" },
       levelLabels: { entry: "入门", advanced: "进阶", mastery: "精熟" },
       signatureSkillLabel: "招牌技能",
       trainingEmpty: "你在这些面向已经不输这位球员。",
@@ -1728,7 +1728,7 @@
       mostSuitable: "Best Match",
       envControlLabel: "League Environment",
       playerControlLabel: "Target Player",
-      envLabels: { collapsed_no_shooters: "Packed Defense / No Shooters", tight_perimeter_opp_shooters: "Tight Perimeter / Opponent Has Shooters", zone_defense: "Zone Defense" },
+      envLabels: { collapsed_no_shooters: "Packed Defense / No Shooters", tight_perimeter_opp_shooters: "Tight Perimeter / Opponent Has Shooters", zone_defense: "Zone Defense", no_environment: "None (no weighting)" },
       levelLabels: { entry: "Entry", advanced: "Advanced", mastery: "Mastery" },
       signatureSkillLabel: "Signature Skill",
       trainingEmpty: "You already hold your own against this player in these areas.",

@@ -1,5 +1,5 @@
 {
-  "_description": "聯賽環境倍率 E(每項技能在某種聯賽環境下的收益倍率,0.5-2.0)。三組對應前端三個環境選項。目前是依常理暫定的數字,還沒有領域專家校準(SPEC.md §12 未決問題 #2),之後由專家依完整的 5 維 × 3 檔表取代。只放數字;每個選項的顯示文字留在前端的三語字串裡。新增環境就在這裡加一組 key,並在前端字串補上對應文字。",
+  "_description": "聯賽環境倍率 E(每項技能在某種聯賽環境下的收益倍率,0.5-2.0)。四組對應前端四個環境選項,其中 no_environment(「無」)每項都是 1.0,等於不套用任何環境加權,P 退化成 G/C(2026-10 新增,使用者想看不受環境影響的純缺口排序時選這個)。其餘三組目前是依常理暫定的數字,還沒有領域專家校準(SPEC.md §12 未決問題 #2),之後由專家依完整的 5 維 × 3 檔表取代。只放數字;每個選項的顯示文字留在前端的三語字串裡。新增環境就在這裡加一組 key,並在前端字串補上對應文字。",
   "collapsed_no_shooters": {
     "perimeter_shooting": 1.8,
     "face_up_first_step": 1.3,
@@ -48,6 +48,23 @@
     "offensive_rebounding": 1.1,
     "on_ball_perimeter_defense": 0.8,
     "help_defense_rotation": 1.2,
+    "defensive_rebounding_boxout": 1.0,
+    "decision_making_turnover_control": 1.0
+  },
+  "no_environment": {
+    "perimeter_shooting": 1.0,
+    "face_up_first_step": 1.0,
+    "high_post_playmaking": 1.0,
+    "rim_protection": 1.0,
+    "perimeter_switch_defense": 1.0,
+    "post_up": 1.0,
+    "pick_and_roll_ball_handling": 1.0,
+    "off_ball_movement": 1.0,
+    "transition_finishing": 1.0,
+    "free_throw_shooting": 1.0,
+    "offensive_rebounding": 1.0,
+    "on_ball_perimeter_defense": 1.0,
+    "help_defense_rotation": 1.0,
     "defensive_rebounding_boxout": 1.0,
     "decision_making_turnover_control": 1.0
   }

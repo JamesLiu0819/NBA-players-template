@@ -79,7 +79,7 @@ D 軸標為不可習得是刻意設計，讓一件事自動化：
 | 高位傳導視野 | 1.5 |
 | 背框單打 | 0.6 |
 
-完整倍率表需人工填寫，存於 `data/env_weights.json`。2026-10：目前檔案內是三組依常理暫定的數字（`collapsed_no_shooters` / `tight_perimeter_opp_shooters` / `zone_defense`），尚未經過領域專家校準。243 種組合不必窮舉：用五個獨立的乘數表相乘即可（`E_i = Π(dim_multiplier)`），實作上只需 5 × 3 × 技能數 的表格。
+完整倍率表需人工填寫，存於 `data/env_weights.json`。2026-10：目前檔案內是三組依常理暫定的數字（`collapsed_no_shooters` / `tight_perimeter_opp_shooters` / `zone_defense`），尚未經過領域專家校準。另外有一組 `no_environment`（前端顯示「無」），15 項技能的倍率全部是 1.0，讓使用者可以看不受聯賽環境影響、純粹依能力缺口排序的訓練計劃。243 種組合不必窮舉：用五個獨立的乘數表相乘即可（`E_i = Π(dim_multiplier)`），實作上只需 5 × 3 × 技能數 的表格。
 
 ### 3.3 技能庫
 
