@@ -1213,7 +1213,7 @@ git commit -m "Make the signature skill always lead the training plan, with a 25
 
 ## Task 7: Simulate the proposed archetype classification and report — ends at a mandatory checkpoint
 
-> **OUTCOME (2026-10, after Task 9 and the final whole-branch review): Tasks 7 and 8 were implemented, reviewed clean, then REVERTED.** The Task 7 checkpoint's normal-distribution-fit correction to `compute_user_size` stopped the literal collapse-to-identical-values bug, but the final whole-branch review found the corrected version still put realistic users' body size at 0.03/0.48/4.3 (10th/50th/90th percentile) — all far below the 28-point threshold separating the smallest archetype anchor from the next one — so in practice almost everyone still landed on the same single archetype, and this skewed the dominant relative-strength branch too (not just the flat-answer case), while the new "based on your build" UI copy made an explicit claim that was false for most users. The human partner ruled: revert the whole redesign, restore the original `classify_archetype_by_majority` neighbor-vote scheme, and leave item 5 as an open problem for a future, differently-designed attempt. See the ledger (`.superpowers/sdd/2026-10-07-result-accuracy-fixes/progress.md`) for the full finding and the revert commit. The rest of this plan (items 1, 2/3/4, 7, and the calibration work) is unaffected and shipped as designed.
+> **OUTCOME (2026-10, after Task 9 and the final whole-branch review): Tasks 7 and 8 were implemented, reviewed clean, then REVERTED.** The Task 7 checkpoint's normal-distribution-fit correction to `compute_user_size` stopped the literal collapse-to-identical-values bug, but the final whole-branch review found the corrected version still put realistic users' body size at 0.03/0.48/4.3 (10th/50th/90th percentile) — all far below the 28-point threshold separating the smallest archetype anchor from the next one — so in practice almost everyone still landed on the same single archetype, and this skewed the dominant relative-strength branch too (not just the flat-answer case), while the new "based on your build" UI copy made an explicit claim that was false for most users. The human partner ruled: revert the whole redesign, restore the original `classify_archetype_by_majority` neighbor-vote scheme, and leave item 5 as an open problem for a future, differently-designed attempt. See `docs/superpowers/specs/2026-10-07-result-accuracy-design.md`'s §5 revert note for the full finding, and `git log` for the revert commit (9be4e34). The rest of this plan (items 1, 2/3/4, 7, and the calibration work) is unaffected and shipped as designed.
 
 **This task ends in a report, not a code change.** It produces no commit and touches no tracked file. It is deliberately scoped to stop exactly where the spec requires a human decision ("實作前要先確認...我確認後再實作"). If dispatching this as a subagent task, its report back to the controller IS the deliverable — the controller then relays the findings to the human partner and only dispatches Task 8 once a go-ahead comes back.
 
@@ -1767,6 +1767,13 @@ Expected: for each pool, read off and report every number against the spec's acc
 
 - [ ] **Step 3: Run the dedicated flat-answer archetype check**
 
+> **Moot (2026-10, after Tasks 7/8 were reverted):** this step only made sense while
+> the archetype classification redesign was live. The redesign was reverted (see
+> the note at the top of the Task 7 section above); `scripts/simulate_results.py`'s
+> flat-answer-check addition was reverted along with it, and the original
+> `classify_archetype_by_majority` scheme has no equivalent check to run. Left here
+> as an accurate record of what this task originally called for.
+
 Extend `scripts/simulate_results.py` (or write a second small CLI invocation using the same imported pipeline, your choice, but it must use the same fixed seed discipline as the rest of this plan) to generate ~300 users who answer every axis question with the same fixed score, with height/weight drawn from the calibration distribution, and report the resulting archetype id distribution and its max single-archetype share. Expected: max share <= 40%, and spot-check that varying only height/weight (holding the flat score constant) is what's actually driving the archetype changes, not the flat score itself.
 
 - [ ] **Step 4: Fix anything that fails, with its own failing-test-first cycle**
@@ -1779,6 +1786,7 @@ If any criterion fails, use `systematic-debugging` to find the actual cause (don
 - `src/engine/player_matching.py`: the header's calibration-method paragraph (lines 21-33) was already updated in Task 5 Step 1; just confirm it still accurately describes the FINAL thresholds (post-checkpoint) and the resolved "+7" decision.
 - `src/engine/training_plan.py`: header currently only documents the two difficulty constants; add the `TRAINING_PLAN_RELATIVE_THRESHOLD` constant and the signature-skill-always-first rule.
 - `src/engine/archetype.py`: header currently documents the now-deleted majority-vote scheme at length; replace that section with the new direct-classification scheme (spread threshold, two branches, `compute_user_size`'s scale, deterministic tie-break) -- this header needs the heaviest rewrite of the four, since its subject changed the most.
+  **Moot (2026-10, after Tasks 7/8 were reverted):** the majority-vote scheme was never deleted -- the revert restored it byte-identical to its pre-redesign state, so `archetype.py`'s header still correctly documents what's actually live and needs no rewrite. See the revert note at the top of the Task 7 section.
 - `CLAUDE.md`: update the one-sentence project summary's question count if Task 1 changed it (it didn't -- bounds changed, not the count), and anywhere it describes the old training-plan/archetype behavior.
 - `SPEC.md`: update whichever numbered sections describe G_i/archetype classification/star calibration to match what's actually implemented now.
 
@@ -1786,7 +1794,7 @@ If any criterion fails, use `systematic-debugging` to find the actual cause (don
 
 Report, in one message:
 - Every acceptance criterion from the spec with its actual measured number (not a pass/fail guess -- the number itself).
-- The full list of provisional constants and their final values: `HEIGHT_TRANSITION_LOW/HIGH`, `WEIGHT_TRANSITION_LOW/HIGH`, the two calibrated threshold tuples (and whatever was decided about the flat "+7" adjustment at the Task 4→5 checkpoint), `TRAINING_PLAN_RELATIVE_THRESHOLD`, `ARCHETYPE_SPREAD_THRESHOLD`, the calibration sampling distribution (175/7, 70/12), and the four new body-measurement floors.
+- The full list of provisional constants and their final values: `HEIGHT_TRANSITION_LOW/HIGH`, `WEIGHT_TRANSITION_LOW/HIGH`, the two calibrated threshold tuples (and whatever was decided about the flat "+7" adjustment at the Task 4→5 checkpoint), `TRAINING_PLAN_RELATIVE_THRESHOLD`, `ARCHETYPE_SPREAD_THRESHOLD` (**moot after the Task 7/8 revert** -- this constant no longer exists in `archetype.py`; see the revert note at the top of the Task 7 section), the calibration sampling distribution (175/7, 70/12), and the four new body-measurement floors.
 - Anything from the spec that couldn't be done as written, or that you implemented differently, and why (this plan's two checkpoints already surfaced the biggest judgment calls -- if a smaller one came up during execution, e.g. the Review Focus items, report it here too).
 
 - [ ] **Step 7: Do not commit documentation-only changes separately from the fixes they document** -- if Step 4 produced no code fixes, one commit for this task is enough:
@@ -1806,7 +1814,7 @@ If Step 4 did produce code fixes, each fix gets its own commit at the point it w
 
 **Placeholder scan:** every step above either contains real code or is a real shell command with a real expected-output description; Task 4 and Task 7 are intentionally report-only tasks (they are literally "ask a human" steps the spec itself mandates) and are marked as checkpoints, not left as vague TODOs.
 
-**Type consistency:** `build_training_plan`'s new `signature_skill_id` parameter name and `is_signature` field name are used identically in Task 6's engine code, test code, `server/app.py`, and `src/ui/index.html`. `classify_archetype_for_user`'s `mode` return value (`"relative_strength"` / `"body_only"`) and `archetype_mode` field name are used identically across Task 8's engine code, test code, `server/app.py`, and `src/ui/index.html`.
+**Type consistency:** `build_training_plan`'s new `signature_skill_id` parameter name and `is_signature` field name are used identically in Task 6's engine code, test code, `server/app.py`, and `src/ui/index.html`. `classify_archetype_for_user`'s `mode` return value (`"relative_strength"` / `"body_only"`) and `archetype_mode` field name are used identically across Task 8's engine code, test code, `server/app.py`, and `src/ui/index.html`. **Moot (2026-10, after Tasks 7/8 were reverted):** `classify_archetype_for_user` and `archetype_mode` no longer exist anywhere in the codebase; this note described internal consistency within the reverted redesign only. See the revert note at the top of the Task 7 section.
 
 **Review Focus:** all five items each have an explicit test in their owning task (transition-boundary continuity and single-player pool in Task 3; missing env weight for the signature skill in Task 6; the spread-exactly-25 boundary and the body-only tie-break in Task 8).
 
