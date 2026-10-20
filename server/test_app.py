@@ -695,5 +695,81 @@ class SaveResultOnSubmitTest(unittest.TestCase):
             app_module.save_result = original
 
 
+class FavoritesTest(unittest.TestCase):
+    def setUp(self):
+        self.client = app.test_client()
+
+    def test_all_three_methods_require_login(self):
+        self.assertEqual(self.client.get("/api/favorites").status_code, 401)
+        self.assertEqual(self.client.post("/api/favorites", json={"player_id": "x", "pool": "current"}).status_code, 401)
+        self.assertEqual(self.client.delete("/api/favorites", json={"player_id": "x", "pool": "current"}).status_code, 401)
+
+    def test_add_then_list_returns_enriched_entry(self):
+        login_as(self.client, "sub-favapi-1", "favapi1@example.com")
+        add = self.client.post("/api/favorites", json={"player_id": "amen_thompson", "pool": "current"})
+        self.assertEqual(add.status_code, 200)
+        self.assertEqual(add.get_json(), {"ok": True})
+
+        listing = self.client.get("/api/favorites")
+        self.assertEqual(listing.status_code, 200)
+        favorites = listing.get_json()["favorites"]
+        self.assertEqual(len(favorites), 1)
+        self.assertEqual(favorites[0]["player_id"], "amen_thompson")
+        self.assertEqual(favorites[0]["pool"], "current")
+        self.assertTrue(favorites[0]["name"])
+        self.assertTrue(favorites[0]["team"])
+
+    def test_adding_an_unknown_player_id_404s(self):
+        login_as(self.client, "sub-favapi-2", "favapi2@example.com")
+        response = self.client.post("/api/favorites", json={"player_id": "not_a_real_player", "pool": "current"})
+        self.assertEqual(response.status_code, 404)
+
+    def test_adding_the_same_favorite_twice_still_succeeds(self):
+        login_as(self.client, "sub-favapi-3", "favapi3@example.com")
+        self.client.post("/api/favorites", json={"player_id": "amen_thompson", "pool": "current"})
+        second = self.client.post("/api/favorites", json={"player_id": "amen_thompson", "pool": "current"})
+        self.assertEqual(second.status_code, 200)
+        self.assertEqual(len(self.client.get("/api/favorites").get_json()["favorites"]), 1)
+
+    def test_remove_favorite(self):
+        login_as(self.client, "sub-favapi-4", "favapi4@example.com")
+        self.client.post("/api/favorites", json={"player_id": "amen_thompson", "pool": "current"})
+        remove = self.client.delete("/api/favorites", json={"player_id": "amen_thompson", "pool": "current"})
+        self.assertEqual(remove.status_code, 200)
+        self.assertEqual(self.client.get("/api/favorites").get_json()["favorites"], [])
+
+    def test_removing_a_non_favorite_still_succeeds(self):
+        login_as(self.client, "sub-favapi-5", "favapi5@example.com")
+        response = self.client.delete("/api/favorites", json={"player_id": "amen_thompson", "pool": "current"})
+        self.assertEqual(response.status_code, 200)
+
+    def test_invalid_pool_400s(self):
+        login_as(self.client, "sub-favapi-6", "favapi6@example.com")
+        response = self.client.post("/api/favorites", json={"player_id": "amen_thompson", "pool": "bogus"})
+        self.assertEqual(response.status_code, 400)
+
+    def test_missing_fields_400(self):
+        login_as(self.client, "sub-favapi-7", "favapi7@example.com")
+        self.assertEqual(self.client.post("/api/favorites", json={}).status_code, 400)
+
+    def test_a_db_failure_on_add_returns_503_not_500(self):
+        login_as(self.client, "sub-favapi-8", "favapi8@example.com")
+        # Patch the name as bound in app.py's own namespace, not db's --
+        # app.py does `from db import (..., add_favorite)`, which binds its
+        # own module-level `add_favorite` to the function object at import
+        # time. Patching `db.add_favorite` afterward would not affect that
+        # already-bound reference (a real bug caught in Task 3's review on
+        # this exact pattern -- see the plan's "Clarifications" if you want
+        # the full explanation). Patch app_module.add_favorite instead.
+        import app as app_module
+        original = app_module.add_favorite
+        app_module.add_favorite = lambda *a, **kw: (_ for _ in ()).throw(ConnectionError("simulated"))
+        try:
+            response = self.client.post("/api/favorites", json={"player_id": "amen_thompson", "pool": "current"})
+            self.assertEqual(response.status_code, 503)
+        finally:
+            app_module.add_favorite = original
+
+
 if __name__ == "__main__":
     unittest.main()

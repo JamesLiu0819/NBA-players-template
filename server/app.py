@@ -100,10 +100,13 @@ from flask import Flask, jsonify, redirect, request, send_from_directory, sessio
 from authlib.integrations.flask_client import OAuth  # noqa: E402
 
 from db import (  # noqa: E402
+    add_favorite,
     get_latest_result,
     get_or_create_user,
     increment_visit_count,
     init_db,
+    list_favorites,
+    remove_favorite,
     save_feedback,
     save_result,
 )
@@ -514,6 +517,84 @@ def api_player_training_plan():
 
 
 FEEDBACK_MAX_MESSAGE = 50
+
+
+FAVORITE_REQUIRED_FIELDS = ("player_id", "pool")
+
+
+@app.route("/api/favorites", methods=["GET"])
+def api_favorites_list():
+    user_id = session.get("user_id")
+    if user_id is None:
+        return jsonify({"error": "login required"}), 401
+
+    lang = request.args.get("lang", "zh")
+    if lang not in SUPPORTED_LANGUAGES:
+        return jsonify({"error": f"invalid lang: {lang}"}), 400
+
+    favorites = list_favorites(user_id)
+    players_by_pool = {}
+    enriched = []
+    for fav in favorites:
+        pool = fav["pool"]
+        if pool not in players_by_pool:
+            _q, _s, players = load_data(pool, lang)
+            players_by_pool[pool] = {p["id"]: p for p in players}
+        player = players_by_pool[pool].get(fav["player_id"])
+        if player is None:
+            continue  # stale favorite referencing a since-removed id -- skip it, don't 500
+        enriched.append({"player_id": fav["player_id"], "pool": pool, "name": player["name"], "team": player["team"]})
+    return jsonify({"favorites": enriched})
+
+
+@app.route("/api/favorites", methods=["POST"])
+def api_favorites_add():
+    user_id = session.get("user_id")
+    if user_id is None:
+        return jsonify({"error": "login required"}), 401
+
+    payload = request.get_json(silent=True)
+    if payload is None:
+        return jsonify({"error": "request body must be JSON"}), 400
+    missing = missing_fields(payload, FAVORITE_REQUIRED_FIELDS)
+    if missing:
+        return jsonify({"error": f"missing required field(s): {', '.join(missing)}"}), 400
+
+    pool = payload["pool"]
+    if pool not in POOLS:
+        return jsonify({"error": f"invalid pool: {pool}"}), 400
+
+    _q, _s, players = load_data(pool, "zh")  # player id set is language-independent
+    if payload["player_id"] not in {p["id"] for p in players}:
+        return jsonify({"error": f"unknown player_id: {payload['player_id']}"}), 404
+
+    try:
+        add_favorite(user_id, payload["player_id"], pool)
+    except Exception as e:
+        print(f"add_favorite failed: {e}", file=sys.stderr)
+        return jsonify({"error": "could not save favorite, please try again later"}), 503
+    return jsonify({"ok": True})
+
+
+@app.route("/api/favorites", methods=["DELETE"])
+def api_favorites_remove():
+    user_id = session.get("user_id")
+    if user_id is None:
+        return jsonify({"error": "login required"}), 401
+
+    payload = request.get_json(silent=True)
+    if payload is None:
+        return jsonify({"error": "request body must be JSON"}), 400
+    missing = missing_fields(payload, FAVORITE_REQUIRED_FIELDS)
+    if missing:
+        return jsonify({"error": f"missing required field(s): {', '.join(missing)}"}), 400
+
+    try:
+        remove_favorite(user_id, payload["player_id"], payload["pool"])
+    except Exception as e:
+        print(f"remove_favorite failed: {e}", file=sys.stderr)
+        return jsonify({"error": "could not remove favorite, please try again later"}), 503
+    return jsonify({"ok": True})
 
 
 @app.route("/api/feedback", methods=["POST"])
