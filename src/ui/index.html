@@ -1175,6 +1175,13 @@
   .training-empty { margin: 0; font-size: 0.9rem; color: var(--ink-soft); }
   .training-radar svg { display: block; width: 100%; max-width: 300px; height: auto; margin: 0 auto; }
 
+  .admin-feedback-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .admin-feedback-row {
+    border: 1px solid var(--line); border-radius: var(--radius); padding: 0.6rem 0.8rem; background: var(--paper-raised);
+  }
+  .admin-feedback-meta { display: flex; gap: 0.5rem; font-size: 0.72rem; color: var(--ink-soft); font-family: var(--mono); }
+  .admin-feedback-message { margin: 0.3rem 0 0; }
+
   .skill-item {
     border: 1px solid var(--line);
     border-radius: var(--radius);
@@ -1420,6 +1427,7 @@
       <a href="#" class="topnav-tab" id="topnav-tab-home">首頁</a>
       <a href="#" class="topnav-tab" id="topnav-tab-template" aria-disabled="true">我的模板</a>
       <a href="#" class="topnav-tab" id="topnav-tab-training" aria-disabled="true">訓練計劃</a>
+      <a href="#" class="topnav-tab" id="topnav-tab-admin" aria-disabled="true" style="display:none">意見回饋</a>
     </div>
     <div class="topnav-actions">
       <span class="visit-counter" id="visit-counter" style="display:none"></span>
@@ -1513,6 +1521,12 @@
   </div>
   </section>
 
+  <section class="app-page" id="page-admin" hidden>
+  <div class="page">
+  <div id="admin-feedback-report"></div>
+  </div>
+  </section>
+
 </main>
 
 <footer class="site-footer">
@@ -1583,6 +1597,10 @@
       navHome: "首頁",
       goTrainingButton: "查看訓練計劃",
       navTrainingPlan: "訓練計劃",
+      navAdminFeedback: "意見回饋",
+      adminFeedbackEmpty: "目前沒有任何意見。",
+      adminFeedbackNoMessage: "(沒有留言)",
+      adminFeedbackNoRating: "(沒有星等)",
       themeToggleToLight: "切換成米白主題",
       themeToggleToDark: "切換成深色主題",
       visitCounterLabel: "使用人數：",
@@ -1672,6 +1690,10 @@
       navHome: "首页",
       goTrainingButton: "查看训练计划",
       navTrainingPlan: "训练计划",
+      navAdminFeedback: "意见反馈",
+      adminFeedbackEmpty: "目前没有任何意见。",
+      adminFeedbackNoMessage: "(没有留言)",
+      adminFeedbackNoRating: "(没有星等)",
       themeToggleToLight: "切换成米白主题",
       themeToggleToDark: "切换成深色主题",
       visitCounterLabel: "使用人数：",
@@ -1761,6 +1783,10 @@
       navHome: "Home",
       goTrainingButton: "View Training Plan",
       navTrainingPlan: "Training Plan",
+      navAdminFeedback: "Feedback",
+      adminFeedbackEmpty: "No feedback yet.",
+      adminFeedbackNoMessage: "(no message)",
+      adminFeedbackNoRating: "(no rating)",
       themeToggleToLight: "Switch to light theme",
       themeToggleToDark: "Switch to dark theme",
       visitCounterLabel: "Users: ",
@@ -2824,8 +2850,8 @@
     }
   }
 
-  const PAGE_IDS = ["home", "quiz", "template", "training"];
-  const TAB_IDS = ["home", "template", "training"];
+  const PAGE_IDS = ["home", "quiz", "template", "training", "admin"];
+  const TAB_IDS = ["home", "template", "training", "admin"];
 
   function showPage(name) {
     for (const id of PAGE_IDS) {
@@ -2924,6 +2950,20 @@
     } catch (err) {
       state.user = { email: null, name: null };
     }
+
+    state.isAdmin = false;
+    state.adminFeedback = null;
+    if (state.user.email) {
+      try {
+        const res = await fetch("/api/admin/feedback");
+        if (res.ok) {
+          state.isAdmin = true;
+          state.adminFeedback = (await res.json()).feedback;
+        }
+      } catch (err) {
+        // 不是 admin,或探測失敗——兩種情況都當作不是 admin,不用另外處理
+      }
+    }
   }
 
   function renderAuthNav() {
@@ -2948,6 +2988,24 @@
       loginLink.textContent = t().loginLink;
       container.appendChild(loginLink);
     }
+  }
+
+  function renderAdminFeedbackPage() {
+    const el = document.getElementById("admin-feedback-report");
+    const s = t();
+    if (!state.adminFeedback || state.adminFeedback.length === 0) {
+      el.innerHTML = `<p class="training-empty">${s.adminFeedbackEmpty}</p>`;
+      return;
+    }
+    el.innerHTML = `<div class="admin-feedback-list">${state.adminFeedback.map((row) => `
+      <div class="admin-feedback-row">
+        <div class="admin-feedback-meta">
+          <span>${row.created_at ? escapeHtml(String(row.created_at)) : ""}</span>
+          <span>${row.lang ? escapeHtml(row.lang) : ""}</span>
+          <span>${row.rating ? starMarkup(row.rating) : s.adminFeedbackNoRating}</span>
+        </div>
+        <p class="admin-feedback-message">${row.message ? escapeHtml(row.message) : s.adminFeedbackNoMessage}</p>
+      </div>`).join("")}</div>`;
   }
 
   // 點選單以外的地方要把選單收起來——只加一次,不要每次 renderLangSwitch()
@@ -3068,6 +3126,10 @@
     await loadAuthState();
     renderLangSwitch();
     renderAuthNav();
+    document.getElementById("topnav-tab-admin").style.display = state.isAdmin ? "" : "none";
+    document.getElementById("topnav-tab-admin").textContent = t().navAdminFeedback;
+    document.getElementById("topnav-tab-admin").setAttribute("aria-disabled", String(!state.isAdmin));
+    if (state.isAdmin) renderAdminFeedbackPage();
     applyUiStrings();
     showPage("home");
     updateTabAvailability();
