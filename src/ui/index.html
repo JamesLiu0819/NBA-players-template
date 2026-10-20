@@ -1190,6 +1190,15 @@
   .admin-feedback-meta { display: flex; gap: 0.5rem; font-size: 0.72rem; color: var(--ink-soft); font-family: var(--mono); }
   .admin-feedback-message { margin: 0.3rem 0 0; }
 
+  .favorites-list { display: flex; flex-direction: column; gap: 0.6rem; }
+  .favorite-row {
+    display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
+    background: var(--paper-raised); border: 1px solid var(--line); border-radius: var(--radius); padding: 0.7rem 0.9rem;
+  }
+  .favorite-row .name { font-weight: 700; }
+  .favorite-row .team { font-family: var(--mono); font-size: 0.72rem; color: var(--ink-soft); }
+  .favorite-row-actions { display: flex; gap: 0.4rem; margin-left: auto; }
+
   .skill-item {
     border: 1px solid var(--line);
     border-radius: var(--radius);
@@ -1435,6 +1444,7 @@
       <a href="#" class="topnav-tab" id="topnav-tab-home">首頁</a>
       <a href="#" class="topnav-tab" id="topnav-tab-template" aria-disabled="true">我的模板</a>
       <a href="#" class="topnav-tab" id="topnav-tab-training" aria-disabled="true">訓練計劃</a>
+      <a href="#" class="topnav-tab" id="topnav-tab-favorites" aria-disabled="true">我的收藏</a>
       <a href="#" class="topnav-tab" id="topnav-tab-admin" aria-disabled="true" style="display:none">意見回饋</a>
     </div>
     <div class="topnav-actions">
@@ -1526,6 +1536,12 @@
   <section class="app-page" id="page-training" hidden>
   <div class="page">
   <div id="training-report"></div>
+  </div>
+  </section>
+
+  <section class="app-page" id="page-favorites" hidden>
+  <div class="page">
+  <div id="favorites-report"></div>
   </div>
   </section>
 
@@ -1681,6 +1697,10 @@
       favoriteAddLabel: "收藏這位球員",
       favoriteRemoveLabel: "取消收藏",
       favoriteLoginPrompt: "登入才能收藏",
+      navFavorites: "我的收藏",
+      favoritesEmpty: "還沒有收藏的球員。",
+      favoriteGotoTraining: "查看訓練計劃",
+      favoriteRemoveButton: "移除",
     },
     "zh-Hans": {
       pageTitle: "球探报告",
@@ -1777,6 +1797,10 @@
       favoriteAddLabel: "收藏这位球员",
       favoriteRemoveLabel: "取消收藏",
       favoriteLoginPrompt: "登录才能收藏",
+      navFavorites: "我的收藏",
+      favoritesEmpty: "还没有收藏的球员。",
+      favoriteGotoTraining: "查看训练计划",
+      favoriteRemoveButton: "移除",
     },
     en: {
       pageTitle: "Scouting Report",
@@ -1873,6 +1897,10 @@
       favoriteAddLabel: "Favorite this player",
       favoriteRemoveLabel: "Remove favorite",
       favoriteLoginPrompt: "Log in to favorite",
+      navFavorites: "Favorites",
+      favoritesEmpty: "No favorites yet.",
+      favoriteGotoTraining: "View training plan",
+      favoriteRemoveButton: "Remove",
     },
   };
 
@@ -1885,6 +1913,7 @@
     selectedEnv: ENV_CODES[0],
     selectedPlayerIndex: 0,
     customPlayerId: null,       // 自選目標球員(不在 10 人對照表裡)的 id,設定時優先於 selectedPlayerIndex
+    customPlayerPool: null,     // 自選目標球員所屬的 pool,可能跟 state.pool 不同(例如從收藏頁跳過來)
     allPlayersCache: null,      // { pool, lang, players: [{id,name,team}] },搜尋清單,依 pool+lang 快取
     customPlanCache: new Map(), // `${pool}|${lang}|${env}|${id}` -> /api/player-training-plan 回傳值,換環境/球員來回切換不用重打
     pool: "current",
@@ -2646,8 +2675,8 @@
   // 同一個(pool, lang, env, 球員)在一次作答結果裡的教學計劃不會變,來回切換
   // 環境或球員不用重打——但換一次新的作答(renderTemplateReport)一定要清掉,
   // 不然舊座標算出來的計劃會被誤認成新座標的結果。
-  async function fetchCustomPlayerTrainingPlan(id) {
-    const key = `${state.pool}|${state.lang}|${state.selectedEnv}|${id}`;
+  async function fetchCustomPlayerTrainingPlan(id, pool) {
+    const key = `${pool}|${state.lang}|${state.selectedEnv}|${id}`;
     if (state.customPlanCache.has(key)) return state.customPlanCache.get(key);
     const res = await fetch("/api/player-training-plan", {
       method: "POST",
@@ -2656,7 +2685,7 @@
         player_id: id,
         coordinates: state.results.coordinates,
         env: state.selectedEnv,
-        pool: state.pool,
+        pool: pool,
         lang: state.lang,
       }),
     });
@@ -2666,8 +2695,9 @@
     return data;
   }
 
-  async function selectCustomPlayer(id) {
+  async function selectCustomPlayer(id, pool = state.pool) {
     state.customPlayerId = id;
+    state.customPlayerPool = pool;
     document.getElementById("player-search-input").value = "";
     hidePlayerSearchResults();
     await renderTrainingSection();
@@ -2691,9 +2721,10 @@
 
     if (state.customPlayerId) {
       const id = state.customPlayerId;
+      const pool = state.customPlayerPool;
       body.innerHTML = `<p class="training-empty">${s.trainingPlanLoading}</p>`;
       try {
-        const custom = await fetchCustomPlayerTrainingPlan(id);
+        const custom = await fetchCustomPlayerTrainingPlan(id, pool);
         if (state.customPlayerId !== id) return; // 等待時又換了別的球員/環境,這次結果已經過期
         body.innerHTML = renderTrainingBody(custom, custom.training_plan);
       } catch (err) {
@@ -2720,7 +2751,7 @@
     }
     const searchResultBtn = e.target.closest("[data-custom-player-id]");
     if (searchResultBtn) {
-      selectCustomPlayer(searchResultBtn.dataset.customPlayerId);
+      selectCustomPlayer(searchResultBtn.dataset.customPlayerId, state.pool);
       return;
     }
     const favoriteBtn = e.target.closest("[data-favorite-id]");
@@ -2728,9 +2759,22 @@
       toggleFavorite(favoriteBtn.dataset.favoriteId, state.pool);
       return;
     }
+    const gotoTrainingBtn = e.target.closest(".favorite-goto-training");
+    if (gotoTrainingBtn) {
+      const row = gotoTrainingBtn.closest("[data-favorite-player-id]");
+      goToTrainingForFavorite(row.dataset.favoritePlayerId, row.dataset.favoritePool);
+      return;
+    }
+    const removeFavoriteBtn = e.target.closest(".favorite-remove");
+    if (removeFavoriteBtn) {
+      const row = removeFavoriteBtn.closest("[data-favorite-player-id]");
+      removeFavoriteFromPage(row.dataset.favoritePlayerId, row.dataset.favoritePool);
+      return;
+    }
     const playerEl = e.target.closest("[data-player-index]");
     if (!playerEl) return;
     state.customPlayerId = null;
+    state.customPlayerPool = null;
     state.selectedPlayerIndex = Number(playerEl.dataset.playerIndex);
     renderTrainingSection();
     // 點球員卡片就切到訓練計劃那一頁;訓練頁裡的球員按鈕只換選擇,不切頁。
@@ -2884,8 +2928,8 @@
     }
   }
 
-  const PAGE_IDS = ["home", "quiz", "template", "training", "admin"];
-  const TAB_IDS = ["home", "template", "training", "admin"];
+  const PAGE_IDS = ["home", "quiz", "template", "training", "favorites", "admin"];
+  const TAB_IDS = ["home", "template", "training", "favorites", "admin"];
 
   function showPage(name) {
     for (const id of PAGE_IDS) {
@@ -2899,7 +2943,11 @@
 
   // 「我的模板」「訓練計劃」要送出過才能點(沒有結果就沒東西可看)。問題頁只從首頁開始。
   function updateTabAvailability() {
-    const enabled = { template: state.results !== null, training: state.results !== null };
+    const enabled = {
+      template: state.results !== null,
+      training: state.results !== null,
+      favorites: !!state.user.email,
+    };
     for (const [name, on] of Object.entries(enabled)) {
       document.getElementById(`topnav-tab-${name}`).setAttribute("aria-disabled", String(!on));
     }
@@ -2925,6 +2973,7 @@
     state.selectedEnv = ENV_CODES[0];
     state.selectedPlayerIndex = 0;
     state.customPlayerId = null;
+    state.customPlayerPool = null;
     state.stage1StepIndex = 0;
     document.getElementById("template-report").innerHTML = "";
     document.getElementById("training-report").innerHTML = "";
@@ -3086,6 +3135,38 @@
       </div>`).join("")}</div>`;
   }
 
+  function renderFavoritesPage() {
+    const el = document.getElementById("favorites-report");
+    const s = t();
+    if (!state.favorites || state.favorites.length === 0) {
+      el.innerHTML = `<p class="training-empty">${s.favoritesEmpty}</p>`;
+      return;
+    }
+    el.innerHTML = `<div class="favorites-list">${state.favorites.map((f) => `
+      <div class="favorite-row" data-favorite-player-id="${escapeHtml(f.player_id)}" data-favorite-pool="${escapeHtml(f.pool)}">
+        <span class="name">${escapeHtml(f.name)}</span>
+        <span class="team mono">${escapeHtml(f.team)}</span>
+        <div class="favorite-row-actions">
+          <button type="button" class="favorite-goto-training">${s.favoriteGotoTraining}</button>
+          <button type="button" class="favorite-remove">${s.favoriteRemoveButton}</button>
+        </div>
+      </div>`).join("")}</div>`;
+  }
+
+  function goToTrainingForFavorite(playerId, pool) {
+    if (!state.results) {
+      openQuiz(pool);
+      return;
+    }
+    selectCustomPlayer(playerId, pool);
+    showPage("training");
+  }
+
+  async function removeFavoriteFromPage(playerId, pool) {
+    await toggleFavorite(playerId, pool);
+    renderFavoritesPage();
+  }
+
   // 點選單以外的地方要把選單收起來——只加一次,不要每次 renderLangSwitch()
   // 都重複掛一個新的 listener(2026-10 討論)。自選球員的搜尋結果下拉也用同一個
   // listener 收起來,但只在點擊發生在 .player-search 以外時才收(在裡面打字、
@@ -3176,6 +3257,8 @@
       renderAdminFeedbackPage();
     }
     if (state.user.email) { await loadFavorites(); }
+    document.getElementById("topnav-tab-favorites").textContent = t().navFavorites;
+    if (state.user.email) renderFavoritesPage();
     applyUiStrings();
     // 作答中的那一題也要重繪成新語言,不用整頁重整
     if (document.getElementById("stage1-form").style.display !== "none") {
@@ -3214,6 +3297,9 @@
     document.getElementById("topnav-tab-admin").textContent = t().navAdminFeedback;
     document.getElementById("topnav-tab-admin").setAttribute("aria-disabled", String(!state.isAdmin));
     if (state.isAdmin) renderAdminFeedbackPage();
+    document.getElementById("topnav-tab-favorites").textContent = t().navFavorites;
+    updateTabAvailability();
+    if (state.user.email) renderFavoritesPage();
     applyUiStrings();
     showPage("home");
     updateTabAvailability();
