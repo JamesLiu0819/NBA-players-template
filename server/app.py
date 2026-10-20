@@ -106,6 +106,7 @@ from db import (  # noqa: E402
     increment_visit_count,
     init_db,
     list_favorites,
+    list_feedback,
     remove_favorite,
     save_feedback,
     save_result,
@@ -171,6 +172,7 @@ oauth = OAuth(app)
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
 GOOGLE_LOGIN_CONFIGURED = bool(GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET)
+ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL")
 if GOOGLE_LOGIN_CONFIGURED:
     # Static endpoints (not server_metadata_url) so this never needs a live
     # network call except the real token exchange in authorize_access_token
@@ -630,6 +632,13 @@ def api_feedback():
         print(f"save_feedback failed: {e}", file=sys.stderr)
         return jsonify({"error": "could not save feedback, please try again later"}), 503
     return jsonify({"ok": True})
+
+
+@app.route("/api/admin/feedback", methods=["GET"])
+def api_admin_feedback():
+    if not ADMIN_EMAIL or session.get("email") != ADMIN_EMAIL:
+        return jsonify({"error": "not found"}), 404
+    return jsonify({"feedback": list_feedback()})
 
 
 @app.route("/api/site-visit", methods=["POST"])

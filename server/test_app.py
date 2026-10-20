@@ -771,5 +771,37 @@ class FavoritesTest(unittest.TestCase):
             app_module.add_favorite = original
 
 
+class AdminFeedbackTest(unittest.TestCase):
+    def setUp(self):
+        self.client = app.test_client()
+        import db
+        db._memory_feedback.clear()
+
+    def test_404_when_not_logged_in(self):
+        response = self.client.get("/api/admin/feedback")
+        self.assertEqual(response.status_code, 404)
+
+    def test_404_when_logged_in_as_a_non_admin(self):
+        login_as(self.client, "sub-admin-1", "regular-user@example.com")
+        response = self.client.get("/api/admin/feedback")
+        self.assertEqual(response.status_code, 404)
+
+    def test_200_with_feedback_rows_when_logged_in_as_the_admin(self):
+        import app as app_module
+        app_module.ADMIN_EMAIL = "owner@example.com"
+        try:
+            self.client.post("/api/feedback", json={"rating": 5, "message": "讚", "lang": "zh"})
+            login_as(self.client, "sub-admin-2", "owner@example.com")
+            response = self.client.get("/api/admin/feedback")
+            self.assertEqual(response.status_code, 200)
+            rows = response.get_json()["feedback"]
+            self.assertEqual(len(rows), 1)
+            self.assertEqual(rows[0]["rating"], 5)
+            self.assertEqual(rows[0]["message"], "讚")
+            self.assertEqual(rows[0]["lang"], "zh")
+        finally:
+            app_module.ADMIN_EMAIL = None
+
+
 if __name__ == "__main__":
     unittest.main()
