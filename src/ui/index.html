@@ -446,6 +446,8 @@
     margin-bottom: 0;
   }
 
+  .view-last-result-block { margin: 1rem 0; }
+
   .mode-select {
     display: flex;
     gap: 0.9rem;
@@ -1478,6 +1480,10 @@
     <p>所有配對結果都是以座標距離最接近的計算，不是真人球探評測，結果僅供參考。</p>
   </div>
 
+  <div class="view-last-result-block" id="view-last-result-block" style="display:none">
+    <button type="button" class="primary" id="view-last-result-btn"></button>
+  </div>
+
   <div class="mode-select" id="mode-select">
     <button type="button" class="mode-btn" id="mode-current-btn" disabled>
       <span class="mode-title">現役球員模板</span>
@@ -1701,6 +1707,7 @@
       favoritesEmpty: "還沒有收藏的球員。",
       favoriteGotoTraining: "查看訓練計劃",
       favoriteRemoveButton: "移除",
+      viewLastResultButton: "查看我上次的結果",
     },
     "zh-Hans": {
       pageTitle: "球探报告",
@@ -1801,6 +1808,7 @@
       favoritesEmpty: "还没有收藏的球员。",
       favoriteGotoTraining: "查看训练计划",
       favoriteRemoveButton: "移除",
+      viewLastResultButton: "查看我上次的结果",
     },
     en: {
       pageTitle: "Scouting Report",
@@ -1901,6 +1909,7 @@
       favoritesEmpty: "No favorites yet.",
       favoriteGotoTraining: "View training plan",
       favoriteRemoveButton: "Remove",
+      viewLastResultButton: "View my last result",
     },
   };
 
@@ -1924,6 +1933,7 @@
     theme: localStorage.getItem("theme") === "light" ? "light" : "dark",
     user: { email: null, name: null },
     favorites: null,
+    lastResult: null,
   };
 
   function applyTheme(theme) {
@@ -3063,6 +3073,18 @@
     }
   }
 
+  async function loadLastResult() {
+    if (!state.user.email) { state.lastResult = null; return; }
+    try {
+      const res = await fetch("/api/my-results/latest");
+      if (res.status === 204) { state.lastResult = null; return; }
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      state.lastResult = await res.json();
+    } catch (err) {
+      state.lastResult = null;
+    }
+  }
+
   function updateFavoriteButton(playerId, isFav) {
     document.querySelectorAll(".match-list [data-favorite-id]").forEach((btn) => {
       if (btn.dataset.favoriteId !== playerId) return;
@@ -3259,6 +3281,9 @@
     if (state.user.email) { await loadFavorites(); }
     document.getElementById("topnav-tab-favorites").textContent = t().navFavorites;
     if (state.user.email) renderFavoritesPage();
+    if (state.lastResult) {
+      document.getElementById("view-last-result-btn").textContent = t().viewLastResultButton;
+    }
     applyUiStrings();
     // 作答中的那一題也要重繪成新語言,不用整頁重整
     if (document.getElementById("stage1-form").style.display !== "none") {
@@ -3291,6 +3316,14 @@
 
     await loadAuthState();
     if (state.user.email) { await loadFavorites(); } else { state.favorites = []; }
+    await loadLastResult();
+    const viewLastResultBlock = document.getElementById("view-last-result-block");
+    if (state.lastResult) {
+      document.getElementById("view-last-result-btn").textContent = t().viewLastResultButton;
+      viewLastResultBlock.style.display = "block";
+    } else {
+      viewLastResultBlock.style.display = "none";
+    }
     renderLangSwitch();
     renderAuthNav();
     document.getElementById("topnav-tab-admin").style.display = state.isAdmin ? "" : "none";
@@ -3336,6 +3369,17 @@
     });
     document.getElementById("mode-current-btn").addEventListener("click", () => openQuiz("current"));
     document.getElementById("mode-alltime-btn").addEventListener("click", () => openQuiz("alltime"));
+    document.getElementById("view-last-result-btn").addEventListener("click", () => {
+      if (!state.lastResult) return;
+      state.pool = state.lastResult.pool;
+      state.selectedEnv = ENV_CODES[0];
+      state.selectedPlayerIndex = 0;
+      state.customPlayerId = null;
+      state.customPlayerPool = null;
+      renderTemplateReport(state.lastResult);
+      updateTabAvailability();
+      showPage("template");
+    });
   }
 
   // ---- 使用意見視窗:1–5 星準確度(選填)+ 文字 + 聯絡方式,送到 /api/feedback ----
