@@ -100,6 +100,7 @@ from flask import Flask, jsonify, redirect, request, send_from_directory, sessio
 from authlib.integrations.flask_client import OAuth  # noqa: E402
 
 from db import (  # noqa: E402
+    get_latest_result,
     get_or_create_user,
     increment_visit_count,
     init_db,
@@ -404,6 +405,31 @@ def api_template_results():
         except Exception as e:
             print(f"save_result failed: {e}", file=sys.stderr)
 
+    return jsonify(results)
+
+
+@app.route("/api/my-results/latest", methods=["GET"])
+def api_my_results_latest():
+    user_id = session.get("user_id")
+    if user_id is None:
+        return "", 204
+
+    stored = get_latest_result(user_id)
+    if stored is None:
+        return "", 204
+
+    pool, lang = stored["pool"], stored["lang"]
+    questions, skills, players = load_data(pool, lang)
+    archetypes = load_archetypes(lang)
+    drills_by_key = load_drills(lang)
+    payload = {"axis_answers": stored["axis_answers"], "body_answers": stored["body_answers"]}
+    try:
+        results = compute_template_results(payload, questions, players, skills, archetypes, drills_by_key, lang, pool)
+    except (ValueError, KeyError):
+        return "", 204
+
+    results["pool"] = pool
+    results["lang"] = lang
     return jsonify(results)
 
 

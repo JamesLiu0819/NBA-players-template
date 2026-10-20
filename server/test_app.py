@@ -626,6 +626,41 @@ class FeedbackTest(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
 
 
+class LatestResultTest(unittest.TestCase):
+    def setUp(self):
+        self.client = app.test_client()
+        self.questions = load_json(ROOT / "data" / "zh" / "題庫.json")
+
+    def test_returns_204_when_not_logged_in(self):
+        response = self.client.get("/api/my-results/latest")
+        self.assertEqual(response.status_code, 204)
+
+    def test_returns_204_when_logged_in_but_never_submitted(self):
+        login_as(self.client, "sub-latest-1", "latest1@example.com")
+        response = self.client.get("/api/my-results/latest")
+        self.assertEqual(response.status_code, 204)
+
+    def test_returns_the_recomputed_result_with_pool_and_lang(self):
+        login_as(self.client, "sub-latest-2", "latest2@example.com")
+        payload = {
+            "axis_answers": build_axis_answers(self.questions),
+            "body_answers": build_required_body_answers(self.questions),
+            "pool": "alltime",
+            "lang": "en",
+        }
+        self.client.post("/api/template-results", json=payload)
+
+        response = self.client.get("/api/my-results/latest")
+
+        self.assertEqual(response.status_code, 200)
+        data = response.get_json()
+        self.assertEqual(data["pool"], "alltime")
+        self.assertEqual(data["lang"], "en")
+        self.assertEqual(len(data["top_10"]), 10)
+        en_names = {p["name"] for p in load_json(ROOT / "data" / "en" / "players_alltime.json")["players"]}
+        self.assertTrue({row["name"] for row in data["top_10"]}.issubset(en_names))
+
+
 class SaveResultOnSubmitTest(unittest.TestCase):
     def setUp(self):
         self.client = app.test_client()
