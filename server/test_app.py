@@ -12,6 +12,11 @@ import json
 import unittest
 from pathlib import Path
 
+import os
+os.environ.setdefault("SECRET_KEY", "test-secret-key-not-for-production")
+os.environ.setdefault("GOOGLE_CLIENT_ID", "test-client-id")
+os.environ.setdefault("GOOGLE_CLIENT_SECRET", "test-client-secret")
+
 from app import app
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -45,6 +50,57 @@ def build_required_body_answers(questions):
 
 
 ENV_CODES = ("collapsed_no_shooters", "tight_perimeter_opp_shooters", "zone_defense", "no_environment")
+
+
+def login_as(client, sub, email, name="Test"):
+    """Log a test client in as a fake Google user, bypassing the real
+    OAuth exchange. Shared by every test class in this file that needs a
+    logged-in session (Tasks 2-6) -- defined once here rather than
+    repeated per class."""
+    from unittest.mock import patch
+    import app as app_module
+    fake_token = {"userinfo": {"sub": sub, "email": email, "name": name}}
+    with patch.object(app_module.oauth.google, "authorize_access_token", return_value=fake_token):
+        client.get("/auth/callback")
+
+
+class AuthTest(unittest.TestCase):
+    def setUp(self):
+        self.client = app.test_client()
+
+    def test_me_reports_logged_out_by_default(self):
+        response = self.client.get("/api/me")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get_json(), {"email": None, "name": None})
+
+    def test_login_redirects_to_google_without_hitting_the_network(self):
+        response = self.client.get("/auth/login")
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("accounts.google.com", response.location)
+
+    def test_callback_creates_a_user_and_logs_them_in(self):
+        login_as(self.client, "google-sub-1", "person@example.com", "Person")
+        me = self.client.get("/api/me").get_json()
+        self.assertEqual(me, {"email": "person@example.com", "name": "Person"})
+
+    def test_callback_handles_a_missing_name_claim(self):
+        login_as(self.client, "google-sub-2", "noname@example.com", None)
+        me = self.client.get("/api/me").get_json()
+        self.assertIsNone(me["name"])
+
+    def test_repeat_login_reuses_the_same_user(self):
+        login_as(self.client, "google-sub-3", "dup@example.com", "Dup")
+        login_as(self.client, "google-sub-3", "dup@example.com", "Dup")
+        # two logins, no error -- get_or_create_user's upsert handles this (Task 1)
+        me = self.client.get("/api/me").get_json()
+        self.assertEqual(me["email"], "dup@example.com")
+
+    def test_logout_clears_the_session(self):
+        login_as(self.client, "google-sub-4", "bye@example.com", "Bye")
+        response = self.client.post("/auth/logout")
+        self.assertEqual(response.status_code, 302)
+        me = self.client.get("/api/me").get_json()
+        self.assertEqual(me, {"email": None, "name": None})
 
 
 class TemplateResultsTest(unittest.TestCase):

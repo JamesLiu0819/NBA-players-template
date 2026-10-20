@@ -96,9 +96,15 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT))
 
-from flask import Flask, jsonify, request, send_from_directory  # noqa: E402
+from flask import Flask, jsonify, redirect, request, send_from_directory, session, url_for  # noqa: E402
+from authlib.integrations.flask_client import OAuth  # noqa: E402
 
-from db import increment_visit_count, init_db, save_feedback  # noqa: E402
+from db import (  # noqa: E402
+    get_or_create_user,
+    increment_visit_count,
+    init_db,
+    save_feedback,
+)
 from engine.archetype import classify_archetype_by_majority, compute_player_sizes  # noqa: E402
 from engine.axis_position import AXES, score_axis_coordinates  # noqa: E402
 from engine.body_fit import (  # noqa: E402
@@ -154,6 +160,26 @@ DATA_FILENAMES = {
 }
 
 app = Flask(__name__, static_folder=None)
+app.secret_key = os.environ.get("SECRET_KEY", "dev-only-insecure-secret-do-not-use-in-production")
+
+oauth = OAuth(app)
+GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
+GOOGLE_LOGIN_CONFIGURED = bool(GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET)
+if GOOGLE_LOGIN_CONFIGURED:
+    # Static endpoints (not server_metadata_url) so this never needs a live
+    # network call except the real token exchange in authorize_access_token
+    # -- authorize_redirect below must work offline for tests to mock it.
+    oauth.register(
+        name="google",
+        client_id=GOOGLE_CLIENT_ID,
+        client_secret=GOOGLE_CLIENT_SECRET,
+        access_token_url="https://oauth2.googleapis.com/token",
+        authorize_url="https://accounts.google.com/o/oauth2/v2/auth",
+        jwks_uri="https://www.googleapis.com/oauth2/v3/certs",
+        client_kwargs={"scope": "openid email profile"},
+    )
+
 init_db()
 
 
@@ -287,6 +313,37 @@ def compute_template_results(payload, questions, players, skills, archetypes, dr
         },
         "top_10": top_10,
     }
+
+
+@app.route("/auth/login")
+def auth_login():
+    if not GOOGLE_LOGIN_CONFIGURED:
+        return jsonify({"error": "login is not configured"}), 503
+    return oauth.google.authorize_redirect(url_for("auth_callback", _external=True))
+
+
+@app.route("/auth/callback")
+def auth_callback():
+    if not GOOGLE_LOGIN_CONFIGURED:
+        return jsonify({"error": "login is not configured"}), 503
+    token = oauth.google.authorize_access_token()
+    userinfo = token["userinfo"]
+    user = get_or_create_user(userinfo["sub"], userinfo["email"], userinfo.get("name"))
+    session["user_id"] = user["id"]
+    session["email"] = user["email"]
+    session["name"] = user["name"]
+    return redirect("/")
+
+
+@app.route("/auth/logout", methods=["POST"])
+def auth_logout():
+    session.clear()
+    return redirect("/")
+
+
+@app.route("/api/me", methods=["GET"])
+def api_me():
+    return jsonify({"email": session.get("email"), "name": session.get("name")})
 
 
 @app.route("/api/form-data", methods=["GET"])
