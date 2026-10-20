@@ -1047,6 +1047,14 @@
   .card .name, .top-match .name { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .card .team, .top-match .team { font-family: var(--mono); font-size: 0.72rem; color: var(--ink-soft); flex: none; }
   .card .stat-line, .top-match .stat-line { display: flex; align-items: center; gap: 0.4rem; flex: none; }
+  .card-head-right { display: flex; align-items: center; gap: 0.5rem; flex: none; }
+  .favorite-btn {
+    background: none; border: none; cursor: pointer; font-size: 1rem; line-height: 1;
+    padding: 0; color: var(--accent-ink);
+  }
+  .favorite-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .favorite-login-prompt { font-size: 0.68rem; color: var(--ink-soft); }
+  .favorite-login-prompt a { color: var(--accent-ink); }
   .stat-label { font-size: 0.72rem; color: var(--ink-soft); }
   .stars { font-size: 0.85rem; }
   .stars .star { position: relative; display: inline-block; }
@@ -1670,6 +1678,9 @@
       volumeMinutes: (n) => `${n} 分鐘`,
       loginLink: "登入",
       logoutLink: "登出",
+      favoriteAddLabel: "收藏這位球員",
+      favoriteRemoveLabel: "取消收藏",
+      favoriteLoginPrompt: "登入才能收藏",
     },
     "zh-Hans": {
       pageTitle: "球探报告",
@@ -1763,6 +1774,9 @@
       volumeMinutes: (n) => `${n} 分钟`,
       loginLink: "登录",
       logoutLink: "登出",
+      favoriteAddLabel: "收藏这位球员",
+      favoriteRemoveLabel: "取消收藏",
+      favoriteLoginPrompt: "登录才能收藏",
     },
     en: {
       pageTitle: "Scouting Report",
@@ -1856,6 +1870,9 @@
       volumeMinutes: (n) => `${n} min`,
       loginLink: "Log in",
       logoutLink: "Log out",
+      favoriteAddLabel: "Favorite this player",
+      favoriteRemoveLabel: "Remove favorite",
+      favoriteLoginPrompt: "Log in to favorite",
     },
   };
 
@@ -1877,6 +1894,7 @@
       : "zh",
     theme: localStorage.getItem("theme") === "light" ? "light" : "dark",
     user: { email: null, name: null },
+    favorites: null,
   };
 
   function applyTheme(theme) {
@@ -2484,6 +2502,14 @@
     });
   }
 
+  function renderFavoriteControl(m) {
+    if (!state.user.email) {
+      return `<span class="favorite-login-prompt">${t().favoriteLoginPrompt} <a href="/auth/login">${t().loginLink}</a></span>`;
+    }
+    const isFav = isFavorited(state.pool, m.id);
+    return `<button type="button" class="favorite-btn" data-favorite-id="${escapeHtml(m.id)}" aria-pressed="${isFav}" aria-label="${isFav ? t().favoriteRemoveLabel : t().favoriteAddLabel}">${isFav ? "★" : "☆"}</button>`;
+  }
+
   function renderMatchCardInner(rank, m) {
     return `
       <div class="card-head">
@@ -2492,9 +2518,12 @@
           <span class="name">${escapeHtml(m.name)}</span>
           <span class="team mono">${escapeHtml(m.team)}</span>
         </div>
-        <div class="stat-line">
-          <span class="stat-label">${t().similarityLabel}</span>
-          <span class="stars">${starMarkup(m.fit_stars)}</span>
+        <div class="card-head-right">
+          <div class="stat-line">
+            <span class="stat-label">${t().similarityLabel}</span>
+            <span class="stars">${starMarkup(m.fit_stars)}</span>
+          </div>
+          ${renderFavoriteControl(m)}
         </div>
       </div>
       <div class="traits">${m.notable_traits.map((tr) => `<span class="trait">${escapeHtml(tr)}</span>`).join("")}</div>
@@ -2692,6 +2721,11 @@
     const searchResultBtn = e.target.closest("[data-custom-player-id]");
     if (searchResultBtn) {
       selectCustomPlayer(searchResultBtn.dataset.customPlayerId);
+      return;
+    }
+    const favoriteBtn = e.target.closest("[data-favorite-id]");
+    if (favoriteBtn) {
+      toggleFavorite(favoriteBtn.dataset.favoriteId, state.pool);
       return;
     }
     const playerEl = e.target.closest("[data-player-index]");
@@ -2966,6 +3000,50 @@
     }
   }
 
+  function isFavorited(pool, id) {
+    return !!(state.favorites && state.favorites.some((f) => f.pool === pool && f.player_id === id));
+  }
+
+  async function loadFavorites() {
+    try {
+      const res = await fetch(`/api/favorites?lang=${state.lang}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      state.favorites = (await res.json()).favorites;
+    } catch (err) {
+      state.favorites = [];
+    }
+  }
+
+  function updateFavoriteButton(playerId, isFav) {
+    document.querySelectorAll(".match-list [data-favorite-id]").forEach((btn) => {
+      if (btn.dataset.favoriteId !== playerId) return;
+      btn.textContent = isFav ? "★" : "☆";
+      btn.setAttribute("aria-pressed", String(isFav));
+      btn.setAttribute("aria-label", isFav ? t().favoriteRemoveLabel : t().favoriteAddLabel);
+    });
+  }
+
+  async function toggleFavorite(playerId, pool) {
+    const wasFav = isFavorited(pool, playerId);
+    try {
+      const res = await fetch("/api/favorites", {
+        method: wasFav ? "DELETE" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ player_id: playerId, pool }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      if (wasFav) {
+        state.favorites = state.favorites.filter((f) => !(f.pool === pool && f.player_id === playerId));
+      } else {
+        const m = (state.results && state.results.top_10.find((row) => row.id === playerId)) || {};
+        state.favorites.push({ player_id: playerId, pool, name: m.name || "", team: m.team || "" });
+      }
+      updateFavoriteButton(playerId, !wasFav);
+    } catch (err) {
+      // 失敗就不改狀態,星星維持原樣——這是次要功能,不值得加一個獨立的錯誤提示
+    }
+  }
+
   function renderAuthNav() {
     const container = document.getElementById("auth-nav");
     container.innerHTML = "";
@@ -3097,6 +3175,7 @@
       document.getElementById("topnav-tab-admin").textContent = t().navAdminFeedback;
       renderAdminFeedbackPage();
     }
+    if (state.user.email) { await loadFavorites(); }
     applyUiStrings();
     // 作答中的那一題也要重繪成新語言,不用整頁重整
     if (document.getElementById("stage1-form").style.display !== "none") {
@@ -3128,6 +3207,7 @@
     state.bodyQuestions = payload.questions.body_measurements;
 
     await loadAuthState();
+    if (state.user.email) { await loadFavorites(); } else { state.favorites = []; }
     renderLangSwitch();
     renderAuthNav();
     document.getElementById("topnav-tab-admin").style.display = state.isAdmin ? "" : "none";
