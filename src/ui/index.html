@@ -3093,6 +3093,10 @@
 
     renderLangSwitch();
     renderAuthNav();
+    if (state.isAdmin) {
+      document.getElementById("topnav-tab-admin").textContent = t().navAdminFeedback;
+      renderAdminFeedbackPage();
+    }
     applyUiStrings();
     // 作答中的那一題也要重繪成新語言,不用整頁重整
     if (document.getElementById("stage1-form").style.display !== "none") {
