@@ -165,6 +165,13 @@
     white-space: nowrap;
   }
 
+  .auth-nav { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; }
+  .auth-nav-name { color: var(--ink-soft); white-space: nowrap; max-width: 6rem; overflow: hidden; text-overflow: ellipsis; }
+  .auth-nav a.auth-nav-login, .auth-nav button.auth-nav-logout {
+    background: none; border: none; color: var(--accent-ink); cursor: pointer; font-size: 0.78rem;
+    text-decoration: none; font-family: inherit; padding: 0;
+  }
+
   /* 語言選項改成單一按鍵 + 下拉選單(2026-10 討論)——之後要加第三種語言,
      只要 SUPPORTED_LANGUAGES 多一筆,選單自動多一個選項,按鍵本身完全不用改。 */
   .lang-switch { position: relative; }
@@ -1416,6 +1423,7 @@
     </div>
     <div class="topnav-actions">
       <span class="visit-counter" id="visit-counter" style="display:none"></span>
+      <div class="auth-nav" id="auth-nav"></div>
       <div class="lang-switch" id="lang-switch"></div>
       <button type="button" class="theme-toggle" id="theme-toggle-btn" aria-label="切換成米白主題">☀</button>
     </div>
@@ -1642,6 +1650,8 @@
       volumeSets: (n) => `${n} 組`,
       volumeReps: (n) => `${n} 次`,
       volumeMinutes: (n) => `${n} 分鐘`,
+      loginLink: "登入",
+      logoutLink: "登出",
     },
     "zh-Hans": {
       pageTitle: "球探报告",
@@ -1729,6 +1739,8 @@
       volumeSets: (n) => `${n} 组`,
       volumeReps: (n) => `${n} 次`,
       volumeMinutes: (n) => `${n} 分钟`,
+      loginLink: "登录",
+      logoutLink: "登出",
     },
     en: {
       pageTitle: "Scouting Report",
@@ -1816,6 +1828,8 @@
       volumeSets: (n) => `${n} sets`,
       volumeReps: (n) => `${n} reps`,
       volumeMinutes: (n) => `${n} min`,
+      loginLink: "Log in",
+      logoutLink: "Log out",
     },
   };
 
@@ -1836,6 +1850,7 @@
       ? localStorage.getItem("lang")
       : "zh",
     theme: localStorage.getItem("theme") === "light" ? "light" : "dark",
+    user: { email: null, name: null },
   };
 
   function applyTheme(theme) {
@@ -2901,6 +2916,40 @@
     container.append(toggle, menu);
   }
 
+  async function loadAuthState() {
+    try {
+      const res = await fetch("/api/me");
+      const data = await res.json();
+      state.user = { email: data.email || null, name: data.name || null };
+    } catch (err) {
+      state.user = { email: null, name: null };
+    }
+  }
+
+  function renderAuthNav() {
+    const container = document.getElementById("auth-nav");
+    container.innerHTML = "";
+    if (state.user.email) {
+      const name = document.createElement("span");
+      name.className = "auth-nav-name";
+      name.textContent = state.user.name || state.user.email;
+      const logoutBtn = document.createElement("button");
+      logoutBtn.type = "button";
+      logoutBtn.className = "auth-nav-logout";
+      logoutBtn.textContent = t().logoutLink;
+      logoutBtn.addEventListener("click", () => {
+        fetch("/auth/logout", { method: "POST" }).then(() => { window.location.href = "/"; });
+      });
+      container.append(name, logoutBtn);
+    } else {
+      const loginLink = document.createElement("a");
+      loginLink.href = "/auth/login";
+      loginLink.className = "auth-nav-login";
+      loginLink.textContent = t().loginLink;
+      container.appendChild(loginLink);
+    }
+  }
+
   // 點選單以外的地方要把選單收起來——只加一次,不要每次 renderLangSwitch()
   // 都重複掛一個新的 listener(2026-10 討論)。自選球員的搜尋結果下拉也用同一個
   // listener 收起來,但只在點擊發生在 .player-search 以外時才收(在裡面打字、
@@ -2985,6 +3034,7 @@
     }
 
     renderLangSwitch();
+    renderAuthNav();
     applyUiStrings();
     // 作答中的那一題也要重繪成新語言,不用整頁重整
     if (document.getElementById("stage1-form").style.display !== "none") {
@@ -3015,7 +3065,9 @@
     state.axisQuestions = payload.questions.axis_positioning;
     state.bodyQuestions = payload.questions.body_measurements;
 
+    await loadAuthState();
     renderLangSwitch();
+    renderAuthNav();
     applyUiStrings();
     showPage("home");
     updateTabAvailability();
