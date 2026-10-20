@@ -1411,6 +1411,17 @@ In `main()`, right after the `renderAuthNav();` call added in Task 7, add:
     if (state.isAdmin) renderAdminFeedbackPage();
 ```
 
+In `setLang()`, right after the `renderAuthNav();` call added there in Task 7, add:
+
+```js
+    if (state.isAdmin) {
+      document.getElementById("topnav-tab-admin").textContent = t().navAdminFeedback;
+      renderAdminFeedbackPage();
+    }
+```
+
+(Without this, the admin tab's label and feedback-row text would stay in whatever language was active on page load until the next full reload — a real i18n gap, not just main()'s concern, since CLAUDE.md requires every UI string's translation to actually apply, not just exist.)
+
 Add `"admin"` to both `PAGE_IDS` and `TAB_IDS`:
 
 ```js
@@ -1537,11 +1548,13 @@ In `main()`, right after `await loadAuthState();`, add:
     if (state.user.email) { await loadFavorites(); } else { state.favorites = []; }
 ```
 
-In `setLang()`, right after the `renderAuthNav();` line added in Task 7, add:
+In `setLang()`, right after the admin-tab block added there in Task 8 (ending in `renderAdminFeedbackPage();`), add:
 
 ```js
     if (state.user.email) { await loadFavorites(); }
 ```
+
+(Anchoring after Task 8's block rather than directly after `renderAuthNav();` avoids ambiguity, since Task 8 already inserts its own block immediately after that same line.)
 
 - [ ] **Step 4: Render the star button on each comparison card**
 
@@ -1816,6 +1829,15 @@ In `main()`, right after the block added in Task 8 (`document.getElementById("to
     if (state.user.email) renderFavoritesPage();
 ```
 
+In `setLang()`, right after the `if (state.user.email) { await loadFavorites(); }` line added there in Task 9, add:
+
+```js
+    document.getElementById("topnav-tab-favorites").textContent = t().navFavorites;
+    if (state.user.email) renderFavoritesPage();
+```
+
+(Same reasoning as Task 8's setLang() hook — without this, the favorites tab's label and the favorites list's own text — "查看訓練計劃"/"移除" per row — would stay in the old language until the next full reload.)
+
 (`updateTabAvailability()` is already called once earlier in `main()`, right after `showPage("home")` — this second call is needed because `state.user` wasn't known yet at that point. Leave the earlier call in place; this one simply re-applies it now that login state is known.)
 
 - [ ] **Step 7: Manual check**
@@ -1905,6 +1927,16 @@ In `main()`, right after the `if (state.user.email) { await loadFavorites(); } e
       viewLastResultBlock.style.display = "none";
     }
 ```
+
+In `setLang()`, right after the block added there in Task 10 (ending in `if (state.user.email) renderFavoritesPage();`), add:
+
+```js
+    if (state.lastResult) {
+      document.getElementById("view-last-result-btn").textContent = t().viewLastResultButton;
+    }
+```
+
+(Only re-translates the button's own label — `state.lastResult` itself isn't re-fetched on a language switch, since it holds a result already computed in whatever language it was originally stored with; see this plan's "Clarifications" section on why a language switch doesn't force-reload it.)
 
 Add the click handler, in the same block of one-time listener wiring as the other `main()` listeners (near `document.getElementById("mode-current-btn").addEventListener(...)`):
 
