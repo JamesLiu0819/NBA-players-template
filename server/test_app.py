@@ -650,14 +650,14 @@ class SaveResultOnSubmitTest(unittest.TestCase):
 
     def test_a_db_write_failure_does_not_break_the_response(self):
         login_as(self.client, "sub-save-2", "save2@example.com")
-        import db
-        original = db.save_result
-        db.save_result = lambda *a, **kw: (_ for _ in ()).throw(ConnectionError("simulated"))
+        import app as app_module
+        original = app_module.save_result
+        app_module.save_result = lambda *a, **kw: (_ for _ in ()).throw(ConnectionError("simulated"))
         try:
             response = self.client.post("/api/template-results", json=self.payload)
             self.assertEqual(response.status_code, 200)
         finally:
-            db.save_result = original
+            app_module.save_result = original
 
 
 if __name__ == "__main__":
