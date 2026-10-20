@@ -97,6 +97,8 @@ sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT))
 
 from flask import Flask, jsonify, redirect, request, send_from_directory, session, url_for  # noqa: E402
+from werkzeug.middleware.proxy_fix import ProxyFix  # noqa: E402
+from authlib.integrations.base_client import OAuthError  # noqa: E402
 from authlib.integrations.flask_client import OAuth  # noqa: E402
 
 from db import (  # noqa: E402
@@ -166,12 +168,30 @@ DATA_FILENAMES = {
 }
 
 app = Flask(__name__, static_folder=None)
+# Render (and most PaaS hosts) terminate TLS at a reverse proxy and forward
+# plain HTTP to gunicorn, so Flask/Werkzeug see every request as http://.
+# Without this, url_for(..., _external=True) (used by /auth/login to build
+# the Google OAuth redirect_uri) builds an http:// URL, which Google rejects
+# since only the https:// URI is registered in Google Cloud Console. Trusts
+# exactly one proxy hop's X-Forwarded-Proto/X-Forwarded-Host, matching
+# Render's setup. A no-op for Flask's test client, which doesn't go through
+# a proxy and sends no X-Forwarded-* headers.
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+
+# Captures whether a real SECRET_KEY was actually provided, separate from
+# app.secret_key itself (which still falls back to the hardcoded dev value so
+# local dev without any env vars keeps working). The hardcoded fallback is
+# public (it's in git history), so if it were ever used in production,
+# anyone could forge a session cookie claiming any session field, including
+# email -- GOOGLE_LOGIN_CONFIGURED and /api/admin/feedback both key off this
+# flag instead of trusting the session alone (2026-10-21 final review).
+SECRET_KEY_CONFIGURED = bool(os.environ.get("SECRET_KEY"))
 app.secret_key = os.environ.get("SECRET_KEY", "dev-only-insecure-secret-do-not-use-in-production")
 
 oauth = OAuth(app)
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
-GOOGLE_LOGIN_CONFIGURED = bool(GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET)
+GOOGLE_LOGIN_CONFIGURED = bool(GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET and SECRET_KEY_CONFIGURED)
 ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL")
 if GOOGLE_LOGIN_CONFIGURED:
     # Static endpoints (not server_metadata_url) so this never needs a live
@@ -334,9 +354,19 @@ def auth_login():
 def auth_callback():
     if not GOOGLE_LOGIN_CONFIGURED:
         return jsonify({"error": "login is not configured"}), 503
-    token = oauth.google.authorize_access_token()
-    userinfo = token["userinfo"]
-    user = get_or_create_user(userinfo["sub"], userinfo["email"], userinfo.get("name"))
+    # Degrade gracefully, never crash (same philosophy as db.py's init_db()):
+    # a user who clicks "Cancel" on Google's consent screen, or hits a
+    # stale/reused callback URL (back button, blocked cookies), makes
+    # authorize_access_token() raise OAuthError (or a KeyError below, on a
+    # malformed userinfo response) instead of returning a usable token.
+    # Bounce back to the homepage logged-out rather than 500ing.
+    try:
+        token = oauth.google.authorize_access_token()
+        userinfo = token["userinfo"]
+        user = get_or_create_user(userinfo["sub"], userinfo["email"], userinfo.get("name"))
+    except (OAuthError, KeyError) as e:
+        print(f"auth_callback failed: {e}", file=sys.stderr)
+        return redirect("/")
     session["user_id"] = user["id"]
     session["email"] = user["email"]
     session["name"] = user["name"]
@@ -423,7 +453,20 @@ def api_my_results_latest():
     if stored is None:
         return "", 204
 
-    pool, lang = stored["pool"], stored["lang"]
+    # The caller may be viewing a different UI language than whatever was
+    # active when this result was originally stored -- an optional ?lang=
+    # override lets the frontend ask for the restored report in its CURRENT
+    # language instead of being stuck in the stored one. `pool` always
+    # comes from the stored result as-is; there's no override for it.
+    lang_override = request.args.get("lang")
+    if lang_override is not None:
+        if lang_override not in SUPPORTED_LANGUAGES:
+            return jsonify({"error": f"invalid lang: {lang_override}"}), 400
+        lang = lang_override
+    else:
+        lang = stored["lang"]
+    pool = stored["pool"]
+
     questions, skills, players = load_data(pool, lang)
     archetypes = load_archetypes(lang)
     drills_by_key = load_drills(lang)
@@ -435,6 +478,13 @@ def api_my_results_latest():
 
     results["pool"] = pool
     results["lang"] = lang
+    # Additive raw-answer fields so the frontend can repopulate
+    # state.answers/state.bodyAnswers after a restore -- without these, a
+    # later language switch while viewing a restored report has nothing
+    # real to re-POST through the existing refreshTemplateReport()
+    # mechanism (2026-10-21 final review, Finding 4).
+    results["raw_axis_answers"] = stored["axis_answers"]
+    results["raw_body_answers"] = stored["body_answers"]
     return jsonify(results)
 
 
@@ -636,7 +686,13 @@ def api_feedback():
 
 @app.route("/api/admin/feedback", methods=["GET"])
 def api_admin_feedback():
-    if not ADMIN_EMAIL or session.get("email") != ADMIN_EMAIL:
+    # Gated directly on SECRET_KEY_CONFIGURED, independent of
+    # GOOGLE_LOGIN_CONFIGURED, so this stays closed even in some future
+    # scenario where the two flags could diverge -- a forged session cookie
+    # signed with the public hardcoded fallback secret must never grant
+    # access here, even if login itself were somehow reachable (2026-10-21
+    # final review, Finding 2).
+    if not SECRET_KEY_CONFIGURED or not ADMIN_EMAIL or session.get("email") != ADMIN_EMAIL:
         return jsonify({"error": "not found"}), 404
     return jsonify({"feedback": list_feedback()})
 

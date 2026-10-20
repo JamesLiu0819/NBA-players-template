@@ -102,6 +102,43 @@ class AuthTest(unittest.TestCase):
         me = self.client.get("/api/me").get_json()
         self.assertEqual(me, {"email": None, "name": None})
 
+    def test_callback_redirects_home_without_crashing_when_google_denies_or_errors(self):
+        # A user clicking "Cancel" on Google's consent screen, or hitting a
+        # stale/reused callback URL, makes authorize_access_token() raise --
+        # this must redirect, never 500, and must leave the session logged
+        # out (2026-10-21 final review, Finding 5).
+        from unittest.mock import patch
+        from authlib.integrations.base_client import OAuthError
+        import app as app_module
+
+        with patch.object(
+            app_module.oauth.google, "authorize_access_token",
+            side_effect=OAuthError(error="access_denied", description="user cancelled"),
+        ):
+            response = self.client.get("/auth/callback")
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.location, "/")
+        me = self.client.get("/api/me").get_json()
+        self.assertEqual(me, {"email": None, "name": None})
+
+    def test_callback_redirects_home_on_a_malformed_userinfo_response(self):
+        # token["userinfo"] missing "sub"/"email" raises KeyError -- also
+        # must redirect gracefully, not 500.
+        from unittest.mock import patch
+        import app as app_module
+
+        with patch.object(
+            app_module.oauth.google, "authorize_access_token",
+            return_value={"userinfo": {}},
+        ):
+            response = self.client.get("/auth/callback")
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.location, "/")
+        me = self.client.get("/api/me").get_json()
+        self.assertEqual(me, {"email": None, "name": None})
+
 
 class TemplateResultsTest(unittest.TestCase):
     def setUp(self):
@@ -660,6 +697,56 @@ class LatestResultTest(unittest.TestCase):
         en_names = {p["name"] for p in load_json(ROOT / "data" / "en" / "players_alltime.json")["players"]}
         self.assertTrue({row["name"] for row in data["top_10"]}.issubset(en_names))
 
+    def test_lang_query_param_overrides_the_stored_language(self):
+        # Stored in zh, then restored while the UI is currently set to en --
+        # the response must reflect en, not the stored zh (2026-10-21 final
+        # review, Finding 4).
+        login_as(self.client, "sub-latest-3", "latest3@example.com")
+        payload = {
+            "axis_answers": build_axis_answers(self.questions),
+            "body_answers": build_required_body_answers(self.questions),
+            "pool": "current",
+            "lang": "zh",
+        }
+        self.client.post("/api/template-results", json=payload)
+
+        response = self.client.get("/api/my-results/latest?lang=en")
+
+        self.assertEqual(response.status_code, 200)
+        data = response.get_json()
+        self.assertEqual(data["lang"], "en")
+        self.assertEqual(data["pool"], "current")
+        en_names = {p["name"] for p in load_json(ROOT / "data" / "en" / "players.json")["players"]}
+        self.assertTrue({row["name"] for row in data["top_10"]}.issubset(en_names))
+
+    def test_invalid_lang_query_param_returns_400(self):
+        login_as(self.client, "sub-latest-4", "latest4@example.com")
+        payload = {
+            "axis_answers": build_axis_answers(self.questions),
+            "body_answers": build_required_body_answers(self.questions),
+        }
+        self.client.post("/api/template-results", json=payload)
+
+        response = self.client.get("/api/my-results/latest?lang=fr")
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("error", response.get_json())
+
+    def test_response_includes_raw_answers_for_restoring_frontend_state(self):
+        login_as(self.client, "sub-latest-5", "latest5@example.com")
+        axis_answers = build_axis_answers(self.questions)
+        body_answers = build_required_body_answers(self.questions)
+        self.client.post("/api/template-results", json={
+            "axis_answers": axis_answers,
+            "body_answers": body_answers,
+        })
+
+        response = self.client.get("/api/my-results/latest")
+
+        data = response.get_json()
+        self.assertEqual(data["raw_axis_answers"], axis_answers)
+        self.assertEqual(data["raw_body_answers"], body_answers)
+
 
 class SaveResultOnSubmitTest(unittest.TestCase):
     def setUp(self):
@@ -801,6 +888,30 @@ class AdminFeedbackTest(unittest.TestCase):
             self.assertEqual(rows[0]["lang"], "zh")
         finally:
             app_module.ADMIN_EMAIL = None
+
+    def test_404_even_with_the_right_email_when_secret_key_is_not_configured(self):
+        # If SECRET_KEY were ever unset in production, sessions would sign
+        # with the hardcoded fallback secret, which is public (it's in git
+        # history) -- anyone could forge a session cookie claiming
+        # session["email"] == ADMIN_EMAIL. This endpoint must stay closed
+        # in that scenario regardless of how the session got that email,
+        # so it's gated directly on SECRET_KEY_CONFIGURED rather than
+        # trusting the session alone (2026-10-21 final review, Finding 2).
+        # SECRET_KEY is already set via os.environ.setdefault at import
+        # time (see the top of this file), so the real failure mode is
+        # simulated by clearing the module's own derived flag rather than
+        # the env var, which wouldn't be re-read after import anyway.
+        import app as app_module
+        app_module.ADMIN_EMAIL = "owner@example.com"
+        original_secret_key_configured = app_module.SECRET_KEY_CONFIGURED
+        app_module.SECRET_KEY_CONFIGURED = False
+        try:
+            login_as(self.client, "sub-admin-3", "owner@example.com")
+            response = self.client.get("/api/admin/feedback")
+            self.assertEqual(response.status_code, 404)
+        finally:
+            app_module.ADMIN_EMAIL = None
+            app_module.SECRET_KEY_CONFIGURED = original_secret_key_configured
 
 
 if __name__ == "__main__":
