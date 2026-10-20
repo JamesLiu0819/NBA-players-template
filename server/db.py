@@ -26,9 +26,14 @@ def init_db():
     No-op when DATABASE_URL isn't set. Call once at process startup.
 
     Connection/schema errors are caught and logged, not raised -- a DB
-    outage at startup (e.g. the Render free-tier Postgres expiring after
-    90 days, see the 2026-09-15 design doc) should degrade to "no visit
-    counter", not take the entire site down.
+    outage at startup should degrade to "no visit counter", not take the
+    entire site down. This actually happened once (2026-10): the database
+    was on Render's free-tier Postgres, which expires 90 days after
+    creation unless upgraded. It expired, and the site kept running the
+    whole time on the in-memory fallback below. DATABASE_URL now points
+    at a Neon free-tier database instead, which has no such expiry (see
+    the 2026-09-15 design doc for the counter design itself), but this
+    guard stays regardless -- any hosted DB can have a transient outage.
     """
     try:
         conn = _get_connection()
