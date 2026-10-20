@@ -196,7 +196,7 @@ class TemplateResultsTest(unittest.TestCase):
         self.assertEqual(
             set(top_player.keys()),
             {
-                "rank", "name", "team", "coordinates", "distance", "fit_stars",
+                "id", "rank", "name", "team", "coordinates", "distance", "fit_stars",
                 "notable_traits", "dominant_diff_axis", "growth_recommendation",
                 "training_plans",
             },
@@ -624,6 +624,40 @@ class FeedbackTest(unittest.TestCase):
     def test_rejects_non_json_body(self):
         response = self.client.post("/api/feedback", data="not json", content_type="text/plain")
         self.assertEqual(response.status_code, 400)
+
+
+class SaveResultOnSubmitTest(unittest.TestCase):
+    def setUp(self):
+        self.client = app.test_client()
+        self.questions = load_json(ROOT / "data" / "zh" / "題庫.json")
+        self.payload = {
+            "axis_answers": build_axis_answers(self.questions),
+            "body_answers": build_required_body_answers(self.questions),
+        }
+
+    def test_logged_in_submission_is_saved_and_retrievable(self):
+        login_as(self.client, "sub-save-1", "save1@example.com")
+        self.client.post("/api/template-results", json=self.payload)
+        latest = self.client.get("/api/my-results/latest")
+        self.assertEqual(latest.status_code, 200)
+
+    def test_logged_out_submission_is_not_saved(self):
+        response = self.client.get("/api/my-results/latest")
+        self.assertEqual(response.status_code, 204)
+        self.client.post("/api/template-results", json=self.payload)
+        still_nothing = self.client.get("/api/my-results/latest")
+        self.assertEqual(still_nothing.status_code, 204)
+
+    def test_a_db_write_failure_does_not_break_the_response(self):
+        login_as(self.client, "sub-save-2", "save2@example.com")
+        import db
+        original = db.save_result
+        db.save_result = lambda *a, **kw: (_ for _ in ()).throw(ConnectionError("simulated"))
+        try:
+            response = self.client.post("/api/template-results", json=self.payload)
+            self.assertEqual(response.status_code, 200)
+        finally:
+            db.save_result = original
 
 
 if __name__ == "__main__":

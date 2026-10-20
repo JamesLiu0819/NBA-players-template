@@ -104,6 +104,7 @@ from db import (  # noqa: E402
     increment_visit_count,
     init_db,
     save_feedback,
+    save_result,
 )
 from engine.archetype import classify_archetype_by_majority, compute_player_sizes  # noqa: E402
 from engine.axis_position import AXES, score_axis_coordinates  # noqa: E402
@@ -273,6 +274,7 @@ def compute_template_results(payload, questions, players, skills, archetypes, dr
     )
     for rank, player in enumerate(ranked_players, start=1):
         top_10.append({
+            "id": player["id"],
             "rank": rank,
             "name": player["name"],
             "team": player["team"],
@@ -394,6 +396,13 @@ def api_template_results():
         )
     except (ValueError, KeyError) as e:
         return jsonify({"error": str(e)}), 400
+
+    user_id = session.get("user_id")
+    if user_id is not None:
+        try:
+            save_result(user_id, pool, lang, payload["axis_answers"], payload.get("body_answers") or [])
+        except Exception as e:
+            print(f"save_result failed: {e}", file=sys.stderr)
 
     return jsonify(results)
 
