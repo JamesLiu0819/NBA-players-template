@@ -468,11 +468,19 @@ os.environ.setdefault("GOOGLE_CLIENT_SECRET", "test-client-secret")
 
 (This must run before `app.py` is imported, since Google OAuth client registration happens at module import time. Every other test class in this file is unaffected — these three env vars only gate whether the `google` OAuth client gets registered and what secret Flask's session cookie is signed with.)
 
-Then add a new test class to `server/test_app.py`:
+Then add a shared test helper and a new test class to `server/test_app.py`. This helper is used by every test class added in this and later tasks (3, 4, 5, 6) that needs a logged-in session — define it once, here, so none of them duplicate it:
 
 ```python
-from unittest.mock import patch
-import app as app_module
+def login_as(client, sub, email, name="Test"):
+    """Log a test client in as a fake Google user, bypassing the real
+    OAuth exchange. Shared by every test class in this file that needs a
+    logged-in session (Tasks 2-6) -- defined once here rather than
+    repeated per class."""
+    from unittest.mock import patch
+    import app as app_module
+    fake_token = {"userinfo": {"sub": sub, "email": email, "name": name}}
+    with patch.object(app_module.oauth.google, "authorize_access_token", return_value=fake_token):
+        client.get("/auth/callback")
 
 
 class AuthTest(unittest.TestCase):
@@ -490,38 +498,31 @@ class AuthTest(unittest.TestCase):
         self.assertIn("accounts.google.com", response.location)
 
     def test_callback_creates_a_user_and_logs_them_in(self):
-        fake_token = {"userinfo": {"sub": "google-sub-1", "email": "person@example.com", "name": "Person"}}
-        with patch.object(app_module.oauth.google, "authorize_access_token", return_value=fake_token):
-            response = self.client.get("/auth/callback")
-        self.assertEqual(response.status_code, 302)
+        login_as(self.client, "google-sub-1", "person@example.com", "Person")
         me = self.client.get("/api/me").get_json()
         self.assertEqual(me, {"email": "person@example.com", "name": "Person"})
 
     def test_callback_handles_a_missing_name_claim(self):
-        fake_token = {"userinfo": {"sub": "google-sub-2", "email": "noname@example.com"}}
-        with patch.object(app_module.oauth.google, "authorize_access_token", return_value=fake_token):
-            self.client.get("/auth/callback")
+        login_as(self.client, "google-sub-2", "noname@example.com", None)
         me = self.client.get("/api/me").get_json()
         self.assertIsNone(me["name"])
 
     def test_repeat_login_reuses_the_same_user(self):
-        fake_token = {"userinfo": {"sub": "google-sub-3", "email": "dup@example.com", "name": "Dup"}}
-        with patch.object(app_module.oauth.google, "authorize_access_token", return_value=fake_token):
-            self.client.get("/auth/callback")
-            self.client.get("/auth/callback")
+        login_as(self.client, "google-sub-3", "dup@example.com", "Dup")
+        login_as(self.client, "google-sub-3", "dup@example.com", "Dup")
         # two logins, no error -- get_or_create_user's upsert handles this (Task 1)
         me = self.client.get("/api/me").get_json()
         self.assertEqual(me["email"], "dup@example.com")
 
     def test_logout_clears_the_session(self):
-        fake_token = {"userinfo": {"sub": "google-sub-4", "email": "bye@example.com", "name": "Bye"}}
-        with patch.object(app_module.oauth.google, "authorize_access_token", return_value=fake_token):
-            self.client.get("/auth/callback")
+        login_as(self.client, "google-sub-4", "bye@example.com", "Bye")
         response = self.client.post("/auth/logout")
         self.assertEqual(response.status_code, 302)
         me = self.client.get("/api/me").get_json()
         self.assertEqual(me, {"email": None, "name": None})
 ```
+
+(`test_callback_creates_a_user_and_logs_them_in` and `test_logout_clears_the_session` no longer assert on `/auth/callback`'s own response status directly since `login_as` doesn't return it — that's fine, the real assertion is on `/api/me` afterward, which is what actually matters. If you want to also confirm the callback redirects, call `client.get("/auth/callback")` directly instead of through the helper for that one assertion — not required, just noted in case a reviewer asks why the redirect isn't checked in every test.)
 
 - [ ] **Step 3: Run the tests to verify they fail**
 
@@ -625,7 +626,7 @@ git commit -m "auth: add Google OAuth login via Authlib, GET /api/me"
 - Test: `server/test_app.py`
 
 **Interfaces:**
-- Consumes: `save_result` from `server/db.py` (Task 1); `session.get("user_id")` from Task 2.
+- Consumes: `save_result` from `server/db.py` (Task 1); `session.get("user_id")` from Task 2; the shared `login_as(client, sub, email, name="Test")` test helper defined in `server/test_app.py` by Task 2 (don't redefine it here).
 - Produces: every `top_10` entry from `POST /api/template-results` (and, from Task 4 onward, `GET /api/my-results/latest`) now includes `"id"` — the same player id used by `/api/players` and `/api/player-training-plan`. All other `top_10` fields are unchanged.
 
 - [ ] **Step 1: Write the failing tests**
@@ -666,15 +667,8 @@ class SaveResultOnSubmitTest(unittest.TestCase):
             "body_answers": build_required_body_answers(self.questions),
         }
 
-    def _login(self, sub, email):
-        fake_token = {"userinfo": {"sub": sub, "email": email, "name": "Test"}}
-        from unittest.mock import patch
-        import app as app_module
-        with patch.object(app_module.oauth.google, "authorize_access_token", return_value=fake_token):
-            self.client.get("/auth/callback")
-
     def test_logged_in_submission_is_saved_and_retrievable(self):
-        self._login("sub-save-1", "save1@example.com")
+        login_as(self.client, "sub-save-1", "save1@example.com")
         self.client.post("/api/template-results", json=self.payload)
         latest = self.client.get("/api/my-results/latest")
         self.assertEqual(latest.status_code, 200)
@@ -687,7 +681,7 @@ class SaveResultOnSubmitTest(unittest.TestCase):
         self.assertEqual(still_nothing.status_code, 204)
 
     def test_a_db_write_failure_does_not_break_the_response(self):
-        self._login("sub-save-2", "save2@example.com")
+        login_as(self.client, "sub-save-2", "save2@example.com")
         import db
         original = db.save_result
         db.save_result = lambda *a, **kw: (_ for _ in ()).throw(ConnectionError("simulated"))
@@ -774,7 +768,7 @@ git commit -m "api: expose player id on top_10, save result on submit when logge
 - Test: `server/test_app.py`
 
 **Interfaces:**
-- Consumes: `get_latest_result` from `server/db.py` (Task 1); `compute_template_results`, `load_data`, `load_archetypes`, `load_drills` already defined in `server/app.py`.
+- Consumes: `get_latest_result` from `server/db.py` (Task 1); `compute_template_results`, `load_data`, `load_archetypes`, `load_drills` already defined in `server/app.py`; the shared `login_as` test helper from Task 2.
 - Produces: `GET /api/my-results/latest` → 200 with the same shape as `POST /api/template-results`'s response plus two additive top-level fields `"pool"` and `"lang"`; or 204 with an empty body if not logged in or no stored result exists.
 
 - [ ] **Step 1: Write the failing tests**
@@ -787,24 +781,17 @@ class LatestResultTest(unittest.TestCase):
         self.client = app.test_client()
         self.questions = load_json(ROOT / "data" / "zh" / "題庫.json")
 
-    def _login(self, sub, email):
-        fake_token = {"userinfo": {"sub": sub, "email": email, "name": "Test"}}
-        from unittest.mock import patch
-        import app as app_module
-        with patch.object(app_module.oauth.google, "authorize_access_token", return_value=fake_token):
-            self.client.get("/auth/callback")
-
     def test_returns_204_when_not_logged_in(self):
         response = self.client.get("/api/my-results/latest")
         self.assertEqual(response.status_code, 204)
 
     def test_returns_204_when_logged_in_but_never_submitted(self):
-        self._login("sub-latest-1", "latest1@example.com")
+        login_as(self.client, "sub-latest-1", "latest1@example.com")
         response = self.client.get("/api/my-results/latest")
         self.assertEqual(response.status_code, 204)
 
     def test_returns_the_recomputed_result_with_pool_and_lang(self):
-        self._login("sub-latest-2", "latest2@example.com")
+        login_as(self.client, "sub-latest-2", "latest2@example.com")
         payload = {
             "axis_answers": build_axis_answers(self.questions),
             "body_answers": build_required_body_answers(self.questions),
@@ -882,7 +869,7 @@ git commit -m "api: add GET /api/my-results/latest"
 - Test: `server/test_app.py`
 
 **Interfaces:**
-- Consumes: `list_favorites`, `add_favorite`, `remove_favorite` from `server/db.py` (Task 1).
+- Consumes: `list_favorites`, `add_favorite`, `remove_favorite` from `server/db.py` (Task 1); the shared `login_as` test helper from Task 2.
 - Produces: `GET /api/favorites?lang=zh` → `{"favorites": [{"player_id", "pool", "name", "team"}, ...]}`. `POST`/`DELETE /api/favorites` with body `{"player_id", "pool"}` → `{"ok": true}`. All three require login (401 otherwise).
 
 - [ ] **Step 1: Write the failing tests**
@@ -894,20 +881,13 @@ class FavoritesTest(unittest.TestCase):
     def setUp(self):
         self.client = app.test_client()
 
-    def _login(self, sub, email):
-        fake_token = {"userinfo": {"sub": sub, "email": email, "name": "Test"}}
-        from unittest.mock import patch
-        import app as app_module
-        with patch.object(app_module.oauth.google, "authorize_access_token", return_value=fake_token):
-            self.client.get("/auth/callback")
-
     def test_all_three_methods_require_login(self):
         self.assertEqual(self.client.get("/api/favorites").status_code, 401)
         self.assertEqual(self.client.post("/api/favorites", json={"player_id": "x", "pool": "current"}).status_code, 401)
         self.assertEqual(self.client.delete("/api/favorites", json={"player_id": "x", "pool": "current"}).status_code, 401)
 
     def test_add_then_list_returns_enriched_entry(self):
-        self._login("sub-favapi-1", "favapi1@example.com")
+        login_as(self.client, "sub-favapi-1", "favapi1@example.com")
         add = self.client.post("/api/favorites", json={"player_id": "amen_thompson", "pool": "current"})
         self.assertEqual(add.status_code, 200)
         self.assertEqual(add.get_json(), {"ok": True})
@@ -922,48 +902,55 @@ class FavoritesTest(unittest.TestCase):
         self.assertTrue(favorites[0]["team"])
 
     def test_adding_an_unknown_player_id_404s(self):
-        self._login("sub-favapi-2", "favapi2@example.com")
+        login_as(self.client, "sub-favapi-2", "favapi2@example.com")
         response = self.client.post("/api/favorites", json={"player_id": "not_a_real_player", "pool": "current"})
         self.assertEqual(response.status_code, 404)
 
     def test_adding_the_same_favorite_twice_still_succeeds(self):
-        self._login("sub-favapi-3", "favapi3@example.com")
+        login_as(self.client, "sub-favapi-3", "favapi3@example.com")
         self.client.post("/api/favorites", json={"player_id": "amen_thompson", "pool": "current"})
         second = self.client.post("/api/favorites", json={"player_id": "amen_thompson", "pool": "current"})
         self.assertEqual(second.status_code, 200)
         self.assertEqual(len(self.client.get("/api/favorites").get_json()["favorites"]), 1)
 
     def test_remove_favorite(self):
-        self._login("sub-favapi-4", "favapi4@example.com")
+        login_as(self.client, "sub-favapi-4", "favapi4@example.com")
         self.client.post("/api/favorites", json={"player_id": "amen_thompson", "pool": "current"})
         remove = self.client.delete("/api/favorites", json={"player_id": "amen_thompson", "pool": "current"})
         self.assertEqual(remove.status_code, 200)
         self.assertEqual(self.client.get("/api/favorites").get_json()["favorites"], [])
 
     def test_removing_a_non_favorite_still_succeeds(self):
-        self._login("sub-favapi-5", "favapi5@example.com")
+        login_as(self.client, "sub-favapi-5", "favapi5@example.com")
         response = self.client.delete("/api/favorites", json={"player_id": "amen_thompson", "pool": "current"})
         self.assertEqual(response.status_code, 200)
 
     def test_invalid_pool_400s(self):
-        self._login("sub-favapi-6", "favapi6@example.com")
+        login_as(self.client, "sub-favapi-6", "favapi6@example.com")
         response = self.client.post("/api/favorites", json={"player_id": "amen_thompson", "pool": "bogus"})
         self.assertEqual(response.status_code, 400)
 
     def test_missing_fields_400(self):
-        self._login("sub-favapi-7", "favapi7@example.com")
+        login_as(self.client, "sub-favapi-7", "favapi7@example.com")
         self.assertEqual(self.client.post("/api/favorites", json={}).status_code, 400)
 
     def test_a_db_failure_on_add_returns_503_not_500(self):
-        self._login("sub-favapi-8", "favapi8@example.com")
-        import db
-        original = db.add_favorite
-        db.add_favorite = lambda *a, **kw: (_ for _ in ()).throw(ConnectionError("simulated"))
+        login_as(self.client, "sub-favapi-8", "favapi8@example.com")
+        # Patch the name as bound in app.py's own namespace, not db's --
+        # app.py does `from db import (..., add_favorite)`, which binds its
+        # own module-level `add_favorite` to the function object at import
+        # time. Patching `db.add_favorite` afterward would not affect that
+        # already-bound reference (a real bug caught in Task 3's review on
+        # this exact pattern -- see the plan's "Clarifications" if you want
+        # the full explanation). Patch app_module.add_favorite instead.
+        import app as app_module
+        original = app_module.add_favorite
+        app_module.add_favorite = lambda *a, **kw: (_ for _ in ()).throw(ConnectionError("simulated"))
         try:
             response = self.client.post("/api/favorites", json={"player_id": "amen_thompson", "pool": "current"})
             self.assertEqual(response.status_code, 503)
         finally:
-            db.add_favorite = original
+            app_module.add_favorite = original
 ```
 
 - [ ] **Step 2: Run the tests to verify they fail**
@@ -1077,7 +1064,7 @@ git commit -m "api: add GET/POST/DELETE /api/favorites"
 - Test: `server/test_app.py`
 
 **Interfaces:**
-- Consumes: `list_feedback` from `server/db.py` (Task 1).
+- Consumes: `list_feedback` from `server/db.py` (Task 1); the shared `login_as` test helper from Task 2.
 - Produces: `GET /api/admin/feedback` → 200 `{"feedback": [{"created_at", "rating", "message", "lang"}, ...]}` only when `session["email"] == ADMIN_EMAIL`; 404 otherwise (not logged in, logged in as someone else, or `ADMIN_EMAIL` unset).
 
 - [ ] **Step 1: Write the failing tests**
@@ -1091,19 +1078,12 @@ class AdminFeedbackTest(unittest.TestCase):
         import db
         db._memory_feedback.clear()
 
-    def _login(self, sub, email):
-        fake_token = {"userinfo": {"sub": sub, "email": email, "name": "Test"}}
-        from unittest.mock import patch
-        import app as app_module
-        with patch.object(app_module.oauth.google, "authorize_access_token", return_value=fake_token):
-            self.client.get("/auth/callback")
-
     def test_404_when_not_logged_in(self):
         response = self.client.get("/api/admin/feedback")
         self.assertEqual(response.status_code, 404)
 
     def test_404_when_logged_in_as_a_non_admin(self):
-        self._login("sub-admin-1", "regular-user@example.com")
+        login_as(self.client, "sub-admin-1", "regular-user@example.com")
         response = self.client.get("/api/admin/feedback")
         self.assertEqual(response.status_code, 404)
 
@@ -1112,7 +1092,7 @@ class AdminFeedbackTest(unittest.TestCase):
         app_module.ADMIN_EMAIL = "owner@example.com"
         try:
             self.client.post("/api/feedback", json={"rating": 5, "message": "讚", "lang": "zh"})
-            self._login("sub-admin-2", "owner@example.com")
+            login_as(self.client, "sub-admin-2", "owner@example.com")
             response = self.client.get("/api/admin/feedback")
             self.assertEqual(response.status_code, 200)
             rows = response.get_json()["feedback"]
