@@ -3076,13 +3076,33 @@
   async function loadLastResult() {
     if (!state.user.email) { state.lastResult = null; return; }
     try {
-      const res = await fetch("/api/my-results/latest");
+      // 帶上目前的 UI 語言,不然還原的結果會卡在上次儲存時的語言,跟畫面上
+      // 其他文案的語言不一致(2026-10-21 final review Finding 4)。
+      const res = await fetch(`/api/my-results/latest?lang=${state.lang}`);
       if (res.status === 204) { state.lastResult = null; return; }
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       state.lastResult = await res.json();
     } catch (err) {
       state.lastResult = null;
     }
+  }
+
+  // 後端回傳的原始作答是陣列(axis: {question_id,score}[], body:
+  // {question_id,value}[]),但 state.answers/state.bodyAnswers 是用
+  // question_id 當 key 的字典(見 buildTemplatePayload())——還原上次結果時
+  // 要把陣列轉成同樣的字典形狀,這樣之後切換語言,既有的
+  // refreshTemplateReport() 機制才有真正的作答可以重新送出
+  // (2026-10-21 final review Finding 4)。
+  function axisAnswersArrayToDict(rawAxisAnswers) {
+    const dict = {};
+    for (const a of rawAxisAnswers || []) dict[a.question_id] = a.score;
+    return dict;
+  }
+
+  function bodyAnswersArrayToDict(rawBodyAnswers) {
+    const dict = {};
+    for (const b of rawBodyAnswers || []) dict[b.question_id] = b.value;
+    return dict;
   }
 
   function updateFavoriteButton(playerId, isFav) {
@@ -3110,6 +3130,11 @@
         state.favorites.push({ player_id: playerId, pool, name: m.name || "", team: m.team || "" });
       }
       updateFavoriteButton(playerId, !wasFav);
+      // 收藏頁的 DOM 是獨立於對照卡星星按鈕的另一份畫面,不會因為上面的
+      // updateFavoriteButton() 自動同步——不管收藏頁現在有沒有顯示在畫面上
+      // 都重繪一次,下次切過去就不會看到舊資料(重繪隱藏的 DOM 成本很低,
+      // 2026-10-21 final review Finding 3)。
+      renderFavoritesPage();
     } catch (err) {
       // 失敗就不改狀態,星星維持原樣——這是次要功能,不值得加一個獨立的錯誤提示
     }
@@ -3376,6 +3401,13 @@
       state.selectedPlayerIndex = 0;
       state.customPlayerId = null;
       state.customPlayerPool = null;
+      // 還原上次結果時這個作答階段(state.answers/state.bodyAnswers)本來是空的
+      // ——使用者這次 session 沒填過題。補上後端一起回傳的原始作答,這樣如果
+      // 使用者看著還原的報告切換語言,既有的 refreshTemplateReport() 機制
+      // 就有真正的作答可以重新送出,不會送出空值然後默默失敗
+      // (2026-10-21 final review Finding 4)。
+      state.answers = axisAnswersArrayToDict(state.lastResult.raw_axis_answers);
+      state.bodyAnswers = bodyAnswersArrayToDict(state.lastResult.raw_body_answers);
       renderTemplateReport(state.lastResult);
       updateTabAvailability();
       showPage("template");
