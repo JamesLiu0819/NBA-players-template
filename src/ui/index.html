@@ -335,7 +335,10 @@
     }
     .topnav-controls .theme-toggle { width: 100%; border-radius: 8px; }
     .topnav-inner { padding: 0 1.25rem; }
-    .topnav-tabs { flex: 1; justify-content: center; }
+    .topnav-tabs { flex: 1; justify-content: center; margin-right: 0.8rem; }
+    /* 漢堡選單按鈕變成固定寬度的單一元件後,導覽列跟使用人數整組靠右擠,
+       往左移一點比較不擁擠(2026-10 使用意見)。 */
+    .topnav-actions { margin-right: 0.4rem; }
     /* iOS Safari 會在輸入框字級小於 16px 時自動放大頁面,鍵盤彈出後畫面右移、滑不回去。 */
     input, textarea { font-size: 16px; }
   }
@@ -513,6 +516,11 @@
   }
 
   .view-last-result-block { margin: 0.7rem 0 0; display: flex; justify-content: center; }
+  /* 電腦版改成跟「現役球員模板」按鈕左邊對齊,不要置中(2026-10 使用意見,
+     手機版維持置中不變)。 */
+  @media (min-width: 561px) {
+    .view-last-result-block { justify-content: flex-start; }
+  }
   .view-last-result-block #view-last-result-btn { padding: 0.5rem 1.3rem; font-size: 0.85rem; }
 
   .mode-select {
