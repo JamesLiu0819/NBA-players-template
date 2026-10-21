@@ -33,12 +33,29 @@ PYTHONPATH=src python3 -m unittest discover -s tests -t . -v
 
 `render.yaml`(repo 根目錄)是宣告式的部署設定,Render 的 Blueprint 功能可以直接讀它建立服務,不用在網頁介面上手動填欄位：
 
-1. 把這個 repo push 到 GitHub(目前本機 repo 還沒設定 remote)。
+1. 把這個 repo push 到 GitHub(遠端是 `github.com/JamesLiu0819/NBA-players-template`)。
 2. 到 [Render Dashboard](https://dashboard.render.com/) → New → Blueprint → 選這個 GitHub repo。
 3. Render 會自動讀到 `render.yaml`,照裡面寫的 build/start command 建立一個 Web Service。
 4. 部署完成後會拿到一個 `https://<service-name>.onrender.com` 的網址,任何人都能開。
+5. 到該服務的 Environment 頁面,手動填入下面標「手動」的環境變數。
 
-**免費方案的限制**：閒置一段時間後服務會被暫停(sleep),下一個訪客的第一個請求要等服務醒過來,大概 30-60 秒才會有回應,之後就正常。這是 Render 免費方案的已知行為,不是我們的程式碼有問題。
+之後每次 push 到 `main`,Render 預設會自動重新部署。
+
+**方案與費用**：網站服務是 Render 的 Starter 方案(每月 7 美元,`render.yaml` 的 `plan: starter`),不會因為閒置而休眠。不用手動續費——Render 按秒計費,每個月初自動從帳號綁定的信用卡扣上個月的費用;卡片過期或扣款失敗才會出問題,到 Render 後台的 Billing 確認。改方案時記得同步改 `render.yaml`,不然 Blueprint 同步可能把後台的設定改回去。
+
+**資料庫**：用的是 Neon 的免費 Postgres,不是 Render 的資料庫(Render 舊的免費 Postgres 已經刪除,`render.yaml` 也不再宣告任何資料庫)。連線字串放在 Render 的環境變數 `DATABASE_URL`。
+
+**環境變數**：
+
+| 變數 | 用途 | 怎麼設定 |
+|---|---|---|
+| `DATABASE_URL` | Neon 資料庫連線字串 | 手動(`sync: false`) |
+| `SECRET_KEY` | 登入 cookie 的簽章 | Render 自動產生 |
+| `GOOGLE_CLIENT_ID` | Google 登入 | 手動(`sync: false`) |
+| `GOOGLE_CLIENT_SECRET` | Google 登入 | 手動(`sync: false`) |
+| `ADMIN_EMAIL` | 誰可以看使用意見 | 手動(`sync: false`) |
+
+`sync: false` 代表 Render 只知道有這個變數,值由後台管理,push 新版本時不會被覆蓋。這些值不要寫進 `render.yaml`,那份檔案會上傳到 GitHub。
 
 ## 架構提醒
 
