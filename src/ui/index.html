@@ -2663,7 +2663,10 @@
       return `<span class="favorite-login-prompt">${t().favoriteLoginPrompt} <a href="/auth/login">${t().loginLink}</a></span>`;
     }
     const isFav = isFavorited(pool, m.id);
-    return `<button type="button" class="favorite-btn" data-favorite-id="${escapeHtml(m.id)}" data-favorite-pool="${escapeHtml(pool)}" aria-pressed="${isFav}" aria-label="${isFav ? t().favoriteRemoveLabel : t().favoriteAddLabel}">${isFav ? "★" : "☆"}</button>`;
+    // name/team 直接寫進按鈕的 data 屬性,收藏時從這裡讀,不要事後去
+    // state.results.top_10 找——訓練計劃頁自選搜尋出來的球員根本不在
+    // top_10 裡,找不到就會存成空白名字(2026-10 使用意見回報的 bug)。
+    return `<button type="button" class="favorite-btn" data-favorite-id="${escapeHtml(m.id)}" data-favorite-pool="${escapeHtml(pool)}" data-favorite-name="${escapeHtml(m.name)}" data-favorite-team="${escapeHtml(m.team)}" aria-pressed="${isFav}" aria-label="${isFav ? t().favoriteRemoveLabel : t().favoriteAddLabel}">${isFav ? "★" : "☆"}</button>`;
   }
 
   function renderMatchCardInner(rank, m) {
@@ -2888,7 +2891,7 @@
     }
     const favoriteBtn = e.target.closest("[data-favorite-id]");
     if (favoriteBtn) {
-      toggleFavorite(favoriteBtn.dataset.favoriteId, favoriteBtn.dataset.favoritePool);
+      toggleFavorite(favoriteBtn.dataset.favoriteId, favoriteBtn.dataset.favoritePool, favoriteBtn.dataset.favoriteName, favoriteBtn.dataset.favoriteTeam);
       return;
     }
     const gotoTrainingBtn = e.target.closest(".favorite-goto-training");
@@ -3241,7 +3244,11 @@
     });
   }
 
-  async function toggleFavorite(playerId, pool) {
+  // name/team 由呼叫端直接傳入(從按鈕自己的 data 屬性讀,見
+  // renderFavoriteControl()),不要在這裡回頭去 state.results.top_10 找——
+  // 訓練計劃頁自選搜尋出來的球員不在 top_10 裡,找不到就會存成空白名字
+  // (2026-10 使用意見回報的 bug)。
+  async function toggleFavorite(playerId, pool, name, team) {
     const wasFav = isFavorited(pool, playerId);
     try {
       const res = await fetch("/api/favorites", {
@@ -3253,8 +3260,7 @@
       if (wasFav) {
         state.favorites = state.favorites.filter((f) => !(f.pool === pool && f.player_id === playerId));
       } else {
-        const m = (state.results && state.results.top_10.find((row) => row.id === playerId)) || {};
-        state.favorites.push({ player_id: playerId, pool, name: m.name || "", team: m.team || "" });
+        state.favorites.push({ player_id: playerId, pool, name: name || "", team: team || "" });
       }
       updateFavoriteButton(playerId, !wasFav);
       // 收藏頁的 DOM 是獨立於對照卡星星按鈕的另一份畫面,不會因為上面的
