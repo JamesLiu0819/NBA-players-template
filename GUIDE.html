@@ -1,0 +1,1099 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>專案導覽 — 籃球球員模板</title>
+<!--
+  用途：整個專案的導覽文件。第一部分找檔案(資料夾樹 + 搜尋),第二部分說明網站怎麼運作。
+  直接用瀏覽器打開這個檔案就能看,不需要啟動伺服器,也不會被網站對外公開
+  (server/app.py 只公開 src/ui/ 裡的檔案)。
+
+  怎麼更新：
+    1. 新增、刪除、搬動檔案 → 改下方 <script> 最上面的 FILES。
+    2. 「我想改某件事要去哪裡」→ 改 TASKS。
+    3. 算式或數字變了 → 改第二部分對應的那張卡片(每張卡片都標了數字來自哪個檔案)。
+    4. 改完把 LAST_UPDATED 換成當天日期。
+    5. 執行 python3 scripts/check_guide.py,確認 FILES 沒有漏掉或多出來的檔案。
+-->
+<style>
+  :root {
+    --bg: #f6f5f1; --panel: #ffffff; --ink: #1d2129; --soft: #5b6472; --line: #dcdad2;
+    --code-bg: #eeece5; --hit: #fff3a8; --accent: #c2410c;
+    --data: #b45309;   --data-bg: #fdf1dc;
+    --engine: #1d4ed8; --engine-bg: #e3ebfd;
+    --server: #15803d; --server-bg: #dff3e4;
+    --ui: #7e22ce;     --ui-bg: #f1e4fb;
+    --script: #475569; --script-bg: #e6e9ee;
+    --test: #0f766e;   --test-bg: #d9f1ee;
+    --doc: #be185d;    --doc-bg: #fbe2ec;
+    --config: #92400e; --config-bg: #f3e6d6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #15171c; --panel: #1e2128; --ink: #e8eaee; --soft: #a0a8b5; --line: #343843;
+      --code-bg: #2a2e38; --hit: #5c4d00; --accent: #fb923c;
+      --data: #fbbf24;   --data-bg: #3b2c0c;
+      --engine: #7aa2ff; --engine-bg: #172544;
+      --server: #5ad07f; --server-bg: #12301c;
+      --ui: #c995f5;     --ui-bg: #2d1a40;
+      --script: #a9b4c4; --script-bg: #2a2f38;
+      --test: #4fd1c5;   --test-bg: #0f2f2c;
+      --doc: #f58ab4;    --doc-bg: #3a1526;
+      --config: #e0a66b; --config-bg: #33240f;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.7 -apple-system, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  }
+  code, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.88em; }
+  code { background: var(--code-bg); padding: 0.1em 0.4em; border-radius: 4px; word-break: break-word; }
+  b, strong { font-weight: 700; }
+
+  /* ---------- top bar ---------- */
+  .topbar {
+    position: sticky; top: 0; z-index: 20; background: var(--panel);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar-inner {
+    max-width: 1080px; margin: 0 auto; padding: 10px 16px;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px;
+  }
+  .brand { font-weight: 800; font-size: 1.05rem; white-space: nowrap; }
+  .tabs { display: flex; gap: 6px; }
+  .tab {
+    border: 1px solid var(--line); background: transparent; color: var(--ink);
+    padding: 6px 14px; border-radius: 999px; font: inherit; font-size: 0.92rem; cursor: pointer;
+  }
+  .tab.on { background: var(--ink); color: var(--panel); border-color: var(--ink); font-weight: 700; }
+  .search { position: relative; margin-left: auto; flex: 1 1 240px; max-width: 380px; }
+  .search input {
+    width: 100%; padding: 8px 12px; font: inherit; font-size: 0.95rem;
+    border: 2px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink);
+  }
+  .search input:focus { outline: none; border-color: var(--accent); }
+  .results {
+    position: absolute; right: 0; top: calc(100% + 6px); width: min(560px, 92vw);
+    max-height: 70vh; overflow: auto; background: var(--panel);
+    border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,.18);
+    padding: 8px;
+  }
+  .results h4 { margin: 8px 8px 4px; font-size: 0.78rem; color: var(--soft); letter-spacing: .05em; }
+  .result {
+    display: block; width: 100%; text-align: left; border: 0; background: transparent; color: inherit;
+    font: inherit; padding: 8px; border-radius: 8px; cursor: pointer;
+  }
+  .result:hover, .result:focus { background: var(--code-bg); outline: none; }
+  .r-title { font-weight: 700; }
+  .result-group { padding: 6px 0; border-bottom: 1px solid var(--line); }
+  .result-group > .r-title { padding: 0 8px; }
+  .result .r-sub { font-size: 0.86rem; color: var(--soft); }
+  .result .r-path { display: block; margin-top: 2px; }
+  .no-result { padding: 12px; color: var(--soft); }
+
+  /* ---------- page ---------- */
+  main { max-width: 1080px; margin: 0 auto; padding: 20px 16px 80px; }
+  .part-title { font-size: 1.5rem; margin: 8px 0 4px; }
+  .part-lead { color: var(--soft); margin: 0 0 16px; }
+  .updated { font-size: 0.82rem; color: var(--soft); }
+
+  .chip {
+    display: inline-block; font-size: 0.74rem; font-weight: 700; padding: 1px 8px;
+    border-radius: 999px; white-space: nowrap; vertical-align: middle;
+  }
+  .L-data   { color: var(--data);   background: var(--data-bg); }
+  .L-engine { color: var(--engine); background: var(--engine-bg); }
+  .L-server { color: var(--server); background: var(--server-bg); }
+  .L-ui     { color: var(--ui);     background: var(--ui-bg); }
+  .L-script { color: var(--script); background: var(--script-bg); }
+  .L-test   { color: var(--test);   background: var(--test-bg); }
+  .L-doc    { color: var(--doc);    background: var(--doc-bg); }
+  .L-config { color: var(--config); background: var(--config-bg); }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 10px; margin: 0 0 14px; }
+  .legend span.desc { font-size: 0.82rem; color: var(--soft); margin-right: 6px; }
+  .toolbar { display: flex; gap: 8px; margin-bottom: 10px; }
+  .btn {
+    border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+    font: inherit; font-size: 0.85rem; padding: 4px 12px; border-radius: 8px; cursor: pointer;
+  }
+  .btn:hover { border-color: var(--accent); }
+
+  /* ---------- folder tree ---------- */
+  .tree-wrap { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px 14px 14px 6px; overflow-x: auto; }
+  ul.tree, ul.tree ul { list-style: none; margin: 0; padding-left: 22px; }
+  ul.tree { padding-left: 8px; }
+  ul.tree li { position: relative; padding: 2px 0 2px 16px; border-left: 2px solid var(--line); }
+  ul.tree li::before {
+    content: ""; position: absolute; left: 0; top: 17px; width: 12px; border-top: 2px solid var(--line);
+  }
+  ul.tree li:last-child { border-left-color: transparent; }
+  ul.tree li:last-child::after {
+    content: ""; position: absolute; left: -2px; top: 0; height: 18px; border-left: 2px solid var(--line);
+  }
+  .node {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; padding: 3px 8px; border-radius: 8px;
+    cursor: pointer; border: 0; background: transparent; color: inherit; font: inherit; text-align: left; width: 100%;
+  }
+  .node:hover { background: var(--code-bg); }
+  .node .name { font-weight: 700; }
+  .node.folder .name::before { content: "▾ "; color: var(--soft); }
+  li.closed > .node.folder .name::before { content: "▸ "; }
+  li.closed > ul { display: none; }
+  .node .what { font-size: 0.88rem; color: var(--soft); }
+  .detail {
+    margin: 4px 0 8px 8px; padding: 10px 12px; border-radius: 10px;
+    background: var(--bg); border: 1px solid var(--line); font-size: 0.92rem;
+  }
+  .detail .path-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .detail ul { margin: 4px 0 0; padding-left: 20px; list-style: disc; }
+  .detail ul li { border: 0; padding: 0; }
+  .detail ul li::before, .detail ul li::after { display: none; }
+  .flash > .node { background: var(--hit); }
+
+  /* ---------- logic ---------- */
+  .toc { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 18px; }
+  .toc a {
+    text-decoration: none; color: var(--ink); border: 1px solid var(--line); background: var(--panel);
+    padding: 4px 12px; border-radius: 999px; font-size: 0.86rem;
+  }
+  .toc a:hover { border-color: var(--accent); }
+  h2.sec {
+    margin: 34px 0 10px; font-size: 1.25rem; display: flex; align-items: center; gap: 10px;
+  }
+  h2.sec .num {
+    flex: none; width: 34px; height: 34px; border-radius: 50%; background: var(--ink); color: var(--panel);
+    display: inline-flex; align-items: center; justify-content: center; font-size: 1rem;
+  }
+  .card {
+    background: var(--panel); border: 1px solid var(--line); border-left: 6px solid var(--line);
+    border-radius: 12px; padding: 14px 16px; margin: 12px 0;
+  }
+  .card.c-data { border-left-color: var(--data); }
+  .card.c-engine { border-left-color: var(--engine); }
+  .card.c-server { border-left-color: var(--server); }
+  .card.c-ui { border-left-color: var(--ui); }
+  .card.c-script { border-left-color: var(--script); }
+  .card.c-doc { border-left-color: var(--doc); }
+  .card.c-config { border-left-color: var(--config); }
+  .card h3 { margin: 0 0 6px; font-size: 1.05rem; }
+  .card h3 .n { color: var(--soft); font-weight: 600; margin-right: 6px; }
+  .card p { margin: 6px 0; }
+  .card ul, .card ol { margin: 6px 0; padding-left: 22px; }
+  .formula {
+    display: block; background: var(--code-bg); border-radius: 8px; padding: 10px 12px; margin: 8px 0;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.9rem; overflow-x: auto; white-space: pre;
+  }
+  .eg { border-left: 3px solid var(--accent); padding: 2px 0 2px 12px; margin: 8px 0; font-size: 0.94rem; }
+  .eg b:first-child { color: var(--accent); }
+  .where { font-size: 0.86rem; color: var(--soft); margin-top: 8px; }
+  .steps { counter-reset: s; list-style: none; padding: 0; margin: 0; }
+  .steps > li {
+    counter-increment: s; position: relative; padding: 10px 12px 10px 52px; margin: 8px 0;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+  }
+  .steps > li::before {
+    content: counter(s); position: absolute; left: 12px; top: 10px; width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent); color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center;
+  }
+  .steps > li + li::after {
+    content: "↓"; position: absolute; left: 20px; top: -19px; color: var(--soft); font-weight: 800;
+  }
+  .tbl-wrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.92rem; margin: 8px 0; }
+  th, td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; vertical-align: top; }
+  th { background: var(--code-bg); white-space: nowrap; }
+  td code { white-space: nowrap; }
+  .rule { font-weight: 800; color: var(--accent); }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">🏀 專案導覽</div>
+    <div class="tabs">
+      <button class="tab on" data-part="files">① 找檔案</button>
+      <button class="tab" data-part="logic">② 運作邏輯</button>
+    </div>
+    <div class="search">
+      <input id="q" type="search" placeholder="🔍 想改什麼？例如：星等、題目、訓練菜單" autocomplete="off">
+      <div class="results" id="results" hidden></div>
+    </div>
+  </div>
+</div>
+
+<main>
+
+<!-- ============================ 第一部分：找檔案 ============================ -->
+<section id="part-files">
+  <h1 class="part-title">① 找檔案</h1>
+  <p class="part-lead">
+    <b>點資料夾</b>可以收合，<b>點檔案</b>會展開「這個檔案在做什麼、什麼時候要改它」。
+    不知道去哪改？<b>在右上角打關鍵字</b>。
+    <span class="updated" id="updated"></span>
+  </p>
+
+  <div class="legend" id="legend"></div>
+  <div class="toolbar">
+    <button class="btn" id="open-all">全部展開</button>
+    <button class="btn" id="close-all">全部收合</button>
+  </div>
+  <div class="tree-wrap"><ul class="tree" id="tree"></ul></div>
+</section>
+
+<!-- ============================ 第二部分：運作邏輯 ============================ -->
+<section id="part-logic" hidden>
+  <h1 class="part-title">② 運作邏輯</h1>
+  <p class="part-lead">從「使用者按下按鈕」到「畫面出現結果」，每一步是哪個檔案在做事、用什麼算式。</p>
+
+  <div class="toc">
+    <a href="#s1">1 三條規則</a>
+    <a href="#s2">2 五種檔案</a>
+    <a href="#s3">3 一次作答的完整流程</a>
+    <a href="#s4">4 算式</a>
+    <a href="#s5">5 畫面與按鍵</a>
+    <a href="#s6">6 API 一覽</a>
+    <a href="#s7">7 資料檔長什麼樣</a>
+    <a href="#s8">8 GitHub 與上線</a>
+    <a href="#s9">9 測試怎麼跑</a>
+  </div>
+
+  <!-- 1 -->
+  <h2 class="sec" id="s1"><span class="num">1</span>三條不能違反的規則</h2>
+  <div class="card">
+    <ol>
+      <li><span class="rule">所有分析都是固定的算式。</span>同樣的作答，永遠得到同樣的結果。不用 AI 判斷。</li>
+      <li><span class="rule">聯賽環境是算式的輸入。</span>它直接乘進訓練優先度，不是算完之後再拿來修正。</li>
+      <li><span class="rule">網站執行時不向外部查資料。</span>球員資料是事先做好的 JSON 檔。</li>
+    </ol>
+    <p class="where">出處：<code>CLAUDE.md</code>「最重要的三條規則」。</p>
+  </div>
+
+  <!-- 2 -->
+  <h2 class="sec" id="s2"><span class="num">2</span>五種檔案，各自只做一件事</h2>
+  <div class="tbl-wrap"><table>
+    <tr><th>種類</th><th>在哪裡</th><th>只負責</th><th>不可以做</th></tr>
+    <tr><td><span class="chip L-data">資料 JSON</span></td><td><code>data/</code></td><td>存題目、球員、技能、原型、訓練菜單、環境倍率</td><td>不放任何計算</td></tr>
+    <tr><td><span class="chip L-engine">引擎 Python</span></td><td><code>src/engine/</code></td><td>所有算式：座標、距離、星等、原型、訓練計劃</td><td>不讀檔、不連網、不用亂數、不看時間</td></tr>
+    <tr><td><span class="chip L-server">後端 Python</span></td><td><code>server/</code></td><td>讀 JSON、呼叫引擎、把結果用 API 回給網頁；處理登入、存收藏和上次結果</td><td>不自己重寫算式</td></tr>
+    <tr><td><span class="chip L-ui">前端 HTML</span></td><td><code>src/ui/index.html</code></td><td>畫面、按鍵、三種語言的文字、畫六角圖</td><td>不做任何分析計算</td></tr>
+    <tr><td><span class="chip L-script">腳本 Python</span></td><td><code>scripts/</code></td><td>在自己電腦上手動執行：產生球員資料、校準門檻、模擬</td><td>網站執行時不會跑（<code>run_player_match.py</code> 的兩個文字函數例外，後端有借用）</td></tr>
+  </table></div>
+  <div class="card">
+    <h3>三種語言怎麼切換</h3>
+    <ul>
+      <li>資料有三份：<code>data/zh/</code>（繁中，預設）、<code>data/zh-Hans/</code>（簡中）、<code>data/en/</code>（英文）。</li>
+      <li>三份的<b>結構和數字必須完全一樣</b>，只有文字不同。<code>tests/engine/test_i18n_parity.py</code> 會檢查。</li>
+      <li>網頁呼叫 API 時帶 <code>lang</code>，後端就讀對應的資料夾。</li>
+      <li>按鈕、標題這類介面文字不在 <code>data/</code>，而是在 <code>index.html</code> 的 <code>UI_STRINGS</code>。</li>
+    </ul>
+  </div>
+
+  <!-- 3 -->
+  <h2 class="sec" id="s3"><span class="num">3</span>一次作答的完整流程</h2>
+  <ol class="steps">
+    <li><span class="chip L-ui">前端</span> <b>打開網站。</b><code>index.html</code> 呼叫 <code>GET /api/form-data</code> 拿題目，同時呼叫 <code>POST /api/site-visit</code> 讓瀏覽人次加 1。</li>
+    <li><span class="chip L-ui">前端</span> <b>選球員池、回答 18 題。</b>六軸定位 12 題（每軸 2 題，選 1 到 5）加身材 6 題（身高、體重必填）。沒登入的話，答案只存在瀏覽器的記憶體裡。</li>
+    <li><span class="chip L-ui">前端</span> <b>按「查看我的球員模板」。</b>把作答、球員池、語言一起送到 <code>POST /api/template-results</code>。</li>
+    <li><span class="chip L-server">後端</span> <b>檢查並讀資料。</b><code>server/app.py</code> 確認欄位齊全，讀該語言的題庫、技能、球員、原型、訓練菜單。</li>
+    <li><span class="chip L-engine">引擎</span> <b>依序計算。</b>六軸座標 → 身材百分位 → 跟每位球員的距離 → 取最近 10 位並給星等 → 原型 → 3 位深度模板 → 每位球員 × 4 種環境的訓練計劃。</li>
+    <li><span class="chip L-server">後端</span> <b>組成一包 JSON 回傳。</b>10 位球員的 4 種環境計劃一次全部算好。<b>有登入的話</b>，同時把這次的 18 題原始作答存進資料庫，給「查看上次的結果」用。</li>
+    <li><span class="chip L-ui">前端</span> <b>畫出「我的模板」和「訓練計劃」兩頁。</b>切換環境或 10 位球員時<b>不用再問後端</b>，直接換顯示。只有搜尋 10 位以外的球員才會再呼叫後端。</li>
+  </ol>
+
+  <!-- 4 -->
+  <h2 class="sec" id="s4"><span class="num">4</span>算式</h2>
+  <p class="part-lead">每張卡片：<b>算什麼 → 算式 → 例子 → 數字在哪裡改</b>。六個軸是 A 持球創造、B1 外線投射、B2 禁區得分、C1 外圍防守、C2 禁區防守、D 運動表現。</p>
+
+  <div class="card c-engine" id="f1">
+    <h3><span class="n">4.1</span>六軸座標（每軸 0 到 100）</h3>
+    <p>每一軸有 2 題，各選 1 到 5 分。</p>
+    <span class="formula">axis score = (average of the 2 answers − 1) ÷ 4 × 100</span>
+    <div class="eg"><b>例：</b>A 軸兩題選 4 和 5 → 平均 4.5 → (4.5 − 1) ÷ 4 × 100 = <b>87.5</b>。所以分數一定是 12.5 的倍數。</div>
+    <p class="where">算式在 <code>src/engine/axis_position.py</code> 的 <code>score_axis_coordinates</code>。題目在 <code>data/zh/題庫.json</code>。</p>
+  </div>
+
+  <div class="card c-engine" id="f2">
+    <h3><span class="n">4.2</span>身材先換成百分位</h3>
+    <p><b>為什麼：</b>直接比公分，幾乎每個人都比所有 NBA 球員矮，永遠配到最矮的後衛。</p>
+    <ul>
+      <li><b>使用者：</b>放到「一般打球的人」的常態分布上。身高平均 180、標準差 8；體重平均 78、標準差 12。超過 190 公分或 93 公斤後改用直線拉到 100。</li>
+      <li><b>球員：</b>看使用者自己的身材決定用哪一種算法。</li>
+    </ul>
+    <div class="tbl-wrap"><table>
+      <tr><th>使用者的身高</th><th>球員的百分位怎麼算</th></tr>
+      <tr><td>185 公分以下</td><td>看他在<b>自己那個球員池裡</b>排第幾</td></tr>
+      <tr><td>195 公分以上</td><td>跟使用者用<b>同一條分布曲線</b></td></tr>
+      <tr><td>185 到 195 之間</td><td>兩種按比例混合</td></tr>
+    </table></div>
+    <span class="formula">w = (user height − 185) ÷ 10          (clamped to 0..1)
+player percentile = (1 − w) × rank in pool + w × population curve</span>
+    <p>體重同樣的做法，分界是 <b>88 和 98 公斤</b>。臂展、摸高、100 公尺不換百分位，直接用 <code>(value − min) ÷ (max − min) × 100</code>。</p>
+    <div class="eg"><b>例：</b>175 公分的使用者約在第 27 百分位，對到的是「在 NBA 裡排第 27 百分位」的球員，不是 NBA 最矮的那幾位。</div>
+    <p class="where">算式在 <code>src/engine/body_fit.py</code> 的 <code>percentile_normalize_body</code>。可以調的數字：<code>GENERAL_POPULATION_BODY_STATS</code>、<code>HEIGHT_TRANSITION_LOW / HIGH</code>、<code>WEIGHT_TRANSITION_LOW / HIGH</code>、<code>TALL_ATHLETE_THRESHOLD_Z</code>。</p>
+  </div>
+
+  <div class="card c-engine" id="f3">
+    <h3><span class="n">4.3</span>你跟一位球員的距離</h3>
+    <p>距離越小越像。用在 <b>10 人對照表</b>。</p>
+    <span class="formula">distance = sqrt( diff(A)² + diff(B1)² + diff(B2)² + diff(C1)² + diff(C2)²
+                 + 1.5 × diff(D)²
+                 + sum of diff(each body field you filled in)² )</span>
+    <ul>
+      <li><b>D 軸乘 1.5：</b>運動能力的差距被看得比技術差距重。</li>
+      <li><b>身材欄位：</b>只算你有填、球員也有的欄位。</li>
+    </ul>
+    <p class="where">算式在 <code>src/engine/player_matching.py</code> 的 <code>rank_similar_players_by_style_and_body</code>。D 軸權重是 <code>D_AXIS_WEIGHT</code>。</p>
+  </div>
+
+  <div class="card c-engine" id="f4">
+    <h3><span class="n">4.4</span>星等（相似度）</h3>
+    <p>把距離對照門檻表，<b>距離小於等於哪一格，就拿那一格的星數</b>。兩個球員池各有一張表。</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>星數</th><th>5</th><th>4.5</th><th>4</th><th>3.5</th><th>3</th><th>2.5</th><th>2</th><th>1.5</th><th>1</th></tr>
+      <tr><td><b>現役</b>（152 人）距離 ≤</td><td>52</td><td>56</td><td>60</td><td>63</td><td>67</td><td>69</td><td>73</td><td>78</td><td>其餘</td></tr>
+      <tr><td><b>歷史</b>（72 人）距離 ≤</td><td>61</td><td>65</td><td>71</td><td>74</td><td>77</td><td>81</td><td>87</td><td>92</td><td>其餘</td></tr>
+    </table></div>
+    <div class="eg"><b>例：</b>現役池、距離 64 → 超過 63、沒超過 67 → <b>3 顆星</b>。</div>
+    <ul>
+      <li>星等只代表<b>像不像</b>，不代表球員強不強。</li>
+      <li>第 1 名不到 2.5 顆星時，畫面會多一句「目前球員池裡沒有非常接近的對照組」。</li>
+    </ul>
+    <p class="where">門檻在 <code>src/engine/player_matching.py</code> 的 <code>CURRENT_POOL_STAR_THRESHOLDS</code>、<code>ALLTIME_POOL_STAR_THRESHOLDS</code>。重新校準用 <code>scripts/calibrate_star_thresholds.py</code>。</p>
+  </div>
+
+  <div class="card c-engine" id="f5">
+    <h3><span class="n">4.5</span>球場定位原型（12 種）</h3>
+    <ol>
+      <li>拿 10 人對照表的<b>前 5 名</b>。</li>
+      <li>每位球員各自歸到最接近的原型：比六軸，再加上體型（他的身高、體重在球員池內的百分位平均）。</li>
+      <li><b>加權投票：</b>第 1 名 5 票、第 2 名 4 票、第 3 名 3 票、第 4 名 2 票、第 5 名 1 票。</li>
+      <li>票數最高的原型勝出。平手時，取平手原型裡排名最前面那位球員的原型。</li>
+    </ol>
+    <p>畫面上的「一句話球探報告」就是該原型的 <code>flavor</code> 文字。</p>
+    <p class="where">算式在 <code>src/engine/archetype.py</code> 的 <code>classify_archetype_by_majority</code>。可以調：<code>ARCHETYPE_MAJORITY_TOP_N</code>（幾個人投票）、<code>SIZE_AXIS_WEIGHT</code>（體型多重要）。原型內容在 <code>data/zh/原型.json</code>。</p>
+  </div>
+
+  <div class="card c-engine" id="f6">
+    <h3><span class="n">4.6</span>3 位深度模板</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>模板</th><th>怎麼挑</th></tr>
+      <tr><td><b>技術模板</b></td><td>只比 A、B1、B2、C1、C2 五個軸，距離最小的球員。<b>不看 D 軸，也不看身材。</b></td></tr>
+      <tr><td><b>身材模板</b></td><td>只比身材欄位，距離最小的球員。</td></tr>
+      <tr><td><b>天花板</b></td><td>先留下「他贏你最多的那一軸是技術軸」的球員，再從中挑 <b>D 軸跟你最接近</b>的。意思是身體條件差不多、技術更成熟的人。找不到就顯示沒有符合的球員。</td></tr>
+    </table></div>
+    <p class="where">算式在 <code>src/engine/player_matching.py</code> 的 <code>find_skill_fit_template</code>、<code>find_body_fit_template</code>、<code>find_ceiling_template</code>。</p>
+  </div>
+
+  <div class="card c-script" id="f7">
+    <h3><span class="n">4.7</span>球員卡片上的成長建議</h3>
+    <ol>
+      <li>找出這位球員<b>贏你最多的那一軸</b>。</li>
+      <li>那一軸是 D → 固定顯示「身體天賦上有落差，不能單靠練習籃球技能」。</li>
+      <li>他的招牌技能剛好主要練那一軸 → 用招牌技能的驗收動作。</li>
+      <li>對不上 → 改用最能代表那一軸的技能。</li>
+    </ol>
+    <p class="where">邏輯在 <code>scripts/run_player_match.py</code> 的 <code>describe_growth_recommendation</code>。句型是 <code>GROWTH_ACTION_TEMPLATE</code>、<code>D_AXIS_GROWTH_TEMPLATE</code>。</p>
+  </div>
+
+  <div class="card c-engine" id="f8">
+    <h3><span class="n">4.8</span>訓練計劃</h3>
+    <p>針對<b>一位目標球員</b>和<b>一種聯賽環境</b>，從 15 項技能裡挑出 1 到 5 項。</p>
+    <p><b>第一步：每項技能算三個數字</b></p>
+    <div class="tbl-wrap"><table>
+      <tr><th>代號</th><th>意思</th><th>怎麼來</th></tr>
+      <tr><td><b>G</b> 差距</td><td>你離目標球員多遠</td><td>五個技術軸逐一算「球員 − 你」（負的當 0），乘上這項技能跟該軸的關聯度，再加總。<b>D 軸不算。</b></td></tr>
+      <tr><td><b>E</b> 環境倍率</td><td>這種聯賽裡這項技能多有用</td><td><code>data/env_weights.json</code>，0.5 到 2.0。選「無」時全部是 1.0。</td></tr>
+      <tr><td><b>C</b> 成本</td><td>這項技能多難練</td><td><code>data/zh/技能.json</code> 的 <code>cost_C</code>，2 到 4。</td></tr>
+    </table></div>
+    <span class="formula">G = sum over A, B1, B2, C1, C2 of  axis_relevance[axis] × max(0, player[axis] − user[axis])
+P = G × E ÷ C</span>
+    <div class="eg"><b>例：</b>外線投射跟 B1 的關聯度是 0.9。你的 B1 是 50、球員是 90，其他軸一樣 → G = 0.9 × 40 = 36。環境選「內縮防守 / 缺乏射手」E = 1.8，成本 C = 3 → P = 36 × 1.8 ÷ 3 = <b>21.6</b>。</div>
+    <p><b>第二步：決定列哪幾項</b></p>
+    <ol>
+      <li><b>第 1 項一定是該球員的招牌技能</b>，不管差距多少。畫面會標「招牌技能」。</li>
+      <li>其餘技能：G 大於 0 的才留，依 P 由高到低排。</li>
+      <li>其餘技能裡，P 不到<b>最高那一項的 25%</b> 就不列。</li>
+      <li>加上招牌技能，<b>最多 5 項</b>。所以計劃永遠不會是空的。</li>
+    </ol>
+    <p><b>第三步：決定每項的難度</b></p>
+    <p>看你在該技能<b>最主要那一軸</b>的分數：</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>你的分數</th><th>難度</th></tr>
+      <tr><td>低於 40</td><td><code>entry</code> 入門</td></tr>
+      <tr><td>40 到 70</td><td><code>advanced</code> 進階</td></tr>
+      <tr><td>高於 70</td><td><code>mastery</code> 精通</td></tr>
+    </table></div>
+    <p><b>第四步：查菜單。</b>用「技能 + 難度」到 <code>data/zh/訓練菜單.json</code> 找對應的訓練項目（15 項技能 × 3 個難度 = 45 筆）。</p>
+    <p class="where">算式在 <code>src/engine/skill_level.py</code>（G）、<code>src/engine/priority.py</code>（P）、<code>src/engine/training_plan.py</code>（挑選和難度）。可以調：<code>DIFFICULTY_ENTRY_BELOW</code>、<code>DIFFICULTY_MASTERY_ABOVE</code>、<code>TRAINING_PLAN_RELATIVE_THRESHOLD</code>，以及 <code>server/app.py</code> 的 <code>TRAINING_PLAN_TOP_N</code>。</p>
+  </div>
+
+  <div class="card c-server" id="f9">
+    <h3><span class="n">4.9</span>登入、上次結果、收藏、管理員</h3>
+    <p>全部是<b>選擇性</b>的：不登入也能用問卷、模板、訓練計劃。</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>功能</th><th>怎麼做</th></tr>
+      <tr><td><b>登入</b></td><td>只有 Google 帳號一種。用 Authlib 套件跟 Google 交換資料，登入狀態存在用 <code>SECRET_KEY</code> 簽章的 cookie 裡。Google 的設定或 <code>SECRET_KEY</code> 缺一個，登入功能就整個關閉、按鈕也不顯示。</td></tr>
+      <tr><td><b>使用者</b></td><td>用 Google 給的固定編號（<code>google_sub</code>）辨認，不用信箱，因為信箱可能會改。</td></tr>
+      <tr><td><b>上次結果</b></td><td>每次交卷新增一筆，<b>只新增、不修改、不刪除</b>。存的是 18 題原始作答，不是算好的結果；讀取時用現在的算式重算，所以算式改了，舊結果也會跟著更新。畫面只顯示最新一筆。</td></tr>
+      <tr><td><b>收藏</b></td><td>存「使用者 + 球員編號 + 球員池」，同一位球員不會存兩次。</td></tr>
+      <tr><td><b>管理員</b></td><td>登入信箱等於環境變數 <code>ADMIN_EMAIL</code> 才算。不是管理員的人呼叫那支 API 會拿到 404（假裝不存在），不是 403。</td></tr>
+    </table></div>
+    <p class="where">登入和權限在 <code>server/app.py</code>；資料表 <code>users</code>、<code>results</code>、<code>favorites</code> 在 <code>server/db.py</code> 的 <code>init_db</code> 建立。設計理由見 <code>docs/superpowers/specs/2026-10-21-google-login-accounts-design.md</code>。</p>
+  </div>
+
+  <!-- 5 -->
+  <h2 class="sec" id="s5"><span class="num">5</span>畫面與按鍵</h2>
+  <p class="part-lead">整個網站只有一個檔案 <code>src/ui/index.html</code>。裡面有 6 個頁面：首頁、問卷、我的模板、訓練計劃、我的收藏、意見回饋（只有管理員看得到）。切換時只是把其他頁面藏起來（<code>showPage</code>），<b>不會重新整理</b>。</p>
+
+  <div class="card c-ui">
+    <h3><span class="n">5.1</span>最上面那一列（每一頁都有）</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>按鍵</th><th>按了會怎樣</th><th>怎麼做到</th></tr>
+      <tr><td>🏀 球探報告</td><td>回首頁，作答不會消失</td><td><code>showPage("home")</code></td></tr>
+      <tr><td>首頁／我的模板／訓練計劃</td><td>切換頁面。後兩個要<b>交卷後</b>才能按</td><td><code>updateTabAvailability</code> 看 <code>state.results</code> 有沒有值</td></tr>
+      <tr><td>我的收藏</td><td>看收藏的球員。<b>登入後</b>才能按</td><td><code>updateTabAvailability</code> 看 <code>state.user.email</code></td></tr>
+      <tr><td>意見回饋</td><td>看所有使用意見。<b>只有管理員</b>看得到這個分頁</td><td>登入後呼叫 <code>GET /api/admin/feedback</code>，成功才顯示</td></tr>
+      <tr><td>登入／登出</td><td>用 Google 帳號登入，或登出回首頁。登入還沒設定好時，這個按鈕不會出現</td><td><code>renderAuthNav</code>；登入走 <code>/auth/login</code>，登出走 <code>POST /auth/logout</code></td></tr>
+      <tr><td>☰（手機）</td><td>手機版把登入、語言、主題收進這個選單</td><td>切換 <code>#topnav-controls</code> 的顯示</td></tr>
+      <tr><td>瀏覽人次</td><td>只是顯示數字</td><td><code>POST /api/site-visit</code> → <code>server/db.py</code> 把數字加 1</td></tr>
+      <tr><td>繁／简／EN</td><td>換語言。已經有結果的話會<b>重新向後端要一次該語言的結果</b></td><td><code>setLang</code>：存到 <code>localStorage</code>、重抓題庫、<code>refreshTemplateReport</code></td></tr>
+      <tr><td>☀</td><td>深色、米白主題互換</td><td><code>applyTheme</code>：改 <code>&lt;html data-theme&gt;</code>，存到 <code>localStorage</code></td></tr>
+    </table></div>
+  </div>
+
+  <div class="card c-ui">
+    <h3><span class="n">5.2</span>首頁</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>按鍵</th><th>按了會怎樣</th><th>怎麼做到</th></tr>
+      <tr><td>現役球員模板</td><td>開始作答，之後跟 152 位現役球員比</td><td><code>openQuiz("current")</code></td></tr>
+      <tr><td>歷史球員模板</td><td>開始作答，之後跟 72 位歷史球員比</td><td><code>openQuiz("alltime")</code></td></tr>
+    </table></div>
+    <div class="tbl-wrap"><table>
+      <tr><th>按鍵</th><th>按了會怎樣</th><th>怎麼做到</th></tr>
+      <tr><td>查看上次的結果</td><td>不用重填，直接顯示上次交卷的結果。<b>只有登入而且交過卷</b>才會出現</td><td><code>GET /api/my-results/latest</code>：後端拿存起來的原始作答，<b>用現在的算式重算一次</b>再回傳</td></tr>
+    </table></div>
+    <p>題庫還沒載入完成前，這些按鈕是按不了的。</p>
+  </div>
+
+  <div class="card c-ui">
+    <h3><span class="n">5.3</span>問卷頁</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>按鍵</th><th>按了會怎樣</th><th>怎麼做到</th></tr>
+      <tr><td>五個選項其中一個</td><td>記下分數，0.3 秒後<b>自動跳下一題</b></td><td><code>renderRadioStep</code> 把分數存進 <code>state.answers</code></td></tr>
+      <tr><td>上一題</td><td>回到前一題，原本的答案還在</td><td><code>state.stage1StepIndex</code> 減 1 後重畫</td></tr>
+      <tr><td>身材題的 ▲／▼、輸入框</td><td>調整數值。超出上下限不會被接受</td><td><code>buildBodyQuestionField</code>，上下限來自題庫的 <code>min</code>、<code>max</code></td></tr>
+      <tr><td>下一題（身材題）</td><td>選填的題目可以留空直接跳過</td><td><code>renderBodyStep</code></td></tr>
+      <tr><td>查看我的球員模板</td><td>交卷，顯示「整理報告中」，然後跳到我的模板</td><td><code>handleStage1Submit</code> → <code>POST /api/template-results</code></td></tr>
+    </table></div>
+    <p>上方的進度條由 <code>updateStage1Progress</code> 更新。必填題沒答完，交卷按鈕不能按。</p>
+  </div>
+
+  <div class="card c-ui">
+    <h3><span class="n">5.4</span>我的模板頁</h3>
+    <p>由上到下：<b>原型名稱 + 一句話球探報告 + 六角圖</b> → <b>3 位深度模板</b> → <b>10 人對照表</b>。</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>按鍵</th><th>按了會怎樣</th><th>怎麼做到</th></tr>
+      <tr><td>📥 下載分享圖</td><td>下載一張 PNG 圖片</td><td><code>downloadShareImage</code>：在瀏覽器裡用 canvas 畫一張 1000 × 1150 的圖，不經過後端</td></tr>
+      <tr><td>10 人對照表的任何一張卡片</td><td>選定這位球員，並跳到訓練計劃頁</td><td><code>handleReportClick</code> 改 <code>state.selectedPlayerIndex</code> 再 <code>showPage("training")</code></td></tr>
+      <tr><td>查看訓練計劃</td><td>跳到訓練計劃頁</td><td><code>showPage("training")</code></td></tr>
+      <tr><td>球員卡片上的 ☆／★</td><td>收藏或取消收藏這位球員。沒登入時改成顯示「登入後可以收藏」</td><td><code>toggleFavorite</code> → <code>POST</code> 或 <code>DELETE /api/favorites</code></td></tr>
+    </table></div>
+    <p>六角圖是 <code>buildRadarSvg</code> 用 SVG 畫的：你的座標和第 1 名球員疊在一起。</p>
+  </div>
+
+  <div class="card c-ui">
+    <h3><span class="n">5.5</span>訓練計劃頁</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>按鍵</th><th>按了會怎樣</th><th>怎麼做到</th></tr>
+      <tr><td>聯賽環境（4 選 1）</td><td>立刻換一份訓練計劃</td><td><b>不問後端。</b>結果裡已經有每位球員 4 種環境的計劃，<code>renderTrainingSection</code> 直接換顯示</td></tr>
+      <tr><td>目標球員（10 選 1）</td><td>立刻換成那位球員的六角圖和計劃</td><td>同上，不問後端</td></tr>
+      <tr><td>搜尋球員的輸入框</td><td>打字就列出名字符合的球員，最多 8 位</td><td>第一次打字時呼叫 <code>GET /api/players</code> 拿全部名單，之後在瀏覽器裡篩選</td></tr>
+      <tr><td>搜尋結果裡的球員</td><td>顯示這位球員的計劃（可以是 10 位以外的人）</td><td><code>selectCustomPlayer</code> → <code>POST /api/player-training-plan</code>，結果會暫存，再點同一位不會重打</td></tr>
+    </table></div>
+    <p>每一項技能顯示：技能名稱、（第 1 項多一個「招牌技能」標籤）、訓練項目名稱、訓練量。六角圖卡片上也有 ☆／★ 收藏按鈕，搜尋出來的球員也能收藏。</p>
+  </div>
+
+  <div class="card c-ui">
+    <h3><span class="n">5.6</span>我的收藏頁、意見回饋頁</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>按鍵</th><th>按了會怎樣</th><th>怎麼做到</th></tr>
+      <tr><td>（收藏頁）看訓練計劃</td><td>直接看這位球員的訓練計劃。還沒交卷的話，先帶你去填問卷</td><td><code>goToTrainingForFavorite</code> → <code>selectCustomPlayer</code></td></tr>
+      <tr><td>（收藏頁）移除</td><td>取消收藏</td><td><code>DELETE /api/favorites</code></td></tr>
+      <tr><td>（意見回饋頁）</td><td>只能看，不能刪除或回覆：時間、語言、星數、留言</td><td><code>renderAdminFeedbackPage</code>，資料來自 <code>GET /api/admin/feedback</code></td></tr>
+    </table></div>
+  </div>
+
+  <div class="card c-ui">
+    <h3><span class="n">5.7</span>頁面最下面</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>按鍵</th><th>按了會怎樣</th><th>怎麼做到</th></tr>
+      <tr><td>重新填一次</td><td>清掉作答和結果，回首頁</td><td><code>resetSession</code></td></tr>
+      <tr><td>提供使用意見</td><td>跳出視窗：1 到 5 顆星 + 50 字以內的留言</td><td><code>submitFeedback</code> → <code>POST /api/feedback</code> → 存進資料庫的 <code>feedback</code> 表</td></tr>
+    </table></div>
+    <p>意見視窗裡有一個<b>看不見的欄位</b> <code>website</code>。真人不會填，機器人會填；有填的話後端假裝成功但不存。</p>
+  </div>
+
+  <div class="card c-ui">
+    <h3><span class="n">5.8</span>要知道的兩件事</h3>
+    <ul>
+      <li><b>沒登入的人重新整理頁面，作答和結果都會消失。</b>只有語言和主題存在 <code>localStorage</code>。登入的人可以用「查看上次的結果」找回來。</li>
+      <li><b>所有從後端來的文字都會先經過 <code>escapeHtml</code></b> 才放進畫面，避免資料裡的符號被當成 HTML。</li>
+    </ul>
+  </div>
+
+  <!-- 6 -->
+  <h2 class="sec" id="s6"><span class="num">6</span>API 一覽</h2>
+  <p class="part-lead">全部寫在 <code>server/app.py</code>。</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>網址</th><th>誰在什麼時候呼叫</th><th>回傳什麼</th></tr>
+    <tr><td><code>GET /api/form-data</code></td><td>打開網站、切換語言</td><td>18 題的題目文字和選項</td></tr>
+    <tr><td><code>POST /api/template-results</code></td><td>交卷、有結果時切換語言</td><td>六軸座標、原型、球探報告、3 位深度模板、10 人對照表（每人含 4 種環境的訓練計劃）</td></tr>
+    <tr><td><code>GET /api/players</code></td><td>第一次在搜尋框打字</td><td>該球員池全部球員的編號、名字、球隊</td></tr>
+    <tr><td><code>POST /api/player-training-plan</code></td><td>選了搜尋結果裡的球員</td><td>該球員的座標和一份訓練計劃</td></tr>
+    <tr><td><code>POST /api/feedback</code></td><td>送出使用意見</td><td>成功或失敗</td></tr>
+    <tr><td><code>POST /api/site-visit</code></td><td>打開網站</td><td>加 1 之後的瀏覽人次</td></tr>
+    <tr><td><code>GET /auth/login</code></td><td>按「登入」</td><td>轉到 Google 的登入畫面</td></tr>
+    <tr><td><code>GET /auth/callback</code></td><td>Google 登入完成後自動轉回來</td><td>記下登入狀態，回首頁。使用者在 Google 按取消也只是回首頁</td></tr>
+    <tr><td><code>POST /auth/logout</code></td><td>按「登出」</td><td>清掉登入狀態</td></tr>
+    <tr><td><code>GET /api/me</code></td><td>打開網站</td><td>目前登入的名字、信箱，以及登入功能有沒有開</td></tr>
+    <tr><td><code>GET /api/my-results/latest</code></td><td>登入後打開首頁</td><td>上次交卷的完整結果（用現在的算式重算）。沒有就回 204</td></tr>
+    <tr><td><code>GET / POST / DELETE /api/favorites</code></td><td>載入收藏、按 ☆／★、在收藏頁移除</td><td>收藏清單，或新增、移除的結果。要登入</td></tr>
+    <tr><td><code>GET /api/admin/feedback</code></td><td>管理員登入後</td><td>所有使用意見。不是管理員就回 404</td></tr>
+    <tr><td><code>GET /</code> 和其他路徑</td><td>瀏覽器載入頁面和圖片</td><td><code>src/ui/</code> 裡的檔案。<b><code>data/</code> 不會被公開。</b></td></tr>
+  </table></div>
+  <div class="card c-server">
+    <h3>後端的三個固定動作</h3>
+    <ol>
+      <li><b>檢查輸入。</b>缺欄位、語言或球員池不對、身高體重沒填 → 回 400 和錯誤訊息。</li>
+      <li><b>讀資料。</b>依 <code>lang</code> 和 <code>pool</code> 讀 <code>data/</code> 裡對應的 JSON。</li>
+      <li><b>呼叫引擎。</b>自己不算任何東西，全部交給 <code>src/engine/</code>。</li>
+    </ol>
+  </div>
+
+  <!-- 7 -->
+  <h2 class="sec" id="s7"><span class="num">7</span>資料檔長什麼樣</h2>
+  <p class="part-lead">以繁中為例。簡中和英文是同樣的結構、不同的檔名。</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>檔案</th><th>筆數</th><th>每一筆有什麼</th><th>誰在用</th></tr>
+    <tr><td><code>題庫.json</code></td><td>12 + 6 題</td><td>六軸題：屬於哪一軸、題目、5 句選項。身材題：欄位、單位、上下限、是否必填</td><td>問卷畫面、座標計算</td></tr>
+    <tr><td><code>球員.json</code></td><td>152 人</td><td>六軸座標、身材、特點、招牌技能</td><td>配對、訓練計劃</td></tr>
+    <tr><td><code>歷史球員.json</code></td><td>72 人</td><td>同上，球隊欄位改放代表年份</td><td>選「歷史球員模板」時</td></tr>
+    <tr><td><code>原型.json</code></td><td>12 種</td><td>名稱、六軸座標、體型、一句話球探報告</td><td>原型分類</td></tr>
+    <tr><td><code>技能.json</code></td><td>15 項</td><td>名稱、成本、跟六軸各自的關聯度、驗收標準</td><td>訓練計劃</td></tr>
+    <tr><td><code>訓練菜單.json</code></td><td>45 筆</td><td>屬於哪項技能、哪個難度、名稱、組數、次數、分鐘</td><td>訓練計劃</td></tr>
+    <tr><td><code>data/env_weights.json</code></td><td>4 組</td><td>每種聯賽環境對 15 項技能的倍率（不分語言）</td><td>訓練計劃</td></tr>
+  </table></div>
+  <div class="card c-data">
+    <h3>改資料時要記得</h3>
+    <ul>
+      <li><b>球員資料不要手改。</b>它是 <code>scripts/build_players_seed.py</code> 和 <code>scripts/build_players_alltime_seed.py</code> 產生的，要改就改腳本再重新產生。</li>
+      <li><b>數字要三個語言一起改。</b>只改一份，測試會失敗。</li>
+      <li><b>簡中的資料</b>可以用 <code>scripts/build_zh_hans_data.py</code> 從繁中轉出來。</li>
+      <li>每個 JSON 最上面的 <code>_description</code> 和 <code>_editable_fields</code> 會說明哪些欄位可以改。</li>
+    </ul>
+  </div>
+
+  <!-- 8 -->
+  <h2 class="sec" id="s8"><span class="num">8</span>GitHub 與上線</h2>
+  <ol class="steps">
+    <li><span class="chip L-config">本機</span> <b>改完程式、跑過測試、commit。</b></li>
+    <li><span class="chip L-config">GitHub</span> <b><code>git push</code> 到 <code>main</code>。</b>遠端是 <code>github.com/JamesLiu0819/NBA-players-template</code>。</li>
+    <li><span class="chip L-config">Render</span> <b>Render 讀 repo 最外層的 <code>render.yaml</code>。</b>裡面寫了怎麼安裝和啟動。接上 GitHub 之後，預設每次 push 都會自動重新部署。</li>
+    <li><span class="chip L-server">啟動</span> <b>安裝：</b><code>pip install -r server/requirements.txt</code>。<b>啟動：</b><code>gunicorn --chdir server app:app</code>。</li>
+    <li><span class="chip L-server">資料庫</span> <b>資料庫在 Neon（免費版 Postgres），不在 Render。</b>連線字串放在 Render 後台的環境變數 <code>DATABASE_URL</code>，<code>server/db.py</code> 用它存瀏覽人次、使用意見、使用者、上次結果、收藏。</li>
+  </ol>
+  <div class="card c-config">
+    <h3>方案和費用</h3>
+    <ul>
+      <li><b>網站：Render Starter 方案，每月 7 美元。</b>不會閒置休眠，打開就有畫面。</li>
+      <li><b>不用手動續費。</b>Render 按秒計費，每個月初自動從帳號綁定的信用卡扣上個月的費用。卡片過期或刷不過才會出問題，到 Render 後台的 Billing 確認。</li>
+      <li><b>資料庫：Neon 免費版。</b>不會像 Render 的免費資料庫那樣到期被刪。</li>
+      <li><b>資料庫連不上時網站照常運作</b>，只是瀏覽人次不顯示、意見送不出去、登入相關功能失效。</li>
+    </ul>
+  </div>
+  <div class="card c-config">
+    <h3>五個環境變數（都在 Render 後台的 Environment 設定）</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>變數</th><th>用途</th><th>誰管理</th></tr>
+      <tr><td><code>DATABASE_URL</code></td><td>Neon 資料庫的連線字串</td><td><b>手動</b>，<code>render.yaml</code> 寫 <code>sync: false</code></td></tr>
+      <tr><td><code>SECRET_KEY</code></td><td>替登入 cookie 簽章</td><td>Render 自動產生</td></tr>
+      <tr><td><code>GOOGLE_CLIENT_ID</code></td><td>Google 登入</td><td><b>手動</b>，<code>sync: false</code></td></tr>
+      <tr><td><code>GOOGLE_CLIENT_SECRET</code></td><td>Google 登入</td><td><b>手動</b>，<code>sync: false</code></td></tr>
+      <tr><td><code>ADMIN_EMAIL</code></td><td>誰是管理員</td><td><b>手動</b>，<code>sync: false</code></td></tr>
+    </table></div>
+    <p><b><code>sync: false</code> 的意思：</b>Render 只知道有這個變數，值由你在後台管理，push 新版本時不會被改掉。<b>這些值絕對不要寫進 <code>render.yaml</code></b>，那份檔案會上傳到 GitHub。</p>
+    <p class="where">設定在 <code>render.yaml</code>。詳細步驟在 <code>server/README.md</code>。本機沒有 <code>DATABASE_URL</code> 時，資料只記在記憶體裡，關掉就不見。</p>
+  </div>
+
+  <!-- 9 -->
+  <h2 class="sec" id="s9"><span class="num">9</span>測試怎麼跑</h2>
+  <div class="card c-script">
+    <h3>在本機開網站</h3>
+    <span class="formula">source .venv/bin/activate
+python3 server/app.py          # open http://localhost:5001</span>
+    <p>不要用 5000 埠，macOS 的 AirPlay 佔用了它。</p>
+    <h3>引擎和資料的測試（從 repo 最外層執行）</h3>
+    <span class="formula">PYTHONPATH=src python3 -m unittest discover -s tests -t . -v</span>
+    <h3>後端的測試</h3>
+    <span class="formula">cd server
+../.venv/bin/python3 -m unittest test_app test_db -v</span>
+    <h3>檢查這份導覽有沒有漏檔案</h3>
+    <span class="formula">python3 scripts/check_guide.py</span>
+  </div>
+
+</section>
+</main>
+
+<script>
+/* ===================================================================
+   要更新這份文件，主要改這一段。
+   =================================================================== */
+const LAST_UPDATED = "2026-10-22";
+
+// 顏色分類。key 對應 CSS 的 .L-xxx。
+const LAYERS = {
+  data:   { label: "資料",  desc: "題目、球員、菜單等 JSON" },
+  engine: { label: "引擎",  desc: "所有算式" },
+  server: { label: "後端",  desc: "API" },
+  ui:     { label: "前端",  desc: "畫面和按鍵" },
+  script: { label: "腳本",  desc: "手動執行的工具" },
+  test:   { label: "測試",  desc: "自動檢查" },
+  doc:    { label: "文件",  desc: "說明和設計紀錄" },
+  config: { label: "設定",  desc: "部署、版本控制" },
+};
+
+// 資料夾的一句話說明。
+const FOLDERS = {
+  "data": "所有資料檔。網站執行時只讀不寫",
+  "data/zh": "繁體中文資料（預設語言）",
+  "data/zh-Hans": "簡體中文資料，結構跟繁中完全一樣",
+  "data/en": "英文資料，結構跟繁中完全一樣",
+  "data/answers": "本機測試頁匯出的作答，不進 git、不公開",
+  "src": "網站本體",
+  "src/engine": "所有算式。純函數：不讀檔、不連網、不用亂數",
+  "src/ui": "正式網站的前端",
+  "src/ui/silhouettes": "首頁和分享圖用的球員剪影圖",
+  "server": "Flask 後端，唯一對外的伺服器",
+  "scripts": "在自己電腦上手動執行的工具",
+  "tools": "本機測試頁，不是正式網站的一部分",
+  "tests": "引擎、資料、腳本的自動測試",
+  "tests/engine": "測試算式和資料檔",
+  "tests/scripts": "測試腳本裡的函數",
+  "docs": "設計紀錄",
+  "docs/superpowers": "每次大改動的設計文件和實作計劃",
+  "docs/superpowers/specs": "設計文件：為什麼這樣做",
+  "docs/superpowers/plans": "實作計劃：一步一步怎麼做",
+};
+
+// p: 路徑（結尾是 / 代表整個資料夾當一筆）。layer: 顏色分類。what: 一句話用途。
+// edit: 什麼時候要改它。kw: 搜尋用的關鍵字。
+const FILES = [
+  { p: "CLAUDE.md", layer: "doc", what: "專案規則總表，AI 助理每次都會先讀",
+    edit: ["題數、目錄結構、開發規則有變的時候"], kw: "規則 約定 題數 目錄 說明" },
+  { p: "SPEC.md", layer: "doc", what: "完整規格：分層、算式、題庫設計的原始構想",
+    edit: ["算式或整體設計方向改變的時候"], kw: "規格 設計 公式 分層 L1 L2 L3 L4" },
+  { p: "Check.md", layer: "doc", what: "輸入「檢查」時要跑的稽核流程",
+    edit: ["想改檢查步驟或回報格式的時候"], kw: "檢查 稽核 流程" },
+  { p: "GUIDE.html", layer: "doc", what: "就是這份導覽",
+    edit: ["新增、刪除、搬動檔案，或算式、按鍵有變的時候"], kw: "導覽 文件 地圖" },
+  { p: "render.yaml", layer: "config", what: "Render 的部署設定：方案（Starter）、怎麼安裝、怎麼啟動、需要哪些環境變數",
+    edit: ["要換方案（現在是每月 7 美元的 starter）", "要換 Python 版本", "要改啟動指令", "要新增一個環境變數"],
+    kw: "部署 上線 Render 主機 方案 starter 付費 Python 版本 gunicorn 環境變數" },
+  { p: ".gitignore", layer: "config", what: "哪些檔案不進 git（虛擬環境、使用者作答等）",
+    edit: ["有新的檔案不該被上傳的時候"], kw: "git 忽略 上傳" },
+
+  { p: "data/env_weights.json", layer: "data", what: "4 種聯賽環境對 15 項技能的倍率 E",
+    edit: ["想調整某種環境下哪項技能更重要", "要新增一種聯賽環境（還要改 index.html 的 ENV_CODES 和 envLabels）"],
+    kw: "聯賽 環境 倍率 E 權重 內縮 區域防守 射手" },
+  { p: "data/answers/.gitkeep", layer: "config", what: "空檔案，只是為了讓這個資料夾留在 git 裡",
+    edit: ["不用改"], kw: "作答 存檔" },
+
+  { p: "data/zh/題庫.json", layer: "data", what: "18 題：六軸定位 12 題 + 身材 6 題",
+    edit: ["改題目文字或五句選項", "改身高、體重等欄位的上下限", "改哪幾題必填"],
+    kw: "題目 問卷 選項 問題 身高 體重 上限 下限 必填 臂展 摸高" },
+  { p: "data/zh/球員.json", layer: "data", what: "152 位現役球員：六軸座標、身材、特點、招牌技能",
+    edit: ["不要手改。改 scripts/build_players_seed.py 再重新產生"], kw: "球員 現役 NBA 座標 特點 招牌技能 身材" },
+  { p: "data/zh/歷史球員.json", layer: "data", what: "72 位歷史球員，格式跟現役相同",
+    edit: ["不要手改。改 scripts/build_players_alltime_seed.py 再重新產生"], kw: "歷史 球員 退役 名人" },
+  { p: "data/zh/原型.json", layer: "data", what: "12 種球場定位原型：名稱、座標、體型、一句話球探報告",
+    edit: ["改原型名稱或球探報告文字", "調整原型的座標或體型", "新增或刪除原型"], kw: "原型 定位 球探報告 控場 射手 中鋒 側翼" },
+  { p: "data/zh/技能.json", layer: "data", what: "15 項技能：成本、跟六軸的關聯度、驗收標準",
+    edit: ["改技能名稱", "調整技能成本 cost_C", "調整技能跟哪一軸有關 axis_relevance", "改驗收動作或門檻"],
+    kw: "技能 成本 C 關聯度 axis_relevance 驗收 指標 門檻" },
+  { p: "data/zh/訓練菜單.json", layer: "data", what: "45 筆訓練項目：15 項技能 × 入門、進階、精通",
+    edit: ["改訓練項目的名稱", "改組數、次數、分鐘", "替某個難度多加一個訓練項目"],
+    kw: "訓練 菜單 訓練項目 組數 次數 入門 進階 精通 drills" },
+
+  { p: "data/zh-Hans/题库.json", layer: "data", what: "簡中版題庫", edit: ["繁中題庫改了之後同步"], kw: "簡體 題目 问卷" },
+  { p: "data/zh-Hans/球员.json", layer: "data", what: "簡中版現役球員", edit: ["不要手改，由腳本產生"], kw: "簡體 球員" },
+  { p: "data/zh-Hans/历史球员.json", layer: "data", what: "簡中版歷史球員", edit: ["不要手改，由腳本產生"], kw: "簡體 歷史 球員" },
+  { p: "data/zh-Hans/原型.json", layer: "data", what: "簡中版原型", edit: ["繁中原型改了之後同步"], kw: "簡體 原型" },
+  { p: "data/zh-Hans/技能.json", layer: "data", what: "簡中版技能", edit: ["繁中技能改了之後同步"], kw: "簡體 技能" },
+  { p: "data/zh-Hans/训练菜单.json", layer: "data", what: "簡中版訓練菜單", edit: ["繁中菜單改了之後同步"], kw: "簡體 訓練 菜單" },
+
+  { p: "data/en/questions.json", layer: "data", what: "英文版題庫", edit: ["繁中題庫改了之後同步"], kw: "英文 題目 questions" },
+  { p: "data/en/players.json", layer: "data", what: "英文版現役球員", edit: ["不要手改，由腳本產生"], kw: "英文 球員 players" },
+  { p: "data/en/players_alltime.json", layer: "data", what: "英文版歷史球員", edit: ["不要手改，由腳本產生"], kw: "英文 歷史 球員" },
+  { p: "data/en/archetypes.json", layer: "data", what: "英文版原型", edit: ["繁中原型改了之後同步"], kw: "英文 原型 archetypes" },
+  { p: "data/en/skills.json", layer: "data", what: "英文版技能", edit: ["繁中技能改了之後同步"], kw: "英文 技能 skills" },
+  { p: "data/en/drills.json", layer: "data", what: "英文版訓練菜單", edit: ["繁中菜單改了之後同步"], kw: "英文 訓練 菜單 drills" },
+
+  { p: "src/engine/__init__.py", layer: "engine", what: "讓 engine 資料夾可以被 import", edit: ["不用改"], kw: "package" },
+  { p: "src/engine/axis_position.py", layer: "engine", what: "把 1 到 5 分的作答換成六軸座標（0 到 100）",
+    edit: ["想改分數怎麼換算成 0 到 100"], kw: "六軸 座標 分數 換算 score_axis_coordinates" },
+  { p: "src/engine/body_fit.py", layer: "engine", what: "身材換成百分位、算身材距離",
+    edit: ["調整一般人的身高體重平均值", "調整身材比較的分段（185 / 195 公分、88 / 98 公斤）"],
+    kw: "身材 身高 體重 百分位 分段 percentile 常態分布 body" },
+  { p: "src/engine/player_matching.py", layer: "engine", what: "算距離、挑最像的 10 位、給星等、挑 3 位深度模板",
+    edit: ["調整星等門檻", "調整 D 軸的權重（現在 1.5）", "改技術模板、身材模板、天花板的挑法"],
+    kw: "星等 星星 相似度 門檻 距離 配對 10 人 對照表 深度模板 天花板 技術模板 身材模板 D_AXIS_WEIGHT" },
+  { p: "src/engine/archetype.py", layer: "engine", what: "決定球場定位原型：前 5 名球員加權投票",
+    edit: ["改幾個人參與投票", "改體型在原型分類裡多重要"], kw: "原型 分類 投票 體型 classify_archetype" },
+  { p: "src/engine/skill_level.py", layer: "engine", what: "算技能差距 G",
+    edit: ["想改差距的算法（例如要不要把 D 軸算進去）"], kw: "差距 G 缺口 skill_gap" },
+  { p: "src/engine/priority.py", layer: "engine", what: "算優先度 P = G × E ÷ C 並排序",
+    edit: ["想改優先度公式"], kw: "優先度 P 排序 公式 priority" },
+  { p: "src/engine/training_plan.py", layer: "engine", what: "挑出訓練計劃的 1 到 5 項技能，決定每項難度",
+    edit: ["調整難度分界（40 / 70）", "調整 25% 的相對門檻", "改招牌技能的規則"],
+    kw: "訓練計劃 難度 入門 進階 精通 招牌技能 25% 門檻 build_training_plan" },
+  { p: "src/engine/relevance.py", layer: "engine", what: "算技能跟你定位的相關度 R（目前訓練計劃沒有用到）",
+    edit: ["如果之後要把 R 加回優先度公式"], kw: "相關度 R relevance" },
+
+  { p: "src/ui/index.html", layer: "ui", what: "整個正式網站的前端：6 個頁面、樣式、三語文字、所有按鍵、六角圖",
+    edit: ["改任何畫面上的文字（UI_STRINGS）", "改顏色或主題（最上面的 CSS 變數）", "改版面", "改按鍵的行為", "改分享圖"],
+    kw: "畫面 介面 文字 按鈕 顏色 主題 版面 六角圖 雷達圖 分享圖 語言 翻譯 UI_STRINGS CSS 首頁 問卷 進度條 搜尋" },
+  { p: "src/ui/fabric-texture.jpg", layer: "ui", what: "背景的布料紋理圖", edit: ["想換背景紋理"], kw: "背景 紋理 圖片" },
+  { p: "src/ui/silhouettes/", layer: "ui", what: "9 個檔案：運球、灌籃等剪影的黑白兩色 PNG，加一份說明",
+    edit: ["想換首頁或分享圖上的球員剪影"], kw: "剪影 圖片 浮水印 姿勢" },
+
+  { p: "server/app.py", layer: "server", what: "後端主程式：所有 API、Google 登入、管理員檢查，讀資料、呼叫引擎、回傳結果",
+    edit: ["新增或修改 API", "改訓練計劃最多幾項（TRAINING_PLAN_TOP_N）", "改意見留言的字數上限", "改登入流程", "新增一種語言的資料檔名"],
+    kw: "後端 API 路由 伺服器 Flask template-results form-data feedback 字數 登入 Google OAuth 管理員 收藏 上次結果" },
+  { p: "server/db.py", layer: "server", what: "所有資料庫存取：瀏覽人次、使用意見、使用者、上次結果、收藏。有資料庫用 Neon，沒有就記在記憶體",
+    edit: ["要多存一種資料", "要改資料表", "要改收藏或上次結果怎麼存"], kw: "資料庫 Postgres Neon 瀏覽人次 計數器 意見 feedback 使用者 users results favorites 收藏" },
+  { p: "server/requirements.txt", layer: "config", what: "後端需要安裝的五個套件和版本",
+    edit: ["要升級或新增 Python 套件"], kw: "套件 版本 安裝 Flask gunicorn psycopg Authlib requests" },
+  { p: "server/README.md", layer: "doc", what: "怎麼在本機開後端、怎麼跑測試、怎麼部署",
+    edit: ["啟動或部署步驟有變的時候"], kw: "啟動 本機 開發 部署 測試指令" },
+  { p: "server/test_app.py", layer: "test", what: "測試每一支 API 的輸入檢查和回傳格式，包含登入、收藏、管理員",
+    edit: ["API 的欄位或行為有變的時候"], kw: "測試 API" },
+  { p: "server/test_db.py", layer: "test", what: "測試沒有資料庫時的記憶體版本：計數、使用者、結果、收藏", edit: ["db.py 有變的時候"], kw: "測試 資料庫" },
+
+  { p: "scripts/__init__.py", layer: "script", what: "讓後端可以 import scripts 裡的函數", edit: ["不用改"], kw: "package" },
+  { p: "scripts/build_players_seed.py", layer: "script", what: "產生現役球員資料檔",
+    edit: ["新增、刪除球員", "調整某位球員的座標、特點、招牌技能、身材"], kw: "球員 產生 新增球員 座標 招牌技能 現役" },
+  { p: "scripts/build_players_alltime_seed.py", layer: "script", what: "產生歷史球員資料檔",
+    edit: ["新增、刪除歷史球員", "調整某位歷史球員的資料"], kw: "歷史球員 產生 新增球員" },
+  { p: "scripts/build_zh_hans_data.py", layer: "script", what: "把繁中資料整包轉成簡中",
+    edit: ["轉換規則要調整的時候"], kw: "簡體 轉換 繁轉簡" },
+  { p: "scripts/mock_answers.py", layer: "script", what: "把球員的目標座標反推成一組 1 到 5 分的模擬作答",
+    edit: ["想改球員座標的推導方式"], kw: "模擬作答 球員座標 推導" },
+  { p: "scripts/run_player_match.py", layer: "script", what: "在終端機跑一次配對；後端也借用它的成長建議和球探報告文字函數",
+    edit: ["改卡片上成長建議的句型", "改 D 軸差距時顯示的那句話"], kw: "成長建議 句型 球探報告 終端機 配對" },
+  { p: "scripts/calibrate_star_thresholds.py", layer: "script", what: "重新校準星等門檻",
+    edit: ["改了距離算式或球員池之後，要重算門檻"], kw: "校準 星等 門檻" },
+  { p: "scripts/simulate_results.py", layer: "script", what: "模擬大量假使用者，看星等、原型、菜單的分布",
+    edit: ["想驗證某個改動對整體結果的影響"], kw: "模擬 分布 驗證 統計" },
+  { p: "scripts/check_guide.py", layer: "script", what: "檢查這份導覽的檔案清單有沒有漏掉或多出來的",
+    edit: ["不用改，新增檔案後執行它"], kw: "導覽 檢查" },
+
+  { p: "tools/survey.html", layer: "ui", what: "本機測試頁：填問卷後把作答匯出成檔案，不是正式網站",
+    edit: ["想改本機測試流程"], kw: "測試頁 匯出 作答 本機" },
+  { p: "tools/README.md", layer: "doc", what: "本機測試頁的使用說明", edit: ["測試頁用法有變的時候"], kw: "測試頁 說明" },
+
+  { p: "tests/__init__.py", layer: "test", what: "讓 tests 可以被當成 package 執行", edit: ["不用改"], kw: "package" },
+  { p: "tests/engine/__init__.py", layer: "test", what: "同上", edit: ["不用改"], kw: "package" },
+  { p: "tests/engine/test_axis_position.py", layer: "test", what: "測試六軸座標的換算", edit: ["axis_position.py 有變"], kw: "測試 座標" },
+  { p: "tests/engine/test_body_fit.py", layer: "test", what: "測試身材百分位和身材距離", edit: ["body_fit.py 有變"], kw: "測試 身材" },
+  { p: "tests/engine/test_player_matching.py", layer: "test", what: "測試配對、星等、深度模板", edit: ["player_matching.py 有變"], kw: "測試 星等 配對" },
+  { p: "tests/engine/test_archetype.py", layer: "test", what: "測試原型分類", edit: ["archetype.py 有變"], kw: "測試 原型" },
+  { p: "tests/engine/test_skill_level.py", layer: "test", what: "測試差距 G", edit: ["skill_level.py 有變"], kw: "測試 差距" },
+  { p: "tests/engine/test_priority.py", layer: "test", what: "測試優先度 P 和排序", edit: ["priority.py 有變"], kw: "測試 優先度" },
+  { p: "tests/engine/test_training_plan.py", layer: "test", what: "測試訓練計劃的挑選和難度", edit: ["training_plan.py 有變"], kw: "測試 訓練計劃" },
+  { p: "tests/engine/test_relevance.py", layer: "test", what: "測試相關度 R", edit: ["relevance.py 有變"], kw: "測試 相關度" },
+  { p: "tests/engine/test_data_integrity.py", layer: "test", what: "檢查題庫、技能、菜單、環境倍率的內容是否完整",
+    edit: ["資料檔新增欄位或規則的時候"], kw: "測試 資料 完整性" },
+  { p: "tests/engine/test_i18n_parity.py", layer: "test", what: "檢查三個語言的資料結構和數字是否完全一致",
+    edit: ["新增一種資料檔或欄位的時候"], kw: "測試 三語 一致 語言" },
+  { p: "tests/engine/test_players_data.py", layer: "test", what: "檢查兩份球員資料的格式和數值範圍", edit: ["球員資料格式有變"], kw: "測試 球員資料" },
+  { p: "tests/engine/test_archetypes_data.py", layer: "test", what: "檢查原型資料的格式", edit: ["原型資料格式有變"], kw: "測試 原型資料" },
+  { p: "tests/scripts/__init__.py", layer: "test", what: "讓 tests/scripts 可以被當成 package 執行", edit: ["不用改"], kw: "package" },
+  { p: "tests/scripts/test_mock_answers.py", layer: "test", what: "測試模擬作答的推導", edit: ["mock_answers.py 有變"], kw: "測試 模擬作答" },
+  { p: "tests/scripts/test_run_player_match.py", layer: "test", what: "測試成長建議和球探報告的文字", edit: ["run_player_match.py 有變"], kw: "測試 成長建議" },
+
+  { p: "docs/superpowers/specs/2026-09-10-player-template-matching-design.md", layer: "doc", what: "球員配對的原始設計", edit: ["歷史紀錄，通常不改"], kw: "設計 配對" },
+  { p: "docs/superpowers/specs/2026-09-10-public-web-app-design.md", layer: "doc", what: "公開網站的原始設計", edit: ["歷史紀錄，通常不改"], kw: "設計 網站" },
+  { p: "docs/superpowers/specs/2026-09-15-visit-counter-design.md", layer: "doc", what: "瀏覽人次計數器的設計", edit: ["歷史紀錄，通常不改"], kw: "設計 瀏覽人次" },
+  { p: "docs/superpowers/specs/2026-09-16-english-i18n-design.md", layer: "doc", what: "多語言的設計", edit: ["歷史紀錄，通常不改"], kw: "設計 語言 英文" },
+  { p: "docs/superpowers/specs/2026-10-06-training-breakdown-design.md", layer: "doc", what: "訓練計劃區塊的設計", edit: ["歷史紀錄，通常不改"], kw: "設計 訓練計劃" },
+  { p: "docs/superpowers/specs/2026-10-21-google-login-accounts-design.md", layer: "doc", what: "Google 登入、收藏、上次結果、管理員頁的設計", edit: ["歷史紀錄，通常不改"], kw: "設計 登入 帳號 收藏" },
+  { p: "docs/superpowers/specs/2026-10-07-result-accuracy-design.md", layer: "doc", what: "結果準確度修正的設計（星等、身材分段、招牌技能）", edit: ["歷史紀錄，通常不改"], kw: "設計 準確度 星等" },
+  { p: "docs/superpowers/plans/2026-09-10-player-template-matching.md", layer: "doc", what: "球員配對的實作計劃", edit: ["歷史紀錄，通常不改"], kw: "計劃 配對" },
+  { p: "docs/superpowers/plans/2026-09-15-visit-counter.md", layer: "doc", what: "瀏覽人次計數器的實作計劃", edit: ["歷史紀錄，通常不改"], kw: "計劃 瀏覽人次" },
+  { p: "docs/superpowers/plans/2026-09-16-english-i18n.md", layer: "doc", what: "多語言的實作計劃", edit: ["歷史紀錄，通常不改"], kw: "計劃 語言" },
+  { p: "docs/superpowers/plans/2026-10-06-training-breakdown.md", layer: "doc", what: "訓練計劃區塊的實作計劃", edit: ["歷史紀錄，通常不改"], kw: "計劃 訓練計劃" },
+  { p: "docs/superpowers/plans/2026-10-21-google-login-accounts.md", layer: "doc", what: "Google 登入功能的實作計劃", edit: ["歷史紀錄，通常不改"], kw: "計劃 登入 帳號" },
+  { p: "docs/superpowers/plans/2026-10-07-result-accuracy-fixes.md", layer: "doc", what: "結果準確度修正的實作計劃", edit: ["歷史紀錄，通常不改"], kw: "計劃 準確度" },
+];
+
+// 「我想改某件事 → 去哪個檔案的哪裡」。go 裡的 p 必須是 FILES 裡有的路徑。
+const TASKS = [
+  { want: "改題目文字或選項", kw: "題目 問卷 選項 問題 文字 prompt anchors",
+    go: [{ p: "data/zh/題庫.json", at: "axis_positioning 裡每題的 prompt 和 anchors；另外兩個語言也要改" }] },
+  { want: "改身高、體重的上下限", kw: "身高 體重 上限 下限 範圍 min max 臂展 摸高",
+    go: [{ p: "data/zh/題庫.json", at: "body_measurements 裡的 min、max；三個語言數字要一樣" }] },
+  { want: "調整星等門檻（星星太少或太多）", kw: "星等 星星 相似度 門檻 太低 太高 校準",
+    go: [{ p: "src/engine/player_matching.py", at: "CURRENT_POOL_STAR_THRESHOLDS、ALLTIME_POOL_STAR_THRESHOLDS" },
+         { p: "scripts/calibrate_star_thresholds.py", at: "用它重新算出建議的門檻" }] },
+  { want: "調整運動能力（D 軸）在配對裡的比重", kw: "D 軸 運動能力 權重 比重 距離",
+    go: [{ p: "src/engine/player_matching.py", at: "D_AXIS_WEIGHT" }] },
+  { want: "調整身材怎麼跟 NBA 球員比", kw: "身材 身高 體重 百分位 分段 矮 高 配到",
+    go: [{ p: "src/engine/body_fit.py", at: "HEIGHT_TRANSITION_LOW / HIGH、WEIGHT_TRANSITION_LOW / HIGH、GENERAL_POPULATION_BODY_STATS" }] },
+  { want: "改訓練菜單的內容或訓練量", kw: "訓練 菜單 訓練項目 組數 次數 分鐘 內容",
+    go: [{ p: "data/zh/訓練菜單.json", at: "每筆的 name、sets、reps、minutes；數字三個語言要一樣" }] },
+  { want: "調整訓練難度的分界（入門、進階、精通）", kw: "難度 入門 進階 精通 分界 40 70",
+    go: [{ p: "src/engine/training_plan.py", at: "DIFFICULTY_ENTRY_BELOW、DIFFICULTY_MASTERY_ABOVE" }] },
+  { want: "改訓練計劃最多顯示幾項、或多小的差距不列", kw: "訓練計劃 幾項 5 項 25% 門檻 數量",
+    go: [{ p: "server/app.py", at: "TRAINING_PLAN_TOP_N（最多幾項）" },
+         { p: "src/engine/training_plan.py", at: "TRAINING_PLAN_RELATIVE_THRESHOLD（相對門檻）" }] },
+  { want: "調整聯賽環境的倍率", kw: "聯賽 環境 倍率 權重 E",
+    go: [{ p: "data/env_weights.json", at: "每組環境底下各項技能的數字" }] },
+  { want: "新增一種聯賽環境", kw: "新增 聯賽 環境 選項",
+    go: [{ p: "data/env_weights.json", at: "加一組新的 key，15 項技能都要有" },
+         { p: "src/ui/index.html", at: "ENV_CODES 加代碼；UI_STRINGS 三個語言的 envLabels 加顯示文字" }] },
+  { want: "調整技能的成本、跟六軸的關係、驗收標準", kw: "技能 成本 關聯度 axis_relevance 驗收 指標",
+    go: [{ p: "data/zh/技能.json", at: "cost_C、axis_relevance、metric；數字三個語言要一樣" }] },
+  { want: "新增球員，或修改球員的座標、特點、招牌技能", kw: "新增 球員 修改 座標 特點 招牌技能",
+    go: [{ p: "scripts/build_players_seed.py", at: "現役球員。改完執行它重新產生資料檔" },
+         { p: "scripts/build_players_alltime_seed.py", at: "歷史球員" }] },
+  { want: "改原型的名稱或一句話球探報告", kw: "原型 名稱 球探報告 文字 flavor",
+    go: [{ p: "data/zh/原型.json", at: "name_zh、flavor；另外兩個語言也要改" }] },
+  { want: "調整原型怎麼決定", kw: "原型 分類 投票 幾個人 體型",
+    go: [{ p: "src/engine/archetype.py", at: "ARCHETYPE_MAJORITY_TOP_N、SIZE_AXIS_WEIGHT" }] },
+  { want: "改按鈕、標題等介面文字", kw: "按鈕 標題 文字 介面 翻譯 文案 語言",
+    go: [{ p: "src/ui/index.html", at: "UI_STRINGS，zh、zh-Hans、en 三段都要改" }] },
+  { want: "改顏色或深淺主題", kw: "顏色 主題 深色 米白 配色 CSS",
+    go: [{ p: "src/ui/index.html", at: "最上面 <style> 裡 :root 的 CSS 變數" }] },
+  { want: "改卡片上的成長建議句型", kw: "成長建議 句型 練習 文字",
+    go: [{ p: "scripts/run_player_match.py", at: "GROWTH_ACTION_TEMPLATE、D_AXIS_GROWTH_TEMPLATE" }] },
+  { want: "改下載的分享圖", kw: "分享圖 下載 圖片 canvas",
+    go: [{ p: "src/ui/index.html", at: "downloadShareImage 函數" }] },
+  { want: "改「相似度偏低」那句提示何時出現", kw: "相似度 偏低 提示 2.5 星",
+    go: [{ p: "src/ui/index.html", at: "renderTemplateReport 裡的 fit_stars < 2.5；文字在 UI_STRINGS.lowSimilarityNote" }] },
+  { want: "改搜尋球員最多顯示幾筆", kw: "搜尋 球員 幾筆 8",
+    go: [{ p: "src/ui/index.html", at: "handlePlayerSearchInput 裡的 slice(0, 8)" }] },
+  { want: "改使用意見的字數上限", kw: "意見 回饋 字數 50 留言",
+    go: [{ p: "server/app.py", at: "FEEDBACK_MAX_MESSAGE" },
+         { p: "src/ui/index.html", at: "feedback-message 的 maxlength，以及 UI_STRINGS 裡提到 50 字的文字" }] },
+  { want: "新增或修改一支 API", kw: "API 路由 後端 新增",
+    go: [{ p: "server/app.py", at: "@app.route 開頭的函數" }, { p: "server/test_app.py", at: "補上對應的測試" }] },
+  { want: "改瀏覽人次或意見怎麼存", kw: "瀏覽人次 計數 資料庫 意見 儲存",
+    go: [{ p: "server/db.py", at: "increment_visit_count、save_feedback、init_db" }] },
+  { want: "改收藏或「上次的結果」怎麼存", kw: "收藏 我的最愛 上次結果 歷史結果 儲存",
+    go: [{ p: "server/db.py", at: "save_result、get_latest_result、add_favorite、remove_favorite、list_favorites" },
+         { p: "server/app.py", at: "/api/favorites、/api/my-results/latest 兩組路由" }] },
+  { want: "改 Google 登入", kw: "登入 登出 Google OAuth 帳號",
+    go: [{ p: "server/app.py", at: "/auth/login、/auth/callback、/auth/logout、/api/me" },
+         { p: "src/ui/index.html", at: "renderAuthNav、loadAuthState" }] },
+  { want: "換管理員（誰能看使用意見）", kw: "管理員 admin 信箱 意見回饋 權限",
+    go: [{ p: "render.yaml", at: "ADMIN_EMAIL 只在這裡宣告；實際信箱要到 Render 後台的 Environment 改" },
+         { p: "server/app.py", at: "api_admin_feedback 的檢查條件" }] },
+  { want: "改資料庫連線（Neon）", kw: "資料庫 Neon 連線 DATABASE_URL",
+    go: [{ p: "render.yaml", at: "DATABASE_URL 是 sync: false，值要到 Render 後台改，不要寫進檔案" },
+         { p: "server/db.py", at: "_get_connection" }] },
+  { want: "改部署設定或換方案", kw: "部署 上線 Render 方案 付費 starter Python 版本",
+    go: [{ p: "render.yaml", at: "plan、PYTHON_VERSION、startCommand" }] },
+  { want: "升級或新增 Python 套件", kw: "套件 升級 安裝 版本",
+    go: [{ p: "server/requirements.txt", at: "每行一個套件和版本" }] },
+  { want: "更新簡體中文的資料", kw: "簡體 簡中 同步 轉換",
+    go: [{ p: "scripts/build_zh_hans_data.py", at: "執行它，從繁中重新產生簡中" }] },
+  { want: "看某次大改動當初為什麼這樣設計", kw: "設計 原因 為什麼 紀錄 歷史",
+    go: [{ p: "docs/superpowers/specs/2026-10-07-result-accuracy-design.md", at: "最近一次；同資料夾還有其他幾份" }] },
+];
+
+/* ===================================================================
+   以下是畫面邏輯，更新內容時通常不用動。
+   =================================================================== */
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const chip = (layer) => `<span class="chip L-${layer}">${LAYERS[layer].label}</span>`;
+
+$("updated").textContent = `最後更新：${LAST_UPDATED}`;
+$("legend").innerHTML = Object.entries(LAYERS)
+  .map(([k, v]) => `${chip(k)}<span class="desc">${v.desc}</span>`).join("");
+
+// ---- 把 FILES 的路徑組成一棵樹 ----
+function buildTree() {
+  const root = { children: new Map(), path: "" };
+  for (const f of FILES) {
+    const isDirEntry = f.p.endsWith("/");
+    const parts = f.p.replace(/\/$/, "").split("/");
+    let node = root;
+    parts.forEach((part, i) => {
+      const path = parts.slice(0, i + 1).join("/");
+      if (!node.children.has(part)) node.children.set(part, { name: part, path, children: new Map() });
+      node = node.children.get(part);
+      if (i === parts.length - 1) { node.file = f; node.isDirEntry = isDirEntry; }
+    });
+  }
+  return root;
+}
+
+function nodeHtml(node) {
+  if (node.file) {
+    const f = node.file;
+    const label = node.isDirEntry ? node.name + "/" : node.name;
+    return `<li data-path="${esc(f.p)}">
+      <button class="node file" type="button">${chip(f.layer)}<span class="name mono">${esc(label)}</span><span class="what">${esc(f.what)}</span></button>
+      <div class="detail" hidden>
+        <div class="path-row"><code>${esc(f.p)}</code><button class="btn copy" type="button" data-copy="${esc(f.p)}">複製路徑</button></div>
+        <b>什麼時候改它</b>
+        <ul>${f.edit.map((e) => `<li>${esc(e)}</li>`).join("")}</ul>
+      </div>
+    </li>`;
+  }
+  const kids = [...node.children.values()];
+  kids.sort((a, b) => (a.file && !a.isDirEntry ? 1 : 0) - (b.file && !b.isDirEntry ? 1 : 0));
+  const desc = FOLDERS[node.path] || "";
+  return `<li data-path="${esc(node.path)}/">
+    <button class="node folder" type="button"><span class="name mono">${esc(node.name)}/</span><span class="what">${esc(desc)}</span></button>
+    <ul>${kids.map(nodeHtml).join("")}</ul>
+  </li>`;
+}
+
+const tree = buildTree();
+const topLevel = [...tree.children.values()];
+topLevel.sort((a, b) => (a.file ? 1 : 0) - (b.file ? 1 : 0));
+$("tree").innerHTML = topLevel.map(nodeHtml).join("");
+
+// 一開始先收起來的資料夾，畫面才不會太長。
+const CLOSED_AT_START = ["data/zh-Hans/", "data/en/", "data/answers/", "tests/", "docs/"];
+document.querySelectorAll("#tree li[data-path]").forEach((li) => {
+  if (CLOSED_AT_START.includes(li.dataset.path)) li.classList.add("closed");
+});
+
+$("tree").addEventListener("click", (e) => {
+  const copyBtn = e.target.closest(".copy");
+  if (copyBtn) { copyText(copyBtn.dataset.copy, copyBtn); return; }
+  const btn = e.target.closest(".node");
+  if (!btn) return;
+  const li = btn.parentElement;
+  if (btn.classList.contains("folder")) li.classList.toggle("closed");
+  else li.querySelector(".detail").hidden = !li.querySelector(".detail").hidden;
+});
+$("open-all").addEventListener("click", () => document.querySelectorAll("#tree li.closed").forEach((li) => li.classList.remove("closed")));
+$("close-all").addEventListener("click", () => {
+  document.querySelectorAll("#tree .node.folder").forEach((b) => b.parentElement.classList.add("closed"));
+  document.querySelectorAll("#tree .detail").forEach((d) => { d.hidden = true; });
+});
+
+function copyText(text, btn) {
+  const done = () => { const old = btn.textContent; btn.textContent = "已複製 ✓"; setTimeout(() => { btn.textContent = old; }, 1200); };
+  const fallback = () => {
+    const ta = document.createElement("textarea");
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); done(); } catch (err) { /* 複製失敗就讓使用者自己選取路徑 */ }
+    ta.remove();
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback);
+  else fallback();
+}
+
+// ---- 兩個部分的切換 ----
+function showPart(name) {
+  $("part-files").hidden = name !== "files";
+  $("part-logic").hidden = name !== "logic";
+  document.querySelectorAll(".tab").forEach((t) => t.classList.toggle("on", t.dataset.part === name));
+}
+document.querySelectorAll(".tab").forEach((t) => t.addEventListener("click", () => { showPart(t.dataset.part); window.scrollTo(0, 0); }));
+document.querySelectorAll(".toc a").forEach((a) => a.addEventListener("click", () => showPart("logic")));
+
+// ---- 在樹裡找到某個檔案並標出來 ----
+function revealFile(path) {
+  showPart("files");
+  const li = [...document.querySelectorAll("#tree li[data-path]")].find((el) => el.dataset.path === path);
+  if (!li) return;
+  for (let p = li.parentElement; p && p.id !== "tree"; p = p.parentElement) {
+    if (p.tagName === "LI") p.classList.remove("closed");
+  }
+  const detail = li.querySelector(":scope > .detail");
+  if (detail) detail.hidden = false;
+  li.scrollIntoView({ block: "center" });
+  li.classList.add("flash");
+  setTimeout(() => li.classList.remove("flash"), 1800);
+}
+
+// ---- 搜尋：同時找「我想做的事」和「檔案」----
+const fileByPath = new Map(FILES.map((f) => [f.p, f]));
+
+function score(haystack, words) {
+  const h = haystack.toLowerCase();
+  return words.every((w) => h.includes(w)) ? 1 : 0;
+}
+
+function search(query) {
+  const words = query.toLowerCase().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return null;
+  const tasks = TASKS.filter((t) => score(`${t.want} ${t.kw} ${t.go.map((g) => `${g.p} ${g.at}`).join(" ")}`, words));
+  const files = FILES.filter((f) => score(`${f.p} ${f.what} ${f.edit.join(" ")} ${f.kw} ${LAYERS[f.layer].label}`, words));
+  return { tasks, files };
+}
+
+function renderResults(found) {
+  const box = $("results");
+  if (!found) { box.hidden = true; return; }
+  if (found.tasks.length === 0 && found.files.length === 0) {
+    box.innerHTML = `<div class="no-result">找不到。換個說法試試，例如「星等」「題目」「顏色」「部署」。</div>`;
+    box.hidden = false;
+    return;
+  }
+  let html = "";
+  if (found.tasks.length) {
+    html += `<h4>我想做的事</h4>`;
+    for (const t of found.tasks.slice(0, 8)) {
+      html += `<div class="result-group"><div class="r-title">${esc(t.want)}</div>`;
+      for (const g of t.go) {
+        const f = fileByPath.get(g.p);
+        html += `<button class="result" type="button" data-go="${esc(g.p)}">
+          <span class="r-path">${f ? chip(f.layer) : ""} <code>${esc(g.p)}</code></span>
+          <span class="r-sub">改這裡：${esc(g.at)}</span>
+        </button>`;
+      }
+      html += `</div>`;
+    }
+  }
+  if (found.files.length) {
+    html += `<h4>檔案</h4>`;
+    for (const f of found.files.slice(0, 12)) {
+      html += `<button class="result" type="button" data-go="${esc(f.p)}">
+        <span class="r-path">${chip(f.layer)} <code>${esc(f.p)}</code></span>
+        <span class="r-sub">${esc(f.what)}</span>
+      </button>`;
+    }
+  }
+  box.innerHTML = html;
+  box.hidden = false;
+}
+
+$("q").addEventListener("input", (e) => renderResults(search(e.target.value)));
+$("q").addEventListener("focus", (e) => renderResults(search(e.target.value)));
+$("results").addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-go]");
+  if (!btn) return;
+  $("results").hidden = true;
+  revealFile(btn.dataset.go);
+});
+document.addEventListener("click", (e) => { if (!e.target.closest(".search")) $("results").hidden = true; });
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") { $("results").hidden = true; $("q").blur(); }
+  if (e.key === "/" && document.activeElement !== $("q")) { e.preventDefault(); $("q").focus(); }
+});
+</script>
+</body>
+</html>
