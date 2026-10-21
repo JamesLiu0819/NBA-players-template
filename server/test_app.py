@@ -71,7 +71,7 @@ class AuthTest(unittest.TestCase):
     def test_me_reports_logged_out_by_default(self):
         response = self.client.get("/api/me")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.get_json(), {"email": None, "name": None})
+        self.assertEqual(response.get_json(), {"email": None, "name": None, "login_available": True})
 
     def test_login_redirects_to_google_without_hitting_the_network(self):
         response = self.client.get("/auth/login")
@@ -81,7 +81,7 @@ class AuthTest(unittest.TestCase):
     def test_callback_creates_a_user_and_logs_them_in(self):
         login_as(self.client, "google-sub-1", "person@example.com", "Person")
         me = self.client.get("/api/me").get_json()
-        self.assertEqual(me, {"email": "person@example.com", "name": "Person"})
+        self.assertEqual(me, {"email": "person@example.com", "name": "Person", "login_available": True})
 
     def test_callback_handles_a_missing_name_claim(self):
         login_as(self.client, "google-sub-2", "noname@example.com", None)
@@ -100,7 +100,20 @@ class AuthTest(unittest.TestCase):
         response = self.client.post("/auth/logout")
         self.assertEqual(response.status_code, 302)
         me = self.client.get("/api/me").get_json()
-        self.assertEqual(me, {"email": None, "name": None})
+        self.assertEqual(me, {"email": None, "name": None, "login_available": True})
+
+    def test_me_reports_login_unavailable_when_not_configured(self):
+        # Simulates GOOGLE_LOGIN_CONFIGURED being False (e.g. no Google Cloud
+        # credentials set yet) -- the frontend uses this to hide the login
+        # link instead of showing a dead link that 503s on click.
+        import app as app_module
+        original = app_module.GOOGLE_LOGIN_CONFIGURED
+        app_module.GOOGLE_LOGIN_CONFIGURED = False
+        try:
+            me = self.client.get("/api/me").get_json()
+            self.assertEqual(me["login_available"], False)
+        finally:
+            app_module.GOOGLE_LOGIN_CONFIGURED = original
 
     def test_callback_redirects_home_without_crashing_when_google_denies_or_errors(self):
         # A user clicking "Cancel" on Google's consent screen, or hitting a
@@ -120,7 +133,7 @@ class AuthTest(unittest.TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.location, "/")
         me = self.client.get("/api/me").get_json()
-        self.assertEqual(me, {"email": None, "name": None})
+        self.assertEqual(me, {"email": None, "name": None, "login_available": True})
 
     def test_callback_redirects_home_on_a_malformed_userinfo_response(self):
         # token["userinfo"] missing "sub"/"email" raises KeyError -- also
@@ -137,7 +150,7 @@ class AuthTest(unittest.TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.location, "/")
         me = self.client.get("/api/me").get_json()
-        self.assertEqual(me, {"email": None, "name": None})
+        self.assertEqual(me, {"email": None, "name": None, "login_available": True})
 
 
 class TemplateResultsTest(unittest.TestCase):

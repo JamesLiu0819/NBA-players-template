@@ -381,7 +381,11 @@ def auth_logout():
 
 @app.route("/api/me", methods=["GET"])
 def api_me():
-    return jsonify({"email": session.get("email"), "name": session.get("name")})
+    return jsonify({
+        "email": session.get("email"),
+        "name": session.get("name"),
+        "login_available": GOOGLE_LOGIN_CONFIGURED,
+    })
 
 
 @app.route("/api/form-data", methods=["GET"])

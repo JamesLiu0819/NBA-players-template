@@ -2543,6 +2543,7 @@
 
   function renderFavoriteControl(m) {
     if (!state.user.email) {
+      if (!state.loginAvailable) return "";
       return `<span class="favorite-login-prompt">${t().favoriteLoginPrompt} <a href="/auth/login">${t().loginLink}</a></span>`;
     }
     const isFav = isFavorited(state.pool, m.id);
@@ -3040,8 +3041,10 @@
       const res = await fetch("/api/me");
       const data = await res.json();
       state.user = { email: data.email || null, name: data.name || null };
+      state.loginAvailable = data.login_available !== false;
     } catch (err) {
       state.user = { email: null, name: null };
+      state.loginAvailable = false;
     }
 
     state.isAdmin = false;
@@ -3155,13 +3158,16 @@
         fetch("/auth/logout", { method: "POST" }).then(() => { window.location.href = "/"; });
       });
       container.append(name, logoutBtn);
-    } else {
+    } else if (state.loginAvailable) {
       const loginLink = document.createElement("a");
       loginLink.href = "/auth/login";
       loginLink.className = "auth-nav-login";
       loginLink.textContent = t().loginLink;
       container.appendChild(loginLink);
     }
+    // 登入還沒設定好(本機開發、還沒設 Google 憑證)時完全不顯示登入連結,
+    // 不要讓使用者點了才看到一串 JSON 錯誤(2026-10-21 final review 的
+    // deferred minor,事後補上)。
   }
 
   function renderAdminFeedbackPage() {
