@@ -323,8 +323,16 @@
       min-width: 9rem;
     }
     .topnav-controls.open { display: flex; }
-    .topnav-controls .auth-nav,
-    .topnav-controls .lang-switch { width: 100%; justify-content: center; }
+    /* 選單裡每個控制項都改成跟亮暗切換按鈕(.theme-toggle)一樣的大小跟圓角,
+     * 不要語言切換是膠囊形、登入框是膠囊形、只有亮暗切換是方形,看起來大小
+     * 不一致(2026-10 使用意見)。 */
+    .topnav-controls .auth-nav {
+      width: 100%; height: 2.2rem; border-radius: 8px; justify-content: center;
+    }
+    .topnav-controls .lang-switch { width: 100%; }
+    .topnav-controls .lang-switch-toggle {
+      width: 100%; height: 2.2rem; border-radius: 8px; justify-content: center;
+    }
     .topnav-controls .theme-toggle { width: 100%; border-radius: 8px; }
     .topnav-inner { padding: 0 1.25rem; }
     .topnav-tabs { flex: 1; justify-content: center; }
@@ -1537,7 +1545,7 @@
     </div>
     <div class="topnav-actions">
       <span class="visit-counter" id="visit-counter" style="display:none"></span>
-      <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="選單" aria-expanded="false" aria-controls="topnav-controls">⋯</button>
+      <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="選單" aria-expanded="false" aria-controls="topnav-controls">☰</button>
       <div class="topnav-controls" id="topnav-controls">
         <div class="auth-nav" id="auth-nav"></div>
         <div class="lang-switch" id="lang-switch"></div>
