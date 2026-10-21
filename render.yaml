@@ -1,8 +1,12 @@
 # 用途：Render 的 Blueprint 部署設定,讓 Render 自動讀這份檔案建立後端 Web
 # Service,不用在網頁介面手動填 build/start command。細節見 server/README.md。
-# databases 區塊是瀏覽人次計數器用的 Postgres(2026-09-15 新增,見
-# docs/superpowers/specs/2026-09-15-visit-counter-design.md)——免費方案 90
-# 天後會過期,到期需要手動續約或升級成付費方案,這是已知、接受的限制。
+# DATABASE_URL 現在是 sync: false——資料庫早就從 Render 免費方案的 Postgres
+# 搬到 Neon 了(2026-10,見 server/db.py 的 init_db() 註解),但這份檔案原本
+# 還留著舊的 databases 區塊 + fromDatabase 綁定,結果這次 push 觸發 Blueprint
+# 重新同步時,把手動設定的 Neon 連線字串整個覆蓋回舊的、已經 suspended 的
+# Render Postgres,網站整個掛掉(瀏覽人次、登入都連帶壞掉)。sync: false 讓
+# Render 只記得「這個變數存在」,實際值永遠留給 Dashboard 手動管理,
+# Blueprint 同步不會再動它。
 # 可手動調整的變數：plan(目前是免費方案 free,流量大了要付費升級就改這裡)、
 # PYTHON_VERSION(要跟本機開發用的 Python 版本一致,避免行為不一致)。
 services:
@@ -16,9 +20,7 @@ services:
       - key: PYTHON_VERSION
         value: "3.13.0"
       - key: DATABASE_URL
-        fromDatabase:
-          name: nba-player-template-db
-          property: connectionString
+        sync: false
       - key: SECRET_KEY
         generateValue: true
       - key: GOOGLE_CLIENT_ID
@@ -28,6 +30,10 @@ services:
       - key: ADMIN_EMAIL
         sync: false
 
+# 這個資料庫資源的宣告留著不動——刪掉它可能讓 Render 的 Blueprint 同步把
+# 這個(已經不用、可能已經 suspended 的)Render Postgres 實例整個砍掉,這是
+# 不可逆的操作,不確定 Render 實際行為前不要冒這個風險。上面 DATABASE_URL
+# 的 sync: false 已經足夠解決「被覆蓋」的問題,不需要連這個資源宣告也動。
 databases:
   - name: nba-player-template-db
     plan: free
