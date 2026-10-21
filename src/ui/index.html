@@ -163,7 +163,15 @@
     gap: 0.6rem;
     flex: none;
     margin-left: auto;
+    position: relative;
   }
+
+  /* 手機版把亮暗切換/登入/語言切換收進一個選單按鈕裡,不然窄螢幕擠成一團
+     (2026-10 討論)。電腦版維持原樣——.topnav-controls 預設就是一般的橫排
+     flex 容器,跟以前三個元件直接排在 .topnav-actions 下面視覺上一樣,
+     只有手機版的媒體查詢會改成下拉選單。 */
+  .topnav-controls { display: flex; align-items: center; gap: 0.6rem; }
+  .mobile-menu-toggle { display: none; }
 
   .visit-counter {
     font-size: 0.78rem;
@@ -172,7 +180,13 @@
     white-space: nowrap;
   }
 
-  .auth-nav { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; }
+  .auth-nav {
+    display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.25rem 0.7rem;
+  }
+  .auth-nav:empty { display: none; }
   .auth-nav-name { color: var(--ink-soft); white-space: nowrap; max-width: 6rem; overflow: hidden; text-overflow: ellipsis; }
   .auth-nav a.auth-nav-login, .auth-nav button.auth-nav-logout {
     background: none; border: none; color: var(--accent-ink); cursor: pointer; font-size: 0.78rem;
@@ -275,6 +289,43 @@
     .topnav-tab { font-size: 0.74rem; }
     .topnav-actions { gap: 0.4rem; }
     section.block { margin-top: 1.6rem; }
+
+    .mobile-menu-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.2rem;
+      height: 2.2rem;
+      flex: none;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper-raised);
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-family: inherit;
+    }
+    .mobile-menu-toggle:hover { color: var(--accent-ink); border-color: var(--accent); }
+    .topnav-controls {
+      display: none;
+      position: absolute;
+      top: calc(100% + 0.5rem);
+      right: 0;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.5rem;
+      background: var(--paper-raised);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 0.6rem;
+      z-index: 60;
+      min-width: 9rem;
+    }
+    .topnav-controls.open { display: flex; }
+    .topnav-controls .auth-nav,
+    .topnav-controls .lang-switch { width: 100%; justify-content: center; }
+    .topnav-controls .theme-toggle { width: 100%; border-radius: 8px; }
     .topnav-inner { padding: 0 1.25rem; }
     .topnav-tabs { flex: 1; justify-content: center; }
     /* iOS Safari 會在輸入框字級小於 16px 時自動放大頁面,鍵盤彈出後畫面右移、滑不回去。 */
@@ -453,7 +504,8 @@
     margin-bottom: 0;
   }
 
-  .view-last-result-block { margin: 1rem 0; }
+  .view-last-result-block { margin: 0.7rem 0 0; display: flex; justify-content: center; }
+  .view-last-result-block #view-last-result-btn { padding: 0.5rem 1.3rem; font-size: 0.85rem; }
 
   .mode-select {
     display: flex;
@@ -1192,6 +1244,22 @@
   .training-empty { margin: 0; font-size: 0.9rem; color: var(--ink-soft); }
   .training-radar svg { display: block; width: 100%; max-width: 300px; height: auto; margin: 0 auto; }
 
+  /* 雷達圖+圖例+收藏星星外面加一個淡淡的圓角框——只有邊框沒有底色,比
+     .skill-item 更淡(2026-10 使用意見)。只用在訓練計劃頁,我的模板那個
+     headline 的雷達圖維持原樣,不加框。 */
+  .training-radar-card {
+    position: relative;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 0.9rem 0.9rem 0.6rem;
+  }
+  .training-radar-card .favorite-btn,
+  .training-radar-card .favorite-login-prompt {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.7rem;
+  }
+
   .admin-feedback-list { display: flex; flex-direction: column; gap: 0.5rem; }
   .admin-feedback-row {
     border: 1px solid var(--line); border-radius: var(--radius); padding: 0.6rem 0.8rem; background: var(--paper-raised);
@@ -1207,6 +1275,17 @@
   .favorite-row .name { font-weight: 700; }
   .favorite-row .team { font-family: var(--mono); font-size: 0.72rem; color: var(--ink-soft); }
   .favorite-row-actions { display: flex; gap: 0.4rem; margin-left: auto; }
+  .favorite-row-actions button {
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: transparent;
+    color: var(--ink);
+    padding: 0.4rem 0.85rem;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.78rem;
+  }
+  .favorite-row-actions button:hover { border-color: var(--accent); color: var(--accent-ink); }
 
   .skill-item {
     border: 1px solid var(--line);
@@ -1458,9 +1537,12 @@
     </div>
     <div class="topnav-actions">
       <span class="visit-counter" id="visit-counter" style="display:none"></span>
-      <div class="auth-nav" id="auth-nav"></div>
-      <div class="lang-switch" id="lang-switch"></div>
-      <button type="button" class="theme-toggle" id="theme-toggle-btn" aria-label="切換成米白主題">☀</button>
+      <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="選單" aria-expanded="false" aria-controls="topnav-controls">⋯</button>
+      <div class="topnav-controls" id="topnav-controls">
+        <div class="auth-nav" id="auth-nav"></div>
+        <div class="lang-switch" id="lang-switch"></div>
+        <button type="button" class="theme-toggle" id="theme-toggle-btn" aria-label="切換成米白主題">☀</button>
+      </div>
     </div>
   </div>
 </nav>
@@ -1487,10 +1569,6 @@
     <p>所有配對結果都是以座標距離最接近的計算，不是真人球探評測，結果僅供參考。</p>
   </div>
 
-  <div class="view-last-result-block" id="view-last-result-block" style="display:none">
-    <button type="button" class="primary" id="view-last-result-btn"></button>
-  </div>
-
   <div class="mode-select" id="mode-select">
     <button type="button" class="mode-btn" id="mode-current-btn" disabled>
       <span class="mode-title">現役球員模板</span>
@@ -1500,6 +1578,10 @@
       <span class="mode-title">歷史球員模板</span>
       <span class="mode-sub">All-time</span>
     </button>
+  </div>
+
+  <div class="view-last-result-block" id="view-last-result-block" style="display:none">
+    <button type="button" class="primary" id="view-last-result-btn"></button>
   </div>
 
   <div id="loading">載入題庫中…</div>
@@ -1674,6 +1756,7 @@
       section1Title: "3 位深度模板",
       section2Title: "10 人對照表",
       section3Title: "訓練計劃",
+      section4Title: "我的收藏",
       submitErrorTemplate: (msg) => `送出失敗：${msg}`,
       loadErrorTemplate: (msg) => `題庫載入失敗：${msg}`,
       poolLabels: { current: "現役球員模板", alltime: "歷史球員模板(All-time)" },
@@ -1714,7 +1797,7 @@
       favoritesEmpty: "還沒有收藏的球員。",
       favoriteGotoTraining: "查看訓練計劃",
       favoriteRemoveButton: "移除",
-      viewLastResultButton: "查看我上次的結果",
+      viewLastResultButton: "查看歷史結果",
     },
     "zh-Hans": {
       pageTitle: "球探报告",
@@ -1775,6 +1858,7 @@
       section1Title: "3 位深度模板",
       section2Title: "10 人对照表",
       section3Title: "训练计划",
+      section4Title: "我的收藏",
       submitErrorTemplate: (msg) => `送出失败：${msg}`,
       loadErrorTemplate: (msg) => `题库加载失败：${msg}`,
       poolLabels: { current: "现役球员模板", alltime: "历史球员模板(All-time)" },
@@ -1815,7 +1899,7 @@
       favoritesEmpty: "还没有收藏的球员。",
       favoriteGotoTraining: "查看训练计划",
       favoriteRemoveButton: "移除",
-      viewLastResultButton: "查看我上次的结果",
+      viewLastResultButton: "查看历史结果",
     },
     en: {
       pageTitle: "Scouting Report",
@@ -1876,6 +1960,7 @@
       section1Title: "3 Deep-Dive Templates",
       section2Title: "10-Player Comparison",
       section3Title: "Training Plan",
+      section4Title: "My Favorites",
       submitErrorTemplate: (msg) => `Submission failed: ${msg}`,
       loadErrorTemplate: (msg) => `Failed to load questions: ${msg}`,
       poolLabels: { current: "Current Players", alltime: "All-Time Players" },
@@ -1916,7 +2001,7 @@
       favoritesEmpty: "No favorites yet.",
       favoriteGotoTraining: "View training plan",
       favoriteRemoveButton: "Remove",
-      viewLastResultButton: "View my last result",
+      viewLastResultButton: "View history",
     },
   };
 
@@ -2548,13 +2633,17 @@
     });
   }
 
-  function renderFavoriteControl(m) {
+  // pool 預設是 state.pool(10 人對照表那邊的既有行為不用改呼叫方式),訓練
+  // 計劃頁的自選球員則明確傳入 state.customPlayerPool,因為自選球員的球員池
+  // 可能跟目前作答結果的 state.pool 不一樣(2026-10 討論,跟自選球員訓練計劃
+  // 查詢的 pool 參數化是同一個理由)。
+  function renderFavoriteControl(m, pool = state.pool) {
     if (!state.user.email) {
       if (!state.loginAvailable) return "";
       return `<span class="favorite-login-prompt">${t().favoriteLoginPrompt} <a href="/auth/login">${t().loginLink}</a></span>`;
     }
-    const isFav = isFavorited(state.pool, m.id);
-    return `<button type="button" class="favorite-btn" data-favorite-id="${escapeHtml(m.id)}" aria-pressed="${isFav}" aria-label="${isFav ? t().favoriteRemoveLabel : t().favoriteAddLabel}">${isFav ? "★" : "☆"}</button>`;
+    const isFav = isFavorited(pool, m.id);
+    return `<button type="button" class="favorite-btn" data-favorite-id="${escapeHtml(m.id)}" data-favorite-pool="${escapeHtml(pool)}" aria-pressed="${isFav}" aria-label="${isFav ? t().favoriteRemoveLabel : t().favoriteAddLabel}">${isFav ? "★" : "☆"}</button>`;
   }
 
   function renderMatchCardInner(rank, m) {
@@ -2632,7 +2721,7 @@
       </div>`;
   }
 
-  function renderTrainingBody(player, plan) {
+  function renderTrainingBody(player, plan, pool) {
     const radarHtml = buildRadarSvg(state.results.coordinates, player.coordinates, escapeHtml(player.name));
     const skillsHtml = plan.length === 0
       ? `<p class="training-empty">${t().trainingEmpty}</p>`
@@ -2640,7 +2729,12 @@
         + (plan.length === 1 && plan[0].is_signature ? `<p class="training-empty">${t().trainingEmpty}</p>` : "");
     return `
       <div class="training-body">
-        <div class="training-radar">${radarHtml}</div>
+        <div class="training-radar">
+          <div class="training-radar-card">
+            ${renderFavoriteControl(player, pool)}
+            ${radarHtml}
+          </div>
+        </div>
         <div class="training-skills">${skillsHtml}</div>
       </div>`;
   }
@@ -2744,7 +2838,7 @@
       try {
         const custom = await fetchCustomPlayerTrainingPlan(id, pool);
         if (state.customPlayerId !== id) return; // 等待時又換了別的球員/環境,這次結果已經過期
-        body.innerHTML = renderTrainingBody(custom, custom.training_plan);
+        body.innerHTML = renderTrainingBody(custom, custom.training_plan, pool);
       } catch (err) {
         if (state.customPlayerId !== id) return;
         body.innerHTML = `<p class="training-empty">${s.trainingPlanError}</p>`;
@@ -2757,7 +2851,7 @@
       body.innerHTML = "";
       return;
     }
-    body.innerHTML = renderTrainingBody(player, player.training_plans[state.selectedEnv]);
+    body.innerHTML = renderTrainingBody(player, player.training_plans[state.selectedEnv], state.pool);
   }
 
   function handleReportClick(e) {
@@ -2774,7 +2868,7 @@
     }
     const favoriteBtn = e.target.closest("[data-favorite-id]");
     if (favoriteBtn) {
-      toggleFavorite(favoriteBtn.dataset.favoriteId, state.pool);
+      toggleFavorite(favoriteBtn.dataset.favoriteId, favoriteBtn.dataset.favoritePool);
       return;
     }
     const gotoTrainingBtn = e.target.closest(".favorite-goto-training");
@@ -3115,8 +3209,11 @@
     return dict;
   }
 
+  // 不只掃 .match-list——訓練計劃頁雷達圖卡片上的星星(2026-10 新增)跟對照
+  // 卡片的星星是同一個 data-favorite-id,但不在 .match-list 底下,兩邊都要
+  // 能同步更新。
   function updateFavoriteButton(playerId, isFav) {
-    document.querySelectorAll(".match-list [data-favorite-id]").forEach((btn) => {
+    document.querySelectorAll("[data-favorite-id]").forEach((btn) => {
       if (btn.dataset.favoriteId !== playerId) return;
       btn.textContent = isFav ? "★" : "☆";
       btn.setAttribute("aria-pressed", String(isFav));
@@ -3198,11 +3295,12 @@
   function renderFavoritesPage() {
     const el = document.getElementById("favorites-report");
     const s = t();
+    const headHtml = `<div class="section-head"><span class="section-tag">SECTION 4</span><h2>${s.section4Title}</h2></div>`;
     if (!state.favorites || state.favorites.length === 0) {
-      el.innerHTML = `<p class="training-empty">${s.favoritesEmpty}</p>`;
+      el.innerHTML = `<section class="block">${headHtml}<p class="training-empty">${s.favoritesEmpty}</p></section>`;
       return;
     }
-    el.innerHTML = `<div class="favorites-list">${state.favorites.map((f) => `
+    el.innerHTML = `<section class="block">${headHtml}<div class="favorites-list">${state.favorites.map((f) => `
       <div class="favorite-row" data-favorite-player-id="${escapeHtml(f.player_id)}" data-favorite-pool="${escapeHtml(f.pool)}">
         <span class="name">${escapeHtml(f.name)}</span>
         <span class="team mono">${escapeHtml(f.team)}</span>
@@ -3210,7 +3308,7 @@
           <button type="button" class="favorite-goto-training">${s.favoriteGotoTraining}</button>
           <button type="button" class="favorite-remove">${s.favoriteRemoveButton}</button>
         </div>
-      </div>`).join("")}</div>`;
+      </div>`).join("")}</div></section>`;
   }
 
   function goToTrainingForFavorite(playerId, pool) {
@@ -3237,6 +3335,7 @@
     const toggle = document.querySelector(".lang-switch-toggle");
     if (toggle) toggle.setAttribute("aria-expanded", "false");
     if (!e.target.closest(".player-search")) hidePlayerSearchResults();
+    if (!e.target.closest("#topnav-controls") && !e.target.closest("#mobile-menu-toggle")) closeMobileMenu();
   });
 
   function applyUiStrings() {
@@ -3516,6 +3615,20 @@
 
   document.getElementById("theme-toggle-btn").addEventListener("click", () => {
     applyTheme(state.theme === "light" ? "dark" : "light");
+  });
+
+  // 手機版的亮暗/登入/語言選單——只有 @media (max-width: 560px) 會顯示
+  // .mobile-menu-toggle,電腦版這顆按鈕本身就是 display:none,點了也沒有
+  // 視覺效果可以切換,不用額外判斷螢幕寬度。
+  function closeMobileMenu() {
+    document.getElementById("topnav-controls").classList.remove("open");
+    document.getElementById("mobile-menu-toggle").setAttribute("aria-expanded", "false");
+  }
+  document.getElementById("mobile-menu-toggle").addEventListener("click", (e) => {
+    e.stopPropagation();
+    const controls = document.getElementById("topnav-controls");
+    const isOpen = controls.classList.toggle("open");
+    document.getElementById("mobile-menu-toggle").setAttribute("aria-expanded", String(isOpen));
   });
 
   function recordSiteVisit() {
