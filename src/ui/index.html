@@ -3454,12 +3454,8 @@
     await loadAuthState();
     if (state.user.email) { await loadFavorites(); } else { state.favorites = []; }
     await loadLastResult();
-    const viewLastResultBlock = document.getElementById("view-last-result-block");
     if (state.lastResult) {
       document.getElementById("view-last-result-btn").textContent = t().viewLastResultButton;
-      viewLastResultBlock.style.display = "block";
-    } else {
-      viewLastResultBlock.style.display = "none";
     }
     renderLangSwitch();
     renderAuthNav();
@@ -3477,6 +3473,9 @@
     document.getElementById("loading").style.display = "none";
     document.getElementById("mode-current-btn").disabled = false;
     document.getElementById("mode-alltime-btn").disabled = false;
+    // 題庫還在載入時先不顯示「查看歷史結果」,等 loading 文字消失、頁面
+    // 準備好之後才跳出來,不要兩個狀態同時疊在畫面上(2026-10 使用意見)。
+    document.getElementById("view-last-result-block").style.display = state.lastResult ? "flex" : "none";
 
     document.getElementById("stage1-form").addEventListener("submit", handleStage1Submit);
     const pagesEl = document.getElementById("pages");
