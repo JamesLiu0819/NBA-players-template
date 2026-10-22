@@ -3371,8 +3371,13 @@
     if (!e.target.closest("#topnav-controls") && !e.target.closest("#mobile-menu-toggle")) closeMobileMenu();
   });
 
+  // <html lang> 要跟著目前語言換,螢幕閱讀器才會用對的發音、瀏覽器的翻譯功能
+  // 也才不會把已經是英文的頁面當成中文。
+  const HTML_LANG = { zh: "zh-Hant", "zh-Hans": "zh-Hans", en: "en" };
+
   function applyUiStrings() {
     const strings = t();
+    document.documentElement.lang = HTML_LANG[state.lang] || "zh-Hant";
     document.title = strings.pageTitle;
     document.querySelector(".masthead h1").textContent = strings.pageTitle;
     document.querySelector(".masthead .eyebrow").textContent = strings.eyebrow;
