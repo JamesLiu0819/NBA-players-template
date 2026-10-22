@@ -927,5 +927,29 @@ class AdminFeedbackTest(unittest.TestCase):
             app_module.SECRET_KEY_CONFIGURED = original_secret_key_configured
 
 
+class SecurityHeadersTest(unittest.TestCase):
+    """Every response carries the baseline security headers, and the session
+    cookie is HttpOnly + SameSite=Lax everywhere but only Secure on Render
+    (local dev and the test client run over plain http)."""
+
+    def setUp(self):
+        self.client = app.test_client()
+
+    def test_page_and_api_responses_carry_security_headers(self):
+        for response in (self.client.get("/"), self.client.get("/api/me")):
+            self.assertEqual(response.headers.get("X-Content-Type-Options"), "nosniff")
+            self.assertEqual(response.headers.get("X-Frame-Options"), "DENY")
+            self.assertEqual(response.headers.get("Referrer-Policy"), "strict-origin-when-cross-origin")
+
+    def test_session_cookie_is_httponly_and_lax(self):
+        self.assertTrue(app.config["SESSION_COOKIE_HTTPONLY"])
+        self.assertEqual(app.config["SESSION_COOKIE_SAMESITE"], "Lax")
+
+    def test_session_cookie_is_secure_only_on_render(self):
+        import app as app_module
+        self.assertFalse(app_module.session_cookie_secure({}))
+        self.assertTrue(app_module.session_cookie_secure({"RENDER": "true"}))
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -188,6 +188,35 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 SECRET_KEY_CONFIGURED = bool(os.environ.get("SECRET_KEY"))
 app.secret_key = os.environ.get("SECRET_KEY", "dev-only-insecure-secret-do-not-use-in-production")
 
+
+def session_cookie_secure(environ):
+    """Only mark the session cookie Secure on Render, which always serves over
+    https. Local dev and the test client use plain http, where a Secure cookie
+    would never be sent back and login would silently stop working. Render
+    sets RENDER in every service's environment."""
+    return bool(environ.get("RENDER"))
+
+
+# HttpOnly keeps page scripts from reading the session cookie; SameSite=Lax
+# stops other sites from sending it on cross-site POSTs (logout, favorites)
+# while still allowing the top-level redirect back from Google's login page.
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+    SESSION_COOKIE_SECURE=session_cookie_secure(os.environ),
+)
+
+
+@app.after_request
+def add_security_headers(response):
+    """Baseline headers on every response: no MIME sniffing, no embedding the
+    site in another site's frame, and no full URLs leaked as Referer to
+    other origins."""
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("X-Frame-Options", "DENY")
+    response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    return response
+
 oauth = OAuth(app)
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
