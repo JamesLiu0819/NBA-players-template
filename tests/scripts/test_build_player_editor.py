@@ -38,6 +38,18 @@ class BuildPayloadTest(unittest.TestCase):
         self.assertEqual([a["id"] for a in payload["archetypes"]], ["small", "big"])
 
 
+class ArchetypeOverridePayloadTest(unittest.TestCase):
+    def test_hand_picked_archetype_is_carried_and_used_as_engine_archetype(self):
+        guard = player("guard", 80, 180, 75)
+        guard["archetype_id"] = "big"
+        payload = build_payload([("c", [guard, player("center", 20, 215, 120)])], ARCHETYPES, {}, "d")
+        by_id = {p["id"]: p for p in payload["players"]}
+        self.assertEqual(by_id["guard"]["archetype_id"], "big")
+        self.assertEqual(by_id["guard"]["engine_archetype"], "big")
+        self.assertIsNone(by_id["center"]["archetype_id"])
+        self.assertEqual(by_id["center"]["engine_archetype"], "big")
+
+
 class EmbedTest(unittest.TestCase):
     PAGE = '<html><!--DATA-START--><script id="data" type="application/json">null</script><!--DATA-END--><p>keep</p></html>'
 

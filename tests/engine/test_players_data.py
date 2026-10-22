@@ -47,6 +47,7 @@ class PlayersDataTestBase:
     def setUp(self):
         self.players = load_json(self.FILENAME)["players"]
         self.skill_ids = {s["id"] for s in load_json("技能.json")["skills"]}
+        self.archetype_ids = {a["id"] for a in load_json("原型.json")["archetypes"]}
 
     def test_has_at_least_min_players(self):
         self.assertGreaterEqual(len(self.players), MIN_PLAYERS)
@@ -86,6 +87,12 @@ class PlayersDataTestBase:
             skill_id = player["signature_skill_id"]
             if skill_id is not None:
                 self.assertIn(skill_id, self.skill_ids, player["id"])
+
+    def test_archetype_id_if_present_exists_in_archetypes_json(self):
+        for player in self.players:
+            archetype_id = player.get("archetype_id")
+            if archetype_id is not None:
+                self.assertIn(archetype_id, self.archetype_ids, player["id"])
 
     def test_every_player_has_all_six_body_fields_within_sane_bounds(self):
         # Ensures scripts/build_players_seed.py's derive_body_measurements()

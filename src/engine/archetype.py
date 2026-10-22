@@ -11,6 +11,10 @@
 # 可手動調整的變數：ARCHETYPE_MAJORITY_TOP_N(多數決要看前幾位最相似球員,
 # 目前 5——10 人對照表的前一半)。原型本身的數量/座標/文案在
 # data/archetypes.json 裡調整,不在這支檔案。
+# 2026-10:球員資料可以帶一個選填的 archetype_id(在 scripts/build_players_seed.py /
+# build_players_alltime_seed.py 的 PLAYERS 裡手動指定),有指定的球員投票時直接投
+# 那個原型,不再依座標分類;沒指定的照舊。指定了不存在的原型 id 會直接報錯,
+# tests/engine/test_players_data.py 也會擋。
 #
 # size 參數(2026-10 討論)：classify_archetype 原本純看六軸(A/B1/B2/C1/C2/D),
 # 完全不看身材,結果矮個子只要打法平均就會被分類到「全能鋒線」之類隱含高大身材
@@ -148,18 +152,32 @@ def classify_archetype_by_majority(ranked_players, archetypes, player_sizes=None
         single closest player among the tied archetypes, so the result
         stays deterministic.
 
-    Raises ValueError if ranked_players is empty.
+    A player carrying a non-empty "archetype_id" votes for that archetype
+    directly instead of being classified from coordinates -- the owner can
+    hand-pick a player's archetype in the seed scripts.
+
+    Raises ValueError if ranked_players is empty, or if a player's
+    archetype_id isn't one of the given archetypes.
     """
     if not ranked_players:
         raise ValueError("ranked_players must not be empty; classification is undefined")
 
-    player_archetypes = [
-        classify_archetype(
+    archetypes_by_id = {archetype["id"]: archetype for archetype in archetypes}
+
+    def player_archetype(player):
+        # A hand-picked archetype_id on the player (set in the seed scripts,
+        # 2026-10) overrides whatever their coordinates would classify to.
+        override = player.get("archetype_id")
+        if override:
+            if override not in archetypes_by_id:
+                raise ValueError(f"unknown archetype_id {override!r} on player {player.get('id')!r}")
+            return archetypes_by_id[override]
+        return classify_archetype(
             player["coordinates"], archetypes,
             size=(player_sizes.get(player["id"]) if player_sizes else None),
         )
-        for player in ranked_players[:top_n]
-    ]
+
+    player_archetypes = [player_archetype(player) for player in ranked_players[:top_n]]
 
     weights = {}
     for rank, archetype in enumerate(player_archetypes):

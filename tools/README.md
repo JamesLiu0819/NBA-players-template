@@ -77,8 +77,9 @@ python3 scripts/run_player_match.py data/answers/answers_20260908T153000.json
 - 改完按「💾 下載修改檔」，得到 `球員資料修改-日期.json`，交給 Claude 寫進
   `scripts/build_players_seed.py`（現役）或 `scripts/build_players_alltime_seed.py`（歷史），
   再重新產生 `data/` 底下的球員資料。**不要直接改 `data/` 的球員檔**（CLAUDE.md 規定）。
-- 原型不能直接改：它是依六軸和體型自動算的，頁面用跟 `src/engine/archetype.py` 相同的規則即時重算，
-  打開時會自動跟 engine 的結果比對，不一致就顯示警告。
+- 原型可以「自動」或「手動指定」：自動就依六軸和體型計算，頁面用跟 `src/engine/archetype.py` 相同的規則即時重算；
+  從選單指定的原型會存成球員資料的選填欄位 `archetype_id`，網站計算使用者原型時直接採用。
+  頁面打開時會自動跟 engine 的結果比對，不一致就顯示警告。
 - 體重、立定摸高、助跑摸高、100 公尺是公式推算值（跟 `derive_body_measurements` 同一套公式），
   改身高、臂展、外線投射、運動表現時會跟著變；直接改它們等於替那位球員設定固定值。
 

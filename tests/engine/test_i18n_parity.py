@@ -158,6 +158,9 @@ class PlayersParityTest(unittest.TestCase):
         "id", "name", "team", "coordinates", "body", "signature_skill_id",
         "learnability_flag", "mock_axis_answers",
     )
+    # Optional per-player fields: absent on most players, but when present they
+    # must match across languages exactly like the required ones above.
+    OPTIONAL_NON_TEXT_FIELDS = ("archetype_id",)
 
     def setUp(self):
         self.zh = load_json("zh", "球員.json")["players"]
@@ -177,6 +180,8 @@ class PlayersParityTest(unittest.TestCase):
             en_p = en_by_id[pid]
             for field in self.NON_TEXT_FIELDS:
                 self.assertEqual(zh_p[field], en_p[field], f"{pid}.{field}")
+            for field in PlayersParityTest.OPTIONAL_NON_TEXT_FIELDS:
+                self.assertEqual(zh_p.get(field), en_p.get(field), f"{pid}.{field}")
 
     def test_notable_traits_are_translated_not_copied(self):
         zh_by_id, en_by_id = self._by_id(self.zh), self._by_id(self.en)
@@ -209,6 +214,8 @@ class PlayersAlltimeParityTest(unittest.TestCase):
             en_p = en_by_id[pid]
             for field in self.NON_TEXT_FIELDS:
                 self.assertEqual(zh_p[field], en_p[field], f"{pid}.{field}")
+            for field in PlayersParityTest.OPTIONAL_NON_TEXT_FIELDS:
+                self.assertEqual(zh_p.get(field), en_p.get(field), f"{pid}.{field}")
 
     def test_notable_traits_are_translated_not_copied(self):
         zh_by_id, en_by_id = self._by_id(self.zh), self._by_id(self.en)
@@ -281,6 +288,8 @@ class ZhHansStructureParityTest(unittest.TestCase):
             zh_hans_p = zh_hans_by_id[pid]
             for field in PlayersParityTest.NON_TEXT_FIELDS:
                 self.assertEqual(zh_p[field], zh_hans_p[field], f"{pid}.{field}")
+            for field in PlayersParityTest.OPTIONAL_NON_TEXT_FIELDS:
+                self.assertEqual(zh_p.get(field), zh_hans_p.get(field), f"{pid}.{field}")
             self.assertEqual(len(zh_p["notable_traits"]), len(zh_hans_p["notable_traits"]), pid)
             for trait in zh_hans_p["notable_traits"]:
                 self.assertTrue(trait.strip(), pid)

@@ -202,6 +202,42 @@ class ClassifyArchetypeByMajorityTest(unittest.TestCase):
         self.assertEqual(result["id"], "a")
 
 
+class ArchetypeOverrideTest(unittest.TestCase):
+    """A player with a hand-picked archetype_id votes for that archetype
+    instead of whatever their coordinates classify to (2026-10: the owner
+    wanted to set some players' archetypes by hand)."""
+
+    def setUp(self):
+        self.archetypes = [
+            {"id": "a", "name_zh": "原型A", "flavor": "文案A", "coordinates": {"A": 90, "B1": 10, "B2": 0, "C1": 10, "C2": 0, "D": 10}},
+            {"id": "b", "name_zh": "原型B", "flavor": "文案B", "coordinates": {"A": 10, "B1": 90, "B2": 0, "C1": 10, "C2": 0, "D": 10}},
+        ]
+        self.looks_like_a = {"A": 88, "B1": 12, "B2": 0, "C1": 10, "C2": 0, "D": 10}
+
+    def test_override_wins_over_coordinates(self):
+        ranked = [{"coordinates": self.looks_like_a, "archetype_id": "b"}]
+        self.assertEqual(classify_archetype_by_majority(ranked, self.archetypes)["id"], "b")
+
+    def test_player_without_override_is_still_classified_by_coordinates(self):
+        ranked = [{"coordinates": self.looks_like_a}]
+        self.assertEqual(classify_archetype_by_majority(ranked, self.archetypes)["id"], "a")
+
+    def test_empty_override_counts_as_no_override(self):
+        ranked = [{"coordinates": self.looks_like_a, "archetype_id": None}]
+        self.assertEqual(classify_archetype_by_majority(ranked, self.archetypes)["id"], "a")
+
+    def test_overrides_take_part_in_the_weighted_vote(self):
+        # Two overridden "b" players at ranks 1-2 (weights 5+4) outvote three
+        # coordinate-classified "a" players at ranks 3-5 (3+2+1).
+        ranked = [{"coordinates": self.looks_like_a, "archetype_id": "b"}] * 2 + [{"coordinates": self.looks_like_a}] * 3
+        self.assertEqual(classify_archetype_by_majority(ranked, self.archetypes, top_n=5)["id"], "b")
+
+    def test_unknown_override_id_raises(self):
+        ranked = [{"coordinates": self.looks_like_a, "archetype_id": "no_such_archetype"}]
+        with self.assertRaises(ValueError):
+            classify_archetype_by_majority(ranked, self.archetypes)
+
+
 class ComputePlayerSizesTest(unittest.TestCase):
     def test_ranks_shortest_lightest_player_lowest(self):
         players = [

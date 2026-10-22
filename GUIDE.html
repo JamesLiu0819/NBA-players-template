@@ -371,7 +371,7 @@ player percentile = (1 − w) × rank in pool + w × population curve</span>
     <h3><span class="n">4.5</span>球場定位原型（12 種）</h3>
     <ol>
       <li>拿 10 人對照表的<b>前 5 名</b>。</li>
-      <li>每位球員各自歸到最接近的原型：比六軸，再加上體型（他的身高、體重在球員池內的百分位平均）。</li>
+      <li>每位球員各自歸到最接近的原型：比六軸，再加上體型（他的身高、體重在球員池內的百分位平均）。<b>例外：</b>球員資料有手動指定原型（<code>archetype_id</code>）的，直接用指定的。</li>
       <li><b>加權投票：</b>第 1 名 5 票、第 2 名 4 票、第 3 名 3 票、第 4 名 2 票、第 5 名 1 票。</li>
       <li>票數最高的原型勝出。平手時，取平手原型裡排名最前面那位球員的原型。</li>
     </ol>
@@ -885,7 +885,7 @@ const TASKS = [
          { p: "src/ui/index.html", at: "ENV_CODES 加代碼；UI_STRINGS 三個語言的 envLabels 加顯示文字" }] },
   { want: "調整技能的成本、跟六軸的關係、驗收標準", kw: "技能 成本 關聯度 axis_relevance 驗收 指標",
     go: [{ p: "data/zh/技能.json", at: "cost_C、axis_relevance、metric；數字三個語言要一樣" }] },
-  { want: "看全部球員的數值，或改某位球員的六軸、身材", kw: "球員 數值 修改 六軸 身材 原型 編輯 查看",
+  { want: "看全部球員的數值，或改某位球員的六軸、身材、原型", kw: "球員 數值 修改 六軸 身材 原型 指定原型 編輯 查看",
     go: [{ p: "tools/player-editor.html", at: "直接雙擊打開，改完按「下載修改檔」交給 Claude" }] },
   { want: "新增球員，或修改球員的座標、特點、招牌技能", kw: "新增 球員 修改 座標 特點 招牌技能",
     go: [{ p: "scripts/build_players_seed.py", at: "現役球員。改完執行它重新產生資料檔" },

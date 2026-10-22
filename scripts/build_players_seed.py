@@ -26,7 +26,9 @@
 # 受限於整數 Likert 平均值的離散網格,兩邊終於用同一套公式算分。
 # 可手動調整的變數：PLAYERS(整份球員清單,每位球員的 coordinates/body/
 # notable_traits/signature_skill_id/learnability_flag 都可以直接改,
-# coordinates 現在的意義是「目標座標」,不是最終值)、derive_body_
+# coordinates 現在的意義是「目標座標」,不是最終值;另外可以加選填的
+# "archetype_id" 手動指定原型,不加就依座標自動分類,見 engine/archetype.py。
+# 加了之後 data/zh-Hans、data/en 的球員檔也要加上同樣的值,三語一致性測試會檢查)、derive_body_
 # measurements() 裡的公式係數(如果覺得推算出來的體重/彈跳不合理,可以調整
 # 這裡的係數,不用改 PLAYERS 本身)。
 """Generates data/players.json from hand-estimated seed data.

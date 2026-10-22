@@ -3,7 +3,8 @@
 # tools/player-editor.html 的資料區塊（<!--DATA-START--> 到 <!--DATA-END--> 之間），
 # 讓那個本機編輯頁面顯示最新的資料。球員資料更新後執行一次：
 #   python3 scripts/build_player_editor.py
-# 每位球員也附上 engine 自己算出的原型(engine_archetype)，編輯頁面會拿它跟頁面裡
+# 每位球員也附上手動指定的原型(archetype_id，沒指定是 null)跟 engine 實際採用的
+# 原型(engine_archetype：有指定就是指定的，沒有就是依座標分類的)，編輯頁面會拿它跟頁面裡
 # 用 JavaScript 重算的結果比對，不一致就在頁面上顯示警告，避免兩邊算法悄悄分岔。
 # 可手動調整的變數：無。
 """Embed the current player data into tools/player-editor.html."""
@@ -44,7 +45,11 @@ def build_payload(pools, archetypes, skill_names, snapshot):
                 "body": p["body"],
                 "traits": p.get("notable_traits", []),
                 "signature_skill": skill_names.get(p.get("signature_skill_id"), ""),
-                "engine_archetype": classify_archetype(p["coordinates"], archetypes, size=sizes.get(p["id"]))["id"],
+                "archetype_id": p.get("archetype_id"),
+                "engine_archetype": (
+                    p.get("archetype_id")
+                    or classify_archetype(p["coordinates"], archetypes, size=sizes.get(p["id"]))["id"]
+                ),
             })
     return {
         "snapshot": snapshot,

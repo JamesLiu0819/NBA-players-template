@@ -20,7 +20,8 @@
 # 詳見 scripts/build_players_seed.py 檔頭說明。
 # 可手動調整的變數：PLAYERS(整份球員清單,每位球員的 coordinates/body/
 # notable_traits/signature_skill_id/learnability_flag/team(年份) 都可以
-# 直接改,coordinates 現在的意義是「目標座標」,不是最終值)。
+# 直接改,coordinates 現在的意義是「目標座標」,不是最終值;另外可以加選填的
+# "archetype_id" 手動指定原型,規則同 build_players_seed.py)。
 """Generates data/players_alltime.json from hand-estimated seed data for
 retired, widely-known historical players.
 
