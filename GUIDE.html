@@ -574,6 +574,7 @@ P = G × E ÷ C</span>
       <li><b>讀資料。</b>依 <code>lang</code> 和 <code>pool</code> 讀 <code>data/</code> 裡對應的 JSON。</li>
       <li><b>呼叫引擎。</b>自己不算任何東西，全部交給 <code>src/engine/</code>。</li>
     </ol>
+    <p><b>安全設定：</b>每個回應都帶三個安全標頭（禁止瀏覽器猜檔案類型、禁止被別的網站嵌入、不把完整網址外洩給其他網站）。登入 cookie 不能被頁面上的程式讀取、別的網站送來的請求不會帶上它，在 Render 上只走 HTTPS。設定在 <code>server/app.py</code> 的 <code>add_security_headers</code> 和 <code>session_cookie_secure</code>。</p>
   </div>
 
   <!-- 7 -->
@@ -832,6 +833,7 @@ const FILES = [
   { p: "tests/engine/test_archetypes_data.py", layer: "test", what: "檢查原型資料的格式", edit: ["原型資料格式有變"], kw: "測試 原型資料" },
   { p: "tests/scripts/__init__.py", layer: "test", what: "讓 tests/scripts 可以被當成 package 執行", edit: ["不用改"], kw: "package" },
   { p: "tests/scripts/test_mock_answers.py", layer: "test", what: "測試模擬作答的推導", edit: ["mock_answers.py 有變"], kw: "測試 模擬作答" },
+  { p: "tests/scripts/test_check_guide.py", layer: "test", what: "測試導覽檢查腳本的比對規則", edit: ["check_guide.py 有變"], kw: "測試 導覽 檢查" },
   { p: "tests/scripts/test_run_player_match.py", layer: "test", what: "測試成長建議和球探報告的文字", edit: ["run_player_match.py 有變"], kw: "測試 成長建議" },
 
   { p: "docs/superpowers/specs/2026-09-10-player-template-matching-design.md", layer: "doc", what: "球員配對的原始設計", edit: ["歷史紀錄，通常不改"], kw: "設計 配對" },
