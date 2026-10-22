@@ -50,6 +50,27 @@ class ArchetypeOverridePayloadTest(unittest.TestCase):
         self.assertEqual(by_id["center"]["engine_archetype"], "big")
 
 
+class MisfitAndCompareTest(unittest.TestCase):
+    def test_threshold_flags_the_farthest_share(self):
+        from scripts.build_player_editor import misfit_threshold
+        distances = list(range(1, 21))  # 20 players
+        threshold = misfit_threshold(distances, share=0.10)
+        self.assertEqual(sum(1 for d in distances if d >= threshold), 2)
+
+    def test_previous_snapshot_is_attached_when_given(self):
+        guard = player("guard", 80, 180, 75)
+        old_guard = player("guard", 20, 180, 75)
+        payload = build_payload([("c", [guard])], ARCHETYPES, {}, "d", previous={("c", "guard"): old_guard})
+        p = payload["players"][0]
+        self.assertEqual(p["prev"]["coordinates"]["A"], 20)
+        self.assertEqual(p["prev"]["archetype"], "big")
+        self.assertIn("misfit_threshold", payload)
+
+    def test_no_previous_snapshot_means_no_prev(self):
+        payload = build_payload([("c", [player("guard", 80, 180, 75)])], ARCHETYPES, {}, "d")
+        self.assertIsNone(payload["players"][0]["prev"])
+
+
 class EmbedTest(unittest.TestCase):
     PAGE = '<html><!--DATA-START--><script id="data" type="application/json">null</script><!--DATA-END--><p>keep</p></html>'
 

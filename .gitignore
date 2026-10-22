@@ -9,3 +9,6 @@ __pycache__/
 # (見 CLAUDE.md 目錄約定);.gitkeep 讓目錄本身留在版本庫裡,內容不進 git。
 data/answers/*
 !data/answers/.gitkeep
+
+# Basketball-Reference 原始頁面快取（scripts/fetch_bbref.py 下載），是對方的資料，不公開散布。
+data/raw/

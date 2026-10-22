@@ -940,6 +940,7 @@ class SecurityHeadersTest(unittest.TestCase):
             self.assertEqual(response.headers.get("X-Content-Type-Options"), "nosniff")
             self.assertEqual(response.headers.get("X-Frame-Options"), "DENY")
             self.assertEqual(response.headers.get("Referrer-Policy"), "strict-origin-when-cross-origin")
+            response.close()  # the page response streams a file handle
 
     def test_session_cookie_is_httponly_and_lax(self):
         self.assertTrue(app.config["SESSION_COOKIE_HTTPONLY"])
