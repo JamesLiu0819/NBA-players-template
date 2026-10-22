@@ -1,0 +1,33 @@
+# 用途：每次 push 或開 pull request 時，在 GitHub 上自動跑兩組測試：
+# 引擎與資料檔（tests/）、後端 API（server/）。任何一組失敗，GitHub 上的
+# commit 旁邊會顯示紅色叉叉。指令跟 server/README.md 寫的本機跑法一致。
+# 可手動調整的變數：python-version（要跟 render.yaml 的 PYTHON_VERSION 一致）。
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install backend dependencies
+        run: pip install -r server/requirements.txt
+
+      - name: Engine and data tests
+        run: PYTHONPATH=src python -m unittest discover -s tests -t . -v
+
+      - name: Backend tests
+        working-directory: server
+        run: python -m unittest test_app test_db -v
+
+      - name: Project guide is in sync with the file tree
+        run: python scripts/check_guide.py

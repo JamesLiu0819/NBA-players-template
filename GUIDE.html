@@ -643,6 +643,8 @@ python3 server/app.py          # open http://localhost:5001</span>
     <h3>後端的測試</h3>
     <span class="formula">cd server
 ../.venv/bin/python3 -m unittest test_app test_db -v</span>
+    <h3>GitHub 上的自動測試</h3>
+    <p>每次 push 到 <code>main</code>，GitHub 會照 <code>.github/workflows/tests.yml</code> 自動跑上面兩組測試和下面的導覽檢查。失敗時 GitHub 上那個 commit 旁邊會出現紅色叉叉。</p>
     <h3>檢查這份導覽有沒有漏檔案</h3>
     <span class="formula">python3 scripts/check_guide.py</span>
   </div>
@@ -689,6 +691,8 @@ const FOLDERS = {
   "docs/superpowers": "每次大改動的設計文件和實作計劃",
   "docs/superpowers/specs": "設計文件：為什麼這樣做",
   "docs/superpowers/plans": "實作計劃：一步一步怎麼做",
+  ".github": "GitHub 的設定",
+  ".github/workflows": "GitHub 自動執行的工作",
 };
 
 // p: 路徑（結尾是 / 代表整個資料夾當一筆）。layer: 顏色分類。what: 一句話用途。
@@ -705,6 +709,8 @@ const FILES = [
   { p: "render.yaml", layer: "config", what: "Render 的部署設定：方案（Starter）、怎麼安裝、怎麼啟動、需要哪些環境變數",
     edit: ["要換方案（現在是每月 7 美元的 starter）", "要換 Python 版本", "要改啟動指令", "要新增一個環境變數"],
     kw: "部署 上線 Render 主機 方案 starter 付費 Python 版本 gunicorn 環境變數" },
+  { p: ".github/workflows/tests.yml", layer: "config", what: "GitHub 自動測試：每次 push 跑引擎、後端測試和導覽檢查",
+    edit: ["要換 Python 版本（跟 render.yaml 一致）", "要多跑一種檢查"], kw: "CI 自動測試 GitHub Actions 測試失敗 紅色叉叉" },
   { p: ".gitignore", layer: "config", what: "哪些檔案不進 git（虛擬環境、使用者作答等）",
     edit: ["有新的檔案不該被上傳的時候"], kw: "git 忽略 上傳" },
 
