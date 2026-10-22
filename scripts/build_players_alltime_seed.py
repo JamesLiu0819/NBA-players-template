@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # 用途：估算歷史知名球員(已退役、跨 1960s-2010s)的六軸座標跟其他資料,
+# 產生 data/players_alltime.json,給「歷史球員模板(All-time)」模式用。
 # 2026-10-23：PLAYERS 的 coordinates(目標座標)、height_cm、weight_kg,以及現役球員的
 # team,已經改用 scripts/build_players_from_bbref.py 依 Basketball-Reference 的一般數據、
 # 進階數據、投籃分布重算後寫回這裡(換算方法見那支腳本的檔頭)。下面提到 2K 屬性的
 # 段落是更早的做法;臂展、特點、招牌技能仍是原本的手動估算。
-# 產生 data/players_alltime.json,給「歷史球員模板(All-time)」模式用。
 # v3(2026-10)：跟 build_players_seed.py 同步改成六軸,coordinates 改用 2K
 # 歷史/All-Time 卡的屬性值算百分位——詳見 build_players_seed.py 檔頭說明。跟
 # scripts/build_players_seed.py(現役球員池)是同一套 schema、同一套
