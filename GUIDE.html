@@ -808,11 +808,15 @@ const FILES = [
     edit: ["改了距離算式或球員池之後，要重算門檻"], kw: "校準 星等 門檻" },
   { p: "scripts/simulate_results.py", layer: "script", what: "模擬大量假使用者，看星等、原型、菜單的分布",
     edit: ["想驗證某個改動對整體結果的影響"], kw: "模擬 分布 驗證 統計" },
+  { p: "scripts/build_player_editor.py", layer: "script", what: "把最新的球員資料寫進球員資料編輯器",
+    edit: ["不用改，球員資料更新後執行它"], kw: "球員 編輯器 產生 更新" },
   { p: "scripts/check_guide.py", layer: "script", what: "檢查這份導覽的檔案清單有沒有漏掉或多出來的",
     edit: ["不用改，新增檔案後執行它"], kw: "導覽 檢查" },
 
   { p: "tools/survey.html", layer: "ui", what: "本機測試頁：填問卷後把作答匯出成檔案，不是正式網站",
     edit: ["想改本機測試流程"], kw: "測試頁 匯出 作答 本機" },
+  { p: "tools/player-editor.html", layer: "ui", what: "球員資料編輯器：依原型分區看全部 224 位球員的六軸和身材，可以修改並下載修改檔",
+    edit: ["不用改它本身。要看或改球員數值就打開它；資料更新後執行 scripts/build_player_editor.py"], kw: "球員 編輯 修改 數值 六軸 身材 原型 編輯器 球員資料" },
   { p: "tools/README.md", layer: "doc", what: "本機測試頁的使用說明", edit: ["測試頁用法有變的時候"], kw: "測試頁 說明" },
 
   { p: "tests/__init__.py", layer: "test", what: "讓 tests 可以被當成 package 執行", edit: ["不用改"], kw: "package" },
@@ -833,6 +837,7 @@ const FILES = [
   { p: "tests/engine/test_archetypes_data.py", layer: "test", what: "檢查原型資料的格式", edit: ["原型資料格式有變"], kw: "測試 原型資料" },
   { p: "tests/scripts/__init__.py", layer: "test", what: "讓 tests/scripts 可以被當成 package 執行", edit: ["不用改"], kw: "package" },
   { p: "tests/scripts/test_mock_answers.py", layer: "test", what: "測試模擬作答的推導", edit: ["mock_answers.py 有變"], kw: "測試 模擬作答" },
+  { p: "tests/scripts/test_build_player_editor.py", layer: "test", what: "測試球員資料編輯器的資料整理和嵌入", edit: ["build_player_editor.py 有變"], kw: "測試 編輯器" },
   { p: "tests/scripts/test_check_guide.py", layer: "test", what: "測試導覽檢查腳本的比對規則", edit: ["check_guide.py 有變"], kw: "測試 導覽 檢查" },
   { p: "tests/scripts/test_run_player_match.py", layer: "test", what: "測試成長建議和球探報告的文字", edit: ["run_player_match.py 有變"], kw: "測試 成長建議" },
 
@@ -880,6 +885,8 @@ const TASKS = [
          { p: "src/ui/index.html", at: "ENV_CODES 加代碼；UI_STRINGS 三個語言的 envLabels 加顯示文字" }] },
   { want: "調整技能的成本、跟六軸的關係、驗收標準", kw: "技能 成本 關聯度 axis_relevance 驗收 指標",
     go: [{ p: "data/zh/技能.json", at: "cost_C、axis_relevance、metric；數字三個語言要一樣" }] },
+  { want: "看全部球員的數值，或改某位球員的六軸、身材", kw: "球員 數值 修改 六軸 身材 原型 編輯 查看",
+    go: [{ p: "tools/player-editor.html", at: "直接雙擊打開，改完按「下載修改檔」交給 Claude" }] },
   { want: "新增球員，或修改球員的座標、特點、招牌技能", kw: "新增 球員 修改 座標 特點 招牌技能",
     go: [{ p: "scripts/build_players_seed.py", at: "現役球員。改完執行它重新產生資料檔" },
          { p: "scripts/build_players_alltime_seed.py", at: "歷史球員" }] },

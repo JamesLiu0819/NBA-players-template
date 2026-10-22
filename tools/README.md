@@ -66,3 +66,24 @@ python3 scripts/run_player_match.py data/answers/answers_20260908T153000.json
 
 這個測試頁只收集六軸定位與身材數值題的作答，不做任何評分決策，也不建立或修改
 `data/env_weights.json` 之類的資料檔。
+
+## 球員資料編輯器（`tools/player-editor.html`）
+
+**用途**：查看、修改全部 224 位球員（現役 152 + 歷史 72）的原型、六軸數值、身材數值。
+
+- **直接雙擊打開就能用**，不需要啟動伺服器（資料已經寫在檔案裡）。
+- 依 12 個原型分區，每區有一句話說明、最強的兩軸、典型體型。
+- 改過的格子變黃色，修改會自動存在這台電腦的瀏覽器裡。
+- 改完按「💾 下載修改檔」，得到 `球員資料修改-日期.json`，交給 Claude 寫進
+  `scripts/build_players_seed.py`（現役）或 `scripts/build_players_alltime_seed.py`（歷史），
+  再重新產生 `data/` 底下的球員資料。**不要直接改 `data/` 的球員檔**（CLAUDE.md 規定）。
+- 原型不能直接改：它是依六軸和體型自動算的，頁面用跟 `src/engine/archetype.py` 相同的規則即時重算，
+  打開時會自動跟 engine 的結果比對，不一致就顯示警告。
+- 體重、立定摸高、助跑摸高、100 公尺是公式推算值（跟 `derive_body_measurements` 同一套公式），
+  改身高、臂展、外線投射、運動表現時會跟著變；直接改它們等於替那位球員設定固定值。
+
+**球員資料更新後**，執行下面的指令把最新資料寫進編輯器：
+
+```bash
+python3 scripts/build_player_editor.py
+```
