@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>小遊戲提案 — 籃球球員模板</title>
+<!--
+  用途：給網站擁有者看的提案與決策清單（2026-10-23）。內容分三塊：
+    1. 四個小遊戲的完整設計，每個都附可操作的試玩版（用真實球員資料）。
+    2. 其他需要決定的功能變更。
+    3. 這次已經自動完成的優化。
+  試玩版只是用來感受玩法的原型，不是正式網站的程式；規則和算式定案後，正式版要照
+  CLAUDE.md 的規則放進 src/engine（純函數 + 單元測試）。
+  球員資料是 2026-10-23 從 data/zh/ 匯出的快照，之後資料更新不會自動同步到這裡。
+-->
+<style>
+  :root {
+    --bg: #f5f4ef; --panel: #ffffff; --ink: #1b1f27; --soft: #5a6270; --line: #dcd9cf; --code: #eeece4;
+    --g1: #2563eb; --g1bg: #e6edfd;
+    --g2: #c2410c; --g2bg: #fdeee2;
+    --g3: #be123c; --g3bg: #fde6ec;
+    --g4: #15803d; --g4bg: #def3e5;
+    --decide: #7c3aed; --decidebg: #f0e8fe;
+    --data: #0f766e; --databg: #dcf2ef;
+    --done: #475569; --donebg: #e8ebf0;
+    --good: #16a34a; --warn: #ca8a04; --bad: #9ca3af;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14161b; --panel: #1d2027; --ink: #e9ebef; --soft: #a3abb8; --line: #343944; --code: #2a2e38;
+      --g1: #7aa2ff; --g1bg: #18264a; --g2: #fb923c; --g2bg: #3a2210; --g3: #fb7185; --g3bg: #3d1420;
+      --g4: #4ade80; --g4bg: #12301c; --decide: #c4a5ff; --decidebg: #2a1b48; --data: #5eead4; --databg: #0e2f2b;
+      --done: #b3bdcc; --donebg: #2a2f39; --good: #4ade80; --warn: #facc15; --bad: #6b7280;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 70px; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.75 -apple-system, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif; }
+  main a { color: var(--g1); font-weight: 700; }
+  code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .88em; background: var(--code); padding: .1em .4em; border-radius: 4px; }
+  .top { position: sticky; top: 0; z-index: 10; background: var(--panel); border-bottom: 1px solid var(--line); }
+  .top-in { max-width: 1040px; margin: 0 auto; padding: 10px 16px; display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+  .top b { margin-right: 6px; }
+  .top a { text-decoration: none; color: var(--ink); font-size: .86rem; padding: 3px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--bg); }
+  main { max-width: 1040px; margin: 0 auto; padding: 20px 16px 90px; }
+  h1 { font-size: 2rem; margin: 10px 0 2px; }
+  .lead { color: var(--soft); margin: 0 0 18px; }
+  .game { margin: 46px 0 0; padding: 0 0 0 18px; border-left: 8px solid var(--c); }
+  .game > h2 { font-size: 1.75rem; margin: 0; color: var(--c); }
+  .game > .one { font-size: 1.12rem; font-weight: 700; margin: 4px 0 14px; }
+  .g1 { --c: var(--g1); --cbg: var(--g1bg); } .g2 { --c: var(--g2); --cbg: var(--g2bg); }
+  .g3 { --c: var(--g3); --cbg: var(--g3bg); } .g4 { --c: var(--g4); --cbg: var(--g4bg); }
+  h3 { font-size: 1.15rem; margin: 22px 0 6px; display: flex; align-items: center; gap: 8px; }
+  h3 .ic { font-size: 1.2rem; }
+  .box { border-radius: 12px; padding: 12px 16px; margin: 10px 0; background: var(--panel); border: 1px solid var(--line); }
+  .box.decide { background: var(--decidebg); border-color: var(--decide); }
+  .box.decide h3 { color: var(--decide); margin-top: 2px; }
+  .box.data { background: var(--databg); border-color: var(--data); }
+  .box.data h3 { color: var(--data); margin-top: 2px; }
+  .box.play { border: 2px dashed var(--c); }
+  .box.play > h3 { color: var(--c); margin-top: 2px; }
+  ul, ol { margin: 6px 0; padding-left: 22px; }
+  li { margin: 2px 0; }
+  .q { font-weight: 800; margin-top: 10px; }
+  .opt { margin: 2px 0 2px 4px; }
+  .rec { font-weight: 800; color: var(--decide); }
+  .chip { display: inline-block; font-size: .78rem; font-weight: 800; padding: 1px 9px; border-radius: 999px; background: var(--cbg, var(--code)); color: var(--c, var(--ink)); }
+  .lv { display: inline-block; font-weight: 800; padding: 1px 10px; border-radius: 6px; color: #fff; font-size: .85rem; }
+  .lv.l { background: #16a34a; } .lv.m { background: #ca8a04; } .lv.h { background: #dc2626; }
+  .tw { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: .92rem; margin: 6px 0; }
+  th, td { border: 1px solid var(--line); padding: 6px 9px; text-align: left; vertical-align: top; }
+  th { background: var(--code); white-space: nowrap; }
+  .big { font-size: 1.1rem; }
+  .muted { color: var(--soft); font-size: .88rem; }
+  /* ---- prototype UI ---- */
+  .ctl { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 6px 0; }
+  .ctl input[type=text], .ctl input[type=date], .ctl select, .ctl input[type=number] {
+    font: inherit; font-size: .92rem; padding: 5px 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); }
+  button.b { font: inherit; font-size: .9rem; padding: 5px 13px; border-radius: 8px; border: 1px solid var(--c, var(--line)); background: var(--c, var(--panel)); color: #fff; cursor: pointer; font-weight: 700; }
+  button.b.ghost { background: transparent; color: var(--c, var(--ink)); }
+  .sliders { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 4px 14px; }
+  .sliders label { font-size: .85rem; display: flex; flex-direction: column; }
+  .sliders input { width: 100%; }
+  .rowg { display: grid; grid-template-columns: minmax(110px, 1.4fr) repeat(9, minmax(46px, 1fr)); gap: 3px; font-size: .82rem; margin: 3px 0; min-width: 640px; }
+  .rowg > div { padding: 4px 3px; border-radius: 6px; text-align: center; background: var(--code); }
+  .rowg.head > div { background: transparent; font-weight: 800; color: var(--soft); }
+  .rowg .nm { text-align: left; font-weight: 700; }
+  .ok { background: var(--good) !important; color: #fff; } .near { background: var(--warn) !important; color: #111; } .far { background: var(--bad) !important; color: #fff; }
+  .hint { padding: 6px 10px; border-radius: 8px; background: var(--cbg); margin: 3px 0; font-size: .92rem; }
+  .cards { display: flex; flex-wrap: wrap; gap: 12px; margin: 8px 0; }
+  .card { width: 190px; border-radius: 14px; padding: 10px; background: var(--panel); border: 3px solid var(--rc); position: relative; }
+  .card .rar { font-size: .74rem; font-weight: 800; color: #fff; background: var(--rc); border-radius: 999px; padding: 0 8px; display: inline-block; }
+  .card .cn { font-weight: 800; margin-top: 4px; line-height: 1.3; }
+  .card .ct { font-size: .8rem; color: var(--soft); }
+  .card .fate { position: absolute; top: 8px; right: 8px; font-size: .74rem; font-weight: 800; background: gold; color: #111; border-radius: 999px; padding: 0 7px; }
+  .bar { height: 10px; border-radius: 6px; background: var(--code); overflow: hidden; }
+  .bar > span { display: block; height: 100%; background: var(--c); }
+  .albums { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 6px 16px; font-size: .86rem; }
+  .flex { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+  .res { font-size: 1.4rem; font-weight: 900; color: var(--c); }
+  .pill { display: inline-block; padding: 1px 8px; border-radius: 6px; font-size: .82rem; font-weight: 700; }
+  .win { background: var(--good); color: #fff; } .loss { background: #dc2626; color: #fff; }
+  textarea.share { width: 100%; font: inherit; font-size: .9rem; min-height: 90px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); padding: 8px; }
+  .done li { margin: 4px 0; }
+  .sumtable td:first-child { font-weight: 800; white-space: nowrap; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="top"><div class="top-in">
+  <b>🏀 小遊戲提案</b>
+  <a href="#overview">總覽</a>
+  <a href="#you">你的六軸（試玩用）</a>
+  <a href="#g1">① 每日神秘球員</a>
+  <a href="#g2">② 每日球員卡</a>
+  <a href="#g3">③ 朋友對決</a>
+  <a href="#g4">④ 82-0 挑戰</a>
+  <a href="#other">其他決策</a>
+  <a href="#done">已完成的優化</a>
+  <a href="#checklist">決策清單</a>
+</div></div>
+
+<main>
+<h1>小遊戲提案</h1>
+<p class="lead">2026-10-23。四個遊戲都以<b>你自己的測驗結果</b>為核心。每個遊戲有：玩法、跟模板的關聯、用真實資料跑出來的數據、<b style="color:var(--decide)">需要你決定的事</b>、難易度，以及<b>可以直接操作的試玩版</b>。</p>
+
+<!-- ======================= 總覽 ======================= -->
+<h2 id="overview" style="font-size:1.5rem;margin:24px 0 6px">一頁總覽</h2>
+<div class="tw"><table class="sumtable">
+  <tr><th>遊戲</th><th>每天回來的理由</th><th>跟模板的關聯</th><th>難易度</th><th>要先做的事</th><th>建議順序</th></tr>
+  <tr><td style="color:var(--g1)">① 每日神秘球員</td><td>每天一題，大家同一題</td><td>提示用「比你高或低」，猜中顯示他跟你多像</td><td><span class="lv l">低到中</span></td><td>無</td><td class="big"><b>第 1</b></td></tr>
+  <tr><td style="color:var(--g4)">④ 82-0 挑戰</td><td>每天換一個限制條件</td><td>你本人是陣容的第 1 人，輸球原因直接指向你的弱項</td><td><span class="lv m">中</span></td><td>無</td><td class="big"><b>第 2</b></td></tr>
+  <tr><td style="color:var(--g2)">② 每日球員卡</td><td>每天開一包，收集進度</td><td>你的 10 位相似球員是「命定卡」</td><td><span class="lv m">中</span></td><td>無（登入可跨裝置）</td><td class="big"><b>第 3</b></td></tr>
+  <tr><td style="color:var(--g3)">③ 朋友對決</td><td>朋友傳挑戰過來</td><td>兩個人的六角圖直接對打</td><td><span class="lv m">中</span></td><td><b>分享結果連結</b></td><td class="big"><b>第 4</b></td></tr>
+</table></div>
+<ul>
+  <li><b>為什麼 ① 先做：</b>做起來最快，每天一題的回訪效果最強，分享的結果還能帶新人進來。</li>
+  <li><b>為什麼 ③ 最後：</b>它要先有「分享結果連結」，那是另一個獨立功能（見<a href="#other">其他決策</a>），做完分享連結再做 ③ 最順。</li>
+  <li><b>四個遊戲都不違反專案規則：</b>需要「每天不同」的地方都用日期算出固定結果，不用亂數；不查外部資料。</li>
+</ul>
+
+<!-- ======================= 你的六軸 ======================= -->
+<div class="box" id="you" style="margin-top:26px">
+  <h3><span class="ic">🎚️</span>你的六軸（給下面所有試玩版共用）</h3>
+  <p class="muted">正式版會直接用你交卷後的座標。這裡先用滑桿模擬，可以按預設值換成不同類型的使用者，看遊戲會怎麼變。</p>
+  <div class="ctl" id="you-presets"></div>
+  <div class="sliders" id="you-sliders"></div>
+</div>
+
+<!-- ======================= 1 ======================= -->
+<section class="game g1" id="g1">
+  <h2>① 每日神秘球員</h2>
+  <p class="one">每天一位神秘 NBA 球員，最多猜 8 次；每猜錯一次，就多揭露一條「他跟你比」的線索。</p>
+
+  <h3><span class="ic">🎮</span>玩法</h3>
+  <ol>
+    <li>每天 0 點換一位，所有人同一題。</li>
+    <li>在搜尋框輸入球員名字送出。</li>
+    <li>每猜一位，顯示他跟答案的比較：<b>球隊、原型、身高、六個軸</b>。
+      <ul>
+        <li>🟩 綠色：一樣（身高差 3 公分內）</li>
+        <li>🟨 黃色：差一格以內（12.5 分）</li>
+        <li>⬜ 灰色：差很多。箭頭 ↑↓ 告訴你答案比較高還是低</li>
+      </ul>
+    </li>
+    <li><b>「你當尺」線索：</b>每猜錯一次，多揭露一軸「答案比<b>你</b>高還是低」。</li>
+    <li>猜中或用完 8 次後，顯示答案、他跟你的六角圖疊圖、相似度，以及一顆「看他的訓練計劃」按鈕。</li>
+    <li>可以複製一段只有色塊、不洩漏答案的結果分享出去。</li>
+  </ol>
+
+  <h3><span class="ic">🔗</span>跟模板的關聯</h3>
+  <ul>
+    <li>「你當尺」線索用的是<b>你自己的座標</b>，所以同一題每個人拿到的線索不一樣。</li>
+    <li>答案揭曉時接回模板功能：相似度星等、疊圖、訓練計劃（網站已有自選球員訓練計劃的 API，直接沿用）。</li>
+  </ul>
+
+  <h3><span class="ic">✨</span>為什麼吸引人</h3>
+  <ul>
+    <li><b>每天只有一題</b>：玩完就會期待明天，這是 Wordle 帶動回訪的核心。</li>
+    <li><b>大家同一題</b>：可以在群組比「我 3 次就猜到」。</li>
+    <li><b>分享的色塊不洩漏答案</b>：別人看了會想自己試。</li>
+  </ul>
+
+  <div class="box data">
+    <h3><span class="ic">📊</span>數據驗證（用 152 位現役球員實際模擬）</h3>
+    <ul>
+      <li><b>六軸幾乎都能分辨：</b>224 位球員裡只有 1 組 2 個人的六軸完全一樣，所以答案不會撞在一起。</li>
+      <li><b>電腦解題太容易：</b>如果知道每位球員的六軸分數，平均 <b>2 到 2.5 次</b>就能猜中，最多 4 次。</li>
+      <li><b>但真人不知道分數。</b>所以只靠六軸箭頭會很難猜，一定要搭配<b>看得到的線索</b>：球隊、原型、身高。這三個是球迷本來就知道的資訊。</li>
+      <li>每個軸只有 9 種分數（0、12.5、25…100），所以「差一格」剛好等於「黃色」。</li>
+    </ul>
+  </div>
+
+  <div class="box decide">
+    <h3><span class="ic">🟣</span>需要你決定的事</h3>
+    <p class="q">1. 題目從哪個球員池出？</p>
+    <div class="opt"><span class="rec">✅ 建議：只出現役 152 位。</span>大家比較熟，猜得到才好玩。</div>
+    <div class="opt">替代：週末出歷史球員，當作進階題。</div>
+    <p class="q">2. 最多猜幾次？</p>
+    <div class="opt"><span class="rec">✅ 建議：8 次。</span>真人不知道六軸分數，比電腦難很多；先寬鬆，上線後看平均猜幾次再調。</div>
+    <p class="q">3. 還沒做測驗的人能玩嗎？</p>
+    <div class="opt"><span class="rec">✅ 建議：能玩，但沒有「你當尺」線索，</span>並在畫面上提示「做完測驗會多一條專屬線索」，順便把人帶去做測驗。</div>
+    <p class="q">4. 連續天數要不要記？</p>
+    <div class="opt"><span class="rec">✅ 建議：先記在瀏覽器裡（不用登入）。</span>登入的人之後再同步到帳號。</div>
+  </div>
+
+  <h3><span class="ic">🛠️</span>實作範圍與難易度 <span class="lv l">低到中</span></h3>
+  <ul>
+    <li><b>engine：</b>新增「依日期算出當天球員」的純函數（日期是輸入，不在函數裡讀時間）和比對函數，各自補單元測試。</li>
+    <li><b>後端：</b>一支 API 回傳當天球員的「題目編號」和比對結果，不直接把答案傳給瀏覽器。</li>
+    <li><b>前端：</b>新的一頁：搜尋框、比對表格、線索、揭曉畫面、分享文字。</li>
+    <li><b>資料：</b>不用新增資料檔。</li>
+  </ul>
+
+  <div class="box play">
+    <h3><span class="ic">▶️</span>試玩版</h3>
+    <div class="ctl">日期 <input type="date" id="m-date"> <button class="b ghost" id="m-reset">重新開始</button>
+      <span class="muted">（換日期就是換一題）</span></div>
+    <div class="ctl"><input type="text" id="m-input" list="m-list" placeholder="輸入球員名字" style="min-width:240px"><datalist id="m-list"></datalist>
+      <button class="b" id="m-guess">猜</button> <span id="m-left" class="muted"></span></div>
+    <div id="m-hints"></div>
+    <div class="tw"><div id="m-rows"></div></div>
+    <div id="m-end"></div>
+  </div>
+</section>
+
+<!-- ======================= 2 ======================= -->
+<section class="game g2" id="g2">
+  <h2>② 每日球員卡收集</h2>
+  <p class="one">每天開一包 3 張球員卡，收集全部 224 位；你的 10 位相似球員是金色的「命定卡」。</p>
+
+  <h3><span class="ic">🎮</span>玩法</h3>
+  <ol>
+    <li>每天可以開 <b>1 包、每包 3 張</b>。</li>
+    <li><b>不會抽到重複的卡</b>，直到收齊全部。</li>
+    <li>卡片分四種稀有度，越稀有越晚出現。</li>
+    <li>收集冊分三種：<b>12 個原型冊</b>、<b>30 支球隊冊</b>、<b>你的命定 10 人冊</b>。收齊一本就解鎖一個徽章。</li>
+    <li>點卡片可以看那位球員的六角圖和他跟你的相似度。</li>
+  </ol>
+
+  <h3><span class="ic">🔗</span>跟模板的關聯</h3>
+  <ul>
+    <li><b>命定卡：</b>你測驗結果裡的 10 位相似球員，抽到時是金色邊框。重測後名單會變，就有新的命定卡要收。</li>
+    <li>每張卡都顯示<b>他跟你有幾顆星像</b>，收卡的同時也在認識自己的球風。</li>
+  </ul>
+
+  <h3><span class="ic">✨</span>為什麼吸引人</h3>
+  <ul>
+    <li><b>收集進度</b>：看到「原型冊 7 / 8」會想把最後一張收到。</li>
+    <li><b>每天只能開一包</b>：給每天打開網站一個固定理由。</li>
+    <li><b>稀有卡</b>：抽到傳奇卡會想截圖分享。</li>
+  </ul>
+
+  <div class="box data">
+    <h3><span class="ic">📊</span>數據驗證</h3>
+    <div class="tw"><table>
+      <tr><th>抽卡規則</th><th>收齊 152 位現役</th><th>收齊全部 224 位</th></tr>
+      <tr><td>每天 1 張、可能重複</td><td>約 852 天</td><td>約 1,342 天</td></tr>
+      <tr><td>每天 3 張、可能重複</td><td>約 284 天</td><td>約 447 天</td></tr>
+      <tr><td><b>每天 3 張、不重複（建議）</b></td><td><b>51 天</b></td><td><b>75 天</b></td></tr>
+    </table></div>
+    <ul>
+      <li><b>允許重複的話要一年以上才收得齊</b>，大部分人中途就放棄。所以建議不重複。</li>
+      <li><b>原型冊大小差很多：</b>「無球射手」只有 4 位（現役 2 + 歷史 2），「雙能衛」有 44 位。小冊子適合當前期的小目標。</li>
+      <li><b>稀有度用資料算：</b>傳奇 = 72 位歷史球員；明星 = 六軸總分前 10% 的現役球員（總分 387.5 以上，例如 Jokic、SGA、Giannis）；主力 = 接下來的 30%；角色 = 其餘。</li>
+    </ul>
+  </div>
+
+  <div class="box decide">
+    <h3><span class="ic">🟣</span>需要你決定的事</h3>
+    <p class="q">1. 每個人抽到的卡一樣嗎？</p>
+    <div class="opt"><span class="rec">✅ 建議：每個人不一樣。</span>用「使用者 + 日期」算出固定結果，同一個人同一天重新整理也一樣。</div>
+    <div class="opt">替代：所有人同一天抽到同一包，可以在群組討論「今天的包很爛」，但收集感比較弱。</div>
+    <p class="q">2. 沒登入的人能玩嗎？</p>
+    <div class="opt"><span class="rec">✅ 建議：能，收集冊存在瀏覽器裡；</span>登入後可以跨裝置保存。清除瀏覽器資料就會不見，要在畫面上講清楚。</div>
+    <p class="q">3. 收齊之後呢？</p>
+    <div class="opt"><span class="rec">✅ 建議：開放「第二輪」：同樣的卡換一種卡框重新收一次。</span>先不用做，等真的有人收齊再說。</div>
+  </div>
+
+  <h3><span class="ic">🛠️</span>實作範圍與難易度 <span class="lv m">中</span></h3>
+  <ul>
+    <li><b>engine：</b>稀有度判定、「依使用者 + 日期抽 3 張未擁有的卡」的純函數，補單元測試。</li>
+    <li><b>後端：</b>新增收藏冊資料表（使用者、球員、取得日期）和 2 支 API：開今天的包、讀收藏冊。</li>
+    <li><b>前端：</b>卡片設計是工作量最大的部分：卡框、稀有度、迷你六角圖、收集冊頁面。</li>
+  </ul>
+
+  <div class="box play">
+    <h3><span class="ic">▶️</span>試玩版</h3>
+    <div class="ctl">使用者代號 <input type="text" id="c-user" value="demo" style="width:110px">
+      第 <input type="number" id="c-day" min="1" max="80" value="1" style="width:70px"> 天
+      <button class="b ghost" id="c-prev">前一天</button><button class="b" id="c-next">開下一天的包</button></div>
+    <p class="muted">試玩版會從第 1 天一路模擬到你選的那一天，顯示當天的 3 張和累積的收集進度。</p>
+    <div class="cards" id="c-pack"></div>
+    <div id="c-progress"></div>
+  </div>
+</section>
+
+<!-- ======================= 3 ======================= -->
+<section class="game g3" id="g3">
+  <h2>③ 朋友對決</h2>
+  <p class="one">把你的結果傳給朋友，兩個人的六角圖直接對打：誰比較像某位球星、一對一誰守得住誰、合體之後像誰。</p>
+
+  <h3><span class="ic">🎮</span>玩法</h3>
+  <ol>
+    <li>你在結果頁按「挑戰朋友」，拿到一個連結。</li>
+    <li>朋友打開連結，先看到你的原型名稱（看不到細節），要<b>自己做完測驗</b>才能開打。</li>
+    <li>對決畫面有三個結果：
+      <ul>
+        <li><b>一對一：</b>你的進攻對他的防守、他的進攻對你的防守，逐項比，看誰贏得多。</li>
+        <li><b>誰更像：</b>挑一位球星，看你們誰比較像他。</li>
+        <li><b>合體：</b>兩個人每一軸取比較強的那個，看合起來最像哪位球員。</li>
+      </ul>
+    </li>
+    <li>對決結果也能再分享出去。</li>
+  </ol>
+
+  <h3><span class="ic">🔗</span>跟模板的關聯</h3>
+  <ul>
+    <li>對打的就是兩個人的<b>六軸座標</b>，相似度沿用模板的距離算式。</li>
+    <li>朋友要先做測驗才能看結果，<b>每次對決都會帶來一份新的測驗</b>。</li>
+  </ul>
+
+  <h3><span class="ic">✨</span>為什麼吸引人</h3>
+  <ul>
+    <li>打球的朋友之間本來就愛比，這給比較一個有數據的理由。</li>
+    <li>「合體像誰」是好玩的意外結果，適合截圖。</li>
+    <li>這是四個遊戲裡<b>唯一會主動帶新使用者進來</b>的。</li>
+  </ul>
+
+  <div class="box data">
+    <h3><span class="ic">📊</span>規則說明</h3>
+    <ul>
+      <li><b>一對一的三組比較：</b>外圍進攻（持球創造、外線投射的平均）對外圍防守；禁區進攻（禁區得分）對禁區防守；運動表現對運動表現。</li>
+      <li><b>合體：</b>每一軸取兩人中較高的分數，再用模板的距離算式找最接近的球員。</li>
+      <li>全部都是固定算式，同樣的兩個人永遠得到同樣結果。</li>
+    </ul>
+  </div>
+
+  <div class="box decide">
+    <h3><span class="ic">🟣</span>需要你決定的事</h3>
+    <p class="q">1. 連結裡要不要包含身高體重？</p>
+    <div class="opt"><span class="rec">✅ 建議：不要。</span>連結只放 12 題六軸作答。身高體重是個人資料，放進連結等於公開給任何拿到連結的人。</div>
+    <p class="q">2. 朋友不做測驗能看結果嗎？</p>
+    <div class="opt"><span class="rec">✅ 建議：不能，</span>只看得到你的原型名稱。這是帶新人進來的關鍵。</div>
+    <p class="q">3. 先做分享連結嗎？</p>
+    <div class="opt"><span class="rec">✅ 建議：是。</span>分享連結本身就很有用（重新整理不會不見、可以傳給別人看），朋友對決是它的延伸。</div>
+  </div>
+
+  <h3><span class="ic">🛠️</span>實作範圍與難易度 <span class="lv m">中</span>（不含分享連結）</h3>
+  <ul>
+    <li><b>先決條件：</b>分享結果連結（作答編碼進網址）。</li>
+    <li><b>engine：</b>一對一比較、合體兩個純函數，補單元測試。</li>
+    <li><b>前端：</b>對決頁：疊圖、三張結果卡、挑戰連結。</li>
+  </ul>
+
+  <div class="box play">
+    <h3><span class="ic">▶️</span>試玩版</h3>
+    <p class="muted">「你」用最上面的滑桿；朋友用下面這組。</p>
+    <div class="ctl" id="d-presets"></div>
+    <div class="sliders" id="d-sliders"></div>
+    <div class="ctl">誰更像 <input type="text" id="d-star" list="m-list" value="Stephen Curry" style="min-width:220px"></div>
+    <div class="flex"><div id="d-radar"></div><div id="d-result" style="flex:1;min-width:260px"></div></div>
+  </div>
+</section>
+
+<!-- ======================= 4 ======================= -->
+<section class="game g4" id="g4">
+  <h2>④ 幫自己組隊：挑戰 82-0</h2>
+  <p class="one">你本人加上 4 位 NBA 球員組成一隊，在薪資上限內打完 82 場例行賽，目標全勝。</p>
+
+  <h3><span class="ic">🎮</span>玩法</h3>
+  <ol>
+    <li>你一定在隊上，用你自己的六軸。</li>
+    <li>從現役球員挑 4 位隊友。每位球員有<b>身價</b>，五個人（<b>包含你</b>）的總身價不能超過上限。</li>
+    <li>按「開打」：對 30 支 NBA 球隊打 82 場（22 隊打 3 場、8 隊打 2 場）。</li>
+    <li>結果顯示戰績，以及<b>每一場輸球的原因</b>，例如「禁區防守輸給 DEN」。</li>
+    <li>每天換一個條件，例如上限變低、指定聯賽環境、禁用某些球星。</li>
+  </ol>
+
+  <h3><span class="ic">🔗</span>跟模板的關聯</h3>
+  <ul>
+    <li><b>你的六軸直接上場。</b>你弱的那一軸，就要找隊友補。</li>
+    <li><b>輸球原因指向你的弱項</b>，畫面上可以直接連到訓練計劃：「練好禁區防守，就能贏 DEN」。</li>
+    <li>每日條件可以用網站已有的 4 種<b>聯賽環境</b>，讓那個設定有了新用途。</li>
+  </ul>
+
+  <h3><span class="ic">✨</span>為什麼吸引人</h3>
+  <ul>
+    <li><b>組隊是球迷最愛的事</b>，「82-0」是一個清楚又有挑戰性的目標。</li>
+    <li><b>有解謎的成就感</b>：結果是固定的，找到一組全勝陣容就是解開了今天的題目。</li>
+    <li>可以比「誰用最少的薪資打出 82-0」。</li>
+  </ul>
+
+  <div class="box data">
+    <h3><span class="ic">📊</span>數據驗證（用 152 位現役球員、30 支球隊實際模擬）</h3>
+    <ul>
+      <li><b>每場比賽怎麼算：</b>球隊每一軸 = 0.6 × 隊上最高分 + 0.4 × 五人平均。你的外圍進攻減對手的外圍防守，加上禁區那一組，再減掉對手對你的同樣比較，加一半的運動表現差距；大於 0 就贏。</li>
+      <li><b>對手名單：</b>每隊取資料裡最強的 5 人，不足 5 人的用 40 分的板凳球員補。</li>
+      <li><b>身價：</b>六軸總分 ÷ 40 四捨五入，現役球員是 2 到 12。</li>
+      <li><b>薪資上限試了 30、34、38、42：</b>
+        <div class="tw"><table>
+          <tr><th>上限</th><th>找得到 82-0 的使用者類型</th><th>隨便挑 4 位就全勝的機率</th><th>判斷</th></tr>
+          <tr><td>30</td><td>0 / 6（最好 60 到 79 勝）</td><td>0%</td><td>太難</td></tr>
+          <tr><td>34</td><td>0 / 6（最好 70 到 79 勝）</td><td>0%</td><td>太難</td></tr>
+          <tr><td>38</td><td>2 / 6</td><td>0%（全選 5 分的人 4.9%）</td><td>偏難</td></tr>
+          <tr><td><b>42</b></td><td><b>6 / 6</b></td><td><b>0%（全選 5 分的人 56%）</b></td><td><b>剛好，但有漏洞</b></td></tr>
+        </table></div></li>
+      <li><b>漏洞：</b>全部選 5 分的人身價只算 15，薪資空間還很多，隨便挑都有一半以上的機會全勝。</li>
+      <li><b>解法：你自己的身價乘 1.3。</b>全選 5 分的人隨便挑的全勝機率降到 <b>1.3%</b>，其他類型的人仍然找得到 82-0。灌高自評分數不再有好處，因為會吃掉薪資空間。</li>
+      <li><b>確認有解：</b>用更強的搜尋（每種類型 6 次 × 20,000 步）重跑，<b>七種使用者類型全部找得到 82-0</b>，而且都剛好用滿或接近薪資上限，代表上限設得夠緊。</li>
+      <li><b>⚠️ 發現一個問題：有兩位「必選」球員。</b>Stephen Curry 和 Ausar Thompson 幾乎出現在每一組全勝陣容裡，因為他們的球風強度相對身價特別划算。如果不處理，大家會抄同一組答案。
+        <ul><li><b>解法：</b>每日條件輪流禁用「最常出現在解答裡」的球員，或者讓身價依「出現在多少組解答裡」調整。</li></ul></li>
+      <li class="muted">六種使用者類型：全選 1、新手、全選 3、射手型、長人型、全選 5。每種用電腦搜尋 3 次 × 3,000 步找最好的陣容，再隨機抽 1,500 組合法陣容算全勝機率。</li>
+    </ul>
+  </div>
+
+  <div class="box decide">
+    <h3><span class="ic">🟣</span>需要你決定的事</h3>
+    <p class="q">1. 薪資上限多少？</p>
+    <div class="opt"><span class="rec">✅ 建議：42（包含你自己）。</span>每種使用者都有解，但要動腦才找得到。</div>
+    <p class="q">2. 你自己的身價要不要加重？</p>
+    <div class="opt"><span class="rec">✅ 建議：乘 1.3。</span>這樣自評灌水會吃掉薪資空間，不會讓遊戲變簡單。</div>
+    <p class="q">3. 業餘球員跟 NBA 球員同隊，分數不是同一把尺，要不要說明？</p>
+    <div class="opt"><span class="rec">✅ 建議：在畫面上寫一句「這是遊戲，用你的球風組隊，不代表真實實力」。</span>這個尺度差異在模板功能也存在，這裡只要講清楚就好。</div>
+    <p class="q">4. 每日條件先做哪幾種？</p>
+    <div class="opt"><span class="rec">✅ 建議先做 3 種：</span>上限變動（38 到 46）、指定聯賽環境（用現有 4 種的倍率）、<b>禁用當天 3 位最常出現在解答裡的球員</b>（例如 Curry、Ausar Thompson）。</div>
+    <div class="opt muted">每天的條件定案後，都要先用電腦搜尋確認當天至少有一組 82-0 的解，再上線。這可以在離線腳本裡做，網站執行時不用算。</div>
+    <p class="q">5. 要不要排行榜（誰用最少薪資打出 82-0）？</p>
+    <div class="opt"><span class="rec">✅ 建議：先不做，</span>等使用統計顯示有人在玩再說。排行榜要防作弊，成本不低。</div>
+  </div>
+
+  <h3><span class="ic">🛠️</span>實作範圍與難易度 <span class="lv m">中</span></h3>
+  <ul>
+    <li><b>engine：</b>球隊數值、單場勝負、整季戰績、輸球原因四個純函數，補單元測試。比賽結果完全固定，不用亂數。</li>
+    <li><b>資料：</b>不用新資料，球隊名單從現有球員資料的球隊欄位組出來。</li>
+    <li><b>前端：</b>選隊友（沿用現有的球員搜尋）、身價計算、戰績和輸球原因的畫面。</li>
+    <li><b>要注意：</b>球員資料更新後（換隊、新增球員），對手陣容和難度都會跟著變，每次更新資料都要重跑一次難度模擬。</li>
+  </ul>
+
+  <div class="box play">
+    <h3><span class="ic">▶️</span>試玩版</h3>
+    <div class="ctl">薪資上限 <b id="t-cap"></b>　你的身價 <b id="t-you"></b>　隊友已用 <b id="t-used"></b>　剩下 <b id="t-room"></b></div>
+    <div class="ctl" id="t-pickers"></div>
+    <div class="ctl"><button class="b" id="t-run">開打 82 場</button><button class="b ghost" id="t-hint">讓電腦找一組（簡單搜尋，常卡在 79 勝；正式版不會有這顆）</button></div>
+    <div id="t-out"></div>
+  </div>
+</section>
+
+<!-- ======================= 其他決策 ======================= -->
+<h2 id="other" style="font-size:1.5rem;margin:56px 0 6px">其他需要你決定的功能變更</h2>
+<p class="lead">這些不是小遊戲，但會影響網站方向，所以列出來讓你決定，<b>我都還沒有動手做</b>。</p>
+
+<div class="box decide">
+  <h3><span class="ic">🔗</span>A. 分享結果連結 <span class="lv l">低到中</span></h3>
+  <ul>
+    <li><b>是什麼：</b>把 12 題作答（和選填的身高體重）編進網址，打開連結就重算出同樣的結果。</li>
+    <li><b>為什麼：</b>沒登入的人重新整理就全部消失；結果也沒辦法傳給別人看。上次議會三位都把它排第一。朋友對決也要它。</li>
+    <li><b>要決定：</b>身高體重要不要放進連結？<span class="rec">✅ 建議預設不放</span>，分享時讓使用者自己勾選。</li>
+  </ul>
+</div>
+
+<div class="box decide">
+  <h3><span class="ic">📈</span>B. 簡單的使用統計 <span class="lv l">低</span></h3>
+  <ul>
+    <li><b>是什麼：</b>在現有資料庫多記三個數字：做完測驗的次數、打開訓練計劃頁的次數、玩每個小遊戲的次數。不記任何個人資料。</li>
+    <li><b>為什麼：</b>現在只有一個瀏覽人次，不知道哪些功能有人用。做了小遊戲之後，更需要知道哪個值得繼續投資。</li>
+    <li><b>要決定：</b>要不要做？<span class="rec">✅ 建議做，</span>跟第一個小遊戲一起上線。</li>
+  </ul>
+</div>
+
+<div class="box decide">
+  <h3><span class="ic">📋</span>C. 訓練菜單要不要補動作步驟</h3>
+  <ul>
+    <li><b>現況：</b>你先前決定菜單只列名稱和組數。議會裡 Rams 認為業餘球員只看名稱做不出來。</li>
+    <li><b>要決定：</b><span class="rec">✅ 建議先補最常出現的 3 項技能，</span>每項 2 到 3 行加一個常見錯誤；等 B 的統計顯示有人在看訓練頁，再補其餘的。</li>
+  </ul>
+</div>
+
+<div class="box decide">
+  <h3><span class="ic">🖼️</span>D. 社群預覽圖</h3>
+  <ul>
+    <li><b>現況：</b>這次已經加了網頁描述和網站圖示（見下方），但還沒有預覽圖。</li>
+    <li><b>為什麼卡住：</b>預覽圖要寫完整網址（例如 <code>https://你的網域/og.png</code>），我不確定網站正式的網址是哪一個。</li>
+    <li><b>要決定：</b>告訴我正式網址，我就把預覽圖做好、補上設定。</li>
+  </ul>
+</div>
+
+<!-- ======================= 已完成 ======================= -->
+<h2 id="done" style="font-size:1.5rem;margin:56px 0 6px">這次已經自動完成的優化</h2>
+<p class="lead">這些是不改變功能方向的修正，照你說的直接做了。<b>都已經 commit，還沒有 push</b>，你確認後再 push 就會上線。</p>
+<div class="box done" style="border-left:6px solid var(--done)">
+  <ul>
+    <li><b>修好首頁「注意事項」的標題錯誤</b>：標題標籤沒有關好，瀏覽器把底下三行說明都當成標題，整段變成粗體。已用瀏覽器確認修好後恢復正常字重。<code>eae4d65</code></li>
+    <li><b>加上網頁描述、社群分享的標題和描述、網站圖示（🏀）</b>：連結貼到 LINE 或 Facebook 會顯示一段說明，瀏覽器分頁有圖示。<code>eae4d65</code></li>
+    <li><b>加上 GitHub 自動測試</b>：每次 push 都會自動跑引擎、後端兩組測試和導覽檢查，失敗時 GitHub 上會出現紅色叉叉。CLAUDE.md 原本就要求要有。<code>e330546</code></li>
+    <li><b>檢查過但不需要改：後端速度。</b>產生一份完整結果約 6 毫秒，其中讀檔只佔 1 毫秒，加快取省不了多少，不值得增加複雜度。</li>
+    <li><b>這份提案檔本身</b>放在 <code>docs/proposals/</code>，也已登記到專案導覽。</li>
+    <li class="muted">兩組測試都通過（引擎與資料、後端）。</li>
+  </ul>
+</div>
+
+<!-- ======================= 決策清單 ======================= -->
+<h2 id="checklist" style="font-size:1.5rem;margin:56px 0 6px">決策清單（回覆我這幾題就好）</h2>
+<div class="box decide">
+  <ol class="big">
+    <li><b>要做哪幾個小遊戲、什麼順序？</b>建議：① → ④ → ② → ③。</li>
+    <li><b>① 每日神秘球員</b>：照上面四個建議？</li>
+    <li><b>④ 82-0</b>：照上面的建議？</li>
+    <li><b>② 球員卡</b>：每個人抽到不一樣、不重複、沒登入也能玩？</li>
+    <li><b>③ 朋友對決</b>：先做分享連結、連結不含身高體重？</li>
+    <li><b>B. 使用統計</b>：要做嗎？</li>
+    <li><b>C. 動作步驟</b>：先補 3 項？</li>
+    <li><b>D. 網站正式網址</b>是？</li>
+    <li><b>已完成的優化</b>：可以 push 嗎？</li>
+  </ol>
+</div>
+</main>
+
+<script>
+const DATA = {"arch":["控場指揮官","雙能衛","無球射手","3D 側翼","防守大鎖","全能鋒線","空間型內線","背框中鋒","護框長人","空切終結者","爆發突破手","藍領工兵"],"players":[{"id":"amen_thompson","n":"Amen Thompson","t":"HOU","p":"c","c":[87.5,12.5,75.0,75.0,62.5,100.0],"h":201,"w":109,"a":10,"s":"換防跟防","tr":["轉換進攻速度快","禁區終結能力強","防守可以覆蓋多個位置"]},{"id":"nikola_jokic","n":"Nikola Jokic","t":"DEN","p":"c","c":[62.5,87.5,100.0,50.0,75.0,87.5],"h":211,"w":108,"a":5,"s":"高位傳導視野","tr":["高位傳導視野極佳","低位單打腳步細膩","策應型中鋒"]},{"id":"stephen_curry","n":"Stephen Curry","t":"GSW","p":"c","c":[87.5,100.0,100.0,50.0,12.5,37.5],"h":188,"w":83,"a":1,"s":"外線投射","tr":["超遠三分出手","無球跑動接球即投","持球投籃節奏獨特"]},{"id":"rudy_gobert","n":"Rudy Gobert","t":"MIN","p":"c","c":[0.0,0.0,37.5,25.0,87.5,12.5],"h":216,"w":126,"a":7,"s":"護框","tr":["護框覆蓋範圍大","擋拆順下終結","禁區卡位能力強"]},{"id":"luka_doncic","n":"Luka Doncic","t":"DAL","p":"c","c":[100.0,87.5,87.5,50.0,37.5,62.5],"h":201,"w":98,"a":1,"s":"面框第一步過人","tr":["持球創造能力強","後撤步跳投製造空間","傳導視野好"]},{"id":"draymond_green","n":"Draymond Green","t":"GSW","p":"c","c":[50.0,25.0,12.5,87.5,75.0,50.0],"h":198,"w":104,"a":4,"s":"換防跟防","tr":["高位傳導組織進攻","換防彈性大","防守溝通指揮強"]},{"id":"klay_thompson","n":"Klay Thompson","t":"DAL","p":"c","c":[25.0,50.0,62.5,37.5,37.5,25.0],"h":198,"w":100,"a":6,"s":"外線投射","tr":["無球跑動投射效率高","定點接球出手快","擋拆後外拉投籃"]},{"id":"giannis_antetokounmpo","n":"Giannis Antetokounmpo","t":"MIL","p":"c","c":[87.5,12.5,87.5,87.5,75.0,100.0],"h":211,"w":119,"a":5,"s":"面框第一步過人","tr":["快攻轉換終結力強","禁區強力終結","防守覆蓋範圍大"]},{"id":"victor_wembanyama","n":"Victor Wembanyama","t":"SAS","p":"c","c":[37.5,62.5,75.0,75.0,100.0,37.5],"h":224,"w":125,"a":5,"s":"護框","tr":["護框跟外圍換防都能做","臂展跟移動能力罕見組合","身材加持的多位置防守"]},{"id":"jrue_holiday","n":"Jrue Holiday","t":"BOS","p":"c","c":[62.5,62.5,75.0,87.5,25.0,12.5],"h":193,"w":94,"a":1,"s":"換防跟防","tr":["貼身跟防能力強","換防不吃虧","無球跑動投射穩定"]},{"id":"domantas_sabonis","n":"Domantas Sabonis","t":"SAC","p":"c","c":[25.0,25.0,75.0,12.5,37.5,12.5],"h":211,"w":117,"a":7,"s":"高位傳導視野","tr":["高位/低位策應能力強","禁區卡位拿板穩定","傳導視野好"]},{"id":"mikal_bridges","n":"Mikal Bridges","t":"NYK","p":"c","c":[62.5,75.0,87.5,87.5,62.5,62.5],"h":198,"w":97,"a":5,"s":"換防跟防","tr":["3&D 側翼定位清楚","貼身跟防外線持球者","無球跑動投射穩定"]},{"id":"kevin_durant","n":"Kevin Durant","t":"PHX","p":"c","c":[75.0,100.0,100.0,37.5,62.5,50.0],"h":208,"w":103,"a":5,"s":"面框第一步過人","tr":["中距離跳投難防守","面框單打腳步好","身材優勢下的投籃選擇多"]},{"id":"nikola_vucevic","n":"Nikola Vucevic","t":"CHI","p":"c","c":[12.5,62.5,75.0,0.0,62.5,12.5],"h":211,"w":112,"a":7,"s":"高位傳導視野","tr":["高位傳導組織進攻","中距離跳投穩定","禁區卡位拿板"]},{"id":"alex_caruso","n":"Alex Caruso","t":"OKC","p":"c","c":[50.0,50.0,62.5,100.0,37.5,37.5],"h":196,"w":98,"a":4,"s":"換防跟防","tr":["抄截嗅覺強","貼身跟防持球者","換防彈性大"]},{"id":"bam_adebayo","n":"Bam Adebayo","t":"MIA","p":"c","c":[37.5,37.5,62.5,62.5,75.0,87.5],"h":206,"w":110,"a":5,"s":"護框","tr":["護框跟外圍換防都能做","高位策應能力好","防守溝通指揮強"]},{"id":"buddy_hield","n":"Buddy Hield","t":"GSW","p":"c","c":[50.0,25.0,37.5,75.0,25.0,12.5],"h":196,"w":102,"a":4,"s":"外線投射","tr":["純射手型側翼","無球跑動接球即投","出手速度快"]},{"id":"anthony_davis","n":"Anthony Davis","t":"LAL","p":"c","c":[37.5,25.0,62.5,62.5,87.5,87.5],"h":208,"w":114,"a":11,"s":"護框","tr":["護框覆蓋範圍大","換防外拉也能守","身材加持的多位置防守"]},{"id":"chris_paul","n":"Chris Paul","t":"SAS","p":"c","c":[75.0,87.5,50.0,75.0,37.5,12.5],"h":183,"w":80,"a":1,"s":"高位傳導視野","tr":["持球節奏掌控力強","傳導視野好","地板型但決策速度快"]},{"id":"deaaron_fox","n":"De'Aaron Fox","t":"SAC","p":"c","c":[87.5,62.5,12.5,75.0,12.5,62.5],"h":191,"w":92,"a":0,"s":"面框第一步過人","tr":["轉換速度快","面框第一步過人銳利","貼身跟防能力不錯"]},{"id":"joel_embiid","n":"Joel Embiid","t":"PHI","p":"c","c":[25.0,75.0,87.5,25.0,75.0,12.5],"h":213,"w":112,"a":6,"s":"背框單打","tr":["背框腳步細膩","面框跳投穩定","護框覆蓋佳"]},{"id":"karl_anthony_towns","n":"Karl-Anthony Towns","t":"NYK","p":"c","c":[37.5,62.5,75.0,12.5,62.5,75.0],"h":213,"w":114,"a":9,"s":"背框單打","tr":["背框腳步柔軟","外線出手穩定","換防彈性一般"]},{"id":"tyrese_haliburton","n":"Tyrese Haliburton","t":"IND","p":"c","c":[87.5,87.5,25.0,75.0,50.0,37.5],"h":196,"w":93,"a":1,"s":"擋拆持球判斷","tr":["擋拆傳導視野極佳","節奏掌控好","跳投穩定"]},{"id":"trae_young","n":"Trae Young","t":"ATL","p":"c","c":[87.5,87.5,12.5,25.0,0.0,37.5],"h":183,"w":80,"a":1,"s":"擋拆持球判斷","tr":["擋拆製造犯規能力強","遠距離出手穩定","傳導視野好"]},{"id":"desmond_bane","n":"Desmond Bane","t":"MEM","p":"c","c":[50.0,87.5,37.5,50.0,37.5,37.5],"h":196,"w":93,"a":1,"s":"掩護無球跑動","tr":["無球跑動效率高","定點三分穩定","擋拆後外拉投籃"]},{"id":"duncan_robinson","n":"Duncan Robinson","t":"MIA","p":"c","c":[37.5,62.5,25.0,25.0,25.0,0.0],"h":201,"w":102,"a":6,"s":"掩護無球跑動","tr":["純射手型跑動","利用掩護效率頂級","出手速度快"]},{"id":"pascal_siakam","n":"Pascal Siakam","t":"IND","p":"c","c":[50.0,25.0,87.5,50.0,62.5,62.5],"h":203,"w":109,"a":5,"s":"轉換快攻終結","tr":["轉換終結能力強","面框腳步好","中距離跳投穩定"]},{"id":"herbert_jones","n":"Herbert Jones","t":"NOP","p":"c","c":[37.5,25.0,12.5,100.0,75.0,37.5],"h":198,"w":104,"a":4,"s":"轉換快攻終結","tr":["快攻終結效率高","貼身跟防能力強","防守覆蓋範圍大"]},{"id":"damian_lillard","n":"Damian Lillard","t":"MIL","p":"c","c":[87.5,100.0,12.5,37.5,0.0,75.0],"h":188,"w":83,"a":1,"s":"罰球","tr":["罰球穩定","遠距離出手果斷","擋拆持球判斷好"]},{"id":"jayson_tatum","n":"Jayson Tatum","t":"BOS","p":"c","c":[75.0,87.5,75.0,75.0,50.0,75.0],"h":203,"w":100,"a":5,"s":"罰球","tr":["罰球穩定","面框單打腳步好","中距離跳投多樣"]},{"id":"clint_capela","n":"Clint Capela","t":"ATL","p":"c","c":[0.0,0.0,25.0,25.0,87.5,12.5],"h":208,"w":118,"a":8,"s":"前場籃板/二次進攻","tr":["前場籃板嗅覺佳","擋拆順下終結","護框補位"]},{"id":"steven_adams","n":"Steven Adams","t":"HOU","p":"c","c":[12.5,0.0,0.0,12.5,75.0,0.0],"h":211,"w":121,"a":8,"s":"前場籃板/二次進攻","tr":["前場籃板卡位兇悍","卡位意識強","掩護扎實"]},{"id":"marcus_smart","n":"Marcus Smart","t":"WAS","p":"c","c":[37.5,12.5,37.5,100.0,50.0,0.0],"h":191,"w":99,"a":4,"s":"一對一外圍單防","tr":["一對一單防兇悍","抄截嗅覺強","防守溝通指揮"]},{"id":"lu_dort","n":"Lu Dort","t":"OKC","p":"c","c":[50.0,50.0,0.0,87.5,62.5,75.0],"h":193,"w":96,"a":3,"s":"一對一外圍單防","tr":["一對一單防強悍","體格對抗能力強","貼身跟防穩定"]},{"id":"derrick_white","n":"Derrick White","t":"BOS","p":"c","c":[87.5,62.5,0.0,62.5,50.0,25.0],"h":193,"w":94,"a":0,"s":"協防補位輪轉","tr":["協防補位判斷好","換防彈性大","外線出手穩定"]},{"id":"jarrett_allen","n":"Jarrett Allen","t":"CLE","p":"c","c":[0.0,12.5,50.0,0.0,75.0,75.0],"h":211,"w":119,"a":8,"s":"防守籃板卡位","tr":["防守籃板卡位扎實","擋拆順下終結","護框補位"]},{"id":"nic_claxton","n":"Nic Claxton","t":"BKN","p":"c","c":[0.0,12.5,12.5,62.5,87.5,75.0],"h":211,"w":119,"a":8,"s":"防守籃板卡位","tr":["防守籃板積極","護框覆蓋不錯","轉換終結速度快"]},{"id":"josh_hart","n":"Josh Hart","t":"NYK","p":"c","c":[50.0,37.5,25.0,50.0,25.0,62.5],"h":196,"w":100,"a":5,"s":"決策效率/失誤控制","tr":["持球推進穩定不失誤","籃板意識好","防守肯拚"]},{"id":"mike_conley","n":"Mike Conley","t":"MIN","p":"c","c":[87.5,50.0,0.0,62.5,0.0,37.5],"h":185,"w":88,"a":0,"s":"決策效率/失誤控制","tr":["持球節奏掌控力強","失誤率極低","傳導視野好"]},{"id":"anthony_edwards","n":"Anthony Edwards","t":"MIN","p":"c","c":[75.0,75.0,50.0,75.0,37.5,37.5],"h":196,"w":95,"a":1,"s":"面框第一步過人","tr":["面框第一步爆發力強","轉換終結能力強","身材對抗優勢"]},{"id":"shai_gilgeous_alexander","n":"Shai Gilgeous-Alexander","t":"OKC","p":"c","c":[100.0,87.5,62.5,87.5,62.5,75.0],"h":198,"w":95,"a":5,"s":"面框第一步過人","tr":["面框第一步變速變向","中距離終結穩定","罰球製造能力強"]},{"id":"myles_turner","n":"Myles Turner","t":"MIL","p":"c","c":[0.0,62.5,62.5,25.0,87.5,12.5],"h":211,"w":112,"a":6,"s":"護框","tr":["護框補位效率高","外線出手穩定","轉換速度尚可"]},{"id":"brook_lopez","n":"Brook Lopez","t":"LAC","p":"c","c":[0.0,50.0,50.0,0.0,100.0,12.5],"h":213,"w":116,"a":7,"s":"護框","tr":["護框覆蓋範圍大","外線出手穩定","卡位意識好"]},{"id":"og_anunoby","n":"OG Anunoby","t":"NYK","p":"c","c":[25.0,50.0,12.5,62.5,87.5,75.0],"h":201,"w":104,"a":11,"s":"換防跟防","tr":["換防跟防能力強","3&D 定位清楚","體格對抗能力好"]},{"id":"andrew_wiggins","n":"Andrew Wiggins","t":"MIA","p":"c","c":[50.0,50.0,50.0,12.5,75.0,75.0],"h":201,"w":104,"a":5,"s":"換防跟防","tr":["換防彈性大","轉換終結能力強","體型優勢明顯"]},{"id":"julius_randle","n":"Julius Randle","t":"MIN","p":"c","c":[50.0,37.5,75.0,12.5,12.5,62.5],"h":203,"w":107,"a":9,"s":"高位傳導視野","tr":["高位策應視野不錯","面框單打腳步好","籃板意識強"]},{"id":"evan_mobley","n":"Evan Mobley","t":"CLE","p":"c","c":[37.5,25.0,62.5,0.0,87.5,62.5],"h":211,"w":117,"a":8,"s":"高位傳導視野","tr":["高位策應傳導不錯","護框補位效率高","轉換速度快"]},{"id":"cj_mccollum","n":"CJ McCollum","t":"WAS","p":"c","c":[62.5,75.0,12.5,0.0,37.5,62.5],"h":188,"w":87,"a":1,"s":"外線投射","tr":["中距離急停跳投穩定","無球跑動投射效率高","擋拆持球判斷好"]},{"id":"tyler_herro","n":"Tyler Herro","t":"MIA","p":"c","c":[62.5,87.5,25.0,0.0,37.5,25.0],"h":196,"w":93,"a":6,"s":"外線投射","tr":["持球投籃節奏獨特","擋拆後外拉投籃","罰球穩定"]},{"id":"lebron_james","n":"LeBron James","t":"LAL","p":"c","c":[87.5,37.5,75.0,12.5,50.0,87.5],"h":206,"w":110,"a":10,"s":"高位傳導視野","tr":["持球創造能力頂級","傳導視野極佳","轉換終結力強"]},{"id":"kawhi_leonard","n":"Kawhi Leonard","t":"LAC","p":"c","c":[75.0,100.0,87.5,100.0,37.5,62.5],"h":201,"w":96,"a":3,"s":"一對一外圍單防","tr":["中距離跳投穩定","單防兇悍","面框單打腳步好"]},{"id":"paul_george","n":"Paul George","t":"PHI","p":"c","c":[75.0,75.0,50.0,87.5,37.5,62.5],"h":203,"w":102,"a":5,"s":"換防跟防","tr":["三分出手多樣","單防能力強","轉換終結穩定"]},{"id":"devin_booker","n":"Devin Booker","t":"PHX","p":"c","c":[87.5,87.5,75.0,0.0,25.0,62.5],"h":196,"w":93,"a":1,"s":"罰球","tr":["中距離急停跳投頂級","擋拆持球判斷好","罰球穩定"]},{"id":"kyrie_irving","n":"Kyrie Irving","t":"DAL","p":"c","c":[87.5,100.0,37.5,25.0,37.5,25.0],"h":188,"w":83,"a":1,"s":"擋拆持球判斷","tr":["持球變向過人頂級","終結手法多樣","罰球穩定"]},{"id":"james_harden","n":"James Harden","t":"LAC","p":"c","c":[87.5,87.5,50.0,12.5,37.5,87.5],"h":196,"w":93,"a":1,"s":"擋拆持球判斷","tr":["擋拆持球判斷頂級","罰球製造能力強","傳導視野好"]},{"id":"zion_williamson","n":"Zion Williamson","t":"NOP","p":"c","c":[50.0,25.0,62.5,12.5,37.5,100.0],"h":198,"w":104,"a":9,"s":"轉換快攻終結","tr":["禁區終結力驚人","轉換衝擊力強","體型對抗優勢"]},{"id":"ja_morant","n":"Ja Morant","t":"MEM","p":"c","c":[100.0,50.0,25.0,12.5,12.5,87.5],"h":191,"w":94,"a":0,"s":"轉換快攻終結","tr":["轉換終結爆發力強","擋拆突破速度快","空中對抗能力強"]},{"id":"donovan_mitchell","n":"Donovan Mitchell","t":"CLE","p":"c","c":[87.5,87.5,25.0,62.5,25.0,87.5],"h":185,"w":82,"a":1,"s":"罰球","tr":["持球得分效率高","轉換終結能力強","罰球穩定"]},{"id":"jaylen_brown","n":"Jaylen Brown","t":"BOS","p":"c","c":[62.5,75.0,75.0,0.0,37.5,75.0],"h":198,"w":97,"a":1,"s":"轉換快攻終結","tr":["轉換終結力強","面框單打腳步好","防守覆蓋範圍不錯"]},{"id":"bradley_beal","n":"Bradley Beal","t":"PHX","p":"c","c":[62.5,75.0,50.0,25.0,25.0,50.0],"h":193,"w":92,"a":1,"s":"掩護無球跑動","tr":["中距離跳投穩定","無球跑動效率高","擋拆後急停跳投"]},{"id":"jimmy_butler","n":"Jimmy Butler","t":"GSW","p":"c","c":[75.0,75.0,62.5,75.0,50.0,75.0],"h":201,"w":100,"a":5,"s":"罰球","tr":["罰球穩定","單防兇悍","決策效率高"]},{"id":"kristaps_porzingis","n":"Kristaps Porzingis","t":"ATL","p":"c","c":[25.0,75.0,75.0,12.5,75.0,25.0],"h":221,"w":120,"a":6,"s":"護框","tr":["外線出手穩定","護框補位效率高","轉換終結能力不錯"]},{"id":"alperen_sengun","n":"Alperen Sengun","t":"HOU","p":"c","c":[25.0,25.0,87.5,50.0,75.0,25.0],"h":208,"w":114,"a":7,"s":"高位傳導視野","tr":["高位策應傳導能力好","背框腳步細膩","籃板意識強"]},{"id":"lamelo_ball","n":"LaMelo Ball","t":"CHA","p":"c","c":[100.0,75.0,25.0,62.5,25.0,37.5],"h":201,"w":100,"a":0,"s":"擋拆持球判斷","tr":["傳導視野頂級","遠距離出手果斷","持球節奏多變"]},{"id":"scottie_barnes","n":"Scottie Barnes","t":"TOR","p":"c","c":[62.5,62.5,87.5,87.5,87.5,87.5],"h":201,"w":102,"a":5,"s":"高位傳導視野","tr":["高位策應傳導不錯","換防彈性大","轉換終結能力強"]},{"id":"cade_cunningham","n":"Cade Cunningham","t":"DET","p":"c","c":[87.5,87.5,75.0,75.0,62.5,62.5],"h":198,"w":95,"a":5,"s":"擋拆持球判斷","tr":["持球節奏掌控力強","傳導視野好","中距離跳投穩定"]},{"id":"paolo_banchero","n":"Paolo Banchero","t":"ORL","p":"c","c":[50.0,50.0,75.0,25.0,50.0,75.0],"h":206,"w":108,"a":5,"s":"罰球","tr":["面框單打腳步好","罰球穩定","轉換終結能力不錯"]},{"id":"franz_wagner","n":"Franz Wagner","t":"ORL","p":"c","c":[62.5,75.0,37.5,50.0,37.5,37.5],"h":203,"w":102,"a":1,"s":"決策效率/失誤控制","tr":["持球推進穩定不失誤","防守肯拚","中距離跳投穩定"]},{"id":"jalen_brunson","n":"Jalen Brunson","t":"NYK","p":"c","c":[100.0,100.0,62.5,37.5,25.0,62.5],"h":188,"w":83,"a":1,"s":"擋拆持球判斷","tr":["擋拆持球判斷好","罰球製造能力強","持球節奏掌控力強"]},{"id":"tyrese_maxey","n":"Tyrese Maxey","t":"PHI","p":"c","c":[87.5,87.5,12.5,75.0,50.0,62.5],"h":185,"w":82,"a":1,"s":"轉換快攻終結","tr":["轉換終結速度快","持球投籃節奏獨特","罰球穩定"]},{"id":"coby_white","n":"Coby White","t":"CHI","p":"c","c":[75.0,37.5,25.0,12.5,12.5,50.0],"h":196,"w":100,"a":0,"s":"掩護無球跑動","tr":["持球投籃節奏獨特","無球跑動投射穩定","轉換終結能力不錯"]},{"id":"zach_lavine","n":"Zach LaVine","t":"SAC","p":"c","c":[62.5,75.0,50.0,12.5,25.0,75.0],"h":196,"w":95,"a":1,"s":"轉換快攻終結","tr":["轉換終結爆發力強","中距離跳投穩定","空中對抗能力強"]},{"id":"demar_derozan","n":"DeMar DeRozan","t":"SAC","p":"c","c":[62.5,87.5,87.5,25.0,37.5,75.0],"h":201,"w":98,"a":5,"s":"背框單打","tr":["中距離背框單打腳步細膩","罰球穩定","面框單打腳步好"]},{"id":"fred_vanvleet","n":"Fred VanVleet","t":"HOU","p":"c","c":[75.0,50.0,0.0,75.0,12.5,37.5],"h":183,"w":86,"a":0,"s":"決策效率/失誤控制","tr":["持球節奏掌控力強","外線出手穩定","抄截嗅覺不錯"]},{"id":"immanuel_quickley","n":"Immanuel Quickley","t":"TOR","p":"c","c":[75.0,75.0,25.0,62.5,0.0,37.5],"h":188,"w":87,"a":1,"s":"擋拆持球判斷","tr":["擋拆持球判斷不錯","外線出手穩定","罰球穩定"]},{"id":"rj_barrett","n":"RJ Barrett","t":"TOR","p":"c","c":[75.0,25.0,62.5,50.0,25.0,75.0],"h":198,"w":104,"a":10,"s":"轉換快攻終結","tr":["轉換終結能力不錯","面框單打腳步好","罰球穩定"]},{"id":"deandre_ayton","n":"Deandre Ayton","t":"LAL","p":"c","c":[25.0,12.5,75.0,0.0,75.0,62.5],"h":213,"w":121,"a":7,"s":"前場籃板/二次進攻","tr":["擋拆順下終結穩定","背框腳步不錯","前場籃板嗅覺好"]},{"id":"walker_kessler","n":"Walker Kessler","t":"UTA","p":"c","c":[0.0,25.0,62.5,25.0,87.5,12.5],"h":213,"w":119,"a":7,"s":"護框","tr":["護框覆蓋範圍大","防守籃板卡位扎實","擋拆順下終結"]},{"id":"chet_holmgren","n":"Chet Holmgren","t":"OKC","p":"c","c":[25.0,62.5,62.5,75.0,100.0,12.5],"h":213,"w":114,"a":6,"s":"護框","tr":["護框補位效率高","外線出手穩定","轉換速度快"]},{"id":"jaren_jackson_jr","n":"Jaren Jackson Jr.","t":"MEM","p":"c","c":[12.5,25.0,87.5,50.0,87.5,50.0],"h":211,"w":117,"a":7,"s":"護框","tr":["護框覆蓋範圍大","外線出手穩定","轉換速度不錯"]},{"id":"naz_reid","n":"Naz Reid","t":"MIN","p":"c","c":[25.0,25.0,75.0,25.0,75.0,37.5],"h":208,"w":114,"a":7,"s":"背框單打","tr":["外線出手穩定","背框腳步不錯","轉換速度尚可"]},{"id":"isaiah_hartenstein","n":"Isaiah Hartenstein","t":"OKC","p":"c","c":[12.5,12.5,50.0,25.0,75.0,37.5],"h":213,"w":121,"a":7,"s":"防守籃板卡位","tr":["高位策應傳導不錯","防守籃板卡位扎實","掩護扎實"]},{"id":"onyeka_okongwu","n":"Onyeka Okongwu","t":"ATL","p":"c","c":[25.0,62.5,62.5,37.5,75.0,62.5],"h":206,"w":107,"a":5,"s":"協防補位輪轉","tr":["協防補位效率高","防守籃板卡位扎實","轉換速度快"]},{"id":"ivica_zubac","n":"Ivica Zubac","t":"LAC","p":"c","c":[12.5,0.0,87.5,12.5,75.0,12.5],"h":213,"w":123,"a":7,"s":"防守籃板卡位","tr":["防守籃板卡位扎實","護框補位不錯","卡位意識好"]},{"id":"daniel_gafford","n":"Daniel Gafford","t":"DAL","p":"c","c":[0.0,0.0,50.0,25.0,87.5,50.0],"h":208,"w":118,"a":8,"s":"護框","tr":["擋拆順下終結效率高","護框補位不錯","轉換終結速度快"]},{"id":"mitchell_robinson","n":"Mitchell Robinson","t":"NYK","p":"c","c":[12.5,0.0,25.0,37.5,87.5,25.0],"h":213,"w":123,"a":8,"s":"前場籃板/二次進攻","tr":["護框覆蓋範圍大","前場籃板嗅覺佳","擋拆順下終結"]},{"id":"robert_williams_iii","n":"Robert Williams III","t":"POR","p":"c","c":[12.5,12.5,50.0,50.0,87.5,50.0],"h":206,"w":114,"a":11,"s":"前場籃板/二次進攻","tr":["護框補位效率高","前場籃板積極","轉換速度快"]},{"id":"al_horford","n":"Al Horford","t":"GSW","p":"c","c":[12.5,62.5,62.5,37.5,87.5,37.5],"h":206,"w":107,"a":6,"s":"高位傳導視野","tr":["外線出手穩定","高位策應傳導不錯","防守經驗豐富"]},{"id":"kevon_looney","n":"Kevon Looney","t":"GSW","p":"c","c":[25.0,0.0,25.0,25.0,75.0,12.5],"h":206,"w":116,"a":7,"s":"前場籃板/二次進攻","tr":["前場籃板卡位兇悍","卡位意識強","掩護扎實"]},{"id":"jonas_valanciunas","n":"Jonas Valanciunas","t":"DEN","p":"c","c":[0.0,37.5,75.0,0.0,62.5,12.5],"h":211,"w":115,"a":7,"s":"背框單打","tr":["背框腳步扎實","防守籃板卡位穩定","卡位意識好"]},{"id":"bobby_portis","n":"Bobby Portis","t":"MIL","p":"c","c":[37.5,37.5,37.5,25.0,25.0,25.0],"h":206,"w":110,"a":6,"s":"前場籃板/二次進攻","tr":["外線出手穩定","前場籃板積極","轉換速度尚可"]},{"id":"jalen_duren","n":"Jalen Duren","t":"DET","p":"c","c":[25.0,0.0,87.5,25.0,75.0,87.5],"h":208,"w":118,"a":9,"s":"前場籃板/二次進攻","tr":["擋拆順下終結效率高","前場籃板嗅覺佳","轉換終結速度快"]},{"id":"tari_eason","n":"Tari Eason","t":"HOU","p":"c","c":[25.0,12.5,12.5,87.5,62.5,50.0],"h":203,"w":111,"a":4,"s":"協防補位輪轉","tr":["協防補位判斷好","轉換終結能力不錯","防守覆蓋範圍大"]},{"id":"dyson_daniels","n":"Dyson Daniels","t":"ATL","p":"c","c":[62.5,12.5,25.0,100.0,50.0,50.0],"h":196,"w":104,"a":4,"s":"一對一外圍單防","tr":["一對一單防兇悍","抄截嗅覺強","防守覆蓋範圍大"]},{"id":"ausar_thompson","n":"Ausar Thompson","t":"DET","p":"c","c":[62.5,12.5,25.0,100.0,75.0,100.0],"h":198,"w":106,"a":4,"s":"轉換快攻終結","tr":["轉換終結爆發力強","防守覆蓋範圍大","一對一單防不錯"]},{"id":"jalen_williams","n":"Jalen Williams","t":"OKC","p":"c","c":[75.0,50.0,50.0,87.5,62.5,75.0],"h":198,"w":100,"a":5,"s":"協防補位輪轉","tr":["持球推進穩定","協防補位判斷好","中距離跳投穩定"]},{"id":"jaden_mcdaniels","n":"Jaden McDaniels","t":"MIN","p":"c","c":[25.0,87.5,37.5,75.0,75.0,50.0],"h":201,"w":98,"a":3,"s":"換防跟防","tr":["換防跟防能力強","3&D 定位清楚","體格對抗能力好"]},{"id":"deni_avdija","n":"Deni Avdija","t":"POR","p":"c","c":[50.0,62.5,37.5,50.0,50.0,62.5],"h":206,"w":107,"a":5,"s":"協防補位輪轉","tr":["高位策應傳導不錯","協防補位判斷好","轉換終結能力不錯"]},{"id":"cam_johnson","n":"Cam Johnson","t":"DEN","p":"c","c":[12.5,62.5,37.5,25.0,50.0,25.0],"h":201,"w":102,"a":6,"s":"掩護無球跑動","tr":["無球跑動投射效率高","定點三分穩定","擋拆後外拉投籃"]},{"id":"cameron_thomas","n":"Cameron Thomas","t":"BKN","p":"c","c":[37.5,87.5,12.5,12.5,12.5,25.0],"h":191,"w":88,"a":2,"s":"罰球","tr":["持球投籃節奏獨特","罰球穩定","轉換終結能力不錯"]},{"id":"anfernee_simons","n":"Anfernee Simons","t":"POR","p":"c","c":[62.5,75.0,37.5,12.5,12.5,50.0],"h":191,"w":90,"a":1,"s":"掩護無球跑動","tr":["持球投籃節奏獨特","無球跑動投射效率高","擋拆後外拉投籃"]},{"id":"jordan_poole","n":"Jordan Poole","t":"WAS","p":"c","c":[75.0,25.0,12.5,12.5,25.0,25.0],"h":193,"w":99,"a":0,"s":"罰球","tr":["持球投籃節奏獨特","擋拆持球判斷不錯","罰球穩定"]},{"id":"malik_monk","n":"Malik Monk","t":"SAC","p":"c","c":[62.5,75.0,12.5,12.5,25.0,37.5],"h":191,"w":90,"a":1,"s":"罰球","tr":["持球投籃節奏獨特","轉換終結能力不錯","罰球穩定"]},{"id":"austin_reaves","n":"Austin Reaves","t":"LAL","p":"c","c":[75.0,50.0,12.5,25.0,12.5,50.0],"h":196,"w":98,"a":0,"s":"決策效率/失誤控制","tr":["持球節奏掌控力強","罰球穩定","決策效率高"]},{"id":"norman_powell","n":"Norman Powell","t":"MIA","p":"c","c":[62.5,50.0,12.5,62.5,25.0,50.0],"h":191,"w":94,"a":0,"s":"掩護無球跑動","tr":["無球跑動投射效率高","轉換終結能力不錯","擋拆後外拉投籃"]},{"id":"gary_trent_jr","n":"Gary Trent Jr.","t":"MIL","p":"c","c":[50.0,75.0,12.5,12.5,12.5,50.0],"h":196,"w":95,"a":2,"s":"掩護無球跑動","tr":["無球跑動投射效率高","定點三分穩定","單防不錯"]},{"id":"bogdan_bogdanovic","n":"Bogdan Bogdanovic","t":"LAC","p":"c","c":[50.0,37.5,25.0,25.0,12.5,37.5],"h":198,"w":102,"a":0,"s":"掩護無球跑動","tr":["無球跑動投射效率高","擋拆持球判斷不錯","定點三分穩定"]},{"id":"kentavious_caldwell_pope","n":"Kentavious Caldwell-Pope","t":"ORL","p":"c","c":[37.5,87.5,12.5,62.5,25.0,37.5],"h":196,"w":93,"a":3,"s":"掩護無球跑動","tr":["3&D 定位清楚","無球跑動投射穩定","單防能力不錯"]},{"id":"aaron_gordon","n":"Aaron Gordon","t":"DEN","p":"c","c":[25.0,37.5,37.5,50.0,62.5,75.0],"h":203,"w":107,"a":11,"s":"轉換快攻終結","tr":["轉換終結爆發力強","前場籃板積極","體格對抗能力強"]},{"id":"michael_porter_jr","n":"Michael Porter Jr.","t":"BKN","p":"c","c":[50.0,75.0,50.0,37.5,37.5,75.0],"h":208,"w":107,"a":5,"s":"掩護無球跑動","tr":["定點三分穩定","無球跑動投射效率高","轉換速度尚可"]},{"id":"keldon_johnson","n":"Keldon Johnson","t":"SAS","p":"c","c":[50.0,62.5,100.0,37.5,37.5,37.5],"h":196,"w":97,"a":5,"s":"轉換快攻終結","tr":["轉換終結能力不錯","面框單打腳步好","籃板意識好"]},{"id":"devin_vassell","n":"Devin Vassell","t":"SAS","p":"c","c":[50.0,87.5,37.5,50.0,50.0,25.0],"h":198,"w":95,"a":6,"s":"掩護無球跑動","tr":["無球跑動投射效率高","單防能力不錯","定點三分穩定"]},{"id":"jeremy_sochan","n":"Jeremy Sochan","t":"SAS","p":"c","c":[50.0,12.5,37.5,37.5,50.0,25.0],"h":203,"w":111,"a":7,"s":"協防補位輪轉","tr":["協防補位判斷好","持球推進不錯","換防彈性大"]},{"id":"jabari_smith_jr","n":"Jabari Smith Jr.","t":"HOU","p":"c","c":[37.5,50.0,87.5,25.0,62.5,50.0],"h":208,"w":110,"a":7,"s":"護框","tr":["外線出手穩定","護框補位不錯","轉換速度尚可"]},{"id":"tyus_jones","n":"Tyus Jones","t":"ORL","p":"c","c":[62.5,37.5,12.5,62.5,0.0,0.0],"h":185,"w":89,"a":0,"s":"決策效率/失誤控制","tr":["持球節奏掌控力強","失誤率極低","傳導視野好"]},{"id":"dennis_schroder","n":"Dennis Schroder","t":"SAC","p":"c","c":[75.0,37.5,0.0,50.0,12.5,25.0],"h":185,"w":89,"a":0,"s":"擋拆持球判斷","tr":["擋拆持球判斷不錯","轉換速度快","防守肯拚"]},{"id":"dangelo_russell","n":"D'Angelo Russell","t":"BKN","p":"c","c":[50.0,87.5,37.5,0.0,0.0,75.0],"h":193,"w":90,"a":1,"s":"擋拆持球判斷","tr":["擋拆持球判斷不錯","傳導視野好","定點三分穩定"]},{"id":"collin_sexton","n":"Collin Sexton","t":"CHA","p":"c","c":[75.0,75.0,12.5,62.5,12.5,50.0],"h":185,"w":84,"a":1,"s":"罰球","tr":["轉換終結能力不錯","持球投籃節奏獨特","罰球穩定"]},{"id":"terry_rozier","n":"Terry Rozier","t":"MIA","p":"c","c":[87.5,25.0,62.5,37.5,37.5,100.0],"h":185,"w":91,"a":10,"s":"擋拆持球判斷","tr":["持球投籃節奏獨特","擋拆持球判斷不錯","轉換終結能力不錯"]},{"id":"malcolm_brogdon","n":"Malcolm Brogdon","t":"WAS","p":"c","c":[75.0,75.0,12.5,50.0,25.0,25.0],"h":193,"w":92,"a":1,"s":"決策效率/失誤控制","tr":["持球節奏掌控力強","罰球穩定","傳導視野好"]},{"id":"payton_pritchard","n":"Payton Pritchard","t":"BOS","p":"c","c":[62.5,87.5,25.0,12.5,12.5,12.5],"h":185,"w":82,"a":1,"s":"掩護無球跑動","tr":["無球跑動投射效率高","持球投籃節奏獨特","罰球穩定"]},{"id":"josh_giddey","n":"Josh Giddey","t":"CHI","p":"c","c":[87.5,12.5,37.5,25.0,37.5,37.5],"h":206,"w":114,"a":10,"s":"高位傳導視野","tr":["傳導視野好","籃板意識不錯","持球節奏掌控力尚可"]},{"id":"keegan_murray","n":"Keegan Murray","t":"SAC","p":"c","c":[37.5,25.0,50.0,50.0,75.0,37.5],"h":201,"w":107,"a":11,"s":"掩護無球跑動","tr":["無球跑動投射效率高","定點三分穩定","轉換速度尚可"]},{"id":"brandon_miller","n":"Brandon Miller","t":"CHA","p":"c","c":[62.5,75.0,12.5,50.0,37.5,62.5],"h":201,"w":100,"a":1,"s":"外線投射","tr":["外線出手穩定","面框單打腳步好","轉換終結能力不錯"]},{"id":"zach_edey","n":"Zach Edey","t":"MEM","p":"c","c":[12.5,37.5,75.0,0.0,87.5,12.5],"h":224,"w":128,"a":7,"s":"防守籃板卡位","tr":["禁區終結力強","防守籃板卡位扎實","卡位意識好"]},{"id":"donovan_clingan","n":"Donovan Clingan","t":"POR","p":"c","c":[12.5,25.0,50.0,0.0,87.5,12.5],"h":216,"w":122,"a":7,"s":"護框","tr":["護框覆蓋範圍大","防守籃板卡位扎實","卡位意識好"]},{"id":"matas_buzelis","n":"Matas Buzelis","t":"CHI","p":"c","c":[37.5,50.0,37.5,12.5,75.0,75.0],"h":206,"w":108,"a":11,"s":"外線投射","tr":["外線出手潛力不錯","轉換終結能力不錯","面框單打腳步尚可"]},{"id":"bennedict_mathurin","n":"Bennedict Mathurin","t":"IND","p":"c","c":[50.0,50.0,25.0,25.0,12.5,50.0],"h":196,"w":98,"a":1,"s":"轉換快攻終結","tr":["轉換終結爆發力強","罰球穩定","持球投籃節奏不錯"]},{"id":"andrew_nembhard","n":"Andrew Nembhard","t":"IND","p":"c","c":[62.5,62.5,25.0,62.5,37.5,12.5],"h":193,"w":94,"a":0,"s":"決策效率/失誤控制","tr":["持球節奏掌控力強","單防能力不錯","傳導視野好"]},{"id":"obi_toppin","n":"Obi Toppin","t":"IND","p":"c","c":[25.0,25.0,62.5,0.0,25.0,62.5],"h":206,"w":112,"a":9,"s":"轉換快攻終結","tr":["轉換終結爆發力強","外線出手不錯","空中對抗能力強"]},{"id":"aaron_nesmith","n":"Aaron Nesmith","t":"IND","p":"c","c":[25.0,37.5,37.5,37.5,62.5,50.0],"h":198,"w":102,"a":11,"s":"掩護無球跑動","tr":["無球跑動投射效率高","防守肯拚","轉換終結能力不錯"]},{"id":"jalen_green","n":"Jalen Green","t":"HOU","p":"c","c":[75.0,50.0,25.0,62.5,12.5,62.5],"h":196,"w":98,"a":0,"s":"轉換快攻終結","tr":["轉換終結爆發力強","持球投籃節奏獨特","空中對抗能力強"]},{"id":"kelly_oubre_jr","n":"Kelly Oubre Jr.","t":"PHI","p":"c","c":[37.5,50.0,37.5,62.5,37.5,50.0],"h":201,"w":104,"a":5,"s":"轉換快攻終結","tr":["轉換終結能力不錯","外線出手尚可","體格對抗能力好"]},{"id":"nickeil_alexander_walker","n":"Nickeil Alexander-Walker","t":"ATL","p":"c","c":[50.0,75.0,25.0,75.0,37.5,25.0],"h":196,"w":95,"a":3,"s":"換防跟防","tr":["換防跟防能力不錯","外線出手穩定","協防補位判斷好"]},{"id":"jalen_johnson","n":"Jalen Johnson","t":"ATL","p":"c","c":[62.5,62.5,62.5,37.5,50.0,50.0],"h":203,"w":104,"a":5,"s":"轉換快攻終結","tr":["轉換終結爆發力強","協防補位判斷好","籃板意識強"]},{"id":"jamal_murray","n":"Jamal Murray","t":"DEN","p":"c","c":[75.0,87.5,62.5,37.5,12.5,37.5],"h":193,"w":90,"a":1,"s":"外線投射","tr":["中距離跟三分出手穩定","關鍵時刻敢出手","擋拆持球判斷不錯"]},{"id":"brandon_ingram","n":"Brandon Ingram","t":"LAC","p":"c","c":[62.5,75.0,62.5,25.0,25.0,62.5],"h":203,"w":102,"a":1,"s":"面框第一步過人","tr":["面框單打腳步細膩","中距離跳投穩定","長臂干擾投籃"]},{"id":"khris_middleton","n":"Khris Middleton","t":"WAS","p":"c","c":[50.0,75.0,50.0,37.5,25.0,37.5],"h":201,"w":100,"a":6,"s":"背框單打","tr":["中距離出手選擇好","低位單打腳步穩","團隊進攻串聯佳"]},{"id":"jonathan_kuminga","n":"Jonathan Kuminga","t":"MIN","p":"c","c":[50.0,25.0,37.5,37.5,50.0,62.5],"h":201,"w":107,"a":5,"s":"轉換快攻終結","tr":["轉換快攻終結能力強","運動能力出色","協防補位速度快"]},{"id":"jakob_poeltl","n":"Jakob Poeltl","t":"TOR","p":"c","c":[0.0,12.5,75.0,12.5,62.5,25.0],"h":213,"w":121,"a":7,"s":"護框","tr":["擋拆順下終結穩定","護框判斷好","卡位搶籃板扎實"]},{"id":"harrison_barnes","n":"Harrison Barnes","t":"SAS","p":"c","c":[50.0,62.5,75.0,25.0,25.0,62.5],"h":201,"w":102,"a":5,"s":"掩護無球跑動","tr":["定點三分穩定","無球跑動找空檔","團隊防守紀律好"]},{"id":"jerami_grant","n":"Jerami Grant","t":"MEM","p":"c","c":[50.0,50.0,50.0,37.5,50.0,50.0],"h":201,"w":104,"a":5,"s":"外線投射","tr":["外線出手穩定","轉換終結效率高","協防補位移動快"]},{"id":"kyle_kuzma","n":"Kyle Kuzma","t":"MIL","p":"c","c":[50.0,50.0,50.0,37.5,37.5,50.0],"h":206,"w":108,"a":5,"s":"面框第一步過人","tr":["持球單打手段多","籃板卡位積極","轉換推進速度尚可"]},{"id":"grayson_allen","n":"Grayson Allen","t":"CHA","p":"c","c":[62.5,87.5,12.5,50.0,12.5,37.5],"h":191,"w":88,"a":1,"s":"掩護無球跑動","tr":["無球跑動投射精準","罰球線穩定","體能耐力好"]},{"id":"jalen_suggs","n":"Jalen Suggs","t":"ORL","p":"c","c":[75.0,62.5,62.5,100.0,37.5,62.5],"h":196,"w":97,"a":5,"s":"換防跟防","tr":["換防跟防能力頂級","抄截嗅覺敏銳","協防補位判斷好"]},{"id":"shaedon_sharpe","n":"Shaedon Sharpe","t":"POR","p":"c","c":[62.5,50.0,12.5,62.5,12.5,50.0],"h":196,"w":98,"a":0,"s":"轉換快攻終結","tr":["運動能力出色","轉換終結能力強","持球突破有爆發力"]},{"id":"jaden_ivey","n":"Jaden Ivey","t":"FA","p":"c","c":[75.0,50.0,12.5,37.5,12.5,62.5],"h":193,"w":96,"a":0,"s":"轉換快攻終結","tr":["持球推進速度快","運動能力出色","轉換終結能力不錯"]},{"id":"cason_wallace","n":"Cason Wallace","t":"OKC","p":"c","c":[62.5,50.0,0.0,100.0,50.0,37.5],"h":191,"w":94,"a":3,"s":"一對一外圍單防","tr":["抄截嗅覺頂級","換防跟防能力好","協防補位判斷佳"]},{"id":"trey_murphy_iii","n":"Trey Murphy III","t":"NOP","p":"c","c":[37.5,62.5,25.0,37.5,37.5,50.0],"h":203,"w":104,"a":6,"s":"外線投射","tr":["定點三分穩定","協防補位移動快","罰球線手感好"]},{"id":"patrick_williams","n":"Patrick Williams","t":"CHI","p":"c","c":[37.5,50.0,12.5,37.5,37.5,37.5],"h":201,"w":104,"a":6,"s":"換防跟防","tr":["換防跟防能力不錯","協防補位判斷好","中距離出手尚可"]},{"id":"scoot_henderson","n":"Scoot Henderson","t":"POR","p":"c","c":[75.0,50.0,0.0,37.5,12.5,50.0],"h":191,"w":94,"a":0,"s":"擋拆持球判斷","tr":["持球推進速度快","運動能力出色","擋拆持球判斷尚可"]},{"id":"kevin_love","n":"Kevin Love","t":"UTA","p":"c","c":[25.0,62.5,62.5,12.5,50.0,37.5],"h":203,"w":104,"a":6,"s":"防守籃板卡位","tr":["外線出手穩定","籃板卡位意識佳","長傳發動快攻精準"]},{"id":"michael_jordan","n":"Michael Jordan","t":"1996","p":"h","c":[75.0,87.5,100.0,87.5,25.0,87.5],"h":198,"w":95,"a":5,"s":"面框第一步過人","tr":["中距離急停跳投致命","一對一單防很難被過","轉換快攻終結能力強"]},{"id":"kobe_bryant","n":"Kobe Bryant","t":"2006","p":"h","c":[87.5,87.5,50.0,62.5,37.5,87.5],"h":198,"w":95,"a":1,"s":"面框第一步過人","tr":["中距離跟後仰跳投多樣","高強度訓練出來的得分手感","關鍵時刻單打選擇多"]},{"id":"magic_johnson","n":"Magic Johnson","t":"1987","p":"h","c":[100.0,75.0,87.5,62.5,50.0,87.5],"h":206,"w":105,"a":5,"s":"高位傳導視野","tr":["大體型控衛視野極佳","快攻推進傳球華麗","禁區低位單打技巧不錯"]},{"id":"larry_bird","n":"Larry Bird","t":"1986","p":"h","c":[50.0,100.0,87.5,75.0,25.0,12.5],"h":206,"w":101,"a":6,"s":"外線投射","tr":["外線出手範圍極廣","傳導視野好","比賽閱讀能力出色"]},{"id":"wilt_chamberlain","n":"Wilt Chamberlain","t":"1967","p":"h","c":[12.5,0.0,75.0,62.5,100.0,37.5],"h":216,"w":126,"a":7,"s":"前場籃板/二次進攻","tr":["禁區得分效率驚人","籃板控制力強","體能天賦聯盟史上頂級"]},{"id":"bill_russell","n":"Bill Russell","t":"1962","p":"h","c":[12.5,0.0,75.0,75.0,100.0,87.5],"h":208,"w":118,"a":11,"s":"護框","tr":["護框覆蓋範圍大","籃板卡位意識強","團隊防守指揮官"]},{"id":"kareem_abdul_jabbar","n":"Kareem Abdul-Jabbar","t":"1977","p":"h","c":[12.5,12.5,87.5,37.5,87.5,0.0],"h":218,"w":126,"a":7,"s":"背框單打","tr":["天勾出手難以防守","禁區腳步細膩","生涯得分效率長年穩定"]},{"id":"oscar_robertson","n":"Oscar Robertson","t":"1964","p":"h","c":[100.0,100.0,50.0,75.0,25.0,100.0],"h":196,"w":91,"a":1,"s":"決策效率/失誤控制","tr":["場均大三元等級的全面性","持球推進穩定","中距離出手可靠"]},{"id":"jerry_west","n":"Jerry West","t":"1965","p":"h","c":[87.5,87.5,37.5,100.0,12.5,87.5],"h":188,"w":85,"a":1,"s":"面框第一步過人","tr":["關鍵時刻得分能力強","中距離跳投穩定","持球推進效率高"]},{"id":"elgin_baylor","n":"Elgin Baylor","t":"1962","p":"h","c":[62.5,50.0,75.0,62.5,50.0,87.5],"h":196,"w":98,"a":5,"s":"轉換快攻終結","tr":["滯空能力領先時代","轉換終結能力強","籃板意識好"]},{"id":"julius_erving","n":"Julius Erving","t":"1980","p":"h","c":[75.0,37.5,62.5,75.0,50.0,100.0],"h":198,"w":102,"a":5,"s":"轉換快攻終結","tr":["滯空拉桿終結能力強","轉換快攻觀賞性高","運動能力領先同時代"]},{"id":"moses_malone","n":"Moses Malone","t":"1983","p":"h","c":[12.5,12.5,100.0,75.0,100.0,50.0],"h":208,"w":116,"a":11,"s":"前場籃板/二次進攻","tr":["前場籃板二次進攻能力頂級","禁區腳步紮實","體能耐操"]},{"id":"isiah_thomas","n":"Isiah Thomas","t":"1990","p":"h","c":[100.0,37.5,0.0,75.0,0.0,100.0],"h":185,"w":89,"a":0,"s":"擋拆持球判斷","tr":["控場能力強","關鍵時刻得分手感好","持球推進速度快"]},{"id":"george_gervin","n":"George Gervin","t":"1980","p":"h","c":[62.5,75.0,62.5,87.5,62.5,100.0],"h":201,"w":100,"a":5,"s":"面框第一步過人","tr":["中距離指尖投籃出手柔和","得分手段多樣","單打效率高"]},{"id":"dominique_wilkins","n":"Dominique Wilkins","t":"1986","p":"h","c":[37.5,37.5,50.0,62.5,25.0,87.5],"h":203,"w":107,"a":5,"s":"轉換快攻終結","tr":["扣籃能力聯盟頂級","轉換終結爆發力強","得分手感好"]},{"id":"charles_barkley","n":"Charles Barkley","t":"1993","p":"h","c":[25.0,12.5,75.0,37.5,50.0,75.0],"h":198,"w":106,"a":9,"s":"前場籃板/二次進攻","tr":["籃板卡位意識強","禁區對抗能力好","體型不高但終結效率高"]},{"id":"hakeem_olajuwon","n":"Hakeem Olajuwon","t":"1994","p":"h","c":[12.5,12.5,100.0,37.5,100.0,25.0],"h":213,"w":121,"a":7,"s":"背框單打","tr":["禁區腳步全聯盟頂級","護框跟協防都強","轉身終結技巧細膩"]},{"id":"karl_malone","n":"Karl Malone","t":"1997","p":"h","c":[37.5,25.0,100.0,37.5,87.5,62.5],"h":206,"w":112,"a":7,"s":"擋拆持球判斷","tr":["擋拆順下終結穩定","禁區對抗強悍","生涯效率高且耐操"]},{"id":"john_stockton","n":"John Stockton","t":"1997","p":"h","c":[100.0,75.0,0.0,87.5,12.5,12.5],"h":185,"w":84,"a":0,"s":"高位傳導視野","tr":["擋拆傳導視野聯盟頂級","失誤控制能力好","持球推進穩定"]},{"id":"david_robinson","n":"David Robinson","t":"1995","p":"h","c":[12.5,12.5,75.0,25.0,100.0,50.0],"h":216,"w":124,"a":7,"s":"護框","tr":["護框覆蓋範圍大","運動能力領先同位置","禁區得分效率高"]},{"id":"scottie_pippen","n":"Scottie Pippen","t":"1996","p":"h","c":[87.5,75.0,50.0,100.0,75.0,87.5],"h":203,"w":102,"a":5,"s":"換防跟防","tr":["換防跟防能力全聯盟頂級","持球推進穩定","轉換防守到進攻速度快"]},{"id":"patrick_ewing","n":"Patrick Ewing","t":"1990","p":"h","c":[0.0,12.5,87.5,12.5,87.5,25.0],"h":213,"w":121,"a":7,"s":"護框","tr":["中距離跳投穩定","護框能力強","禁區對抗強悍"]},{"id":"clyde_drexler","n":"Clyde Drexler","t":"1992","p":"h","c":[62.5,62.5,87.5,87.5,50.0,62.5],"h":198,"w":99,"a":5,"s":"轉換快攻終結","tr":["轉換快攻推進速度快","運動能力全面","得分手段多樣"]},{"id":"reggie_miller","n":"Reggie Miller","t":"1995","p":"h","c":[12.5,100.0,0.0,25.0,0.0,12.5],"h":201,"w":96,"a":2,"s":"掩護無球跑動","tr":["無球跑動接球投籃效率頂級","利用掩護出手節奏好","關鍵時刻三分穩定"]},{"id":"gary_payton","n":"Gary Payton","t":"1996","p":"h","c":[100.0,37.5,62.5,100.0,25.0,75.0],"h":193,"w":97,"a":5,"s":"一對一外圍單防","tr":["一對一單防壓迫性強","持球推進穩定","防守專注力極高"]},{"id":"dennis_rodman","n":"Dennis Rodman","t":"1996","p":"h","c":[37.5,0.0,50.0,62.5,75.0,75.0],"h":201,"w":111,"a":11,"s":"防守籃板卡位","tr":["籃板卡位意識聯盟史上頂級","協防補位判斷好","防守專注力極高"]},{"id":"chris_webber","n":"Chris Webber","t":"1999","p":"h","c":[50.0,37.5,62.5,75.0,87.5,87.5],"h":208,"w":112,"a":5,"s":"高位傳導視野","tr":["高位傳導視野不錯","禁區腳步柔軟","轉換終結能力好"]},{"id":"kevin_garnett","n":"Kevin Garnett","t":"2004","p":"h","c":[37.5,62.5,100.0,50.0,87.5,100.0],"h":211,"w":112,"a":5,"s":"協防補位輪轉","tr":["協防補位判斷聯盟頂級","中距離跳投穩定","防守溝通指揮強"]},{"id":"tim_duncan","n":"Tim Duncan","t":"2003","p":"h","c":[37.5,37.5,100.0,75.0,100.0,87.5],"h":211,"w":115,"a":5,"s":"擋拆持球判斷","tr":["擋拆後中距離出手穩定","護框跟協防判斷好","籃板卡位意識強"]},{"id":"shaquille_oneal","n":"Shaquille O'Neal","t":"2000","p":"h","c":[25.0,0.0,100.0,50.0,100.0,87.5],"h":216,"w":126,"a":8,"s":"背框單打","tr":["禁區終結力量壓制性強","籃板卡位能力強","體能天賦聯盟史上頂級"]},{"id":"allen_iverson","n":"Allen Iverson","t":"2001","p":"h","c":[100.0,62.5,50.0,100.0,12.5,100.0],"h":183,"w":84,"a":1,"s":"面框第一步過人","tr":["面框第一步過人速度快","小體型高強度得分手","持球推進突破能力強"]},{"id":"steve_nash","n":"Steve Nash","t":"2005","p":"h","c":[100.0,100.0,75.0,50.0,0.0,75.0],"h":191,"w":86,"a":1,"s":"擋拆持球判斷","tr":["擋拆持球判斷聯盟頂級","三分出手效率高","失誤控制能力好"]},{"id":"dirk_nowitzki","n":"Dirk Nowitzki","t":"2007","p":"h","c":[37.5,100.0,100.0,12.5,62.5,0.0],"h":213,"w":108,"a":6,"s":"面框第一步過人","tr":["金雞獨立跳投難以防守","外線出手穩定","單打腳步細膩"]},{"id":"manu_ginobili","n":"Manu Ginobili","t":"2005","p":"h","c":[75.0,62.5,62.5,75.0,37.5,62.5],"h":198,"w":99,"a":5,"s":"轉換快攻終結","tr":["歐洲步終結技巧細膩","替補奇兵效率高","傳導視野不錯"]},{"id":"tony_parker","n":"Tony Parker","t":"2007","p":"h","c":[100.0,25.0,87.5,87.5,0.0,100.0],"h":188,"w":94,"a":10,"s":"擋拆持球判斷","tr":["擋拆持球推進速度快","中距離出手穩定","轉換終結效率高"]},{"id":"vince_carter","n":"Vince Carter","t":"2000","p":"h","c":[75.0,75.0,50.0,62.5,50.0,87.5],"h":198,"w":97,"a":5,"s":"轉換快攻終結","tr":["扣籃能力聯盟頂級","轉換終結爆發力強","得分手感好"]},{"id":"tracy_mcgrady","n":"Tracy McGrady","t":"2003","p":"h","c":[75.0,37.5,62.5,50.0,25.0,87.5],"h":203,"w":107,"a":10,"s":"面框第一步過人","tr":["單打得分手段多樣","運動能力全面","關鍵時刻爆發得分能力強"]},{"id":"yao_ming","n":"Yao Ming","t":"2006","p":"h","c":[12.5,25.0,87.5,37.5,75.0,0.0],"h":229,"w":135,"a":7,"s":"背框單打","tr":["禁區腳步柔軟","中距離跳投穩定","護框覆蓋範圍大"]},{"id":"jason_kidd","n":"Jason Kidd","t":"2002","p":"h","c":[100.0,50.0,25.0,100.0,0.0,100.0],"h":193,"w":96,"a":0,"s":"高位傳導視野","tr":["傳導視野聯盟頂級","快攻推進判斷好","籃板意識不錯"]},{"id":"paul_pierce","n":"Paul Pierce","t":"2008","p":"h","c":[50.0,75.0,87.5,62.5,25.0,25.0],"h":201,"w":100,"a":1,"s":"面框第一步過人","tr":["單打腳步細膩","中距離跟三分都穩定","關鍵時刻得分能力強"]},{"id":"ray_allen","n":"Ray Allen","t":"2008","p":"h","c":[50.0,100.0,37.5,50.0,12.5,37.5],"h":196,"w":91,"a":1,"s":"外線投射","tr":["定點三分出手機制教科書等級","無球跑動效率高","罰球穩定"]},{"id":"grant_hill","n":"Grant Hill","t":"1997","p":"h","c":[75.0,50.0,100.0,87.5,12.5,100.0],"h":203,"w":106,"a":10,"s":"轉換快攻終結","tr":["持球推進全面","轉換終結能力好","防守肯拚"]},{"id":"penny_hardaway","n":"Penny Hardaway","t":"1996","p":"h","c":[87.5,37.5,75.0,75.0,12.5,75.0],"h":201,"w":105,"a":10,"s":"高位傳導視野","tr":["大體型控衛傳導視野好","單打得分手段多樣","轉換推進速度快"]},{"id":"alonzo_mourning","n":"Alonzo Mourning","t":"1999","p":"h","c":[0.0,12.5,87.5,75.0,100.0,12.5],"h":208,"w":116,"a":7,"s":"護框","tr":["護框意志力強","禁區對抗強悍","協防補位判斷好"]},{"id":"dikembe_mutombo","n":"Dikembe Mutombo","t":"2001","p":"h","c":[0.0,0.0,0.0,37.5,87.5,0.0],"h":218,"w":128,"a":8,"s":"護框","tr":["護框覆蓋範圍聯盟史上頂級","籃板卡位意識強","協防威懾力強"]},{"id":"chris_bosh","n":"Chris Bosh","t":"2010","p":"h","c":[25.0,75.0,75.0,37.5,50.0,12.5],"h":211,"w":110,"a":6,"s":"擋拆持球判斷","tr":["中距離出手穩定","擋拆順下終結效率高","協防補位判斷好"]},{"id":"amare_stoudemire","n":"Amar'e Stoudemire","t":"2007","p":"h","c":[12.5,25.0,62.5,50.0,75.0,37.5],"h":208,"w":114,"a":11,"s":"擋拆持球判斷","tr":["擋拆順下終結爆發力強","禁區對抗能力好","轉換終結效率高"]},{"id":"pau_gasol","n":"Pau Gasol","t":"2009","p":"h","c":[12.5,62.5,87.5,50.0,87.5,0.0],"h":213,"w":114,"a":7,"s":"高位傳導視野","tr":["高位傳導視野不錯","禁區腳步柔軟","中距離出手穩定"]},{"id":"marc_gasol","n":"Marc Gasol","t":"2013","p":"h","c":[12.5,12.5,75.0,50.0,75.0,0.0],"h":213,"w":121,"a":7,"s":"高位傳導視野","tr":["高位傳導視野聯盟頂級","協防補位判斷好","中距離出手穩定"]},{"id":"carmelo_anthony","n":"Carmelo Anthony","t":"2013","p":"h","c":[75.0,50.0,37.5,87.5,62.5,87.5],"h":203,"w":106,"a":5,"s":"面框第一步過人","tr":["單打腳步細膩","中距離跟三分出手穩定","得分手感好"]},{"id":"chauncey_billups","n":"Chauncey Billups","t":"2004","p":"h","c":[87.5,62.5,12.5,62.5,0.0,87.5],"h":191,"w":92,"a":1,"s":"擋拆持球判斷","tr":["關鍵時刻得分能力強","擋拆持球判斷穩定","三分出手可靠"]},{"id":"ben_wallace","n":"Ben Wallace","t":"2004","p":"h","c":[0.0,0.0,12.5,87.5,100.0,50.0],"h":201,"w":111,"a":11,"s":"防守籃板卡位","tr":["護框跟籃板卡位聯盟頂級","協防補位判斷好","防守專注力極高"]},{"id":"rasheed_wallace","n":"Rasheed Wallace","t":"2004","p":"h","c":[12.5,37.5,50.0,37.5,87.5,37.5],"h":208,"w":112,"a":11,"s":"協防補位輪轉","tr":["內外都能出手","協防補位判斷好","換防彈性不錯"]},{"id":"baron_davis","n":"Baron Davis","t":"2007","p":"h","c":[87.5,37.5,0.0,100.0,12.5,87.5],"h":188,"w":92,"a":0,"s":"擋拆持球判斷","tr":["持球推進爆發力強","三分出手範圍廣","轉換終結能力好"]},{"id":"antawn_jamison","n":"Antawn Jamison","t":"2004","p":"h","c":[25.0,50.0,62.5,12.5,62.5,25.0],"h":203,"w":106,"a":6,"s":"前場籃板/二次進攻","tr":["中距離出手手感獨特","籃板卡位意識好","轉換終結效率高"]},{"id":"shawn_marion","n":"Shawn Marion","t":"2005","p":"h","c":[25.0,75.0,75.0,87.5,62.5,37.5],"h":201,"w":100,"a":3,"s":"換防跟防","tr":["換防彈性好","轉換終結效率高","籃板意識不錯"]},{"id":"rip_hamilton","n":"Rip Hamilton","t":"2004","p":"h","c":[62.5,87.5,25.0,62.5,12.5,25.0],"h":198,"w":95,"a":1,"s":"掩護無球跑動","tr":["無球跑動效率聯盟頂級","利用掩護出手節奏好","中距離出手穩定"]},{"id":"bill_walton","n":"Bill Walton","t":"1977","p":"h","c":[25.0,12.5,87.5,75.0,100.0,0.0],"h":211,"w":119,"a":7,"s":"高位傳導視野","tr":["高位傳導視野出色","護框能力強","團隊籃球核心"]},{"id":"walt_frazier","n":"Walt Frazier","t":"1970","p":"h","c":[75.0,37.5,25.0,100.0,25.0,75.0],"h":191,"w":95,"a":4,"s":"一對一外圍單防","tr":["一對一單防能力強","持球推進穩定","關鍵時刻得分手感好"]},{"id":"willis_reed","n":"Willis Reed","t":"1970","p":"h","c":[12.5,12.5,62.5,25.0,87.5,12.5],"h":206,"w":114,"a":7,"s":"背框單打","tr":["禁區對抗強悍","中距離出手穩定","團隊防守指揮官"]},{"id":"dwyane_wade","n":"Dwyane Wade","t":"2009","p":"h","c":[100.0,75.0,62.5,87.5,50.0,75.0],"h":193,"w":92,"a":1,"s":"轉換快攻終結","tr":["突破終結效率高","抄截嗅覺敏銳","轉換快攻終結強"]},{"id":"pete_maravich","n":"Pete Maravich","t":"1977","p":"h","c":[87.5,87.5,25.0,62.5,0.0,37.5],"h":196,"w":93,"a":1,"s":"高位傳導視野","tr":["花式控球視野好","中距離跳投穩定","持球推進創造力強"]},{"id":"james_worthy","n":"James Worthy","t":"1988","p":"h","c":[62.5,75.0,75.0,62.5,62.5,62.5],"h":206,"w":105,"a":5,"s":"轉換快攻終結","tr":["轉換快攻終結能力強","運動能力出色","中距離出手穩定"]},{"id":"shawn_kemp","n":"Shawn Kemp","t":"1996","p":"h","c":[12.5,25.0,62.5,37.5,75.0,62.5],"h":208,"w":114,"a":11,"s":"前場籃板/二次進攻","tr":["扣籃終結爆發力強","籃板卡位積極","護框嗅覺不錯"]},{"id":"larry_johnson","n":"Larry Johnson","t":"1993","p":"h","c":[37.5,75.0,87.5,37.5,37.5,62.5],"h":198,"w":97,"a":5,"s":"背框單打","tr":["背框單打腳步扎實","以小搏大對抗能力強","籃板卡位積極"]},{"id":"metta_world_peace","n":"Metta World Peace","t":"2004","p":"h","c":[62.5,50.0,37.5,100.0,50.0,62.5],"h":198,"w":100,"a":4,"s":"一對一外圍單防","tr":["一對一單防兇悍","抄截嗅覺敏銳","換防跟防能力好"]},{"id":"jj_redick","n":"JJ Redick","t":"2016","p":"h","c":[50.0,87.5,0.0,50.0,0.0,12.5],"h":193,"w":90,"a":2,"s":"掩護無球跑動","tr":["無球跑動投射精準","罰球線穩定","定點出手快"]},{"id":"danny_green","n":"Danny Green","t":"2014","p":"h","c":[50.0,62.5,12.5,75.0,37.5,37.5],"h":198,"w":99,"a":3,"s":"換防跟防","tr":["定點三分穩定","換防跟防能力好","協防補位判斷佳"]},{"id":"dwight_howard","n":"Dwight Howard","t":"2011","p":"h","c":[0.0,0.0,100.0,62.5,100.0,75.0],"h":211,"w":121,"a":11,"s":"護框","tr":["護框能力頂級","籃板卡位意識強","扣籃終結爆發力強"]},{"id":"deandre_jordan","n":"DeAndre Jordan","t":"2015","p":"h","c":[0.0,0.0,50.0,25.0,87.5,50.0],"h":211,"w":121,"a":8,"s":"護框","tr":["擋拆順下終結穩定","護框嗅覺不錯","籃板卡位積極"]},{"id":"kyle_lowry","n":"Kyle Lowry","t":"2019","p":"h","c":[75.0,62.5,25.0,62.5,25.0,50.0],"h":183,"w":84,"a":1,"s":"一對一外圍單防","tr":["一對一單防兇悍","擋拆持球判斷好","肯拚敢衝搶球"]},{"id":"russell_westbrook","n":"Russell Westbrook","t":"2017","p":"h","c":[75.0,37.5,37.5,62.5,12.5,62.5],"h":191,"w":95,"a":0,"s":"轉換快攻終結","tr":["轉換快攻終結能力強","運動能力出色","前場籃板積極"]}]};
+const CAP = 42;
+const AX = ["A","B1","B2","C1","C2","D"];
+const AXN = ["持球創造","外線投射","禁區得分","外圍防守","禁區防守","運動表現"];
+const P = DATA.players, CUR = P.filter(p => p.p === "c");
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const byName = new Map(P.map(p => [p.n.toLowerCase(), p]));
+const total = (c) => c.reduce((a, b) => a + b, 0);
+
+// ---------- deterministic hash (no randomness anywhere) ----------
+function fnv(str) { let h = 0x811c9dc5; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h >>> 0; }
+
+// ---------- shared "you" ----------
+const PRESETS = {
+  "全選 3（平均）": [50,50,50,50,50,50], "新手": [12.5,12.5,25,12.5,12.5,37.5], "射手型": [37.5,87.5,25,50,25,50],
+  "長人型": [12.5,12.5,87.5,25,87.5,50], "持球核心": [87.5,62.5,50,37.5,12.5,62.5], "全選 5": [100,100,100,100,100,100],
+};
+let you = [...PRESETS["全選 3（平均）"]];
+let friend = [...PRESETS["射手型"]];
+function slidersInto(el, arr, onChange) {
+  el.innerHTML = AX.map((a, i) => `<label>${AXN[i]} <b data-v="${i}">${arr[i]}</b><input type="range" min="0" max="100" step="12.5" value="${arr[i]}" data-i="${i}"></label>`).join("");
+  el.querySelectorAll("input").forEach((inp) => inp.addEventListener("input", () => {
+    arr[+inp.dataset.i] = +inp.value; el.querySelector(`b[data-v="${inp.dataset.i}"]`).textContent = inp.value; onChange();
+  }));
+}
+function presetsInto(el, arr, sliderEl, onChange) {
+  el.innerHTML = Object.keys(PRESETS).map((k) => `<button class="b ghost" data-k="${esc(k)}">${esc(k)}</button>`).join("");
+  el.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => {
+    PRESETS[b.dataset.k].forEach((v, i) => { arr[i] = v; }); slidersInto(sliderEl, arr, onChange); onChange();
+  }));
+}
+
+// ---------- similarity (prototype: style axes only, D weighted 1.5) ----------
+function dist(a, b) { let s = 0; for (let i = 0; i < 6; i++) s += (a[i] - b[i]) ** 2 * (i === 5 ? 1.5 : 1); return Math.sqrt(s); }
+function stars(d) { return d <= 25 ? 5 : d <= 40 ? 4 : d <= 55 ? 3 : d <= 70 ? 2 : 1; }
+const starTxt = (n) => "★".repeat(n) + "☆".repeat(5 - n);
+function topSimilar(c, k = 10) { return [...P].sort((x, y) => dist(c, x.c) - dist(c, y.c)).slice(0, k); }
+
+// ---------- radar ----------
+function radar(series, size = 230) {
+  const cx = size / 2, cy = size / 2, R = size / 2 - 34, order = [0, 1, 2, 5, 4, 3];
+  const pt = (i, v) => { const ang = -Math.PI / 2 + i * Math.PI / 3; return [cx + Math.cos(ang) * R * v / 100, cy + Math.sin(ang) * R * v / 100]; };
+  let g = "";
+  for (const lv of [25, 50, 75, 100]) g += `<polygon points="${order.map((_, i) => pt(i, lv).join(",")).join(" ")}" fill="none" stroke="currentColor" stroke-opacity=".15"/>`;
+  order.forEach((ax, i) => { const [x, y] = pt(i, 122); g += `<text x="${x}" y="${y}" font-size="10.5" text-anchor="middle" dominant-baseline="middle" fill="currentColor" opacity=".75">${AXN[ax]}</text>`; });
+  for (const s of series) g += `<polygon points="${order.map((ax, i) => pt(i, Math.max(s.c[ax], 3)).join(",")).join(" ")}" fill="${s.color}" fill-opacity=".22" stroke="${s.color}" stroke-width="2"/>`;
+  const legend = series.map((s) => `<span style="color:${s.color};font-weight:800">■</span> ${esc(s.label)}`).join("　");
+  return `<div style="text-align:center"><svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="color:var(--ink)">${g}</svg><div class="muted">${legend}</div></div>`;
+}
+
+// =====================================================================
+// ① Mystery player
+// =====================================================================
+const ORDER = [...CUR].sort((a, b) => fnv("mystery|" + a.id) - fnv("mystery|" + b.id));
+const LAUNCH = Date.UTC(2026, 9, 1); // 試玩用的「第 1 題」日期
+let m = { answer: null, guesses: [], done: false };
+$("m-list").innerHTML = P.map((p) => `<option value="${esc(p.n)}">`).join("");
+function todayStr() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; }
+$("m-date").value = todayStr();
+function mStart() {
+  const [y, mo, d] = $("m-date").value.split("-").map(Number);
+  const day = Math.floor((Date.UTC(y, mo - 1, d) - LAUNCH) / 86400000);
+  const idx = ((day % ORDER.length) + ORDER.length) % ORDER.length;
+  m = { answer: ORDER[idx], guesses: [], done: false, day };
+  mRender();
+}
+function cellAxis(g, a, i) {
+  const d = a.c[i] - g.c[i], cls = d === 0 ? "ok" : Math.abs(d) <= 12.5 ? "near" : "far";
+  return `<div class="${cls}">${d === 0 ? "✓" : d > 0 ? "↑" : "↓"}</div>`;
+}
+function emojiRow(g, a) {
+  const e = (ok, near) => ok ? "🟩" : near ? "🟨" : "⬜";
+  return [e(g.t === a.t), e(g.a === a.a), e(Math.abs(g.h - a.h) <= 3, Math.abs(g.h - a.h) <= 8),
+    ...AX.map((_, i) => e(g.c[i] === a.c[i], Math.abs(g.c[i] - a.c[i]) <= 12.5))].join("");
+}
+function mRender() {
+  const a = m.answer, wrong = m.guesses.filter((g) => g !== a).length;
+  $("m-left").textContent = m.done ? "" : `還可以猜 ${8 - m.guesses.length} 次`;
+  // 你當尺 hints: reveal one axis per wrong guess
+  const hints = [];
+  for (let i = 0; i < Math.min(wrong, 6); i++) {
+    const d = a.c[i] - you[i];
+    hints.push(`<div class="hint">🧭 答案的<b>${AXN[i]}</b>${d > 0 ? "比你<b>高</b>" : d < 0 ? "比你<b>低</b>" : "跟你<b>一樣</b>"}</div>`);
+  }
+  $("m-hints").innerHTML = hints.length ? `<p class="q" style="color:var(--g1)">「你當尺」線索（每猜錯一次多一條）</p>${hints.join("")}` : `<p class="muted">猜錯一次後，會開始出現「答案比你高還是低」的線索。</p>`;
+  const head = `<div class="rowg head"><div class="nm">球員</div><div>球隊</div><div>原型</div><div>身高</div>${AXN.map((n) => `<div>${n}</div>`).join("")}</div>`;
+  const rows = m.guesses.map((g) => {
+    const dh = a.h - g.h;
+    return `<div class="rowg"><div class="nm">${esc(g.n)}</div>
+      <div class="${g.t === a.t ? "ok" : "far"}">${esc(g.t)}</div>
+      <div class="${g.a === a.a ? "ok" : "far"}" title="${esc(DATA.arch[g.a])}">${esc(DATA.arch[g.a])}</div>
+      <div class="${Math.abs(dh) <= 3 ? "ok" : Math.abs(dh) <= 8 ? "near" : "far"}">${g.h}${Math.abs(dh) <= 3 ? "" : dh > 0 ? "↑" : "↓"}</div>
+      ${AX.map((_, i) => cellAxis(g, a, i)).join("")}</div>`;
+  }).join("");
+  $("m-rows").innerHTML = m.guesses.length ? head + rows : "";
+  if (m.done) {
+    const won = m.guesses.includes(a), d = dist(you, a.c);
+    const share = `每日神秘球員 #${m.day + 1}  ${won ? m.guesses.length : "X"}/8\n` + m.guesses.map((g) => emojiRow(g, a)).join("\n");
+    $("m-end").innerHTML = `<p class="res">${won ? "🎉 猜中了！" : "😵 沒猜到"}答案是 ${esc(a.n)}（${esc(a.t)}）</p>
+      <div class="flex">${radar([{ c: you, color: "#2563eb", label: "你" }, { c: a.c, color: "#ea580c", label: a.n }])}
+      <div style="flex:1;min-width:240px"><p class="big">他跟你的相似度：<b style="color:goldenrod">${starTxt(stars(d))}</b></p>
+      <p>原型：<b>${esc(DATA.arch[a.a])}</b>　招牌技能：<b>${esc(a.s)}</b></p>
+      <p>特點：${a.tr.map(esc).join("、")}</p>
+      <p class="muted">正式版這裡會有「看他的訓練計劃」和「☆ 收藏」兩顆按鈕。</p></div></div>
+      <p class="q">分享文字（不洩漏答案）</p><textarea class="share" readonly>${esc(share)}</textarea>`;
+  } else $("m-end").innerHTML = "";
+}
+function mGuess() {
+  if (m.done) return;
+  const g = byName.get($("m-input").value.trim().toLowerCase());
+  if (!g) { $("m-left").textContent = "找不到這位球員，請從清單選"; return; }
+  if (m.guesses.includes(g)) return;
+  m.guesses.push(g); $("m-input").value = "";
+  if (g === m.answer || m.guesses.length >= 8) m.done = true;
+  mRender();
+}
+$("m-guess").addEventListener("click", mGuess);
+$("m-input").addEventListener("keydown", (e) => { if (e.key === "Enter") mGuess(); });
+$("m-date").addEventListener("change", mStart);
+$("m-reset").addEventListener("click", mStart);
+
+// =====================================================================
+// ② Cards
+// =====================================================================
+const curTotals = CUR.map((p) => total(p.c)).sort((a, b) => a - b);
+const STAR_CUT = 387.5, MAIN_CUT = curTotals[Math.floor(curTotals.length * 0.6)];
+const RAR = { legend: { n: "傳奇", w: 0.35, c: "#7c3aed" }, star: { n: "明星", w: 0.5, c: "#dc2626" }, main: { n: "主力", w: 0.8, c: "#2563eb" }, role: { n: "角色", w: 1, c: "#64748b" } };
+function rarity(p) { if (p.p === "h") return "legend"; const t = total(p.c); return t >= STAR_CUT ? "star" : t >= MAIN_CUT ? "main" : "role"; }
+function drawPack(user, day, owned) {
+  const left = P.filter((p) => !owned.has(p.id));
+  // weighted, deterministic: larger key wins; rarer cards have smaller weight so they tend to come later
+  const key = (p) => Math.pow((fnv(`${user}|${day}|${p.id}`) + 1) / 4294967297, 1 / RAR[rarity(p)].w);
+  return left.sort((a, b) => key(b) - key(a)).slice(0, 3);
+}
+function cardHtml(p, fateIds) {
+  const r = RAR[rarity(p)], fate = fateIds.has(p.id);
+  return `<div class="card" style="--rc:${r.c}">${fate ? '<span class="fate">命定</span>' : ""}<span class="rar">${r.n}</span>
+    <div class="cn">${esc(p.n)}</div><div class="ct">${esc(p.t)}・${esc(DATA.arch[p.a])}</div>
+    ${radar([{ c: p.c, color: r.c, label: "" }], 150).replace('<div class="muted">', '<div class="muted" hidden>')}
+    <div class="ct">招牌：${esc(p.s)}</div><div class="ct">跟你：<b style="color:goldenrod">${starTxt(stars(dist(you, p.c)))}</b></div></div>`;
+}
+function cRender() {
+  const user = $("c-user").value || "demo", day = Math.max(1, Math.min(80, +$("c-day").value || 1));
+  const owned = new Set(); let pack = [];
+  for (let d = 1; d <= day; d++) { pack = drawPack(user, d, owned); pack.forEach((p) => owned.add(p.id)); }
+  const fate = new Set(topSimilar(you).map((p) => p.id));
+  $("c-pack").innerHTML = pack.map((p) => cardHtml(p, fate)).join("");
+  const bar = (have, all) => `<div class="bar"><span style="width:${(have / all * 100).toFixed(1)}%"></span></div>`;
+  const albums = DATA.arch.map((name, i) => { const all = P.filter((p) => p.a === i), have = all.filter((p) => owned.has(p.id)).length; return { name, have, all: all.length }; });
+  const rar = Object.entries(RAR).map(([k, r]) => { const all = P.filter((p) => rarity(p) === k), have = all.filter((p) => owned.has(p.id)).length; return `<div><b style="color:${r.c}">${r.n}</b> ${have}/${all.length}${bar(have, all.length)}</div>`; }).join("");
+  const fateHave = [...fate].filter((id) => owned.has(id)).length;
+  $("c-progress").innerHTML = `<p class="big"><b>第 ${day} 天：已收集 ${owned.size} / ${P.length} 張</b>　命定 10 人冊 <b>${fateHave}/10</b></p>
+    <p class="q">稀有度</p><div class="albums">${rar}</div>
+    <p class="q">原型冊（收齊一本解鎖徽章）</p><div class="albums">${albums.map((a) => `<div>${a.have === a.all ? "🏅 " : ""}${esc(a.name)} ${a.have}/${a.all}${bar(a.have, a.all)}</div>`).join("")}</div>`;
+}
+$("c-next").addEventListener("click", () => { $("c-day").value = Math.min(80, (+$("c-day").value || 0) + 1); cRender(); });
+$("c-prev").addEventListener("click", () => { $("c-day").value = Math.max(1, (+$("c-day").value || 2) - 1); cRender(); });
+$("c-day").addEventListener("input", cRender); $("c-user").addEventListener("input", cRender);
+
+// =====================================================================
+// ③ Duel
+// =====================================================================
+function nearest(c) { return [...P].sort((x, y) => dist(c, x.c) - dist(c, y.c))[0]; }
+function dRender() {
+  const star = byName.get($("d-star").value.trim().toLowerCase());
+  const perim = (c) => (c[0] + c[1]) / 2;
+  const rows = [
+    ["你的外圍進攻 vs 朋友的外圍防守", perim(you), friend[3]],
+    ["你的禁區進攻 vs 朋友的禁區防守", you[2], friend[4]],
+    ["朋友的外圍進攻 vs 你的外圍防守", you[3], perim(friend), true],
+    ["朋友的禁區進攻 vs 你的禁區防守", you[4], friend[2], true],
+    ["運動表現", you[5], friend[5]],
+  ];
+  let yw = 0, fw = 0;
+  const body = rows.map(([label, a, b, defense]) => {
+    const win = a > b ? "you" : a < b ? "friend" : "tie"; if (win === "you") yw++; if (win === "friend") fw++;
+    return `<tr><td>${label}</td><td>${a.toFixed(1)}</td><td>${b.toFixed(1)}</td><td>${win === "you" ? '<span class="pill win">你贏</span>' : win === "friend" ? '<span class="pill loss">朋友贏</span>' : "平手"}</td></tr>`;
+  }).join("");
+  const combo = you.map((v, i) => Math.max(v, friend[i])), cp = nearest(combo);
+  let sim = "";
+  if (star) { const dy = dist(you, star.c), df = dist(friend, star.c);
+    sim = `<p class="big">誰更像 <b>${esc(star.n)}</b>？ ${dy < df ? "<b>你</b>" : dy > df ? "<b>朋友</b>" : "一樣像"}（你 ${starTxt(stars(dy))}，朋友 ${starTxt(stars(df))}）</p>`; }
+  $("d-radar").innerHTML = radar([{ c: you, color: "#2563eb", label: "你" }, { c: friend, color: "#e11d48", label: "朋友" }]);
+  $("d-result").innerHTML = `<p class="res">一對一：你 ${yw} 勝、朋友 ${fw} 勝</p>
+    <div class="tw"><table><tr><th>比較</th><th>你這邊</th><th>朋友那邊</th><th>結果</th></tr>${body}</table></div>
+    ${sim}<p class="big">🤝 你們合體最像：<b>${esc(cp.n)}</b>（${esc(cp.t)}，${esc(DATA.arch[cp.a])}）</p>`;
+}
+$("d-star").addEventListener("input", dRender);
+
+// =====================================================================
+// ④ 82-0
+// =====================================================================
+const cost = (c) => Math.max(1, Math.round(total(c) / 40));
+const SELF_COST_FACTOR = 1.3;
+const selfCost = (c) => Math.max(1, Math.round(total(c) / 40 * SELF_COST_FACTOR));
+const FILL = [40, 40, 40, 40, 40, 40];
+function teamAxes(members) { return AX.map((_, i) => { const v = members.map((m) => m[i]); return 0.6 * Math.max(...v) + 0.4 * v.reduce((a, b) => a + b, 0) / v.length; }); }
+function parts(us, th) {
+  return { "外圍進攻": (us[0] - th[3]) + (us[1] - th[3]), "禁區進攻": us[2] - th[4], "外圍防守": -((th[0] - us[3]) + (th[1] - us[3])), "禁區防守": -(th[2] - us[4]), "運動表現": 0.5 * (us[5] - th[5]) };
+}
+const TEAMS = (() => {
+  const g = {}; for (const p of CUR) { if (p.t === "FA") continue; (g[p.t] = g[p.t] || []).push(p); }
+  const names = Object.keys(g).sort();
+  return names.map((t, i) => { const top = g[t].sort((a, b) => total(b.c) - total(a.c)).slice(0, 5); const mem = top.map((p) => p.c);
+    while (mem.length < 5) mem.push(FILL); return { t, axes: teamAxes(mem), games: i < 22 ? 3 : 2, stars: top.map((p) => p.n) }; });
+})();
+let mates = [null, null, null, null];
+function tPickers() {
+  $("t-pickers").innerHTML = mates.map((p, i) => `<input type="text" list="t-list" data-i="${i}" placeholder="隊友 ${i + 1}" value="${p ? esc(p.n) : ""}" style="min-width:200px">`).join("") +
+    `<datalist id="t-list">${CUR.map((p) => `<option value="${esc(p.n)}">身價 ${cost(p.c)}`).join("")}</datalist>`;
+  $("t-pickers").querySelectorAll("input").forEach((inp) => inp.addEventListener("change", () => {
+    const p = byName.get(inp.value.trim().toLowerCase()); mates[+inp.dataset.i] = p && p.p === "c" ? p : null; tBudget();
+  }));
+}
+function tBudget() {
+  const used = mates.reduce((s, p) => s + (p ? cost(p.c) : 0), 0), mine = selfCost(you);
+  $("t-cap").textContent = CAP; $("t-you").textContent = mine; $("t-used").textContent = used;
+  const room = CAP - mine - used; $("t-room").textContent = room; $("t-room").style.color = room < 0 ? "#dc2626" : "";
+  return room;
+}
+function tRun() {
+  const room = tBudget(), chosen = mates.filter(Boolean);
+  if (chosen.length < 4 || new Set(chosen.map((p) => p.id)).size < 4) { $("t-out").innerHTML = `<p class="big">請選 4 位不同的隊友。</p>`; return; }
+  if (room < 0) { $("t-out").innerHTML = `<p class="big" style="color:#dc2626">超過薪資上限 ${-room}，請換便宜一點的隊友。</p>`; return; }
+  const us = teamAxes([you, ...chosen.map((p) => p.c)]);
+  let w = 0, l = 0; const losses = [];
+  for (const T of TEAMS) {
+    const pr = parts(us, T.axes), margin = Object.values(pr).reduce((a, b) => a + b, 0);
+    if (margin > 0) w += T.games; else { l += T.games; const worst = Object.entries(pr).sort((a, b) => a[1] - b[1])[0]; losses.push({ T, margin, worst }); }
+  }
+  const lossRows = losses.sort((a, b) => a.margin - b.margin).map(({ T, margin, worst }) =>
+    `<tr><td><b>${T.t}</b>（${T.games} 場）</td><td>${margin.toFixed(1)}</td><td>輸在<b>${worst[0]}</b></td><td class="muted">${T.stars.map(esc).join("、")}</td></tr>`).join("");
+  const weak = {}; losses.forEach(({ T, worst }) => { weak[worst[0]] = (weak[worst[0]] || 0) + T.games; });
+  const weakTxt = Object.entries(weak).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k}（${v} 場）`).join("、");
+  $("t-out").innerHTML = `<p class="res">${w}-${l}${w === 82 ? "　🏆 全勝！" : ""}</p>
+    ${radar([{ c: you, color: "#2563eb", label: "你" }, { c: us, color: "#16a34a", label: "你的球隊" }])}
+    ${losses.length ? `<p class="big">最常輸在：<b>${weakTxt}</b></p><p class="muted">正式版會在這裡放「練這一項」的按鈕，連到訓練計劃。</p>
+    <div class="tw"><table><tr><th>輸給</th><th>分差</th><th>主因</th><th>對手主力</th></tr>${lossRows}</table></div>` : ""}`;
+}
+function seasonScore(chosen) {
+  const us = teamAxes([you, ...chosen.map((p) => p.c)]); let w = 0, sum = 0;
+  for (const T of TEAMS) { const mg = Object.values(parts(us, T.axes)).reduce((a, b) => a + b, 0); if (mg > 0) w += T.games; sum += Math.min(mg, 40); }
+  return w * 10000 + sum;
+}
+function tHint() {
+  // Deterministic search: start from the 4 cheapest players, then keep swapping one slot at a time
+  // for whichever player improves the season the most while staying under the cap. No randomness.
+  const room0 = CAP - selfCost(you);
+  let cur = [...CUR].sort((a, b) => cost(a.c) - cost(b.c) || a.id.localeCompare(b.id)).slice(0, 4);
+  if (cur.reduce((s, p) => s + cost(p.c), 0) > room0) { $("t-out").innerHTML = `<p class="big">你的身價太高，連最便宜的 4 位都請不起。</p>`; return; }
+  let best = seasonScore(cur), improved = true, rounds = 0;
+  while (improved && rounds < 12) {
+    improved = false; rounds++;
+    for (let i = 0; i < 4; i++) {
+      const others = cur.filter((_, j) => j !== i), spent = others.reduce((s, p) => s + cost(p.c), 0);
+      for (const p of CUR) {
+        if (others.includes(p) || p === cur[i] || spent + cost(p.c) > room0) continue;
+        const cand = [...others.slice(0, i), p, ...others.slice(i)], sc = seasonScore(cand);
+        if (sc > best) { best = sc; cur = cand; improved = true; }
+      }
+    }
+  }
+  mates = cur; tPickers(); tBudget(); tRun();
+}
+$("t-run").addEventListener("click", tRun); $("t-hint").addEventListener("click", tHint);
+
+// ---------- wire shared sliders ----------
+function rerenderAll() { mRender(); cRender(); dRender(); tBudget(); }
+slidersInto($("you-sliders"), you, rerenderAll); presetsInto($("you-presets"), you, $("you-sliders"), rerenderAll);
+slidersInto($("d-sliders"), friend, dRender); presetsInto($("d-presets"), friend, $("d-sliders"), dRender);
+mStart(); cRender(); dRender(); tPickers(); tBudget();
+</script>
+</body>
+</html>
