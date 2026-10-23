@@ -3,6 +3,7 @@
 # 可手動調整的變數：無——這支測試檔本身不含校準參數,它是在檢查別的檔案。
 
 import json
+import sys
 import unittest
 from pathlib import Path
 
@@ -51,3 +52,40 @@ class ArchetypesDataTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ArchetypeExemplarsTest(unittest.TestCase):
+    """Anchors are the average of each archetype's exemplar players
+    (scripts/build_archetype_anchors.py), so they move with the player data."""
+
+    def setUp(self):
+        with open(DATA_DIR / "zh" / "原型.json", encoding="utf-8") as f:
+            self.archetypes = json.load(f)["archetypes"]
+        self.pools = []
+        for name in ("球員.json", "歷史球員.json"):
+            with open(DATA_DIR / "zh" / name, encoding="utf-8") as f:
+                self.pools.append(json.load(f)["players"])
+        self.player_ids = {p["id"] for pool in self.pools for p in pool}
+
+    def test_every_archetype_has_existing_exemplars(self):
+        for archetype in self.archetypes:
+            self.assertTrue(archetype.get("exemplars"), archetype["id"])
+            for pid in archetype["exemplars"]:
+                self.assertIn(pid, self.player_ids, archetype["id"])
+
+    def test_no_player_represents_two_archetypes(self):
+        seen = {}
+        for archetype in self.archetypes:
+            for pid in archetype["exemplars"]:
+                self.assertNotIn(pid, seen, f"{pid} is an exemplar of {seen.get(pid)} and {archetype['id']}")
+                seen[pid] = archetype["id"]
+
+    def test_anchors_match_the_exemplar_average(self):
+        sys.path.insert(0, str(DATA_DIR.parent))
+        from scripts.build_archetype_anchors import compute_anchors
+        expected = compute_anchors(self.archetypes, self.pools)
+        for archetype in self.archetypes:
+            msg = f"{archetype['id']}: run scripts/build_archetype_anchors.py"
+            self.assertEqual(archetype["coordinates"], expected[archetype["id"]]["coordinates"], msg)
+            self.assertEqual(archetype["size"], expected[archetype["id"]]["size"], msg)
+

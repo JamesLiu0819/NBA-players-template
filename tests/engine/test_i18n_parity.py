@@ -143,6 +143,11 @@ class ArchetypesParityTest(unittest.TestCase):
         for aid, zh_a in zh_by_id.items():
             self.assertEqual(zh_a["size"], en_by_id[aid]["size"], aid)
 
+    def test_exemplars_match(self):
+        zh_by_id, en_by_id = self._by_id(self.zh), self._by_id(self.en)
+        for aid, zh_a in zh_by_id.items():
+            self.assertEqual(zh_a.get("exemplars"), en_by_id[aid].get("exemplars"), aid)
+
     def test_text_fields_are_translated_not_copied(self):
         zh_by_id, en_by_id = self._by_id(self.zh), self._by_id(self.en)
         for aid, zh_a in zh_by_id.items():
@@ -277,6 +282,7 @@ class ZhHansStructureParityTest(unittest.TestCase):
             zh_hans_a = zh_hans_by_id[aid]
             self.assertEqual(zh_a["coordinates"], zh_hans_a["coordinates"], aid)
             self.assertEqual(zh_a["size"], zh_hans_a["size"], aid)
+            self.assertEqual(zh_a.get("exemplars"), zh_hans_a.get("exemplars"), aid)
             self.assertTrue(zh_hans_a["name_zh"].strip(), aid)
             self.assertTrue(zh_hans_a["flavor"].strip(), aid)
 

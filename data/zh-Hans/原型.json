@@ -1,174 +1,298 @@
 {
-  "_description": "球场定位原型(archetype)清单,给「一句话球探报告」跟结果页的原型标签用。每个原型是六轴空间里的一个锚点座标,用户座标用最近邻(Euclidean distance)分类到最接近的原型——跟 src/engine/player_matching.py 找最像球员的逻辑是同一套精神,只是比对的对象换成手动设计的原型锚点,不是球员。12 个原型尽量平均分布在 A/B1/B2/C1/C2/D 六轴空间里,不是穷举所有座标组合,涵盖常见的球风轮廓即可。每个原型还有一个 size 字段(0-100,身高百分位跟体重百分位的平均),分类时(engine/archetype.py 的 classify_archetype)如果用户/候选球员有身材数据,会把 size 并入距离计算——避免矮个子只要打法平均就被分类到隐含高大身材的原型(例如全能锋线),高个子打控球风格也被分类到控场指挥官(2026-10 讨论)。",
-  "_editable_fields": "coordinates 改变分类边界,name_zh/flavor 改变文案,size 改变身材权重的分类边界。id 一旦被别的地方引用就不要改。添加原型时尽量选跟现有锚点距离够远的座标,不然会很少被分到。size 的校准方法：拿 data/players.json 现有球员,用纯六轴距离(不含 size)分类到 12 个原型,对每个原型算出落在里面的球员的身高百分位、体重百分位平均值,四舍五入后就是这个原型的 size——不是凭感觉猜的,改动 coordinates 之后建议重新跑一次这个校准。2026-10 从四轴 A/B/C/D 改成六轴 A/B1/B2/C1/C2/D(B 拆外线投射/禁区得分,C 拆外围防守/禁区护框,见 data/questions.json 的改版说明),12 个原型的 coordinates 依各自的球风定义重新手动分配到对应的子轴(例如空间型内线的 B 原本是 75,现在变成 B1=80/B2=35,背框中锋则反过来 B1=10/B2=75),用新座标对现有 214 位球员(现役+历史)跑过一次最近邻分类验证,12 个原型都有合理数量的球员落点,没有空桶或单一原型过度吃下分类结果。do_it_all_forward 座标沿用先前已经校准过的 (60,*,*,60,*,70) 外扩版本(四轴时代原本几乎卡在几何中心、占掉 32% 分类结果的磁吸问题,详见旧版校准纪录),六轴化时只是把旧的 B/C 值拆开分配,没有改变外扩幅度。",
+  "_description": "球场定位原型(archetype)清单,给「一句话球探报告」跟结果页的原型标签用。每个原型是六轴空间里的一个锚点座标,用户座标用最近邻(Euclidean distance)分类到最接近的原型——跟 src/engine/player_matching.py 找最像球员的逻辑是同一套精神,只是比对的对象换成手动设计的原型锚点,不是球员。12 个原型尽量平均分布在 A/B1/B2/C1/C2/D 六轴空间里,不是穷举所有座标组合,涵盖常见的球风轮廓即可。每个原型还有一个 size 字段(0-100,身高百分位跟体重百分位的平均),分类时(engine/archetype.py 的 classify_archetype)如果用户/候选球员有身材数据,会把 size 并入距离计算——避免矮个子只要打法平均就被分类到隐含高大身材的原型(例如全能锋线),高个子打控球风格也被分类到控场指挥官(2026-10 讨论)。2026-10-23:改成 14 个原型(添加策应长人、控球前锋),而且锚点不再手打——每个原型的 exemplars 是代表球员的 id,coordinates 跟 size 由 scripts/build_archetype_anchors.py 算成代表球员的平均,原型跟球员用同一把尺。",
+  "_editable_fields": "要调整原型就改 exemplars(代表球员),再运行 scripts/build_archetype_anchors.py 重算 coordinates/size——不要直接手改这两个字段,测试会检查它们等于代表球员的平均。name_zh/flavor 改变文案。id 一旦被别的地方引用就不要改。",
   "archetypes": [
     {
       "id": "floor_general",
       "name_zh": "控场指挥官",
       "coordinates": {
-        "A": 90,
-        "B1": 45,
-        "B2": 20,
-        "C1": 45,
-        "C2": 20,
-        "D": 45
+        "A": 77.5,
+        "B1": 75.0,
+        "B2": 17.5,
+        "C1": 77.5,
+        "C2": 25.0,
+        "D": 35.0
       },
-      "size": 31,
-      "flavor": "一球在手队友靠我,我控制着全场的进攻节奏"
+      "size": 12,
+      "flavor": "一球在手队友靠我,我控制着全场的进攻节奏",
+      "exemplars": [
+        "chris_paul",
+        "tyrese_haliburton",
+        "john_stockton",
+        "steve_nash",
+        "jason_kidd"
+      ]
     },
     {
       "id": "combo_scorer",
       "name_zh": "双能卫",
       "coordinates": {
-        "A": 70,
-        "B1": 70,
-        "B2": 35,
-        "C1": 45,
-        "C2": 15,
-        "D": 55
+        "A": 87.5,
+        "B1": 80.0,
+        "B2": 20.0,
+        "C1": 37.5,
+        "C2": 12.5,
+        "D": 37.5
       },
-      "size": 25,
-      "flavor": "组织得分样样精,我既能串联也能独挑大梁"
+      "size": 19,
+      "flavor": "组织得分样样精,我既能串联也能独挑大梁",
+      "exemplars": [
+        "damian_lillard",
+        "kyrie_irving",
+        "donovan_mitchell",
+        "jalen_brunson",
+        "devin_booker"
+      ]
     },
     {
       "id": "offball_shooter",
       "name_zh": "无球射手",
       "coordinates": {
-        "A": 20,
-        "B1": 90,
-        "B2": 15,
-        "C1": 30,
-        "C2": 10,
-        "D": 40
+        "A": 22.5,
+        "B1": 95.0,
+        "B2": 25.0,
+        "C1": 32.5,
+        "C2": 15.0,
+        "D": 5.0
       },
-      "size": 33,
-      "flavor": "在掩护中穿梭,高效率得分就是我的代名词"
+      "size": 30,
+      "flavor": "在掩护中穿梭,高效率得分就是我的代名词",
+      "exemplars": [
+        "klay_thompson",
+        "duncan_robinson",
+        "reggie_miller",
+        "ray_allen",
+        "jj_redick"
+      ]
     },
     {
       "id": "three_and_d_wing",
       "name_zh": "3D 侧翼",
       "coordinates": {
-        "A": 35,
-        "B1": 75,
-        "B2": 20,
-        "C1": 80,
-        "C2": 30,
-        "D": 60
+        "A": 27.5,
+        "B1": 65.0,
+        "B2": 35.0,
+        "C1": 75.0,
+        "C2": 55.0,
+        "D": 45.0
       },
-      "size": 36,
-      "flavor": "球队最重要的拼图,我不只能投三分也能防守"
+      "size": 38,
+      "flavor": "球队最重要的拼图,我不只能投三分也能防守",
+      "exemplars": [
+        "mikal_bridges",
+        "danny_green",
+        "kentavious_caldwell_pope",
+        "derrick_white",
+        "og_anunoby"
+      ]
     },
     {
       "id": "lockdown_defender",
       "name_zh": "防守大锁",
       "coordinates": {
-        "A": 30,
-        "B1": 25,
-        "B2": 25,
-        "C1": 90,
-        "C2": 40,
-        "D": 65
+        "A": 35.0,
+        "B1": 50.0,
+        "B2": 30.0,
+        "C1": 90.0,
+        "C2": 40.0,
+        "D": 32.5
       },
-      "size": 47,
-      "flavor": "持球手的恶梦,有我在谁都不能越过我"
+      "size": 35,
+      "flavor": "持球手的恶梦,有我在谁都不能越过我",
+      "exemplars": [
+        "jrue_holiday",
+        "lu_dort",
+        "marcus_smart",
+        "alex_caruso",
+        "herbert_jones"
+      ]
     },
     {
       "id": "do_it_all_forward",
       "name_zh": "全能锋线",
       "coordinates": {
-        "A": 60,
-        "B1": 45,
-        "B2": 45,
-        "C1": 55,
-        "C2": 45,
-        "D": 70
+        "A": 75.0,
+        "B1": 65.0,
+        "B2": 32.5,
+        "C1": 77.5,
+        "C2": 55.0,
+        "D": 75.0
       },
-      "size": 55,
-      "flavor": "控、传、投、防样样都来,我从1号到5号都能打"
+      "size": 59,
+      "flavor": "控、传、投、防样样都来,我从1号到5号都能打",
+      "exemplars": [
+        "lebron_james",
+        "jayson_tatum",
+        "scottie_pippen",
+        "kawhi_leonard",
+        "paul_george"
+      ]
     },
     {
       "id": "stretch_big",
       "name_zh": "空间型内线",
       "coordinates": {
-        "A": 30,
-        "B1": 80,
-        "B2": 35,
-        "C1": 20,
-        "C2": 45,
-        "D": 35
+        "A": 35.0,
+        "B1": 60.0,
+        "B2": 50.0,
+        "C1": 12.5,
+        "C2": 80.0,
+        "D": 37.5
       },
-      "size": 50,
-      "flavor": "外线也能出手,切入的队友最爱我"
+      "size": 88,
+      "flavor": "外线也能出手,切入的队友最爱我",
+      "exemplars": [
+        "karl_anthony_towns",
+        "dirk_nowitzki",
+        "kristaps_porzingis",
+        "myles_turner",
+        "brook_lopez"
+      ]
     },
     {
       "id": "back_to_basket_center",
       "name_zh": "背框中锋",
       "coordinates": {
-        "A": 25,
-        "B1": 10,
-        "B2": 75,
-        "C1": 15,
-        "C2": 50,
-        "D": 35
+        "A": 32.5,
+        "B1": 32.5,
+        "B2": 87.5,
+        "C1": 35.0,
+        "C2": 90.0,
+        "D": 50.0
       },
-      "size": 83,
-      "flavor": "禁区脚步扎实,低位就是我的主场"
+      "size": 84,
+      "flavor": "禁区脚步扎实,低位就是我的主场",
+      "exemplars": [
+        "joel_embiid",
+        "shaquille_oneal",
+        "hakeem_olajuwon",
+        "moses_malone",
+        "patrick_ewing"
+      ]
     },
     {
       "id": "rim_protector",
       "name_zh": "护框长人",
       "coordinates": {
-        "A": 15,
-        "B1": 5,
-        "B2": 25,
-        "C1": 20,
-        "C2": 90,
-        "D": 75
+        "A": 12.5,
+        "B1": 10.0,
+        "B2": 82.5,
+        "C1": 47.5,
+        "C2": 95.0,
+        "D": 62.5
       },
-      "size": 87,
-      "flavor": "对手进攻的恶梦,有我在你连上篮都不准"
+      "size": 83,
+      "flavor": "对手进攻的恶梦,有我在你连上篮都不准",
+      "exemplars": [
+        "rudy_gobert",
+        "dikembe_mutombo",
+        "ben_wallace",
+        "dwight_howard",
+        "mitchell_robinson"
+      ]
     },
     {
       "id": "cutting_finisher",
       "name_zh": "空切终结者",
       "coordinates": {
-        "A": 20,
-        "B1": 15,
-        "B2": 55,
-        "C1": 25,
-        "C2": 35,
-        "D": 85
+        "A": 37.5,
+        "B1": 34.4,
+        "B2": 78.1,
+        "C1": 56.2,
+        "C2": 56.2,
+        "D": 81.2
       },
-      "size": 72,
-      "flavor": "没球在手也很危险,我随时都能找到空档"
+      "size": 56,
+      "flavor": "没球在手也很危险,我随时都能找到空档",
+      "exemplars": [
+        "aaron_gordon",
+        "zion_williamson",
+        "shawn_marion",
+        "amen_thompson"
+      ]
     },
     {
       "id": "explosive_slasher",
       "name_zh": "爆发突破手",
       "coordinates": {
-        "A": 80,
-        "B1": 30,
-        "B2": 45,
-        "C1": 40,
-        "C2": 25,
-        "D": 85
+        "A": 90.6,
+        "B1": 56.2,
+        "B2": 28.1,
+        "C1": 62.5,
+        "C2": 34.4,
+        "D": 59.4
       },
-      "size": 57,
-      "flavor": "眨眼瞬间就不见,速度就是我最大的武器"
+      "size": 19,
+      "flavor": "眨眼瞬间就不见,速度就是我最大的武器",
+      "exemplars": [
+        "ja_morant",
+        "deaaron_fox",
+        "russell_westbrook",
+        "anthony_edwards"
+      ]
     },
     {
       "id": "blue_collar_energy",
       "name_zh": "蓝领工兵",
       "coordinates": {
-        "A": 15,
-        "B1": 15,
-        "B2": 35,
-        "C1": 45,
-        "C2": 65,
-        "D": 70
+        "A": 22.5,
+        "B1": 15.0,
+        "B2": 65.0,
+        "C1": 45.0,
+        "C2": 67.5,
+        "D": 45.0
       },
-      "size": 61,
-      "flavor": "场上脏活都不闪,我就是队友的最爱"
+      "size": 59,
+      "flavor": "场上脏活都不闪,我就是队友的最爱",
+      "exemplars": [
+        "dennis_rodman",
+        "steven_adams",
+        "josh_hart",
+        "kevon_looney",
+        "draymond_green"
+      ]
+    },
+    {
+      "id": "playmaking_big",
+      "name_zh": "策应长人",
+      "coordinates": {
+        "A": 57.5,
+        "B1": 22.5,
+        "B2": 72.5,
+        "C1": 50.0,
+        "C2": 70.0,
+        "D": 70.0
+      },
+      "size": 82,
+      "flavor": "球在高位就交给我,我能自己单打,也能把球送到空切的队友手上",
+      "exemplars": [
+        "nikola_jokic",
+        "domantas_sabonis",
+        "alperen_sengun",
+        "bam_adebayo",
+        "chris_webber"
+      ]
+    },
+    {
+      "id": "point_forward",
+      "name_zh": "控球前锋",
+      "coordinates": {
+        "A": 72.5,
+        "B1": 32.5,
+        "B2": 35.0,
+        "C1": 20.0,
+        "C2": 40.0,
+        "D": 50.0
+      },
+      "size": 59,
+      "flavor": "球交给我就对了,中距离、切入都能自己解决,也能替队友制造机会",
+      "exemplars": [
+        "demar_derozan",
+        "brandon_ingram",
+        "julius_randle",
+        "paolo_banchero",
+        "josh_giddey"
+      ]
     }
   ]
 }
