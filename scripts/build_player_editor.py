@@ -61,6 +61,7 @@ def build_payload(pools, archetypes, skill_names, snapshot, previous=None):
     """pools: [(tag, [player dict, ...]), ...] in data-file shape.
     previous: optional {(tag, id): player dict} from an older data snapshot to compare against."""
     players, distances = [], []
+    exemplar_of = {pid: a["id"] for a in archetypes for pid in a.get("exemplars", [])}
     for tag, pool in pools:
         sizes = compute_player_sizes(pool)
         prev_sizes = compute_player_sizes([v for (t, _), v in (previous or {}).items() if t == tag]) if previous else {}
@@ -77,6 +78,7 @@ def build_payload(pools, archetypes, skill_names, snapshot, previous=None):
                 "traits": p.get("notable_traits", []),
                 "signature_skill": skill_names.get(p.get("signature_skill_id"), ""),
                 "archetype_id": p.get("archetype_id"),
+                "exemplar_of": exemplar_of.get(p["id"]),
                 "engine_archetype": (
                     p.get("archetype_id")
                     or classify_archetype(p["coordinates"], archetypes, size=sizes.get(p["id"]))["id"]
@@ -96,7 +98,8 @@ def build_payload(pools, archetypes, skill_names, snapshot, previous=None):
         "misfit_share": MISFIT_SHARE,
         "compare_label": None,
         "archetypes": [
-            {"id": a["id"], "name_zh": a["name_zh"], "coordinates": a["coordinates"], "size": a["size"], "flavor": a["flavor"]}
+            {"id": a["id"], "name_zh": a["name_zh"], "coordinates": a["coordinates"], "size": a["size"],
+             "flavor": a["flavor"], "exemplars": a.get("exemplars", [])}
             for a in archetypes
         ],
         "players": players,

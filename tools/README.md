@@ -77,6 +77,8 @@ python3 scripts/run_player_match.py data/answers/answers_20260908T153000.json
 - 改完按「💾 下載修改檔」，得到 `球員資料修改-日期.json`，交給 Claude 寫進
   `scripts/build_players_seed.py`（現役）或 `scripts/build_players_alltime_seed.py`（歷史），
   再重新產生 `data/` 底下的球員資料。**不要直接改 `data/` 的球員檔**（CLAUDE.md 規定）。
+- 每個原型的位置由「代表球員」決定（代表球員六軸和體型的平均，`scripts/build_archetype_anchors.py`）。
+  勾選某列的「⭐ 代表」就把他設成目前原型的代表，原型位置會即時重算；代表球員被分到別的原型時會出現紅字提醒。
 - 每列最左邊的 🗑 可以刪除球員（要按兩次確認）。刪除的球員變灰劃線，可以按「復原」；修改檔裡會記下要刪除誰，
   套用時由 Claude 從種子腳本和三種語言的球員檔一起移除。
 - 原型可以「自動」或「手動指定」：自動就依六軸和體型計算，頁面用跟 `src/engine/archetype.py` 相同的規則即時重算；

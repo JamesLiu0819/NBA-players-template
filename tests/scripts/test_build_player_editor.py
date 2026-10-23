@@ -71,6 +71,16 @@ class MisfitAndCompareTest(unittest.TestCase):
         self.assertIsNone(payload["players"][0]["prev"])
 
 
+class ExemplarPayloadTest(unittest.TestCase):
+    def test_players_know_which_archetype_they_represent(self):
+        archetypes = [dict(ARCHETYPES[0], exemplars=["guard"]), dict(ARCHETYPES[1], exemplars=[])]
+        payload = build_payload([("c", [player("guard", 80, 180, 75), player("center", 20, 215, 120)])], archetypes, {}, "d")
+        by_id = {p["id"]: p for p in payload["players"]}
+        self.assertEqual(by_id["guard"]["exemplar_of"], "small")
+        self.assertIsNone(by_id["center"]["exemplar_of"])
+        self.assertEqual(payload["archetypes"][0]["exemplars"], ["guard"])
+
+
 class EmbedTest(unittest.TestCase):
     PAGE = '<html><!--DATA-START--><script id="data" type="application/json">null</script><!--DATA-END--><p>keep</p></html>'
 

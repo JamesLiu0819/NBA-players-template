@@ -308,7 +308,7 @@
 
   <!-- 4 -->
   <h2 class="sec" id="s4"><span class="num">4</span>算式</h2>
-  <p class="part-lead">每張卡片：<b>算什麼 → 算式 → 例子 → 數字在哪裡改</b>。六個軸是 A 持球創造、B1 外線投射、B2 禁區得分、C1 外圍防守、C2 禁區防守、D 運動表現。</p>
+  <p class="part-lead">每張卡片：<b>算什麼 → 算式 → 例子 → 數字在哪裡改</b>。六個軸是 A 持球創造、B1 外線投射、B2 禁區得分、C1 外圍防守、C2 禁區防守、D 運動表現。<b>B2 禁區得分指的是長人式的內線終結</b>（卡位接傳球、補籃、低位）；後衛自己運球切入上籃算在 A 持球創造。</p>
 
   <div class="card c-engine" id="f1">
     <h3><span class="n">4.1</span>六軸座標（每軸 0 到 100）</h3>
@@ -368,7 +368,8 @@ player percentile = (1 − w) × rank in pool + w × population curve</span>
   </div>
 
   <div class="card c-engine" id="f5">
-    <h3><span class="n">4.5</span>球場定位原型（12 種）</h3>
+    <h3><span class="n">4.5</span>球場定位原型（14 種）</h3>
+    <p><b>每個原型的位置由代表球員決定：</b>原型檔裡每個原型列了 4 到 5 位代表球員，原型的六軸座標和體型就是他們的平均（<code>scripts/build_archetype_anchors.py</code> 算好寫進原型檔）。所以球員資料改了，原型會跟著一起移動。</p>
     <ol>
       <li>拿 10 人對照表的<b>前 5 名</b>。</li>
       <li>每位球員各自歸到最接近的原型：比六軸，再加上體型（他的身高、體重在球員池內的百分位平均）。<b>例外：</b>球員資料有手動指定原型（<code>archetype_id</code>）的，直接用指定的。</li>
@@ -376,7 +377,7 @@ player percentile = (1 − w) × rank in pool + w × population curve</span>
       <li>票數最高的原型勝出。平手時，取平手原型裡排名最前面那位球員的原型。</li>
     </ol>
     <p>畫面上的「一句話球探報告」就是該原型的 <code>flavor</code> 文字。</p>
-    <p class="where">算式在 <code>src/engine/archetype.py</code> 的 <code>classify_archetype_by_majority</code>。可以調：<code>ARCHETYPE_MAJORITY_TOP_N</code>（幾個人投票）、<code>SIZE_AXIS_WEIGHT</code>（體型多重要）。原型內容在 <code>data/zh/原型.json</code>。</p>
+    <p class="where">算式在 <code>src/engine/archetype.py</code> 的 <code>classify_archetype_by_majority</code>。可以調：<code>ARCHETYPE_MAJORITY_TOP_N</code>（幾個人投票）、<code>SIZE_AXIS_WEIGHT</code>（體型多重要）。原型內容和代表球員在 <code>data/zh/原型.json</code>；改代表球員後要執行 <code>scripts/build_archetype_anchors.py</code>，測試會檢查原型位置等於代表球員的平均。</p>
   </div>
 
   <div class="card c-engine" id="f6">
@@ -585,7 +586,7 @@ P = G × E ÷ C</span>
     <tr><td><code>題庫.json</code></td><td>12 + 6 題</td><td>六軸題：屬於哪一軸、題目、5 句選項。身材題：欄位、單位、上下限、是否必填</td><td>問卷畫面、座標計算</td></tr>
     <tr><td><code>球員.json</code></td><td>152 人</td><td>六軸座標、身材、特點、招牌技能</td><td>配對、訓練計劃</td></tr>
     <tr><td><code>歷史球員.json</code></td><td>72 人</td><td>同上，球隊欄位改放代表年份</td><td>選「歷史球員模板」時</td></tr>
-    <tr><td><code>原型.json</code></td><td>12 種</td><td>名稱、六軸座標、體型、一句話球探報告</td><td>原型分類</td></tr>
+    <tr><td><code>原型.json</code></td><td>14 種</td><td>名稱、代表球員、六軸座標和體型（由代表球員算出）、一句話球探報告</td><td>原型分類</td></tr>
     <tr><td><code>技能.json</code></td><td>15 項</td><td>名稱、成本、跟六軸各自的關聯度、驗收標準</td><td>訓練計劃</td></tr>
     <tr><td><code>訓練菜單.json</code></td><td>45 筆</td><td>屬於哪項技能、哪個難度、名稱、組數、次數、分鐘</td><td>訓練計劃</td></tr>
     <tr><td><code>data/env_weights.json</code></td><td>4 組</td><td>每種聯賽環境對 15 項技能的倍率（不分語言）</td><td>訓練計劃</td></tr>
@@ -729,8 +730,8 @@ const FILES = [
     edit: ["不要手改。改 scripts/build_players_seed.py 再重新產生"], kw: "球員 現役 NBA 座標 特點 招牌技能 身材" },
   { p: "data/zh/歷史球員.json", layer: "data", what: "72 位歷史球員，格式跟現役相同",
     edit: ["不要手改。改 scripts/build_players_alltime_seed.py 再重新產生"], kw: "歷史 球員 退役 名人" },
-  { p: "data/zh/原型.json", layer: "data", what: "12 種球場定位原型：名稱、座標、體型、一句話球探報告",
-    edit: ["改原型名稱或球探報告文字", "調整原型的座標或體型", "新增或刪除原型"], kw: "原型 定位 球探報告 控場 射手 中鋒 側翼" },
+  { p: "data/zh/原型.json", layer: "data", what: "14 種球場定位原型：名稱、代表球員、座標與體型（由代表球員算出）、一句話球探報告",
+    edit: ["改原型名稱或球探報告文字", "換代表球員（再執行 scripts/build_archetype_anchors.py）", "新增或刪除原型"], kw: "原型 定位 球探報告 控場 射手 中鋒 側翼 代表球員 策應長人 控球前鋒" },
   { p: "data/zh/技能.json", layer: "data", what: "15 項技能：成本、跟六軸的關聯度、驗收標準",
     edit: ["改技能名稱", "調整技能成本 cost_C", "調整技能跟哪一軸有關 axis_relevance", "改驗收動作或門檻"],
     kw: "技能 成本 C 關聯度 axis_relevance 驗收 指標 門檻" },
@@ -805,6 +806,10 @@ const FILES = [
   { p: "scripts/build_players_from_bbref.py", layer: "script", what: "用 Basketball-Reference 的數據重新估算球員六軸、身高體重、球隊，寫回種子腳本",
     edit: ["要調整某一軸用哪些數據、權重多少（AXIS_RECIPES）", "要調整每一軸有多少來自數據（STATS_SHARE）"],
     kw: "Basketball-Reference bbref 數據 換算 六軸 進階數據 重建 球員資料" },
+  { p: "scripts/build_archetype_anchors.py", layer: "script", what: "依代表球員重算每個原型的座標和體型，寫回繁中和英文原型檔",
+    edit: ["不用改，換了代表球員或球員資料更新後執行它"], kw: "原型 代表球員 錨點 重算" },
+  { p: "scripts/pre_bbref_estimates.json", layer: "data", what: "改用 Basketball-Reference 之前的原始估算（固定不變），重算時數據量不到的部分用它補",
+    edit: ["不要改"], kw: "原始估算 基準 2K" },
   { p: "scripts/sync_en_players.py", layer: "script", what: "把繁中球員檔的數值欄位複製到英文球員檔",
     edit: ["不用改，球員數值改了之後執行它"], kw: "英文 同步 球員 數值" },
   { p: "scripts/build_zh_hans_data.py", layer: "script", what: "把繁中資料整包轉成簡中",
@@ -906,6 +911,9 @@ const TASKS = [
          { p: "scripts/build_players_alltime_seed.py", at: "歷史球員" }] },
   { want: "改原型的名稱或一句話球探報告", kw: "原型 名稱 球探報告 文字 flavor",
     go: [{ p: "data/zh/原型.json", at: "name_zh、flavor；另外兩個語言也要改" }] },
+  { want: "換某個原型的代表球員", kw: "原型 代表球員 錨點 位置",
+    go: [{ p: "tools/player-editor.html", at: "勾選或取消「⭐ 代表」，下載修改檔交給 Claude" },
+         { p: "data/zh/原型.json", at: "exemplars；改完執行 scripts/build_archetype_anchors.py" }] },
   { want: "調整原型怎麼決定", kw: "原型 分類 投票 幾個人 體型",
     go: [{ p: "src/engine/archetype.py", at: "ARCHETYPE_MAJORITY_TOP_N、SIZE_AXIS_WEIGHT" }] },
   { want: "改按鈕、標題等介面文字", kw: "按鈕 標題 文字 介面 翻譯 文案 語言",
