@@ -1,5 +1,5 @@
 {
-  "_description": "球场定位原型(archetype)清单,给「一句话球探报告」跟结果页的原型标签用。每个原型是六轴空间里的一个锚点座标,用户座标用最近邻(Euclidean distance)分类到最接近的原型——跟 src/engine/player_matching.py 找最像球员的逻辑是同一套精神,只是比对的对象换成手动设计的原型锚点,不是球员。12 个原型尽量平均分布在 A/B1/B2/C1/C2/D 六轴空间里,不是穷举所有座标组合,涵盖常见的球风轮廓即可。每个原型还有一个 size 字段(0-100,身高百分位跟体重百分位的平均),分类时(engine/archetype.py 的 classify_archetype)如果用户/候选球员有身材数据,会把 size 并入距离计算——避免矮个子只要打法平均就被分类到隐含高大身材的原型(例如全能锋线),高个子打控球风格也被分类到控场指挥官(2026-10 讨论)。2026-10-23:改成 15 个原型(添加策应长人、控球前锋、得分侧翼),而且锚点不再手打——每个原型的 exemplars 是代表球员的 id,coordinates 跟 size 由 scripts/build_archetype_anchors.py 算成代表球员的平均,原型跟球员用同一把尺。",
+  "_description": "球场定位原型(archetype)清单,给「一句话球探报告」跟结果页的原型标签用。每个原型是六轴空间里的一个锚点座标,用户座标用最近邻(Euclidean distance)分类到最接近的原型——跟 src/engine/player_matching.py 找最像球员的逻辑是同一套精神,只是比对的对象换成手动设计的原型锚点,不是球员。12 个原型尽量平均分布在 A/B1/B2/C1/C2/D 六轴空间里,不是穷举所有座标组合,涵盖常见的球风轮廓即可。每个原型还有一个 size 字段(0-100,身高百分位跟体重百分位的平均),分类时(engine/archetype.py 的 classify_archetype)如果用户/候选球员有身材数据,会把 size 并入距离计算——避免矮个子只要打法平均就被分类到隐含高大身材的原型(例如全能锋线),高个子打控球风格也被分类到控场指挥官(2026-10 讨论)。2026-10-23:改成 15 个原型(添加策应长人、控球前锋、得分后卫),而且锚点不再手打——每个原型的 exemplars 是代表球员的 id,coordinates 跟 size 由 scripts/build_archetype_anchors.py 算成代表球员的平均,原型跟球员用同一把尺。",
   "_editable_fields": "要调整原型就改 exemplars(代表球员),再运行 scripts/build_archetype_anchors.py 重算 coordinates/size——不要直接手改这两个字段,测试会检查它们等于代表球员的平均。name_zh/flavor 改变文案。id 一旦被别的地方引用就不要改。",
   "archetypes": [
     {
@@ -294,8 +294,8 @@
       ]
     },
     {
-      "id": "scoring_wing",
-      "name_zh": "得分侧翼",
+      "id": "scoring_guard",
+      "name_zh": "得分后卫",
       "coordinates": {
         "A": 80.0,
         "B1": 87.5,
