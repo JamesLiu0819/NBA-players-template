@@ -368,7 +368,7 @@ player percentile = (1 − w) × rank in pool + w × population curve</span>
   </div>
 
   <div class="card c-engine" id="f5">
-    <h3><span class="n">4.5</span>球場定位原型（14 種）</h3>
+    <h3><span class="n">4.5</span>球場定位原型（15 種）</h3>
     <p><b>每個原型的位置由代表球員決定：</b>原型檔裡每個原型列了 4 到 5 位代表球員，原型的六軸座標和體型就是他們的平均（<code>scripts/build_archetype_anchors.py</code> 算好寫進原型檔）。所以球員資料改了，原型會跟著一起移動。</p>
     <ol>
       <li>拿 10 人對照表的<b>前 5 名</b>。</li>
@@ -586,7 +586,7 @@ P = G × E ÷ C</span>
     <tr><td><code>題庫.json</code></td><td>12 + 6 題</td><td>六軸題：屬於哪一軸、題目、5 句選項。身材題：欄位、單位、上下限、是否必填</td><td>問卷畫面、座標計算</td></tr>
     <tr><td><code>球員.json</code></td><td>152 人</td><td>六軸座標、身材、特點、招牌技能</td><td>配對、訓練計劃</td></tr>
     <tr><td><code>歷史球員.json</code></td><td>72 人</td><td>同上，球隊欄位改放代表年份</td><td>選「歷史球員模板」時</td></tr>
-    <tr><td><code>原型.json</code></td><td>14 種</td><td>名稱、代表球員、六軸座標和體型（由代表球員算出）、一句話球探報告</td><td>原型分類</td></tr>
+    <tr><td><code>原型.json</code></td><td>15 種</td><td>名稱、代表球員、六軸座標和體型（由代表球員算出）、一句話球探報告</td><td>原型分類</td></tr>
     <tr><td><code>技能.json</code></td><td>15 項</td><td>名稱、成本、跟六軸各自的關聯度、驗收標準</td><td>訓練計劃</td></tr>
     <tr><td><code>訓練菜單.json</code></td><td>45 筆</td><td>屬於哪項技能、哪個難度、名稱、組數、次數、分鐘</td><td>訓練計劃</td></tr>
     <tr><td><code>data/env_weights.json</code></td><td>4 組</td><td>每種聯賽環境對 15 項技能的倍率（不分語言）</td><td>訓練計劃</td></tr>
@@ -730,8 +730,8 @@ const FILES = [
     edit: ["不要手改。改 scripts/build_players_seed.py 再重新產生"], kw: "球員 現役 NBA 座標 特點 招牌技能 身材" },
   { p: "data/zh/歷史球員.json", layer: "data", what: "72 位歷史球員，格式跟現役相同",
     edit: ["不要手改。改 scripts/build_players_alltime_seed.py 再重新產生"], kw: "歷史 球員 退役 名人" },
-  { p: "data/zh/原型.json", layer: "data", what: "14 種球場定位原型：名稱、代表球員、座標與體型（由代表球員算出）、一句話球探報告",
-    edit: ["改原型名稱或球探報告文字", "換代表球員（再執行 scripts/build_archetype_anchors.py）", "新增或刪除原型"], kw: "原型 定位 球探報告 控場 射手 中鋒 側翼 代表球員 策應長人 控球前鋒" },
+  { p: "data/zh/原型.json", layer: "data", what: "15 種球場定位原型：名稱、代表球員、座標與體型（由代表球員算出）、一句話球探報告",
+    edit: ["改原型名稱或球探報告文字", "換代表球員（再執行 scripts/build_archetype_anchors.py）", "新增或刪除原型"], kw: "原型 定位 球探報告 控場 射手 中鋒 側翼 代表球員 策應長人 控球前鋒 得分側翼" },
   { p: "data/zh/技能.json", layer: "data", what: "15 項技能：成本、跟六軸的關聯度、驗收標準",
     edit: ["改技能名稱", "調整技能成本 cost_C", "調整技能跟哪一軸有關 axis_relevance", "改驗收動作或門檻"],
     kw: "技能 成本 C 關聯度 axis_relevance 驗收 指標 門檻" },

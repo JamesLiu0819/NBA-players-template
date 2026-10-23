@@ -1,5 +1,5 @@
 {
-  "_description": "球場定位原型(archetype)清單,給「一句話球探報告」跟結果頁的原型標籤用。每個原型是六軸空間裡的一個錨點座標,使用者座標用最近鄰(Euclidean distance)分類到最接近的原型——跟 src/engine/player_matching.py 找最像球員的邏輯是同一套精神,只是比對的對象換成手動設計的原型錨點,不是球員。12 個原型盡量平均分布在 A/B1/B2/C1/C2/D 六軸空間裡,不是窮舉所有座標組合,涵蓋常見的球風輪廓即可。每個原型還有一個 size 欄位(0-100,身高百分位跟體重百分位的平均),分類時(engine/archetype.py 的 classify_archetype)如果使用者/候選球員有身材資料,會把 size 併入距離計算——避免矮個子只要打法平均就被分類到隱含高大身材的原型(例如全能鋒線),高個子打控球風格也被分類到控場指揮官(2026-10 討論)。 2026-10-23: 14 archetypes (added Playmaking Big and Point Forward); coordinates and size are now the average of each archetype's exemplars, computed by scripts/build_archetype_anchors.py.",
+  "_description": "球場定位原型(archetype)清單,給「一句話球探報告」跟結果頁的原型標籤用。每個原型是六軸空間裡的一個錨點座標,使用者座標用最近鄰(Euclidean distance)分類到最接近的原型——跟 src/engine/player_matching.py 找最像球員的邏輯是同一套精神,只是比對的對象換成手動設計的原型錨點,不是球員。12 個原型盡量平均分布在 A/B1/B2/C1/C2/D 六軸空間裡,不是窮舉所有座標組合,涵蓋常見的球風輪廓即可。每個原型還有一個 size 欄位(0-100,身高百分位跟體重百分位的平均),分類時(engine/archetype.py 的 classify_archetype)如果使用者/候選球員有身材資料,會把 size 併入距離計算——避免矮個子只要打法平均就被分類到隱含高大身材的原型(例如全能鋒線),高個子打控球風格也被分類到控場指揮官(2026-10 討論)。 2026-10-23: 15 archetypes (added Playmaking Big, Point Forward and Scoring Wing); coordinates and size are now the average of each archetype's exemplars, computed by scripts/build_archetype_anchors.py.",
   "_editable_fields": "Change an archetype by editing its exemplars (player ids) and re-running scripts/build_archetype_anchors.py; don't hand-edit coordinates/size. name_zh/flavor are copy. Don't change ids once referenced.",
   "archetypes": [
     {
@@ -28,18 +28,17 @@
       "name_zh": "Combo Guard",
       "coordinates": {
         "A": 87.5,
-        "B1": 80.0,
-        "B2": 20.0,
-        "C1": 37.5,
-        "C2": 12.5,
-        "D": 37.5
+        "B1": 78.1,
+        "B2": 15.6,
+        "C1": 28.1,
+        "C2": 9.4,
+        "D": 28.1
       },
-      "size": 19,
+      "size": 17,
       "flavor": "Playmaking, scoring, doesn't matter -- I run the offense and I close it out too.",
       "exemplars": [
         "damian_lillard",
         "kyrie_irving",
-        "donovan_mitchell",
         "jalen_brunson",
         "devin_booker"
       ]
@@ -292,6 +291,27 @@
         "julius_randle",
         "paolo_banchero",
         "josh_giddey"
+      ]
+    },
+    {
+      "id": "scoring_wing",
+      "name_zh": "Scoring Wing",
+      "coordinates": {
+        "A": 80.0,
+        "B1": 87.5,
+        "B2": 57.5,
+        "C1": 80.0,
+        "C2": 45.0,
+        "D": 82.5
+      },
+      "size": 34,
+      "flavor": "Iso, pull-up, drive -- when it matters, the last shot is mine.",
+      "exemplars": [
+        "michael_jordan",
+        "kobe_bryant",
+        "tracy_mcgrady",
+        "clyde_drexler",
+        "donovan_mitchell"
       ]
     }
   ]
