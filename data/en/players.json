@@ -1746,7 +1746,8 @@
           "question_id": "axis_d_2",
           "score": 4
         }
-      ]
+      ],
+      "archetype_id": "stretch_big"
     },
     {
       "id": "tyrese_haliburton",
@@ -2378,7 +2379,8 @@
           "question_id": "axis_d_2",
           "score": 3
         }
-      ]
+      ],
+      "archetype_id": "do_it_all_forward"
     },
     {
       "id": "clint_capela",
@@ -3884,7 +3886,8 @@
           "question_id": "axis_d_2",
           "score": 4
         }
-      ]
+      ],
+      "archetype_id": "do_it_all_forward"
     },
     {
       "id": "kawhi_leonard",

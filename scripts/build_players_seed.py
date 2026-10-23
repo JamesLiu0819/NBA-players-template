@@ -268,6 +268,7 @@ PLAYERS = [
         "body": {"height_cm": 213, "wingspan_cm": 224, "weight_kg": 112},
         "notable_traits": ["背框腳步柔軟", "外線出手穩定", "換防彈性一般"],
         "signature_skill_id": "post_up",
+        "archetype_id": "stretch_big",
         "learnability_flag": "medium",
         "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
     },
@@ -340,6 +341,7 @@ PLAYERS = [
         "body": {"height_cm": 203, "wingspan_cm": 213, "weight_kg": 95},
         "notable_traits": ["罰球穩定", "面框單打腳步好", "中距離跳投多樣"],
         "signature_skill_id": "free_throw_shooting",
+        "archetype_id": "do_it_all_forward",
         "learnability_flag": "medium",
         "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
     },
@@ -519,6 +521,7 @@ PLAYERS = [
         "body": {"height_cm": 206, "wingspan_cm": 214, "weight_kg": 113},
         "notable_traits": ["持球創造能力頂級", "傳導視野極佳", "轉換終結力強"],
         "signature_skill_id": "high_post_playmaking", "learnability_flag": "low",
+        "archetype_id": "do_it_all_forward",
         "_estimate_basis": "公開球評印象 + 臂展等公開身體數據,手動估算,非真實數據推導",
     },
     {

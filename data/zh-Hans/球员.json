@@ -1695,6 +1695,7 @@
         "换防弹性一般"
       ],
       "signature_skill_id": "post_up",
+      "archetype_id": "stretch_big",
       "learnability_flag": "medium",
       "_estimate_basis": "公开球评印象,手动估算,非真实数据推导",
       "mock_axis_answers": [
@@ -2327,6 +2328,7 @@
         "中距离跳投多样"
       ],
       "signature_skill_id": "free_throw_shooting",
+      "archetype_id": "do_it_all_forward",
       "learnability_flag": "medium",
       "_estimate_basis": "公开球评印象,手动估算,非真实数据推导",
       "mock_axis_answers": [
@@ -3834,6 +3836,7 @@
       ],
       "signature_skill_id": "high_post_playmaking",
       "learnability_flag": "low",
+      "archetype_id": "do_it_all_forward",
       "_estimate_basis": "公开球评印象 + 臂展等公开身体数据,手动估算,非真实数据推导",
       "mock_axis_answers": [
         {

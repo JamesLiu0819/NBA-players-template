@@ -1424,7 +1424,8 @@
           "question_id": "axis_d_2",
           "score": 1
         }
-      ]
+      ],
+      "archetype_id": "floor_general"
     },
     {
       "id": "david_robinson",
@@ -2454,7 +2455,8 @@
           "question_id": "axis_d_2",
           "score": 3
         }
-      ]
+      ],
+      "archetype_id": "floor_general"
     },
     {
       "id": "dirk_nowitzki",
@@ -3483,7 +3485,8 @@
           "question_id": "axis_d_2",
           "score": 2
         }
-      ]
+      ],
+      "archetype_id": "rim_protector"
     },
     {
       "id": "chris_bosh",

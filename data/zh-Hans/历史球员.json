@@ -1373,6 +1373,7 @@
         "持球推进稳定"
       ],
       "signature_skill_id": "high_post_playmaking",
+      "archetype_id": "floor_general",
       "learnability_flag": "high",
       "_estimate_basis": "2K 公开历史/All-Time 卡属性数值换算百分位推算,非真实比赛数据推导",
       "mock_axis_answers": [
@@ -2403,6 +2404,7 @@
         "失误控制能力好"
       ],
       "signature_skill_id": "pick_and_roll_ball_handling",
+      "archetype_id": "floor_general",
       "learnability_flag": "high",
       "_estimate_basis": "2K 公开历史/All-Time 卡属性数值换算百分位推算,非真实比赛数据推导",
       "mock_axis_answers": [
@@ -3432,6 +3434,7 @@
         "协防威慑力强"
       ],
       "signature_skill_id": "rim_protection",
+      "archetype_id": "rim_protector",
       "learnability_flag": "high",
       "_estimate_basis": "2K 公开历史/All-Time 卡属性数值换算百分位推算,非真实比赛数据推导",
       "mock_axis_answers": [
