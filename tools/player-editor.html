@@ -73,6 +73,14 @@
   td.arch-cell .manual { display: block; font-size: .7rem; font-weight: 900; color: var(--accent); margin-top: 2px; }
   td.sig { text-align: left; font-size: .78rem; color: var(--soft); }
   tr.hidden { display: none; }
+  td.del { width: 1%; }
+  .delbtn { font: inherit; font-size: .8rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; white-space: nowrap; }
+  .delbtn:hover { border-color: #dc2626; color: #dc2626; }
+  .delbtn.armed { background: #dc2626; border-color: #dc2626; color: #fff; }
+  tr.deleted td { opacity: .45; }
+  tr.deleted td.del { opacity: 1; }
+  tr.deleted .nm { text-decoration: line-through; }
+  .deltag { font-size: .72rem; font-weight: 900; color: #fff; background: #dc2626; border-radius: 999px; padding: 0 7px; text-decoration: none; display: inline-block; }
   .dlt { display: block; font-size: .68rem; font-weight: 800; line-height: 1.1; }
   .dlt.up { color: #16a34a; } .dlt.down { color: #dc2626; }
   .was { font-size: .72rem; color: var(--soft); }
@@ -117,6 +125,7 @@
     <li><b>體重、立定摸高、助跑摸高、100 公尺</b>（斜體灰字）是用公式從身高、臂展、外線投射、運動表現推算的，改了身高等數值會跟著變；你也可以直接改，改了就固定成你填的數字。</li>
     <li><b>原型有兩種：</b>選單選「自動」就依六軸和體型自動算（改了數值會跟著變）；也可以從選單直接指定 12 個原型之一，指定後就固定，不管數值怎麼改。</li>
     <li>原型改變的球員，那一列會顯示「原型會變成…」；按 🔄 重新分組 就會移到新的原型底下。</li>
+    <li><b>刪除球員</b>：按每列最左邊的 🗑，再按一次「確定刪除」。刪除的球員會變灰並劃線，按「復原」可以救回來；修改檔裡會記下要刪除哪些人。</li>
     <li><b class="misfit">＊</b> <b>不太符合任何原型</b>：離最接近的原型還很遠（全部球員裡最遠的 10%）。改數值時會即時重新判斷。</li>
     <li>有新舊比較時，數字底下的 <b style="color:#16a34a">↑</b> <b style="color:#dc2626">↓</b> 是跟比較對象（例如目前網站的資料）相比的變化。</li>
   </ul>
@@ -160,6 +169,7 @@ let edits = {};
 try { edits = JSON.parse(localStorage.getItem(STORE_KEY) || "{}") || {}; } catch (e) { edits = {}; }
 function persist() { try { localStorage.setItem(STORE_KEY, JSON.stringify(edits)); } catch (e) { /* 存不了就只留在這個分頁 */ } }
 const key = (p) => p.pool + ":" + p.id;
+const isDeleted = (p) => !!(edits[key(p)] && edits[key(p)].deleted);
 
 // Same formula as scripts/build_players_seed.py derive_body_measurements().
 function deriveBody(h, w, coords) {
@@ -187,7 +197,8 @@ function current(p) {
 // ---------- archetype: same rule as src/engine/archetype.py classify_archetype ----------
 function pct(value, pool) { let below = 0, eq = 0; for (const v of pool) { if (v < value) below++; else if (v === value) eq++; } return (below + 0.5 * eq) / pool.length * 100; }
 function sizesFor(poolTag) {
-  const ps = DATA.players.filter((p) => p.pool === poolTag).map((p) => ({ p, c: current(p) }));
+  // Deleted players are left out of the pool, the same as if they were really removed.
+  const ps = DATA.players.filter((p) => p.pool === poolTag && !isDeleted(p)).map((p) => ({ p, c: current(p) }));
   const hs = ps.map((x) => x.c.body.height_cm), ws = ps.map((x) => x.c.body.weight_kg), out = new Map();
   ps.forEach((x) => out.set(x.p, (pct(x.c.body.height_cm, hs) + pct(x.c.body.weight_kg, ws)) / 2));
   return out;
@@ -205,7 +216,7 @@ function classify(coords, size) { return classifyWithDistance(coords, size).arch
 // Distance to the nearest archetype for every player (edits applied); ≥ DATA.misfit_threshold means ＊.
 function fitDistances() {
   const sz = { c: sizesFor("c"), h: sizesFor("h") }, out = new Map();
-  for (const p of DATA.players) out.set(p, classifyWithDistance(current(p).coords, sz[p.pool].get(p)).dist);
+  for (const p of DATA.players) out.set(p, classifyWithDistance(current(p).coords, sz[p.pool].get(p) ?? 50).dist);
   return out;
 }
 const ARCH_BY_ID = new Map(ARCH.map((a) => [a.id, a]));
@@ -213,7 +224,7 @@ const ARCH_BY_ID = new Map(ARCH.map((a) => [a.id, a]));
 function overrideOf(p) { const e = edits[key(p)] || {}; return "archetype_id" in e ? e.archetype_id : (p.archetype_id || ""); }
 function autoArchetypes() {
   const sz = { c: sizesFor("c"), h: sizesFor("h") }, out = new Map();
-  for (const p of DATA.players) out.set(p, classify(current(p).coords, sz[p.pool].get(p)));
+  for (const p of DATA.players) out.set(p, classify(current(p).coords, sz[p.pool].get(p) ?? 50));
   return out;
 }
 // Effective archetype: the hand-picked one if set, otherwise the automatic one
@@ -245,29 +256,33 @@ function rowHtml(p, archNow, autoNow, dist) {
   const opts = `<option value="">自動（${esc(autoNow.name_zh)}）</option>` + ARCH.map((a) => `<option value="${a.id}"${a.id === ov ? " selected" : ""}>${esc(a.name_zh)}</option>`).join("");
   const origTxt = p.archetype_id ? ARCH_BY_ID.get(p.archetype_id).name_zh : "自動";
   const prevArch = p.prev && p.prev.archetype !== archNow.id ? `<span class="was">比較對象：${esc(ARCH_BY_ID.get(p.prev.archetype).name_zh)}</span>` : "";
-  const archCell = `<td class="arch-cell${archEdited ? " edited" : ""}" style="--ac:${archNow.color}" title="${archEdited ? "原本：" + esc(origTxt) : "選「自動」就依數值計算"}"><select data-f="archetype_id">${opts}</select>${ov ? '<span class="manual">手動指定</span>' : ""}${prevArch}</td>`;
+  const archCell = `<td class="arch-cell${archEdited ? " edited" : ""}" style="--ac:${archNow.color}" title="${archEdited ? "原本：" + esc(origTxt) : "選「自動」就依數值計算"}"><select data-f="archetype_id"${isDeleted(p) ? " disabled" : ""}>${opts}</select>${ov ? '<span class="manual">手動指定</span>' : ""}${prevArch}</td>`;
   const star = dist >= DATA.misfit_threshold ? ` <span class="misfit" title="不太符合任何原型：離最接近的原型距離 ${dist.toFixed(0)}（門檻 ${DATA.misfit_threshold.toFixed(0)}）">＊</span>` : "";
   const teamWas = p.prev && p.prev.team !== p.team ? ` <span class="was">（原本 ${esc(p.prev.team)}）</span>` : "";
   const moved = archNow.id !== grp.id ? `<div class="moved">原型會變成 <span class="archtag" style="--ac:${archNow.color}">${esc(archNow.name_zh)}</span></div>` : "";
+  const dis = isDeleted(p) ? " disabled" : "";
   const axisCells = AX.map((a) => {
     const f = "coordinates." + a, ed = f in e;
-    return `<td class="axis${ed ? " edited" : ""}" style="${ed ? "" : axisBg(c.coords[a])}" title="${ed ? "原本：" + p.coordinates[a] : AXN[a]}${p.prev ? "　比較對象：" + p.prev.coordinates[a] : ""}"><input type="number" min="0" max="100" step="12.5" data-f="${f}" value="${c.coords[a]}">${p.prev ? delta(c.coords[a], p.prev.coordinates[a], 1) : ""}</td>`;
+    return `<td class="axis${ed ? " edited" : ""}" style="${ed ? "" : axisBg(c.coords[a])}" title="${ed ? "原本：" + p.coordinates[a] : AXN[a]}${p.prev ? "　比較對象：" + p.prev.coordinates[a] : ""}"><input type="number" min="0" max="100" step="12.5" data-f="${f}" value="${c.coords[a]}"${dis}>${p.prev ? delta(c.coords[a], p.prev.coordinates[a], 1) : ""}</td>`;
   }).join("");
   const bodyCells = BODY.map((b) => {
     const f = "body." + b.k, ed = f in e;
     const cls = ed ? "edited" : (b.hand ? "" : "derived");
-    return `<td class="${cls}" title="${ed ? "原本：" + p.body[b.k] : b.hand ? "手填的原始資料" : "公式推算"}${p.prev ? "　比較對象：" + p.prev.body[b.k] : ""}"><input type="number" step="${b.step}" data-f="${f}" value="${c.body[b.k]}">${p.prev ? delta(c.body[b.k], p.prev.body[b.k], b.step < 1 ? 2 : 0) : ""}</td>`;
+    return `<td class="${cls}" title="${ed ? "原本：" + p.body[b.k] : b.hand ? "手填的原始資料" : "公式推算"}${p.prev ? "　比較對象：" + p.prev.body[b.k] : ""}"><input type="number" step="${b.step}" data-f="${f}" value="${c.body[b.k]}"${isDeleted(p) ? " disabled" : ""}>${p.prev ? delta(c.body[b.k], p.prev.body[b.k], b.step < 1 ? 2 : 0) : ""}</td>`;
   }).join("");
-  return `<tr data-k="${esc(key(p))}"><td class="who"><div class="nm">${esc(p.name)}${star} <span class="pool ${p.pool}">${p.pool === "c" ? "現役" : "歷史"}</span></div>
+  const del = isDeleted(p);
+  const delCell = `<td class="del"><button type="button" class="delbtn" data-del="${del ? "restore" : "delete"}">${del ? "↩︎ 復原" : "🗑"}</button></td>`;
+  return `<tr data-k="${esc(key(p))}"${del ? ' class="deleted"' : ""}>${delCell}<td class="who"><div class="nm">${esc(p.name)}${del ? "" : star} ${del ? '<span class="deltag">已刪除</span> ' : ""}<span class="pool ${p.pool}">${p.pool === "c" ? "現役" : "歷史"}</span></div>
     <div class="meta">${esc(p.team)}${teamWas}　${esc(p.id)}</div>${moved}</td>${archCell}${axisCells}${bodyCells}
     <td class="sig">${esc(p.signature_skill)}<br>${p.traits.map(esc).join("・")}</td></tr>`;
 }
 
 function render() {
   const now = archetypes(), auto = autoArchetypes(), dists = fitDistances(), diff = $("diff-filter").value, q = $("q").value.trim().toLowerCase(), pool = $("pool").value, onlyEd = $("only-edited").checked;
-  const head = `<tr><th rowspan="2">球員</th><th rowspan="2">原型<span class="sub">自動或指定</span></th><th class="grp-axis" colspan="6">六軸數值（0–100）</th><th class="grp-body" colspan="6">身材</th><th rowspan="2">招牌技能・特點</th></tr>
+  const head = `<tr><th rowspan="2">刪除</th><th rowspan="2">球員</th><th rowspan="2">原型<span class="sub">自動或指定</span></th><th class="grp-axis" colspan="6">六軸數值（0–100）</th><th class="grp-body" colspan="6">身材</th><th rowspan="2">招牌技能・特點</th></tr>
     <tr>${AX.map((a) => `<th class="grp-axis">${AXN[a]}<span class="sub">${a}</span></th>`).join("")}${BODY.map((b) => `<th class="grp-body">${b.n}<span class="sub">${b.u}${b.hand ? "・手填" : "・推算"}</span></th>`).join("")}</tr>`;
-  const counts = new Map(); for (const a of groupOf.values()) counts.set(a.id, (counts.get(a.id) || 0) + 1);
+  const counts = new Map();
+  for (const [p, a] of groupOf) if (!isDeleted(p)) counts.set(a.id, (counts.get(a.id) || 0) + 1);
   const order = [...ARCH].sort((x, y) => (counts.get(y.id) || 0) - (counts.get(x.id) || 0));
   $("legend").innerHTML = order.map((a) => `<span class="chip${hiddenArch.has(a.id) ? " off" : ""}" style="--ac:${a.color}" data-arch="${a.id}"><i></i>${esc(a.name_zh)} ${counts.get(a.id) || 0}</span>`).join("") +
     `<span class="chip" style="--ac:var(--soft)" data-arch="__all">全部顯示</span>`;
@@ -279,27 +294,30 @@ function render() {
       if (diff === "big" && !(p.prev && AX.some((a) => Math.abs(current(p).coords[a] - p.prev.coordinates[a]) >= 25))) return false;
       if (diff === "arch" && !(p.prev && p.prev.archetype !== now.get(p).id)) return false;
       return !q || p.name.toLowerCase().includes(q) || p.team.toLowerCase().includes(q) || p.id.includes(q);
-    }).sort((x, y) => (x.pool === y.pool ? 0 : x.pool === "c" ? -1 : 1) || x.name.localeCompare(y.name));
+    }).sort((x, y) => (isDeleted(x) - isDeleted(y)) || (x.pool === y.pool ? 0 : x.pool === "c" ? -1 : 1) || x.name.localeCompare(y.name));
     if (!members.length) return "";
     const top2 = [...AX].sort((x, y) => a.coordinates[y] - a.coordinates[x]).slice(0, 2).map((x) => AXN[x]).join("、");
     const sizeTxt = a.size >= 70 ? "高大" : a.size >= 45 ? "中等" : "偏小";
-    const nC = members.filter((p) => p.pool === "c").length, nH = members.length - nC;
+    const live = members.filter((p) => !isDeleted(p)), nC = live.filter((p) => p.pool === "c").length, nH = live.length - nC;
+    const nDel = members.length - live.length;
     return `<section class="arch" style="--ac:${a.color}" id="arch-${a.id}">
-      <div class="ahead"><h2>${esc(a.name_zh)} <small>${members.length} 人（現役 ${nC}・歷史 ${nH}）</small></h2>
+      <div class="ahead"><h2>${esc(a.name_zh)} <small>${live.length} 人（現役 ${nC}・歷史 ${nH}）${nDel ? `・已刪除 ${nDel}` : ""}</small></h2>
         <ul><li><b>一句話：</b>${esc(a.flavor)}</li><li><b>最強的兩軸：</b>${top2}</li><li><b>典型體型：</b>${sizeTxt}</li></ul></div>
       <div class="tw"><table><thead>${head}</thead><tbody>${members.map((p) => rowHtml(p, now.get(p), auto.get(p), dists.get(p))).join("")}</tbody></table></div></section>`;
   }).join("") || `<p style="font-size:1.1rem">沒有符合條件的球員。</p>`;
   updateCount();
-  const nMis = DATA.players.filter((p) => dists.get(p) >= DATA.misfit_threshold).length;
+  const nMis = DATA.players.filter((p) => !isDeleted(p) && dists.get(p) >= DATA.misfit_threshold).length;
+  const nDeleted = DATA.players.filter(isDeleted).length;
+  const delTxt = nDeleted ? `　已標記刪除 <b style="color:#dc2626">${nDeleted}</b> 位球員。` : "";
   if (DATA.compare_label) {
     const withPrev = DATA.players.filter((p) => p.prev);
     const changed = withPrev.filter((p) => AX.some((a) => current(p).coords[a] !== p.prev.coordinates[a])).length;
     const big = withPrev.filter((p) => AX.some((a) => Math.abs(current(p).coords[a] - p.prev.coordinates[a]) >= 25)).length;
     const archMoved = withPrev.filter((p) => p.prev.archetype !== now.get(p).id).length;
     const teams = withPrev.filter((p) => p.prev.team !== p.team).length;
-    $("banner").innerHTML = `<div class="banner">跟 <b>${esc(DATA.compare_label)}</b>（目前網站的資料）比較：<b>${changed}</b> 位球員的六軸有變、<b>${big}</b> 位至少一軸變動 25 分以上、<b>${archMoved}</b> 位原型改變、<b>${teams}</b> 位換了球隊。<span class="misfit">＊</span> 不太符合任何原型的球員有 <b>${nMis}</b> 位。</div>`;
+    $("banner").innerHTML = `<div class="banner">跟 <b>${esc(DATA.compare_label)}</b>（目前網站的資料）比較：<b>${changed}</b> 位球員的六軸有變、<b>${big}</b> 位至少一軸變動 25 分以上、<b>${archMoved}</b> 位原型改變、<b>${teams}</b> 位換了球隊。<span class="misfit">＊</span> 不太符合任何原型的球員有 <b>${nMis}</b> 位。${delTxt}</div>`;
   } else {
-    $("banner").innerHTML = `<div class="banner"><span class="misfit">＊</span> 不太符合任何原型的球員有 <b>${nMis}</b> 位。</div>`;
+    $("banner").innerHTML = `<div class="banner"><span class="misfit">＊</span> 不太符合任何原型的球員有 <b>${nMis}</b> 位。${delTxt}</div>`;
   }
 }
 
@@ -328,6 +346,21 @@ $("groups").addEventListener("change", (ev) => {
   if (!Object.keys(e).length) delete edits[key(p)];
   persist(); render();
 });
+$("groups").addEventListener("click", (ev) => {
+  const btn = ev.target.closest("button[data-del]"); if (!btn) return;
+  const p = byKey.get(btn.closest("tr").dataset.k);
+  if (btn.dataset.del === "restore") {
+    const e = edits[key(p)]; if (e) { delete e.deleted; if (!Object.keys(e).length) delete edits[key(p)]; }
+    persist(); render(); toast(`已復原 ${p.name}`); return;
+  }
+  if (!btn.classList.contains("armed")) {
+    btn.classList.add("armed"); btn.textContent = "確定刪除？";
+    setTimeout(() => { if (btn.isConnected) { btn.classList.remove("armed"); btn.textContent = "🗑"; } }, 3000);
+    return;
+  }
+  (edits[key(p)] = edits[key(p)] || {}).deleted = true;
+  persist(); render(); toast(`已標記刪除 ${p.name}（可以按復原）`);
+});
 $("legend").addEventListener("click", (ev) => {
   const c = ev.target.closest("[data-arch]"); if (!c) return;
   if (c.dataset.arch === "__all") hiddenArch.clear();
@@ -348,6 +381,10 @@ function exportObject() {
   for (const p of DATA.players) {
     const e = edits[key(p)]; if (!e) continue;
     for (const [f, v] of Object.entries(e)) {
+      if (f === "deleted") {
+        changes.push({ pool: p.pool === "c" ? "current" : "alltime", id: p.id, name: p.name, field: "deleted", label: "刪除球員", old: false, new: true });
+        continue;
+      }
       if (f === "archetype_id") {
         const nm = (id) => (id ? ARCH_BY_ID.get(id).name_zh : "自動（依數值計算）");
         changes.push({ pool: p.pool === "c" ? "current" : "alltime", id: p.id, name: p.name, field: "archetype_id",
@@ -361,7 +398,7 @@ function exportObject() {
     if (now.get(p).id !== BASE.get(p).id) archChanges.push({ id: p.id, name: p.name, from: BASE.get(p).name_zh, to: now.get(p).name_zh });
   }
   return { format: "player-edits/v1", data_snapshot: DATA.snapshot, exported_at: new Date().toISOString(),
-    note: "Apply to scripts/build_players_seed.py (current) / scripts/build_players_alltime_seed.py (alltime), then regenerate data/. Body fields other than height/wingspan are formula-derived in the seed scripts: an explicit edit means a per-player override. field archetype_id: set the optional archetype_id on the player (null = remove it, back to automatic) in the seed script and in the zh-Hans/en player files.",
+    note: "Apply to scripts/build_players_seed.py (current) / scripts/build_players_alltime_seed.py (alltime), then regenerate data/. Body fields other than height/wingspan are formula-derived in the seed scripts: an explicit edit means a per-player override. field deleted: remove the player from the seed script and from the zh-Hans/en player files. field archetype_id: set the optional archetype_id on the player (null = remove it, back to automatic) in the seed script and in the zh-Hans/en player files.",
     change_count: changes.length, changes, archetype_changes_preview: archChanges };
 }
 $("save").addEventListener("click", () => {
