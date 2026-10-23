@@ -1,5 +1,5 @@
 {
-  "_description": "問診題庫,共 18 題。axis_positioning 是六軸定位 12 題(A/B1/B2/C1/C2/D 各 2 題)。B 軸拆成 B1 外線投射/B2 禁區低位得分,C 軸拆成 C1 外圍防守/C2 禁區護框防守(2026-10 改版,理由見下方 _editable_fields)。body_measurements 是身材類數值題 6 題,給「3 位深度模板」的身體最貼合和原型體型分數用。已經移除原本的技能行為題(skill_behavior):技能的訓練優先序不再來自技能自評,改由六軸差距與目標球員推導(見 src/engine/skill_level.py),所以不需要再問。axis_positioning 與 body_measurements 都是 BARS(行為錨定評分量表,見 SPEC.md §5.1)的題目——問的是具體行為或頻率,不是自評能力高低;body_measurements 例外,是直接填數值。",
+  "_description": "問診題庫,共 18 題。axis_positioning 是六軸定位 12 題(A/B1/B2/C1/C2/D 各 2 題)。B 軸拆成 B1 外線投射/B2 禁區低位得分,C 軸拆成 C1 外圍防守/C2 禁區護框防守(2026-10 改版,理由見下方 _editable_fields)。body_measurements 是身材類數值題 6 題,給「3 位深度模板」的身體最貼合和原型體型分數用。已經移除原本的技能行為題(skill_behavior):技能的訓練優先序不再來自技能自評,改由六軸差距與目標球員推導(見 src/engine/skill_level.py),所以不需要再問。axis_positioning 與 body_measurements 都是 BARS(行為錨定評分量表,見 SPEC.md §5.1)的題目——問的是具體行為或頻率,不是自評能力高低;body_measurements 例外,是直接填數值。 2026-10-23: axis_b2_2 now asks about finishing at the rim after sealing in the paint or grabbing an offensive rebound (big-man interior finishing); guards' self-created drives are measured by A (axis_a_2) instead.",
   "_editable_fields": "axis_positioning 每題的 prompt(題目文字)跟 anchors(1-5 每個分數對應的行為描述)可以照 BARS 精神修改用詞,但每題的 anchors 必須維持 1-5 五個完整的行為描述,不能只改數字不改文字,否則就違背了 BARS 的設計目的。axis_positioning 支援 \"reverse_scored\": true(見 engine/axis_position.py 的 score_axis_coordinates,分數會自動 6-score 反轉再平均),但目前這 12 題沒有一題用到——六軸改版時發現舊版 B/C 軸的題目問的其實是「站位/角色分配」而非「表現好壞」,改版後每題都直接問表現型描述,不再需要反轉。body_measurements 每題的 prompt/unit/min/max 可以依實際需求調整,但改的時候要小心:(1) id 一旦被其他地方引用就不要改;(2) body_measurements 的 field 全部六項(height_cm/wingspan_cm/weight_kg/standing_reach_cm/running_vertical_reach_cm/sprint_100m_seconds)都已經對應到 players.json 每個球員的 body 欄位,新增題目要維持這個對應關係。body_measurements 的 body_height/body_weight 標了 required:true——身高、體重是原型分類(engine/archetype.py 的體型分數)的必要輸入,其餘四題維持選填(見 engine/body_fit.py 的 missing_required_body_fields)。要新增題目就照現有的物件格式加進對應的陣列。",
   "axis_positioning": [
     {
@@ -65,13 +65,13 @@
     {
       "id": "axis_b2_2",
       "axis": "B2",
-      "prompt": "How confident are you finishing at short range (from the rim out to the free-throw line)?",
+      "prompt": "When you've sealed your defender in the paint and catch a teammate's pass, or grab an offensive rebound, how often do you finish right at the rim?",
       "anchors": {
-        "1": "I rarely get the chance, or can't convert when I do",
-        "2": "I occasionally finish, but often get blocked or miss",
+        "1": "I rarely catch the ball in the paint or get offensive rebounds",
+        "2": "I get chances now and then, but often get blocked or miss",
         "3": "About half the time, depending on the matchup",
-        "4": "I finish most of the time -- my touch is reliable there",
-        "5": "It's an automatic scoring zone for me -- defenses specifically worry about it"
+        "4": "I finish most of the time, sometimes drawing a foul",
+        "5": "I finish almost every time, often with an and-one"
       }
     },
     {

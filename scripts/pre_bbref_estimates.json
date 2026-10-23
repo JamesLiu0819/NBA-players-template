@@ -1,0 +1,2695 @@
+{
+ "_description": "Pre-Basketball-Reference hand/2K-based estimates (target coordinates, team, height) for every player, frozen from main on 2026-10-23. scripts/build_players_from_bbref.py uses these as the 'existing estimate' for the parts of each axis that box scores can't measure, so re-running the rebuild never compounds on its own output.",
+ "current": {
+  "amen_thompson": {
+   "coordinates": {
+    "A": 84,
+    "B1": 13,
+    "B2": 71,
+    "C1": 81,
+    "C2": 63,
+    "D": 95
+   },
+   "team": "HOU",
+   "height_cm": 201
+  },
+  "nikola_jokic": {
+   "coordinates": {
+    "A": 58,
+    "B1": 93,
+    "B2": 100,
+    "C1": 44,
+    "C2": 72,
+    "D": 85
+   },
+   "team": "DEN",
+   "height_cm": 211
+  },
+  "stephen_curry": {
+   "coordinates": {
+    "A": 89,
+    "B1": 100,
+    "B2": 98,
+    "C1": 45,
+    "C2": 14,
+    "D": 36
+   },
+   "team": "GSW",
+   "height_cm": 188
+  },
+  "rudy_gobert": {
+   "coordinates": {
+    "A": 4,
+    "B1": 3,
+    "B2": 36,
+    "C1": 22,
+    "C2": 92,
+    "D": 14
+   },
+   "team": "MIN",
+   "height_cm": 216
+  },
+  "luka_doncic": {
+   "coordinates": {
+    "A": 94,
+    "B1": 90,
+    "B2": 85,
+    "C1": 55,
+    "C2": 43,
+    "D": 68
+   },
+   "team": "DAL",
+   "height_cm": 201
+  },
+  "draymond_green": {
+   "coordinates": {
+    "A": 53,
+    "B1": 24,
+    "B2": 17,
+    "C1": 89,
+    "C2": 77,
+    "D": 46
+   },
+   "team": "GSW",
+   "height_cm": 198
+  },
+  "klay_thompson": {
+   "coordinates": {
+    "A": 26,
+    "B1": 54,
+    "B2": 61,
+    "C1": 36,
+    "C2": 43,
+    "D": 20
+   },
+   "team": "DAL",
+   "height_cm": 198
+  },
+  "giannis_antetokounmpo": {
+   "coordinates": {
+    "A": 82,
+    "B1": 8,
+    "B2": 87,
+    "C1": 86,
+    "C2": 75,
+    "D": 96
+   },
+   "team": "MIL",
+   "height_cm": 211
+  },
+  "victor_wembanyama": {
+   "coordinates": {
+    "A": 42,
+    "B1": 64,
+    "B2": 74,
+    "C1": 69,
+    "C2": 99,
+    "D": 40
+   },
+   "team": "SAS",
+   "height_cm": 224
+  },
+  "jrue_holiday": {
+   "coordinates": {
+    "A": 62,
+    "B1": 64,
+    "B2": 80,
+    "C1": 91,
+    "C2": 27,
+    "D": 18
+   },
+   "team": "BOS",
+   "height_cm": 193
+  },
+  "domantas_sabonis": {
+   "coordinates": {
+    "A": 25,
+    "B1": 30,
+    "B2": 80,
+    "C1": 13,
+    "C2": 41,
+    "D": 13
+   },
+   "team": "SAC",
+   "height_cm": 211
+  },
+  "mikal_bridges": {
+   "coordinates": {
+    "A": 57,
+    "B1": 79,
+    "B2": 83,
+    "C1": 87,
+    "C2": 62,
+    "D": 68
+   },
+   "team": "NYK",
+   "height_cm": 198
+  },
+  "kevin_durant": {
+   "coordinates": {
+    "A": 74,
+    "B1": 98,
+    "B2": 98,
+    "C1": 42,
+    "C2": 62,
+    "D": 51
+   },
+   "team": "PHX",
+   "height_cm": 208
+  },
+  "nikola_vucevic": {
+   "coordinates": {
+    "A": 12,
+    "B1": 60,
+    "B2": 80,
+    "C1": 2,
+    "C2": 58,
+    "D": 13
+   },
+   "team": "CHI",
+   "height_cm": 211
+  },
+  "alex_caruso": {
+   "coordinates": {
+    "A": 56,
+    "B1": 52,
+    "B2": 68,
+    "C1": 96,
+    "C2": 39,
+    "D": 43
+   },
+   "team": "OKC",
+   "height_cm": 196
+  },
+  "bam_adebayo": {
+   "coordinates": {
+    "A": 38,
+    "B1": 39,
+    "B2": 67,
+    "C1": 66,
+    "C2": 75,
+    "D": 82
+   },
+   "team": "MIA",
+   "height_cm": 206
+  },
+  "buddy_hield": {
+   "coordinates": {
+    "A": 49,
+    "B1": 24,
+    "B2": 36,
+    "C1": 69,
+    "C2": 27,
+    "D": 15
+   },
+   "team": "GSW",
+   "height_cm": 196
+  },
+  "anthony_davis": {
+   "coordinates": {
+    "A": 38,
+    "B1": 27,
+    "B2": 68,
+    "C1": 63,
+    "C2": 87,
+    "D": 87
+   },
+   "team": "LAL",
+   "height_cm": 208
+  },
+  "chris_paul": {
+   "coordinates": {
+    "A": 76,
+    "B1": 89,
+    "B2": 54,
+    "C1": 69,
+    "C2": 33,
+    "D": 16
+   },
+   "team": "SAS",
+   "height_cm": 183
+  },
+  "deaaron_fox": {
+   "coordinates": {
+    "A": 92,
+    "B1": 57,
+    "B2": 11,
+    "C1": 71,
+    "C2": 9,
+    "D": 64
+   },
+   "team": "SAC",
+   "height_cm": 191
+  },
+  "joel_embiid": {
+   "coordinates": {
+    "A": 30,
+    "B1": 79,
+    "B2": 90,
+    "C1": 22,
+    "C2": 79,
+    "D": 17
+   },
+   "team": "PHI",
+   "height_cm": 213
+  },
+  "karl_anthony_towns": {
+   "coordinates": {
+    "A": 38,
+    "B1": 62,
+    "B2": 80,
+    "C1": 8,
+    "C2": 58,
+    "D": 78
+   },
+   "team": "NYK",
+   "height_cm": 213
+  },
+  "tyrese_haliburton": {
+   "coordinates": {
+    "A": 92,
+    "B1": 89,
+    "B2": 28,
+    "C1": 71,
+    "C2": 47,
+    "D": 43
+   },
+   "team": "IND",
+   "height_cm": 196
+  },
+  "trae_young": {
+   "coordinates": {
+    "A": 93,
+    "B1": 85,
+    "B2": 15,
+    "C1": 22,
+    "C2": 3,
+    "D": 43
+   },
+   "team": "ATL",
+   "height_cm": 183
+  },
+  "desmond_bane": {
+   "coordinates": {
+    "A": 51,
+    "B1": 87,
+    "B2": 42,
+    "C1": 49,
+    "C2": 41,
+    "D": 33
+   },
+   "team": "MEM",
+   "height_cm": 196
+  },
+  "duncan_robinson": {
+   "coordinates": {
+    "A": 33,
+    "B1": 66,
+    "B2": 20,
+    "C1": 22,
+    "C2": 30,
+    "D": 4
+   },
+   "team": "MIA",
+   "height_cm": 201
+  },
+  "pascal_siakam": {
+   "coordinates": {
+    "A": 50,
+    "B1": 27,
+    "B2": 88,
+    "C1": 55,
+    "C2": 65,
+    "D": 61
+   },
+   "team": "IND",
+   "height_cm": 203
+  },
+  "herbert_jones": {
+   "coordinates": {
+    "A": 43,
+    "B1": 30,
+    "B2": 14,
+    "C1": 94,
+    "C2": 70,
+    "D": 33
+   },
+   "team": "NOP",
+   "height_cm": 198
+  },
+  "damian_lillard": {
+   "coordinates": {
+    "A": 85,
+    "B1": 99,
+    "B2": 10,
+    "C1": 42,
+    "C2": 4,
+    "D": 76
+   },
+   "team": "MIL",
+   "height_cm": 188
+  },
+  "jayson_tatum": {
+   "coordinates": {
+    "A": 72,
+    "B1": 86,
+    "B2": 71,
+    "C1": 78,
+    "C2": 50,
+    "D": 75
+   },
+   "team": "BOS",
+   "height_cm": 203
+  },
+  "clint_capela": {
+   "coordinates": {
+    "A": 3,
+    "B1": 2,
+    "B2": 30,
+    "C1": 20,
+    "C2": 87,
+    "D": 17
+   },
+   "team": "ATL",
+   "height_cm": 208
+  },
+  "steven_adams": {
+   "coordinates": {
+    "A": 10,
+    "B1": 1,
+    "B2": 5,
+    "C1": 13,
+    "C2": 72,
+    "D": 2
+   },
+   "team": "HOU",
+   "height_cm": 211
+  },
+  "marcus_smart": {
+   "coordinates": {
+    "A": 42,
+    "B1": 15,
+    "B2": 32,
+    "C1": 96,
+    "C2": 55,
+    "D": 6
+   },
+   "team": "WAS",
+   "height_cm": 191
+  },
+  "lu_dort": {
+   "coordinates": {
+    "A": 44,
+    "B1": 48,
+    "B2": 2,
+    "C1": 89,
+    "C2": 60,
+    "D": 79
+   },
+   "team": "OKC",
+   "height_cm": 193
+  },
+  "derrick_white": {
+   "coordinates": {
+    "A": 88,
+    "B1": 66,
+    "B2": 6,
+    "C1": 64,
+    "C2": 55,
+    "D": 23
+   },
+   "team": "BOS",
+   "height_cm": 193
+  },
+  "jarrett_allen": {
+   "coordinates": {
+    "A": 4,
+    "B1": 17,
+    "B2": 47,
+    "C1": 2,
+    "C2": 81,
+    "D": 73
+   },
+   "team": "CLE",
+   "height_cm": 211
+  },
+  "nic_claxton": {
+   "coordinates": {
+    "A": 2,
+    "B1": 12,
+    "B2": 7,
+    "C1": 68,
+    "C2": 90,
+    "D": 69
+   },
+   "team": "BKN",
+   "height_cm": 211
+  },
+  "josh_hart": {
+   "coordinates": {
+    "A": 53,
+    "B1": 32,
+    "B2": 23,
+    "C1": 55,
+    "C2": 23,
+    "D": 63
+   },
+   "team": "NYK",
+   "height_cm": 196
+  },
+  "mike_conley": {
+   "coordinates": {
+    "A": 89,
+    "B1": 52,
+    "B2": 4,
+    "C1": 59,
+    "C2": 4,
+    "D": 33
+   },
+   "team": "MIN",
+   "height_cm": 185
+  },
+  "anthony_edwards": {
+   "coordinates": {
+    "A": 70,
+    "B1": 81,
+    "B2": 47,
+    "C1": 74,
+    "C2": 40,
+    "D": 43
+   },
+   "team": "MIN",
+   "height_cm": 196
+  },
+  "shai_gilgeous_alexander": {
+   "coordinates": {
+    "A": 95,
+    "B1": 87,
+    "B2": 61,
+    "C1": 90,
+    "C2": 60,
+    "D": 71
+   },
+   "team": "OKC",
+   "height_cm": 198
+  },
+  "myles_turner": {
+   "coordinates": {
+    "A": 1,
+    "B1": 57,
+    "B2": 61,
+    "C1": 28,
+    "C2": 88,
+    "D": 9
+   },
+   "team": "MIL",
+   "height_cm": 211
+  },
+  "brook_lopez": {
+   "coordinates": {
+    "A": 0,
+    "B1": 54,
+    "B2": 53,
+    "C1": 5,
+    "C2": 94,
+    "D": 7
+   },
+   "team": "LAC",
+   "height_cm": 213
+  },
+  "og_anunoby": {
+   "coordinates": {
+    "A": 25,
+    "B1": 45,
+    "B2": 7,
+    "C1": 68,
+    "C2": 93,
+    "D": 75
+   },
+   "team": "NYK",
+   "height_cm": 201
+  },
+  "andrew_wiggins": {
+   "coordinates": {
+    "A": 47,
+    "B1": 45,
+    "B2": 54,
+    "C1": 13,
+    "C2": 71,
+    "D": 73
+   },
+   "team": "MIA",
+   "height_cm": 201
+  },
+  "julius_randle": {
+   "coordinates": {
+    "A": 45,
+    "B1": 35,
+    "B2": 69,
+    "C1": 8,
+    "C2": 12,
+    "D": 66
+   },
+   "team": "MIN",
+   "height_cm": 203
+  },
+  "evan_mobley": {
+   "coordinates": {
+    "A": 32,
+    "B1": 21,
+    "B2": 65,
+    "C1": 3,
+    "C2": 85,
+    "D": 57
+   },
+   "team": "CLE",
+   "height_cm": 211
+  },
+  "cj_mccollum": {
+   "coordinates": {
+    "A": 67,
+    "B1": 69,
+    "B2": 15,
+    "C1": 4,
+    "C2": 37,
+    "D": 61
+   },
+   "team": "WAS",
+   "height_cm": 188
+  },
+  "tyler_herro": {
+   "coordinates": {
+    "A": 64,
+    "B1": 93,
+    "B2": 28,
+    "C1": 1,
+    "C2": 33,
+    "D": 25
+   },
+   "team": "MIA",
+   "height_cm": 196
+  },
+  "lebron_james": {
+   "coordinates": {
+    "A": 86,
+    "B1": 38,
+    "B2": 71,
+    "C1": 8,
+    "C2": 45,
+    "D": 93
+   },
+   "team": "LAL",
+   "height_cm": 206
+  },
+  "kawhi_leonard": {
+   "coordinates": {
+    "A": 71,
+    "B1": 96,
+    "B2": 87,
+    "C1": 95,
+    "C2": 37,
+    "D": 68
+   },
+   "team": "LAC",
+   "height_cm": 201
+  },
+  "paul_george": {
+   "coordinates": {
+    "A": 69,
+    "B1": 78,
+    "B2": 44,
+    "C1": 93,
+    "C2": 41,
+    "D": 60
+   },
+   "team": "PHI",
+   "height_cm": 203
+  },
+  "devin_booker": {
+   "coordinates": {
+    "A": 82,
+    "B1": 93,
+    "B2": 76,
+    "C1": 3,
+    "C2": 21,
+    "D": 62
+   },
+   "team": "PHX",
+   "height_cm": 196
+  },
+  "kyrie_irving": {
+   "coordinates": {
+    "A": 89,
+    "B1": 97,
+    "B2": 36,
+    "C1": 27,
+    "C2": 33,
+    "D": 19
+   },
+   "team": "DAL",
+   "height_cm": 188
+  },
+  "james_harden": {
+   "coordinates": {
+    "A": 82,
+    "B1": 85,
+    "B2": 49,
+    "C1": 8,
+    "C2": 33,
+    "D": 82
+   },
+   "team": "LAC",
+   "height_cm": 196
+  },
+  "zion_williamson": {
+   "coordinates": {
+    "A": 45,
+    "B1": 22,
+    "B2": 58,
+    "C1": 8,
+    "C2": 43,
+    "D": 94
+   },
+   "team": "NOP",
+   "height_cm": 198
+  },
+  "ja_morant": {
+   "coordinates": {
+    "A": 95,
+    "B1": 47,
+    "B2": 24,
+    "C1": 13,
+    "C2": 12,
+    "D": 84
+   },
+   "team": "MEM",
+   "height_cm": 191
+  },
+  "donovan_mitchell": {
+   "coordinates": {
+    "A": 91,
+    "B1": 89,
+    "B2": 31,
+    "C1": 62,
+    "C2": 21,
+    "D": 89
+   },
+   "team": "CLE",
+   "height_cm": 185
+  },
+  "jaylen_brown": {
+   "coordinates": {
+    "A": 67,
+    "B1": 75,
+    "B2": 74,
+    "C1": 5,
+    "C2": 33,
+    "D": 73
+   },
+   "team": "BOS",
+   "height_cm": 198
+  },
+  "bradley_beal": {
+   "coordinates": {
+    "A": 62,
+    "B1": 69,
+    "B2": 45,
+    "C1": 27,
+    "C2": 30,
+    "D": 46
+   },
+   "team": "PHX",
+   "height_cm": 193
+  },
+  "jimmy_butler": {
+   "coordinates": {
+    "A": 76,
+    "B1": 75,
+    "B2": 61,
+    "C1": 81,
+    "C2": 52,
+    "D": 80
+   },
+   "team": "GSW",
+   "height_cm": 201
+  },
+  "kristaps_porzingis": {
+   "coordinates": {
+    "A": 23,
+    "B1": 78,
+    "B2": 71,
+    "C1": 11,
+    "C2": 79,
+    "D": 29
+   },
+   "team": "ATL",
+   "height_cm": 221
+  },
+  "alperen_sengun": {
+   "coordinates": {
+    "A": 29,
+    "B1": 21,
+    "B2": 91,
+    "C1": 46,
+    "C2": 71,
+    "D": 30
+   },
+   "team": "HOU",
+   "height_cm": 208
+  },
+  "lamelo_ball": {
+   "coordinates": {
+    "A": 94,
+    "B1": 75,
+    "B2": 24,
+    "C1": 63,
+    "C2": 19,
+    "D": 41
+   },
+   "team": "CHA",
+   "height_cm": 201
+  },
+  "scottie_barnes": {
+   "coordinates": {
+    "A": 64,
+    "B1": 60,
+    "B2": 83,
+    "C1": 83,
+    "C2": 86,
+    "D": 83
+   },
+   "team": "TOR",
+   "height_cm": 201
+  },
+  "cade_cunningham": {
+   "coordinates": {
+    "A": 90,
+    "B1": 90,
+    "B2": 74,
+    "C1": 77,
+    "C2": 58,
+    "D": 66
+   },
+   "team": "DET",
+   "height_cm": 198
+  },
+  "paolo_banchero": {
+   "coordinates": {
+    "A": 51,
+    "B1": 45,
+    "B2": 71,
+    "C1": 19,
+    "C2": 55,
+    "D": 73
+   },
+   "team": "ORL",
+   "height_cm": 206
+  },
+  "franz_wagner": {
+   "coordinates": {
+    "A": 59,
+    "B1": 72,
+    "B2": 33,
+    "C1": 51,
+    "C2": 38,
+    "D": 37
+   },
+   "team": "ORL",
+   "height_cm": 203
+  },
+  "jalen_brunson": {
+   "coordinates": {
+    "A": 96,
+    "B1": 95,
+    "B2": 57,
+    "C1": 34,
+    "C2": 19,
+    "D": 57
+   },
+   "team": "NYK",
+   "height_cm": 188
+  },
+  "tyrese_maxey": {
+   "coordinates": {
+    "A": 91,
+    "B1": 92,
+    "B2": 18,
+    "C1": 81,
+    "C2": 45,
+    "D": 59
+   },
+   "team": "PHI",
+   "height_cm": 185
+  },
+  "coby_white": {
+   "coordinates": {
+    "A": 76,
+    "B1": 43,
+    "B2": 30,
+    "C1": 18,
+    "C2": 16,
+    "D": 51
+   },
+   "team": "CHI",
+   "height_cm": 196
+  },
+  "zach_lavine": {
+   "coordinates": {
+    "A": 65,
+    "B1": 75,
+    "B2": 47,
+    "C1": 13,
+    "C2": 20,
+    "D": 71
+   },
+   "team": "SAC",
+   "height_cm": 196
+  },
+  "demar_derozan": {
+   "coordinates": {
+    "A": 62,
+    "B1": 85,
+    "B2": 83,
+    "C1": 22,
+    "C2": 40,
+    "D": 75
+   },
+   "team": "SAC",
+   "height_cm": 201
+  },
+  "fred_vanvleet": {
+   "coordinates": {
+    "A": 81,
+    "B1": 50,
+    "B2": 2,
+    "C1": 77,
+    "C2": 10,
+    "D": 40
+   },
+   "team": "HOU",
+   "height_cm": 183
+  },
+  "immanuel_quickley": {
+   "coordinates": {
+    "A": 69,
+    "B1": 75,
+    "B2": 25,
+    "C1": 65,
+    "C2": 4,
+    "D": 38
+   },
+   "team": "TOR",
+   "height_cm": 188
+  },
+  "rj_barrett": {
+   "coordinates": {
+    "A": 71,
+    "B1": 30,
+    "B2": 58,
+    "C1": 49,
+    "C2": 29,
+    "D": 80
+   },
+   "team": "TOR",
+   "height_cm": 198
+  },
+  "deandre_ayton": {
+   "coordinates": {
+    "A": 22,
+    "B1": 17,
+    "B2": 76,
+    "C1": 6,
+    "C2": 73,
+    "D": 57
+   },
+   "team": "LAL",
+   "height_cm": 213
+  },
+  "walker_kessler": {
+   "coordinates": {
+    "A": 5,
+    "B1": 20,
+    "B2": 64,
+    "C1": 19,
+    "C2": 91,
+    "D": 7
+   },
+   "team": "UTA",
+   "height_cm": 213
+  },
+  "chet_holmgren": {
+   "coordinates": {
+    "A": 30,
+    "B1": 62,
+    "B2": 64,
+    "C1": 74,
+    "C2": 94,
+    "D": 14
+   },
+   "team": "OKC",
+   "height_cm": 213
+  },
+  "jaren_jackson_jr": {
+   "coordinates": {
+    "A": 10,
+    "B1": 21,
+    "B2": 85,
+    "C1": 51,
+    "C2": 89,
+    "D": 48
+   },
+   "team": "MEM",
+   "height_cm": 211
+  },
+  "naz_reid": {
+   "coordinates": {
+    "A": 21,
+    "B1": 30,
+    "B2": 74,
+    "C1": 28,
+    "C2": 74,
+    "D": 33
+   },
+   "team": "MIN",
+   "height_cm": 208
+  },
+  "isaiah_hartenstein": {
+   "coordinates": {
+    "A": 14,
+    "B1": 10,
+    "B2": 55,
+    "C1": 22,
+    "C2": 77,
+    "D": 36
+   },
+   "team": "OKC",
+   "height_cm": 213
+  },
+  "onyeka_okongwu": {
+   "coordinates": {
+    "A": 20,
+    "B1": 62,
+    "B2": 65,
+    "C1": 38,
+    "C2": 74,
+    "D": 57
+   },
+   "team": "ATL",
+   "height_cm": 206
+  },
+  "ivica_zubac": {
+   "coordinates": {
+    "A": 9,
+    "B1": 6,
+    "B2": 88,
+    "C1": 11,
+    "C2": 78,
+    "D": 18
+   },
+   "team": "LAC",
+   "height_cm": 213
+  },
+  "daniel_gafford": {
+   "coordinates": {
+    "A": 4,
+    "B1": 4,
+    "B2": 50,
+    "C1": 20,
+    "C2": 83,
+    "D": 48
+   },
+   "team": "DAL",
+   "height_cm": 208
+  },
+  "mitchell_robinson": {
+   "coordinates": {
+    "A": 9,
+    "B1": 4,
+    "B2": 31,
+    "C1": 42,
+    "C2": 86,
+    "D": 27
+   },
+   "team": "NYK",
+   "height_cm": 213
+  },
+  "robert_williams_iii": {
+   "coordinates": {
+    "A": 13,
+    "B1": 14,
+    "B2": 52,
+    "C1": 54,
+    "C2": 93,
+    "D": 46
+   },
+   "team": "POR",
+   "height_cm": 206
+  },
+  "al_horford": {
+   "coordinates": {
+    "A": 18,
+    "B1": 57,
+    "B2": 64,
+    "C1": 39,
+    "C2": 82,
+    "D": 40
+   },
+   "team": "GSW",
+   "height_cm": 206
+  },
+  "kevon_looney": {
+   "coordinates": {
+    "A": 19,
+    "B1": 5,
+    "B2": 25,
+    "C1": 25,
+    "C2": 71,
+    "D": 16
+   },
+   "team": "GSW",
+   "height_cm": 206
+  },
+  "jonas_valanciunas": {
+   "coordinates": {
+    "A": 2,
+    "B1": 35,
+    "B2": 80,
+    "C1": 3,
+    "C2": 66,
+    "D": 15
+   },
+   "team": "DEN",
+   "height_cm": 211
+  },
+  "bobby_portis": {
+   "coordinates": {
+    "A": 33,
+    "B1": 35,
+    "B2": 42,
+    "C1": 25,
+    "C2": 25,
+    "D": 23
+   },
+   "team": "MIL",
+   "height_cm": 206
+  },
+  "jalen_duren": {
+   "coordinates": {
+    "A": 23,
+    "B1": 6,
+    "B2": 91,
+    "C1": 22,
+    "C2": 79,
+    "D": 86
+   },
+   "team": "DET",
+   "height_cm": 208
+  },
+  "tari_eason": {
+   "coordinates": {
+    "A": 30,
+    "B1": 15,
+    "B2": 13,
+    "C1": 84,
+    "C2": 64,
+    "D": 55
+   },
+   "team": "HOU",
+   "height_cm": 203
+  },
+  "dyson_daniels": {
+   "coordinates": {
+    "A": 60,
+    "B1": 7,
+    "B2": 27,
+    "C1": 97,
+    "C2": 50,
+    "D": 51
+   },
+   "team": "ATL",
+   "height_cm": 196
+  },
+  "ausar_thompson": {
+   "coordinates": {
+    "A": 60,
+    "B1": 7,
+    "B2": 21,
+    "C1": 99,
+    "C2": 81,
+    "D": 96
+   },
+   "team": "DET",
+   "height_cm": 198
+  },
+  "jalen_williams": {
+   "coordinates": {
+    "A": 73,
+    "B1": 47,
+    "B2": 46,
+    "C1": 83,
+    "C2": 65,
+    "D": 76
+   },
+   "team": "OKC",
+   "height_cm": 198
+  },
+  "jaden_mcdaniels": {
+   "coordinates": {
+    "A": 30,
+    "B1": 82,
+    "B2": 41,
+    "C1": 71,
+    "C2": 77,
+    "D": 51
+   },
+   "team": "MIN",
+   "height_cm": 201
+  },
+  "deni_avdija": {
+   "coordinates": {
+    "A": 53,
+    "B1": 57,
+    "B2": 33,
+    "C1": 45,
+    "C2": 50,
+    "D": 57
+   },
+   "team": "POR",
+   "height_cm": 206
+  },
+  "cam_johnson": {
+   "coordinates": {
+    "A": 18,
+    "B1": 57,
+    "B2": 33,
+    "C1": 30,
+    "C2": 47,
+    "D": 23
+   },
+   "team": "DEN",
+   "height_cm": 201
+  },
+  "cameron_thomas": {
+   "coordinates": {
+    "A": 40,
+    "B1": 92,
+    "B2": 11,
+    "C1": 11,
+    "C2": 7,
+    "D": 27
+   },
+   "team": "BKN",
+   "height_cm": 191
+  },
+  "anfernee_simons": {
+   "coordinates": {
+    "A": 67,
+    "B1": 72,
+    "B2": 38,
+    "C1": 15,
+    "C2": 18,
+    "D": 46
+   },
+   "team": "POR",
+   "height_cm": 191
+  },
+  "jordan_poole": {
+   "coordinates": {
+    "A": 79,
+    "B1": 30,
+    "B2": 8,
+    "C1": 11,
+    "C2": 29,
+    "D": 25
+   },
+   "team": "WAS",
+   "height_cm": 193
+  },
+  "malik_monk": {
+   "coordinates": {
+    "A": 57,
+    "B1": 69,
+    "B2": 15,
+    "C1": 18,
+    "C2": 29,
+    "D": 38
+   },
+   "team": "SAC",
+   "height_cm": 191
+  },
+  "austin_reaves": {
+   "coordinates": {
+    "A": 75,
+    "B1": 50,
+    "B2": 17,
+    "C1": 30,
+    "C2": 18,
+    "D": 45
+   },
+   "team": "LAL",
+   "height_cm": 196
+  },
+  "norman_powell": {
+   "coordinates": {
+    "A": 57,
+    "B1": 52,
+    "B2": 11,
+    "C1": 62,
+    "C2": 25,
+    "D": 49
+   },
+   "team": "MIA",
+   "height_cm": 191
+  },
+  "gary_trent_jr": {
+   "coordinates": {
+    "A": 53,
+    "B1": 78,
+    "B2": 7,
+    "C1": 18,
+    "C2": 12,
+    "D": 53
+   },
+   "team": "MIL",
+   "height_cm": 196
+  },
+  "bogdan_bogdanovic": {
+   "coordinates": {
+    "A": 47,
+    "B1": 35,
+    "B2": 27,
+    "C1": 30,
+    "C2": 14,
+    "D": 40
+   },
+   "team": "LAC",
+   "height_cm": 198
+  },
+  "kentavious_caldwell_pope": {
+   "coordinates": {
+    "A": 42,
+    "B1": 82,
+    "B2": 9,
+    "C1": 66,
+    "C2": 21,
+    "D": 33
+   },
+   "team": "ORL",
+   "height_cm": 196
+  },
+  "aaron_gordon": {
+   "coordinates": {
+    "A": 31,
+    "B1": 36,
+    "B2": 42,
+    "C1": 51,
+    "C2": 57,
+    "D": 80
+   },
+   "team": "DEN",
+   "height_cm": 203
+  },
+  "michael_porter_jr": {
+   "coordinates": {
+    "A": 47,
+    "B1": 75,
+    "B2": 49,
+    "C1": 32,
+    "C2": 33,
+    "D": 69
+   },
+   "team": "BKN",
+   "height_cm": 208
+  },
+  "keldon_johnson": {
+   "coordinates": {
+    "A": 53,
+    "B1": 60,
+    "B2": 95,
+    "C1": 34,
+    "C2": 33,
+    "D": 43
+   },
+   "team": "SAS",
+   "height_cm": 196
+  },
+  "devin_vassell": {
+   "coordinates": {
+    "A": 49,
+    "B1": 86,
+    "B2": 36,
+    "C1": 49,
+    "C2": 44,
+    "D": 29
+   },
+   "team": "SAS",
+   "height_cm": 198
+  },
+  "jeremy_sochan": {
+   "coordinates": {
+    "A": 49,
+    "B1": 8,
+    "B2": 36,
+    "C1": 39,
+    "C2": 49,
+    "D": 23
+   },
+   "team": "SAS",
+   "height_cm": 203
+  },
+  "jabari_smith_jr": {
+   "coordinates": {
+    "A": 39,
+    "B1": 48,
+    "B2": 86,
+    "C1": 28,
+    "C2": 63,
+    "D": 48
+   },
+   "team": "HOU",
+   "height_cm": 208
+  },
+  "tyus_jones": {
+   "coordinates": {
+    "A": 65,
+    "B1": 43,
+    "B2": 9,
+    "C1": 63,
+    "C2": 3,
+    "D": 5
+   },
+   "team": "ORL",
+   "height_cm": 185
+  },
+  "dennis_schroder": {
+   "coordinates": {
+    "A": 79,
+    "B1": 38,
+    "B2": 3,
+    "C1": 46,
+    "C2": 8,
+    "D": 28
+   },
+   "team": "SAC",
+   "height_cm": 185
+  },
+  "dangelo_russell": {
+   "coordinates": {
+    "A": 44,
+    "B1": 84,
+    "B2": 38,
+    "C1": 0,
+    "C2": 0,
+    "D": 79
+   },
+   "team": "BKN",
+   "height_cm": 193
+  },
+  "collin_sexton": {
+   "coordinates": {
+    "A": 74,
+    "B1": 75,
+    "B2": 8,
+    "C1": 60,
+    "C2": 17,
+    "D": 55
+   },
+   "team": "CHA",
+   "height_cm": 185
+  },
+  "terry_rozier": {
+   "coordinates": {
+    "A": 88,
+    "B1": 26,
+    "B2": 66,
+    "C1": 32,
+    "C2": 38,
+    "D": 94
+   },
+   "team": "MIA",
+   "height_cm": 185
+  },
+  "malcolm_brogdon": {
+   "coordinates": {
+    "A": 79,
+    "B1": 75,
+    "B2": 13,
+    "C1": 45,
+    "C2": 21,
+    "D": 29
+   },
+   "team": "WAS",
+   "height_cm": 193
+  },
+  "payton_pritchard": {
+   "coordinates": {
+    "A": 68,
+    "B1": 90,
+    "B2": 21,
+    "C1": 13,
+    "C2": 7,
+    "D": 10
+   },
+   "team": "BOS",
+   "height_cm": 185
+  },
+  "josh_giddey": {
+   "coordinates": {
+    "A": 82,
+    "B1": 10,
+    "B2": 39,
+    "C1": 25,
+    "C2": 36,
+    "D": 36
+   },
+   "team": "CHI",
+   "height_cm": 206
+  },
+  "keegan_murray": {
+   "coordinates": {
+    "A": 38,
+    "B1": 29,
+    "B2": 55,
+    "C1": 49,
+    "C2": 73,
+    "D": 33
+   },
+   "team": "SAC",
+   "height_cm": 201
+  },
+  "brandon_miller": {
+   "coordinates": {
+    "A": 65,
+    "B1": 72,
+    "B2": 18,
+    "C1": 46,
+    "C2": 43,
+    "D": 59
+   },
+   "team": "CHA",
+   "height_cm": 201
+  },
+  "zach_edey": {
+   "coordinates": {
+    "A": 7,
+    "B1": 32,
+    "B2": 76,
+    "C1": 0,
+    "C2": 88,
+    "D": 11
+   },
+   "team": "MEM",
+   "height_cm": 224
+  },
+  "donovan_clingan": {
+   "coordinates": {
+    "A": 11,
+    "B1": 26,
+    "B2": 52,
+    "C1": 5,
+    "C2": 89,
+    "D": 7
+   },
+   "team": "POR",
+   "height_cm": 216
+  },
+  "matas_buzelis": {
+   "coordinates": {
+    "A": 34,
+    "B1": 52,
+    "B2": 36,
+    "C1": 16,
+    "C2": 69,
+    "D": 72
+   },
+   "team": "CHI",
+   "height_cm": 206
+  },
+  "bennedict_mathurin": {
+   "coordinates": {
+    "A": 46,
+    "B1": 52,
+    "B2": 28,
+    "C1": 30,
+    "C2": 16,
+    "D": 51
+   },
+   "team": "IND",
+   "height_cm": 196
+  },
+  "andrew_nembhard": {
+   "coordinates": {
+    "A": 61,
+    "B1": 57,
+    "B2": 30,
+    "C1": 58,
+    "C2": 36,
+    "D": 12
+   },
+   "team": "IND",
+   "height_cm": 193
+  },
+  "obi_toppin": {
+   "coordinates": {
+    "A": 24,
+    "B1": 19,
+    "B2": 57,
+    "C1": 6,
+    "C2": 27,
+    "D": 63
+   },
+   "team": "IND",
+   "height_cm": 206
+  },
+  "aaron_nesmith": {
+   "coordinates": {
+    "A": 27,
+    "B1": 40,
+    "B2": 39,
+    "C1": 36,
+    "C2": 57,
+    "D": 49
+   },
+   "team": "IND",
+   "height_cm": 198
+  },
+  "jalen_green": {
+   "coordinates": {
+    "A": 70,
+    "B1": 52,
+    "B2": 20,
+    "C1": 60,
+    "C2": 15,
+    "D": 64
+   },
+   "team": "HOU",
+   "height_cm": 196
+  },
+  "kelly_oubre_jr": {
+   "coordinates": {
+    "A": 33,
+    "B1": 50,
+    "B2": 32,
+    "C1": 60,
+    "C2": 33,
+    "D": 55
+   },
+   "team": "PHI",
+   "height_cm": 201
+  },
+  "nickeil_alexander_walker": {
+   "coordinates": {
+    "A": 48,
+    "B1": 80,
+    "B2": 31,
+    "C1": 71,
+    "C2": 39,
+    "D": 30
+   },
+   "team": "ATL",
+   "height_cm": 196
+  },
+  "jalen_johnson": {
+   "coordinates": {
+    "A": 59,
+    "B1": 62,
+    "B2": 57,
+    "C1": 42,
+    "C2": 49,
+    "D": 49
+   },
+   "team": "ATL",
+   "height_cm": 203
+  },
+  "jamal_murray": {
+   "coordinates": {
+    "A": 76,
+    "B1": 82,
+    "B2": 64,
+    "C1": 38,
+    "C2": 15,
+    "D": 41
+   },
+   "team": "DEN",
+   "height_cm": 193
+  },
+  "brandon_ingram": {
+   "coordinates": {
+    "A": 64,
+    "B1": 70,
+    "B2": 65,
+    "C1": 29,
+    "C2": 21,
+    "D": 57
+   },
+   "team": "LAC",
+   "height_cm": 203
+  },
+  "khris_middleton": {
+   "coordinates": {
+    "A": 56,
+    "B1": 70,
+    "B2": 53,
+    "C1": 38,
+    "C2": 31,
+    "D": 39
+   },
+   "team": "WAS",
+   "height_cm": 201
+  },
+  "jonathan_kuminga": {
+   "coordinates": {
+    "A": 50,
+    "B1": 26,
+    "B2": 35,
+    "C1": 42,
+    "C2": 47,
+    "D": 63
+   },
+   "team": "MIN",
+   "height_cm": 201
+  },
+  "jakob_poeltl": {
+   "coordinates": {
+    "A": 4,
+    "B1": 15,
+    "B2": 81,
+    "C1": 17,
+    "C2": 62,
+    "D": 25
+   },
+   "team": "TOR",
+   "height_cm": 213
+  },
+  "harrison_barnes": {
+   "coordinates": {
+    "A": 51,
+    "B1": 59,
+    "B2": 69,
+    "C1": 31,
+    "C2": 31,
+    "D": 60
+   },
+   "team": "SAS",
+   "height_cm": 201
+  },
+  "jerami_grant": {
+   "coordinates": {
+    "A": 54,
+    "B1": 53,
+    "B2": 49,
+    "C1": 33,
+    "C2": 47,
+    "D": 48
+   },
+   "team": "MEM",
+   "height_cm": 201
+  },
+  "kyle_kuzma": {
+   "coordinates": {
+    "A": 49,
+    "B1": 45,
+    "B2": 49,
+    "C1": 38,
+    "C2": 41,
+    "D": 47
+   },
+   "team": "MIL",
+   "height_cm": 206
+  },
+  "grayson_allen": {
+   "coordinates": {
+    "A": 59,
+    "B1": 82,
+    "B2": 18,
+    "C1": 55,
+    "C2": 11,
+    "D": 38
+   },
+   "team": "CHA",
+   "height_cm": 191
+  },
+  "jalen_suggs": {
+   "coordinates": {
+    "A": 69,
+    "B1": 66,
+    "B2": 62,
+    "C1": 94,
+    "C2": 39,
+    "D": 57
+   },
+   "team": "ORL",
+   "height_cm": 196
+  },
+  "shaedon_sharpe": {
+   "coordinates": {
+    "A": 65,
+    "B1": 54,
+    "B2": 12,
+    "C1": 59,
+    "C2": 12,
+    "D": 55
+   },
+   "team": "POR",
+   "height_cm": 196
+  },
+  "jaden_ivey": {
+   "coordinates": {
+    "A": 69,
+    "B1": 45,
+    "B2": 13,
+    "C1": 41,
+    "C2": 11,
+    "D": 61
+   },
+   "team": "FA",
+   "height_cm": 193
+  },
+  "cason_wallace": {
+   "coordinates": {
+    "A": 61,
+    "B1": 54,
+    "B2": 5,
+    "C1": 98,
+    "C2": 44,
+    "D": 33
+   },
+   "team": "OKC",
+   "height_cm": 191
+  },
+  "trey_murphy_iii": {
+   "coordinates": {
+    "A": 41,
+    "B1": 68,
+    "B2": 26,
+    "C1": 42,
+    "C2": 43,
+    "D": 53
+   },
+   "team": "NOP",
+   "height_cm": 203
+  },
+  "patrick_williams": {
+   "coordinates": {
+    "A": 40,
+    "B1": 52,
+    "B2": 9,
+    "C1": 39,
+    "C2": 43,
+    "D": 39
+   },
+   "team": "CHI",
+   "height_cm": 201
+  },
+  "scoot_henderson": {
+   "coordinates": {
+    "A": 77,
+    "B1": 56,
+    "B2": 1,
+    "C1": 42,
+    "C2": 8,
+    "D": 55
+   },
+   "team": "POR",
+   "height_cm": 191
+  },
+  "kevin_love": {
+   "coordinates": {
+    "A": 25,
+    "B1": 63,
+    "B2": 59,
+    "C1": 13,
+    "C2": 45,
+    "D": 32
+   },
+   "team": "UTA",
+   "height_cm": 203
+  }
+ },
+ "alltime": {
+  "michael_jordan": {
+   "coordinates": {
+    "A": 81,
+    "B1": 93,
+    "B2": 96,
+    "C1": 93,
+    "C2": 29,
+    "D": 83
+   },
+   "team": "1996",
+   "height_cm": 198
+  },
+  "kobe_bryant": {
+   "coordinates": {
+    "A": 82,
+    "B1": 82,
+    "B2": 50,
+    "C1": 64,
+    "C2": 33,
+    "D": 91
+   },
+   "team": "2006",
+   "height_cm": 198
+  },
+  "magic_johnson": {
+   "coordinates": {
+    "A": 97,
+    "B1": 69,
+    "B2": 88,
+    "C1": 68,
+    "C2": 56,
+    "D": 87
+   },
+   "team": "1987",
+   "height_cm": 206
+  },
+  "larry_bird": {
+   "coordinates": {
+    "A": 54,
+    "B1": 99,
+    "B2": 93,
+    "C1": 80,
+    "C2": 24,
+    "D": 8
+   },
+   "team": "1986",
+   "height_cm": 206
+  },
+  "wilt_chamberlain": {
+   "coordinates": {
+    "A": 7,
+    "B1": 4,
+    "B2": 80,
+    "C1": 58,
+    "C2": 98,
+    "D": 33
+   },
+   "team": "1967",
+   "height_cm": 216
+  },
+  "bill_russell": {
+   "coordinates": {
+    "A": 16,
+    "B1": 3,
+    "B2": 76,
+    "C1": 76,
+    "C2": 100,
+    "D": 87
+   },
+   "team": "1962",
+   "height_cm": 208
+  },
+  "kareem_abdul_jabbar": {
+   "coordinates": {
+    "A": 12,
+    "B1": 10,
+    "B2": 93,
+    "C1": 36,
+    "C2": 90,
+    "D": 3
+   },
+   "team": "1977",
+   "height_cm": 218
+  },
+  "oscar_robertson": {
+   "coordinates": {
+    "A": 96,
+    "B1": 96,
+    "B2": 55,
+    "C1": 76,
+    "C2": 21,
+    "D": 98
+   },
+   "team": "1964",
+   "height_cm": 196
+  },
+  "jerry_west": {
+   "coordinates": {
+    "A": 86,
+    "B1": 87,
+    "B2": 41,
+    "C1": 96,
+    "C2": 12,
+    "D": 83
+   },
+   "team": "1965",
+   "height_cm": 188
+  },
+  "elgin_baylor": {
+   "coordinates": {
+    "A": 66,
+    "B1": 45,
+    "B2": 80,
+    "C1": 68,
+    "C2": 52,
+    "D": 89
+   },
+   "team": "1962",
+   "height_cm": 196
+  },
+  "julius_erving": {
+   "coordinates": {
+    "A": 72,
+    "B1": 36,
+    "B2": 66,
+    "C1": 80,
+    "C2": 52,
+    "D": 95
+   },
+   "team": "1980",
+   "height_cm": 198
+  },
+  "moses_malone": {
+   "coordinates": {
+    "A": 8,
+    "B1": 13,
+    "B2": 98,
+    "C1": 76,
+    "C2": 96,
+    "D": 51
+   },
+   "team": "1983",
+   "height_cm": 208
+  },
+  "isiah_thomas": {
+   "coordinates": {
+    "A": 99,
+    "B1": 43,
+    "B2": 3,
+    "C1": 74,
+    "C2": 5,
+    "D": 97
+   },
+   "team": "1990",
+   "height_cm": 185
+  },
+  "george_gervin": {
+   "coordinates": {
+    "A": 58,
+    "B1": 79,
+    "B2": 67,
+    "C1": 85,
+    "C2": 60,
+    "D": 98
+   },
+   "team": "1980",
+   "height_cm": 201
+  },
+  "dominique_wilkins": {
+   "coordinates": {
+    "A": 41,
+    "B1": 38,
+    "B2": 52,
+    "C1": 68,
+    "C2": 24,
+    "D": 87
+   },
+   "team": "1986",
+   "height_cm": 203
+  },
+  "charles_barkley": {
+   "coordinates": {
+    "A": 20,
+    "B1": 13,
+    "B2": 71,
+    "C1": 32,
+    "C2": 52,
+    "D": 80
+   },
+   "team": "1993",
+   "height_cm": 198
+  },
+  "hakeem_olajuwon": {
+   "coordinates": {
+    "A": 15,
+    "B1": 17,
+    "B2": 98,
+    "C1": 39,
+    "C2": 95,
+    "D": 27
+   },
+   "team": "1994",
+   "height_cm": 213
+  },
+  "karl_malone": {
+   "coordinates": {
+    "A": 35,
+    "B1": 24,
+    "B2": 98,
+    "C1": 36,
+    "C2": 82,
+    "D": 66
+   },
+   "team": "1997",
+   "height_cm": 206
+  },
+  "john_stockton": {
+   "coordinates": {
+    "A": 94,
+    "B1": 72,
+    "B2": 1,
+    "C1": 92,
+    "C2": 9,
+    "D": 12
+   },
+   "team": "1997",
+   "height_cm": 185
+  },
+  "david_robinson": {
+   "coordinates": {
+    "A": 13,
+    "B1": 10,
+    "B2": 76,
+    "C1": 22,
+    "C2": 94,
+    "D": 48
+   },
+   "team": "1995",
+   "height_cm": 216
+  },
+  "scottie_pippen": {
+   "coordinates": {
+    "A": 90,
+    "B1": 81,
+    "B2": 55,
+    "C1": 95,
+    "C2": 69,
+    "D": 90
+   },
+   "team": "1996",
+   "height_cm": 203
+  },
+  "patrick_ewing": {
+   "coordinates": {
+    "A": 1,
+    "B1": 14,
+    "B2": 86,
+    "C1": 9,
+    "C2": 88,
+    "D": 19
+   },
+   "team": "1990",
+   "height_cm": 213
+  },
+  "clyde_drexler": {
+   "coordinates": {
+    "A": 59,
+    "B1": 62,
+    "B2": 88,
+    "C1": 88,
+    "C2": 49,
+    "D": 62
+   },
+   "team": "1992",
+   "height_cm": 198
+  },
+  "reggie_miller": {
+   "coordinates": {
+    "A": 17,
+    "B1": 95,
+    "B2": 0,
+    "C1": 25,
+    "C2": 0,
+    "D": 11
+   },
+   "team": "1995",
+   "height_cm": 201
+  },
+  "gary_payton": {
+   "coordinates": {
+    "A": 97,
+    "B1": 40,
+    "B2": 58,
+    "C1": 100,
+    "C2": 26,
+    "D": 71
+   },
+   "team": "1996",
+   "height_cm": 193
+  },
+  "dennis_rodman": {
+   "coordinates": {
+    "A": 35,
+    "B1": 5,
+    "B2": 50,
+    "C1": 57,
+    "C2": 78,
+    "D": 78
+   },
+   "team": "1996",
+   "height_cm": 201
+  },
+  "chris_webber": {
+   "coordinates": {
+    "A": 45,
+    "B1": 40,
+    "B2": 60,
+    "C1": 73,
+    "C2": 83,
+    "D": 91
+   },
+   "team": "1999",
+   "height_cm": 208
+  },
+  "kevin_garnett": {
+   "coordinates": {
+    "A": 37,
+    "B1": 59,
+    "B2": 98,
+    "C1": 51,
+    "C2": 91,
+    "D": 95
+   },
+   "team": "2004",
+   "height_cm": 211
+  },
+  "tim_duncan": {
+   "coordinates": {
+    "A": 41,
+    "B1": 43,
+    "B2": 95,
+    "C1": 78,
+    "C2": 99,
+    "D": 86
+   },
+   "team": "2003",
+   "height_cm": 211
+  },
+  "shaquille_oneal": {
+   "coordinates": {
+    "A": 25,
+    "B1": 1,
+    "B2": 98,
+    "C1": 54,
+    "C2": 96,
+    "D": 93
+   },
+   "team": "2000",
+   "height_cm": 216
+  },
+  "allen_iverson": {
+   "coordinates": {
+    "A": 98,
+    "B1": 64,
+    "B2": 47,
+    "C1": 97,
+    "C2": 10,
+    "D": 99
+   },
+   "team": "2001",
+   "height_cm": 183
+  },
+  "steve_nash": {
+   "coordinates": {
+    "A": 99,
+    "B1": 96,
+    "B2": 80,
+    "C1": 51,
+    "C2": 2,
+    "D": 79
+   },
+   "team": "2005",
+   "height_cm": 191
+  },
+  "dirk_nowitzki": {
+   "coordinates": {
+    "A": 32,
+    "B1": 98,
+    "B2": 96,
+    "C1": 16,
+    "C2": 67,
+    "D": 1
+   },
+   "team": "2007",
+   "height_cm": 213
+  },
+  "manu_ginobili": {
+   "coordinates": {
+    "A": 79,
+    "B1": 66,
+    "B2": 68,
+    "C1": 71,
+    "C2": 33,
+    "D": 61
+   },
+   "team": "2005",
+   "height_cm": 198
+  },
+  "tony_parker": {
+   "coordinates": {
+    "A": 100,
+    "B1": 28,
+    "B2": 91,
+    "C1": 92,
+    "C2": 5,
+    "D": 100
+   },
+   "team": "2007",
+   "height_cm": 188
+  },
+  "vince_carter": {
+   "coordinates": {
+    "A": 77,
+    "B1": 75,
+    "B2": 50,
+    "C1": 57,
+    "C2": 53,
+    "D": 91
+   },
+   "team": "2000",
+   "height_cm": 198
+  },
+  "tracy_mcgrady": {
+   "coordinates": {
+    "A": 75,
+    "B1": 41,
+    "B2": 61,
+    "C1": 51,
+    "C2": 24,
+    "D": 89
+   },
+   "team": "2003",
+   "height_cm": 203
+  },
+  "yao_ming": {
+   "coordinates": {
+    "A": 17,
+    "B1": 24,
+    "B2": 93,
+    "C1": 32,
+    "C2": 80,
+    "D": 0
+   },
+   "team": "2006",
+   "height_cm": 229
+  },
+  "jason_kidd": {
+   "coordinates": {
+    "A": 99,
+    "B1": 47,
+    "B2": 24,
+    "C1": 99,
+    "C2": 2,
+    "D": 99
+   },
+   "team": "2002",
+   "height_cm": 193
+  },
+  "paul_pierce": {
+   "coordinates": {
+    "A": 55,
+    "B1": 81,
+    "B2": 83,
+    "C1": 58,
+    "C2": 29,
+    "D": 21
+   },
+   "team": "2008",
+   "height_cm": 201
+  },
+  "ray_allen": {
+   "coordinates": {
+    "A": 55,
+    "B1": 97,
+    "B2": 36,
+    "C1": 47,
+    "C2": 8,
+    "D": 38
+   },
+   "team": "2008",
+   "height_cm": 196
+  },
+  "grant_hill": {
+   "coordinates": {
+    "A": 75,
+    "B1": 54,
+    "B2": 95,
+    "C1": 87,
+    "C2": 10,
+    "D": 99
+   },
+   "team": "1997",
+   "height_cm": 203
+  },
+  "penny_hardaway": {
+   "coordinates": {
+    "A": 85,
+    "B1": 41,
+    "B2": 71,
+    "C1": 74,
+    "C2": 12,
+    "D": 71
+   },
+   "team": "1996",
+   "height_cm": 201
+  },
+  "alonzo_mourning": {
+   "coordinates": {
+    "A": 6,
+    "B1": 15,
+    "B2": 83,
+    "C1": 78,
+    "C2": 98,
+    "D": 8
+   },
+   "team": "1999",
+   "height_cm": 208
+  },
+  "dikembe_mutombo": {
+   "coordinates": {
+    "A": 3,
+    "B1": 2,
+    "B2": 1,
+    "C1": 32,
+    "C2": 93,
+    "D": 4
+   },
+   "team": "2001",
+   "height_cm": 218
+  },
+  "chris_bosh": {
+   "coordinates": {
+    "A": 21,
+    "B1": 72,
+    "B2": 80,
+    "C1": 39,
+    "C2": 53,
+    "D": 18
+   },
+   "team": "2010",
+   "height_cm": 211
+  },
+  "amare_stoudemire": {
+   "coordinates": {
+    "A": 14,
+    "B1": 19,
+    "B2": 63,
+    "C1": 47,
+    "C2": 69,
+    "D": 38
+   },
+   "team": "2007",
+   "height_cm": 208
+  },
+  "pau_gasol": {
+   "coordinates": {
+    "A": 15,
+    "B1": 67,
+    "B2": 90,
+    "C1": 54,
+    "C2": 84,
+    "D": 2
+   },
+   "team": "2009",
+   "height_cm": 213
+  },
+  "marc_gasol": {
+   "coordinates": {
+    "A": 11,
+    "B1": 17,
+    "B2": 77,
+    "C1": 51,
+    "C2": 77,
+    "D": 1
+   },
+   "team": "2013",
+   "height_cm": 213
+  },
+  "carmelo_anthony": {
+   "coordinates": {
+    "A": 78,
+    "B1": 50,
+    "B2": 41,
+    "C1": 85,
+    "C2": 66,
+    "D": 89
+   },
+   "team": "2013",
+   "height_cm": 203
+  },
+  "chauncey_billups": {
+   "coordinates": {
+    "A": 87,
+    "B1": 67,
+    "B2": 14,
+    "C1": 57,
+    "C2": 2,
+    "D": 83
+   },
+   "team": "2004",
+   "height_cm": 191
+  },
+  "ben_wallace": {
+   "coordinates": {
+    "A": 6,
+    "B1": 0,
+    "B2": 9,
+    "C1": 83,
+    "C2": 96,
+    "D": 56
+   },
+   "team": "2004",
+   "height_cm": 201
+  },
+  "rasheed_wallace": {
+   "coordinates": {
+    "A": 16,
+    "B1": 32,
+    "B2": 52,
+    "C1": 42,
+    "C2": 82,
+    "D": 40
+   },
+   "team": "2004",
+   "height_cm": 208
+  },
+  "baron_davis": {
+   "coordinates": {
+    "A": 93,
+    "B1": 35,
+    "B2": 4,
+    "C1": 97,
+    "C2": 12,
+    "D": 91
+   },
+   "team": "2007",
+   "height_cm": 188
+  },
+  "antawn_jamison": {
+   "coordinates": {
+    "A": 26,
+    "B1": 48,
+    "B2": 60,
+    "C1": 16,
+    "C2": 64,
+    "D": 21
+   },
+   "team": "2004",
+   "height_cm": 203
+  },
+  "shawn_marion": {
+   "coordinates": {
+    "A": 28,
+    "B1": 69,
+    "B2": 69,
+    "C1": 83,
+    "C2": 60,
+    "D": 33
+   },
+   "team": "2005",
+   "height_cm": 201
+  },
+  "rip_hamilton": {
+   "coordinates": {
+    "A": 61,
+    "B1": 83,
+    "B2": 29,
+    "C1": 60,
+    "C2": 8,
+    "D": 21
+   },
+   "team": "2004",
+   "height_cm": 198
+  },
+  "bill_walton": {
+   "coordinates": {
+    "A": 25,
+    "B1": 8,
+    "B2": 90,
+    "C1": 71,
+    "C2": 96,
+    "D": 4
+   },
+   "team": "1977",
+   "height_cm": 211
+  },
+  "walt_frazier": {
+   "coordinates": {
+    "A": 81,
+    "B1": 41,
+    "B2": 23,
+    "C1": 99,
+    "C2": 19,
+    "D": 76
+   },
+   "team": "1970",
+   "height_cm": 191
+  },
+  "willis_reed": {
+   "coordinates": {
+    "A": 11,
+    "B1": 11,
+    "B2": 60,
+    "C1": 20,
+    "C2": 87,
+    "D": 7
+   },
+   "team": "1970",
+   "height_cm": 206
+  },
+  "dwyane_wade": {
+   "coordinates": {
+    "A": 96,
+    "B1": 70,
+    "B2": 63,
+    "C1": 84,
+    "C2": 45,
+    "D": 69
+   },
+   "team": "2009",
+   "height_cm": 193
+  },
+  "pete_maravich": {
+   "coordinates": {
+    "A": 86,
+    "B1": 91,
+    "B2": 19,
+    "C1": 65,
+    "C2": 5,
+    "D": 43
+   },
+   "team": "1977",
+   "height_cm": 196
+  },
+  "james_worthy": {
+   "coordinates": {
+    "A": 65,
+    "B1": 70,
+    "B2": 79,
+    "C1": 63,
+    "C2": 60,
+    "D": 67
+   },
+   "team": "1988",
+   "height_cm": 206
+  },
+  "shawn_kemp": {
+   "coordinates": {
+    "A": 14,
+    "B1": 31,
+    "B2": 61,
+    "C1": 38,
+    "C2": 70,
+    "D": 65
+   },
+   "team": "1996",
+   "height_cm": 208
+  },
+  "larry_johnson": {
+   "coordinates": {
+    "A": 43,
+    "B1": 72,
+    "B2": 83,
+    "C1": 36,
+    "C2": 40,
+    "D": 60
+   },
+   "team": "1993",
+   "height_cm": 198
+  },
+  "metta_world_peace": {
+   "coordinates": {
+    "A": 64,
+    "B1": 54,
+    "B2": 36,
+    "C1": 98,
+    "C2": 48,
+    "D": 57
+   },
+   "team": "2004",
+   "height_cm": 198
+  },
+  "jj_redick": {
+   "coordinates": {
+    "A": 53,
+    "B1": 90,
+    "B2": 0,
+    "C1": 56,
+    "C2": 0,
+    "D": 7
+   },
+   "team": "2016",
+   "height_cm": 193
+  },
+  "danny_green": {
+   "coordinates": {
+    "A": 44,
+    "B1": 59,
+    "B2": 7,
+    "C1": 69,
+    "C2": 41,
+    "D": 32
+   },
+   "team": "2014",
+   "height_cm": 198
+  },
+  "dwight_howard": {
+   "coordinates": {
+    "A": 0,
+    "B1": 0,
+    "B2": 95,
+    "C1": 60,
+    "C2": 95,
+    "D": 74
+   },
+   "team": "2011",
+   "height_cm": 211
+  },
+  "deandre_jordan": {
+   "coordinates": {
+    "A": 0,
+    "B1": 0,
+    "B2": 48,
+    "C1": 27,
+    "C2": 90,
+    "D": 49
+   },
+   "team": "2015",
+   "height_cm": 211
+  },
+  "kyle_lowry": {
+   "coordinates": {
+    "A": 81,
+    "B1": 66,
+    "B2": 23,
+    "C1": 65,
+    "C2": 26,
+    "D": 49
+   },
+   "team": "2019",
+   "height_cm": 183
+  },
+  "russell_westbrook": {
+   "coordinates": {
+    "A": 78,
+    "B1": 32,
+    "B2": 40,
+    "C1": 57,
+    "C2": 7,
+    "D": 59
+   },
+   "team": "2017",
+   "height_cm": 191
+  }
+ }
+}

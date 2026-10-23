@@ -13,7 +13,12 @@
 #      這樣 1987 年的三分出手數不會跟 2026 年直接比，年代差異被抵銷。
 #   3. 依 AXIS_RECIPES 把幾項百分位加權成六軸各自的分數。某項數據那個年代還沒有
 #      （三分線 1980 才有、抄截阻攻 1974 才有、投籃距離 1997 才有），就改用該軸
-#      原本的估算值補上那一部分。
+#      原本的估算值補上那一部分。「原本的估算」固定讀 scripts/pre_bbref_estimates.json
+#      （2026-10-23 從 main 凍結的手動/2K 估算），不是種子腳本裡的現值——種子腳本已經
+#      被這支腳本改寫過，拿它當基準重跑會一直疊加在自己的結果上。
+#      持球創造與禁區得分的分工（2026-10-23）：二分球裡「沒有被助攻」的比例算進持球
+#      創造（後衛切入上籃是自己創造的），「被助攻」的比例算進禁區得分（中鋒接傳球、
+#      補籃），所以很會切入的後衛不會拿到跟中鋒一樣的禁區得分。
 #   4. 最後在我們 224 人的球員池裡排名、換成 0-100 百分位，當作新的目標座標——
 #      跟原本 2K 屬性換算用的是同一種排名法，分數分布不會整個偏掉。
 #   5. 每一軸的分數只有 STATS_SHARE 比例來自數據，其餘保留原本的估算：傳導、投射、
@@ -48,9 +53,11 @@ OUR_TEAM = {v: k for k, v in BBREF_TEAM.items()}
 AXIS_RECIPES = {
     # usg_pct alone rewards post-up bigs (e.g. Shaq); the unassisted share of 2-point makes
     # separates players who create their own shot from players who finish others' passes.
-    "A": [("ast_pct", 0.5), ("unassisted_fg2", 0.3), ("usg_pct", 0.2)],
+    "A": [("ast_pct", 0.45), ("unassisted_fg2", 0.35), ("usg_pct", 0.20)],
     "B1": [("fg3a_per36", 0.45), ("fg3_pct_shrunk", 0.35), ("ft_pct", 0.20)],
-    "B2": [("rim_fga_per36", 0.35), ("fg2_pct", 0.25), ("fta_rate", 0.25), ("orb_pct", 0.15)],
+    # Big-man-style interior finishing: putbacks/offensive boards and finishing teammates'
+    # passes at the rim. Guards' self-created drives count toward A instead.
+    "B2": [("orb_pct", 0.30), ("assisted_fg2", 0.25), ("rim_fga_per36", 0.25), ("fg2_pct", 0.20)],
     "C1": [("stl_pct", 1.0)],
     "C2": [("blk_pct", 0.55), ("drb_pct", 0.25), ("dbpm", 0.20)],
     "D": [("dunks_per36", 0.4), ("blk_pct", 0.2), ("stl_pct", 0.2), ("orb_pct", 0.2)],
@@ -121,6 +128,7 @@ def season_features(year):
             "rim_fga_per36": None,
             "dunks_per36": None,
             "unassisted_fg2": None,
+            "assisted_fg2": None,
         }
         if year >= 1980 and fg3 is not None and fg3a is not None and games:
             made, att = fg3 * games, fg3a * games
@@ -131,6 +139,7 @@ def season_features(year):
             f["rim_fga_per36"] = per36(fga * share) if fga is not None and share is not None else None
             assisted = to_float(s.get("pct_ast_fg2"))
             f["unassisted_fg2"] = 1 - assisted if assisted is not None else None
+            f["assisted_fg2"] = assisted
             dunks = to_float(s.get("fg_dunk"))
             f["dunks_per36"] = dunks / mp_total * 36 if dunks is not None else None
         elif year < 1997:
@@ -192,7 +201,20 @@ def roster_bodies():
     return out
 
 
-def build(current_players, alltime_players):
+BASELINE_PATH = ROOT / "scripts" / "pre_bbref_estimates.json"
+
+
+def load_baseline():
+    with open(BASELINE_PATH, encoding="utf-8") as f:
+        data = json.load(f)
+    return {(pool, pid): v for pool in ("current", "alltime") for pid, v in data[pool].items()}
+
+
+def build(current_players, alltime_players, baseline=None):
+    """baseline: {(pool, id): {"coordinates", "team", "height_cm"}} -- the existing
+    estimates used where stats are missing or weak. Players not in it (added later)
+    fall back to their seed-script values."""
+    baseline = baseline or {}
     seasons = {}
 
     def season(year):
@@ -230,7 +252,8 @@ def build(current_players, alltime_players):
         scores = {}
         for pool, p in all_players:
             pick = picks[(pool, p["id"])]
-            scores[(pool, p["id"])] = axis_score(axis, pick["pcts"] if pick else None, p["coordinates"][axis])
+            old = baseline.get((pool, p["id"]), p)["coordinates"][axis]
+            scores[(pool, p["id"])] = axis_score(axis, pick["pcts"] if pick else None, old)
         for key, value in pool_percentiles(scores).items():
             new_coords.setdefault(key, {})[axis] = value
 
@@ -253,9 +276,10 @@ def build(current_players, alltime_players):
             html = read(pick["raw"]["link"])
             if html:
                 height, weight = player_page_body(html)
+        base = baseline.get(key, {"coordinates": p["coordinates"], "team": p["team"], "height_cm": p["body"]["height_cm"]})
         result.append({
             "pool": pool, "id": p["id"], "name": p["name"],
-            "old": {"coordinates": p["coordinates"], "team": p["team"], "height_cm": p["body"]["height_cm"]},
+            "old": {"coordinates": base["coordinates"], "team": base["team"], "height_cm": base["height_cm"]},
             "new": {"coordinates": new_coords[key], "team": team, "height_cm": height, "weight_kg": weight},
             "note": notes[key],
         })
@@ -304,7 +328,7 @@ def main():
     from scripts.build_players_alltime_seed import PLAYERS as ALLTIME
     from scripts.build_players_seed import PLAYERS as CURRENT
 
-    result = build(CURRENT, ALLTIME)
+    result = build(CURRENT, ALLTIME, load_baseline())
     report = ROOT / "data" / "raw" / "bbref_rebuild_report.json"
     report.write_text(json.dumps(result, ensure_ascii=False, indent=1), encoding="utf-8")
     missing = [r for r in result if r["note"].startswith("no ")]

@@ -1,5 +1,5 @@
 {
-  "_description": "问诊题库,共 18 题。axis_positioning 是六轴定位 12 题(A/B1/B2/C1/C2/D 各 2 题)。B 轴拆成 B1 外线投射/B2 禁区低位得分,C 轴拆成 C1 外围防守/C2 禁区护框防守(2026-10 改版,理由见下方 _editable_fields)。body_measurements 是身材类数值题 6 题,给「3 位深度模板」的身体最贴合和原型体型分数用。已经移除原本的技能行为题(skill_behavior):技能的训练优先序不再来自技能自评,改由六轴差距与目标球员推导(见 src/engine/skill_level.py),所以不需要再问。axis_positioning 与 body_measurements 都是 BARS(行为锚定评分量表,见 SPEC.md §5.1)的题目——问的是具体行为或频率,不是自评能力高低;body_measurements 例外,是直接填数值。",
+  "_description": "问诊题库,共 18 题。axis_positioning 是六轴定位 12 题(A/B1/B2/C1/C2/D 各 2 题)。B 轴拆成 B1 外线投射/B2 禁区得分(长人式的低位与篮下终结),C 轴拆成 C1 外围防守/C2 禁区护框防守(2026-10 改版,理由见下方 _editable_fields)。body_measurements 是身材类数值题 6 题,给「3 位深度模板」的身体最贴合和原型体型分数用。已经移除原本的技能行为题(skill_behavior):技能的训练优先序不再来自技能自评,改由六轴差距与目标球员推导(见 src/engine/skill_level.py),所以不需要再问。axis_positioning 与 body_measurements 都是 BARS(行为锚定评分量表,见 SPEC.md §5.1)的题目——问的是具体行为或频率,不是自评能力高低;body_measurements 例外,是直接填数值。2026-10-23:axis_b2_2 从「禁区附近近距离终结的把握度」改成「卡位接传球或抢进攻篮板后在篮下终结的比例」——禁区得分改成量长人式的内线终结,后卫自己运球切入上篮的能力改算在持球创造(axis_a_2 问的就是主动运球突破),不然很会上篮的后卫会拿到跟中锋一样的禁区得分(scripts/build_players_from_bbref.py 的球员数据也照这个分工换算)。",
   "_editable_fields": "axis_positioning 每题的 prompt(题目文本)跟 anchors(1-5 每个分数对应的行为描述)可以照 BARS 精神修改用词,但每题的 anchors 必须维持 1-5 五个完整的行为描述,不能只改数字不改文本,否则就违背了 BARS 的设计目的。axis_positioning 支持 \"reverse_scored\": true(见 engine/axis_position.py 的 score_axis_coordinates,分数会自动 6-score 反转再平均),但目前这 12 题没有一题用到——六轴改版时发现旧版 B/C 轴的题目问的其实是「站位/角色分配」而非「表现好坏」,改版后每题都直接问表现型描述,不再需要反转。body_measurements 每题的 prompt/unit/min/max 可以依实际需求调整,但改的时候要小心:(1) id 一旦被其他地方引用就不要改;(2) body_measurements 的 field 全部六项(height_cm/wingspan_cm/weight_kg/standing_reach_cm/running_vertical_reach_cm/sprint_100m_seconds)都已经对应到 players.json 每个球员的 body 字段,添加题目要维持这个对应关系。body_measurements 的 body_height/body_weight 标了 required:true——身高、体重是原型分类(engine/archetype.py 的体型分数)的必要输入,其余四题维持选填(见 engine/body_fit.py 的 missing_required_body_fields)。要添加题目就照现有的对象格式加进对应的数组。",
   "axis_positioning": [
     {
@@ -65,13 +65,13 @@
     {
       "id": "axis_b2_2",
       "axis": "B2",
-      "prompt": "禁区附近(篮框周围到罚球线之间)的近距离终结,你的把握度如何?",
+      "prompt": "在禁区卡好位接到队友传球、或抢到进攻篮板时,你能直接在篮下终结的比例是?",
       "anchors": {
-        "1": "几乎没机会,或把握不住",
-        "2": "偶尔能完成,常被封盖或打铁",
+        "1": "很少在禁区接到球,也很少抢到进攻篮板",
+        "2": "偶尔有机会,但常被封阻或放枪",
         "3": "一半左右,看对位",
-        "4": "大多能顺利完成,手感稳定",
-        "5": "几乎是稳定得分区,对手特别忌惮"
+        "4": "大多能终结,偶尔还能造成犯规",
+        "5": "几乎每次都能终结,常常打成 2+1"
       }
     },
     {
