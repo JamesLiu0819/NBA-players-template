@@ -9,7 +9,7 @@
       "coordinates": {
         "A": 75.0,
         "B1": 75.0,
-        "B2": 75.0,
+        "B2": 87.5,
         "C1": 100.0,
         "C2": 50.0,
         "D": 87.5
@@ -49,7 +49,7 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_b2_2",
@@ -88,7 +88,7 @@
       "coordinates": {
         "A": 75.0,
         "B1": 87.5,
-        "B2": 50.0,
+        "B2": 37.5,
         "C1": 75.0,
         "C2": 37.5,
         "D": 87.5
@@ -132,7 +132,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 3
+          "score": 2
         },
         {
           "question_id": "axis_c1_1",
@@ -246,7 +246,7 @@
       "coordinates": {
         "A": 62.5,
         "B1": 100.0,
-        "B2": 62.5,
+        "B2": 75.0,
         "C1": 87.5,
         "C2": 62.5,
         "D": 12.5
@@ -290,7 +290,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_c1_1",
@@ -323,9 +323,9 @@
       "name": "Wilt Chamberlain",
       "team": "1967",
       "coordinates": {
-        "A": 37.5,
+        "A": 25.0,
         "B1": 0.0,
-        "B2": 100.0,
+        "B2": 87.5,
         "C1": 62.5,
         "C2": 100.0,
         "D": 25.0
@@ -349,7 +349,7 @@
       "mock_axis_answers": [
         {
           "question_id": "axis_a_1",
-          "score": 3
+          "score": 2
         },
         {
           "question_id": "axis_a_2",
@@ -369,7 +369,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 5
+          "score": 4
         },
         {
           "question_id": "axis_c1_1",
@@ -481,9 +481,9 @@
       "name": "Kareem Abdul-Jabbar",
       "team": "1977",
       "coordinates": {
-        "A": 25.0,
+        "A": 12.5,
         "B1": 12.5,
-        "B2": 87.5,
+        "B2": 100.0,
         "C1": 37.5,
         "C2": 100.0,
         "D": 12.5
@@ -511,7 +511,7 @@
         },
         {
           "question_id": "axis_a_2",
-          "score": 2
+          "score": 1
         },
         {
           "question_id": "axis_b1_1",
@@ -527,7 +527,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_c1_1",
@@ -562,7 +562,7 @@
       "coordinates": {
         "A": 100.0,
         "B1": 100.0,
-        "B2": 75.0,
+        "B2": 62.5,
         "C1": 75.0,
         "C2": 12.5,
         "D": 100.0
@@ -606,7 +606,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 4
+          "score": 3
         },
         {
           "question_id": "axis_c1_1",
@@ -641,7 +641,7 @@
       "coordinates": {
         "A": 87.5,
         "B1": 87.5,
-        "B2": 62.5,
+        "B2": 50.0,
         "C1": 100.0,
         "C2": 0.0,
         "D": 87.5
@@ -681,7 +681,7 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 4
+          "score": 3
         },
         {
           "question_id": "axis_b2_2",
@@ -720,7 +720,7 @@
       "coordinates": {
         "A": 50.0,
         "B1": 37.5,
-        "B2": 62.5,
+        "B2": 75.0,
         "C1": 75.0,
         "C2": 50.0,
         "D": 100.0
@@ -764,7 +764,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_c1_1",
@@ -799,7 +799,7 @@
       "coordinates": {
         "A": 75.0,
         "B1": 75.0,
-        "B2": 75.0,
+        "B2": 87.5,
         "C1": 87.5,
         "C2": 75.0,
         "D": 100.0
@@ -839,7 +839,7 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_b2_2",
@@ -878,7 +878,7 @@
       "coordinates": {
         "A": 0.0,
         "B1": 37.5,
-        "B2": 87.5,
+        "B2": 100.0,
         "C1": 62.5,
         "C2": 87.5,
         "D": 62.5
@@ -922,7 +922,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_c1_1",
@@ -957,7 +957,7 @@
       "coordinates": {
         "A": 100.0,
         "B1": 50.0,
-        "B2": 37.5,
+        "B2": 25.0,
         "C1": 87.5,
         "C2": 25.0,
         "D": 87.5
@@ -997,7 +997,7 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 3
+          "score": 2
         },
         {
           "question_id": "axis_b2_2",
@@ -1115,7 +1115,7 @@
       "coordinates": {
         "A": 37.5,
         "B1": 50.0,
-        "B2": 62.5,
+        "B2": 75.0,
         "C1": 75.0,
         "C2": 37.5,
         "D": 87.5
@@ -1159,7 +1159,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_c1_1",
@@ -1273,7 +1273,7 @@
       "coordinates": {
         "A": 37.5,
         "B1": 50.0,
-        "B2": 75.0,
+        "B2": 100.0,
         "C1": 50.0,
         "C2": 100.0,
         "D": 37.5
@@ -1313,11 +1313,11 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_b2_2",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_c1_1",
@@ -1352,7 +1352,7 @@
       "coordinates": {
         "A": 50.0,
         "B1": 12.5,
-        "B2": 87.5,
+        "B2": 100.0,
         "C1": 50.0,
         "C2": 75.0,
         "D": 75.0
@@ -1396,7 +1396,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_c1_1",
@@ -1429,9 +1429,9 @@
       "name": "John Stockton",
       "team": "1997",
       "coordinates": {
-        "A": 75.0,
+        "A": 62.5,
         "B1": 75.0,
-        "B2": 50.0,
+        "B2": 37.5,
         "C1": 87.5,
         "C2": 12.5,
         "D": 0.0
@@ -1459,7 +1459,7 @@
         },
         {
           "question_id": "axis_a_2",
-          "score": 4
+          "score": 3
         },
         {
           "question_id": "axis_b1_1",
@@ -1475,7 +1475,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 3
+          "score": 2
         },
         {
           "question_id": "axis_c1_1",
@@ -1508,9 +1508,9 @@
       "name": "David Robinson",
       "team": "1995",
       "coordinates": {
-        "A": 37.5,
+        "A": 25.0,
         "B1": 50.0,
-        "B2": 100.0,
+        "B2": 87.5,
         "C1": 37.5,
         "C2": 100.0,
         "D": 62.5
@@ -1534,7 +1534,7 @@
       "mock_axis_answers": [
         {
           "question_id": "axis_a_1",
-          "score": 3
+          "score": 2
         },
         {
           "question_id": "axis_a_2",
@@ -1554,7 +1554,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 5
+          "score": 4
         },
         {
           "question_id": "axis_c1_1",
@@ -1589,7 +1589,7 @@
       "coordinates": {
         "A": 75.0,
         "B1": 75.0,
-        "B2": 50.0,
+        "B2": 62.5,
         "C1": 87.5,
         "C2": 62.5,
         "D": 100.0
@@ -1629,7 +1629,7 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_b2_2",
@@ -1826,7 +1826,7 @@
       "coordinates": {
         "A": 37.5,
         "B1": 100.0,
-        "B2": 37.5,
+        "B2": 12.5,
         "C1": 37.5,
         "C2": 12.5,
         "D": 0.0
@@ -1866,11 +1866,11 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 3
+          "score": 2
         },
         {
           "question_id": "axis_b2_2",
-          "score": 2
+          "score": 1
         },
         {
           "question_id": "axis_c1_1",
@@ -1905,7 +1905,7 @@
       "coordinates": {
         "A": 87.5,
         "B1": 37.5,
-        "B2": 50.0,
+        "B2": 62.5,
         "C1": 100.0,
         "C2": 25.0,
         "D": 75.0
@@ -1945,7 +1945,7 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_b2_2",
@@ -1984,7 +1984,7 @@
       "coordinates": {
         "A": 12.5,
         "B1": 12.5,
-        "B2": 37.5,
+        "B2": 62.5,
         "C1": 37.5,
         "C2": 62.5,
         "D": 75.0
@@ -2024,11 +2024,11 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_b2_2",
-          "score": 2
+          "score": 3
         },
         {
           "question_id": "axis_c1_1",
@@ -2063,7 +2063,7 @@
       "coordinates": {
         "A": 50.0,
         "B1": 12.5,
-        "B2": 62.5,
+        "B2": 75.0,
         "C1": 62.5,
         "C2": 87.5,
         "D": 100.0
@@ -2107,7 +2107,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_c1_1",
@@ -2142,7 +2142,7 @@
       "coordinates": {
         "A": 50.0,
         "B1": 25.0,
-        "B2": 62.5,
+        "B2": 75.0,
         "C1": 62.5,
         "C2": 87.5,
         "D": 100.0
@@ -2186,7 +2186,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_c1_1",
@@ -2221,7 +2221,7 @@
       "coordinates": {
         "A": 62.5,
         "B1": 25.0,
-        "B2": 87.5,
+        "B2": 75.0,
         "C1": 50.0,
         "C2": 100.0,
         "D": 87.5
@@ -2261,7 +2261,7 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 5
+          "score": 4
         },
         {
           "question_id": "axis_b2_2",
@@ -2300,7 +2300,7 @@
       "coordinates": {
         "A": 50.0,
         "B1": 12.5,
-        "B2": 100.0,
+        "B2": 87.5,
         "C1": 37.5,
         "C2": 100.0,
         "D": 100.0
@@ -2344,7 +2344,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 5
+          "score": 4
         },
         {
           "question_id": "axis_c1_1",
@@ -2377,9 +2377,9 @@
       "name": "Allen Iverson",
       "team": "2001",
       "coordinates": {
-        "A": 75.0,
+        "A": 87.5,
         "B1": 62.5,
-        "B2": 50.0,
+        "B2": 25.0,
         "C1": 100.0,
         "C2": 25.0,
         "D": 75.0
@@ -2403,7 +2403,7 @@
       "mock_axis_answers": [
         {
           "question_id": "axis_a_1",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_a_2",
@@ -2419,11 +2419,11 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 3
+          "score": 2
         },
         {
           "question_id": "axis_b2_2",
-          "score": 3
+          "score": 2
         },
         {
           "question_id": "axis_c1_1",
@@ -2458,7 +2458,7 @@
       "coordinates": {
         "A": 87.5,
         "B1": 87.5,
-        "B2": 37.5,
+        "B2": 25.0,
         "C1": 50.0,
         "C2": 0.0,
         "D": 50.0
@@ -2498,7 +2498,7 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 3
+          "score": 2
         },
         {
           "question_id": "axis_b2_2",
@@ -2616,7 +2616,7 @@
       "coordinates": {
         "A": 75.0,
         "B1": 75.0,
-        "B2": 75.0,
+        "B2": 50.0,
         "C1": 87.5,
         "C2": 50.0,
         "D": 62.5
@@ -2656,11 +2656,11 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 4
+          "score": 3
         },
         {
           "question_id": "axis_b2_2",
-          "score": 4
+          "score": 3
         },
         {
           "question_id": "axis_c1_1",
@@ -2695,7 +2695,7 @@
       "coordinates": {
         "A": 87.5,
         "B1": 37.5,
-        "B2": 62.5,
+        "B2": 37.5,
         "C1": 87.5,
         "C2": 12.5,
         "D": 62.5
@@ -2735,11 +2735,11 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 4
+          "score": 3
         },
         {
           "question_id": "axis_b2_2",
-          "score": 3
+          "score": 2
         },
         {
           "question_id": "axis_c1_1",
@@ -2853,7 +2853,7 @@
       "coordinates": {
         "A": 87.5,
         "B1": 100.0,
-        "B2": 75.0,
+        "B2": 50.0,
         "C1": 62.5,
         "C2": 50.0,
         "D": 87.5
@@ -2893,11 +2893,11 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 4
+          "score": 3
         },
         {
           "question_id": "axis_b2_2",
-          "score": 4
+          "score": 3
         },
         {
           "question_id": "axis_c1_1",
@@ -3090,7 +3090,7 @@
       "coordinates": {
         "A": 75.0,
         "B1": 87.5,
-        "B2": 50.0,
+        "B2": 37.5,
         "C1": 62.5,
         "C2": 50.0,
         "D": 25.0
@@ -3134,7 +3134,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 3
+          "score": 2
         },
         {
           "question_id": "axis_c1_1",
@@ -3169,7 +3169,7 @@
       "coordinates": {
         "A": 50.0,
         "B1": 100.0,
-        "B2": 25.0,
+        "B2": 37.5,
         "C1": 50.0,
         "C2": 12.5,
         "D": 25.0
@@ -3209,7 +3209,7 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 2
+          "score": 3
         },
         {
           "question_id": "axis_b2_2",
@@ -3248,7 +3248,7 @@
       "coordinates": {
         "A": 100.0,
         "B1": 25.0,
-        "B2": 75.0,
+        "B2": 50.0,
         "C1": 87.5,
         "C2": 62.5,
         "D": 100.0
@@ -3288,11 +3288,11 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 4
+          "score": 3
         },
         {
           "question_id": "axis_b2_2",
-          "score": 4
+          "score": 3
         },
         {
           "question_id": "axis_c1_1",
@@ -3485,7 +3485,7 @@
       "coordinates": {
         "A": 12.5,
         "B1": 25.0,
-        "B2": 75.0,
+        "B2": 62.5,
         "C1": 12.5,
         "C2": 100.0,
         "D": 25.0
@@ -3529,7 +3529,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 4
+          "score": 3
         },
         {
           "question_id": "axis_c1_1",
@@ -3564,7 +3564,7 @@
       "coordinates": {
         "A": 50.0,
         "B1": 37.5,
-        "B2": 87.5,
+        "B2": 75.0,
         "C1": 25.0,
         "C2": 62.5,
         "D": 37.5
@@ -3604,7 +3604,7 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 5
+          "score": 4
         },
         {
           "question_id": "axis_b2_2",
@@ -3643,7 +3643,7 @@
       "coordinates": {
         "A": 12.5,
         "B1": 25.0,
-        "B2": 100.0,
+        "B2": 87.5,
         "C1": 50.0,
         "C2": 75.0,
         "D": 62.5
@@ -3687,7 +3687,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 5
+          "score": 4
         },
         {
           "question_id": "axis_c1_1",
@@ -3722,7 +3722,7 @@
       "coordinates": {
         "A": 50.0,
         "B1": 12.5,
-        "B2": 87.5,
+        "B2": 75.0,
         "C1": 37.5,
         "C2": 75.0,
         "D": 25.0
@@ -3762,7 +3762,7 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 5
+          "score": 4
         },
         {
           "question_id": "axis_b2_2",
@@ -3801,7 +3801,7 @@
       "coordinates": {
         "A": 37.5,
         "B1": 25.0,
-        "B2": 50.0,
+        "B2": 62.5,
         "C1": 50.0,
         "C2": 87.5,
         "D": 25.0
@@ -3841,7 +3841,7 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_b2_2",
@@ -3880,7 +3880,7 @@
       "coordinates": {
         "A": 62.5,
         "B1": 87.5,
-        "B2": 62.5,
+        "B2": 50.0,
         "C1": 62.5,
         "C2": 50.0,
         "D": 75.0
@@ -3920,7 +3920,7 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 4
+          "score": 3
         },
         {
           "question_id": "axis_b2_2",
@@ -3959,7 +3959,7 @@
       "coordinates": {
         "A": 87.5,
         "B1": 100.0,
-        "B2": 25.0,
+        "B2": 0.0,
         "C1": 62.5,
         "C2": 12.5,
         "D": 50.0
@@ -3999,11 +3999,11 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 2
+          "score": 1
         },
         {
           "question_id": "axis_b2_2",
-          "score": 2
+          "score": 1
         },
         {
           "question_id": "axis_c1_1",
@@ -4038,7 +4038,7 @@
       "coordinates": {
         "A": 12.5,
         "B1": 12.5,
-        "B2": 62.5,
+        "B2": 75.0,
         "C1": 87.5,
         "C2": 100.0,
         "D": 87.5
@@ -4082,7 +4082,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_c1_1",
@@ -4117,7 +4117,7 @@
       "coordinates": {
         "A": 37.5,
         "B1": 62.5,
-        "B2": 25.0,
+        "B2": 50.0,
         "C1": 37.5,
         "C2": 75.0,
         "D": 50.0
@@ -4157,11 +4157,11 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 2
+          "score": 3
         },
         {
           "question_id": "axis_b2_2",
-          "score": 2
+          "score": 3
         },
         {
           "question_id": "axis_c1_1",
@@ -4196,7 +4196,7 @@
       "coordinates": {
         "A": 100.0,
         "B1": 37.5,
-        "B2": 62.5,
+        "B2": 37.5,
         "C1": 100.0,
         "C2": 37.5,
         "D": 87.5
@@ -4236,11 +4236,11 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 4
+          "score": 3
         },
         {
           "question_id": "axis_b2_2",
-          "score": 3
+          "score": 2
         },
         {
           "question_id": "axis_c1_1",
@@ -4275,7 +4275,7 @@
       "coordinates": {
         "A": 0.0,
         "B1": 50.0,
-        "B2": 87.5,
+        "B2": 100.0,
         "C1": 25.0,
         "C2": 37.5,
         "D": 25.0
@@ -4319,7 +4319,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_c1_1",
@@ -4354,7 +4354,7 @@
       "coordinates": {
         "A": 12.5,
         "B1": 75.0,
-        "B2": 62.5,
+        "B2": 87.5,
         "C1": 87.5,
         "C2": 75.0,
         "D": 62.5
@@ -4394,11 +4394,11 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_b2_2",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_c1_1",
@@ -4512,7 +4512,7 @@
       "coordinates": {
         "A": 25.0,
         "B1": 0.0,
-        "B2": 87.5,
+        "B2": 100.0,
         "C1": 62.5,
         "C2": 100.0,
         "D": 12.5
@@ -4556,7 +4556,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_c1_1",
@@ -4589,9 +4589,9 @@
       "name": "Walt Frazier",
       "team": "1970",
       "coordinates": {
-        "A": 87.5,
+        "A": 75.0,
         "B1": 25.0,
-        "B2": 37.5,
+        "B2": 25.0,
         "C1": 100.0,
         "C2": 12.5,
         "D": 87.5
@@ -4615,7 +4615,7 @@
       "mock_axis_answers": [
         {
           "question_id": "axis_a_1",
-          "score": 5
+          "score": 4
         },
         {
           "question_id": "axis_a_2",
@@ -4631,7 +4631,7 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 3
+          "score": 2
         },
         {
           "question_id": "axis_b2_2",
@@ -4670,7 +4670,7 @@
       "coordinates": {
         "A": 0.0,
         "B1": 12.5,
-        "B2": 50.0,
+        "B2": 62.5,
         "C1": 12.5,
         "C2": 87.5,
         "D": 0.0
@@ -4710,7 +4710,7 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_b2_2",
@@ -4749,7 +4749,7 @@
       "coordinates": {
         "A": 100.0,
         "B1": 25.0,
-        "B2": 75.0,
+        "B2": 62.5,
         "C1": 87.5,
         "C2": 62.5,
         "D": 87.5
@@ -4793,7 +4793,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 4
+          "score": 3
         },
         {
           "question_id": "axis_c1_1",
@@ -4907,7 +4907,7 @@
       "coordinates": {
         "A": 50.0,
         "B1": 25.0,
-        "B2": 62.5,
+        "B2": 75.0,
         "C1": 50.0,
         "C2": 50.0,
         "D": 62.5
@@ -4951,7 +4951,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_c1_1",
@@ -4986,7 +4986,7 @@
       "coordinates": {
         "A": 25.0,
         "B1": 37.5,
-        "B2": 100.0,
+        "B2": 87.5,
         "C1": 50.0,
         "C2": 87.5,
         "D": 75.0
@@ -5030,7 +5030,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 5
+          "score": 4
         },
         {
           "question_id": "axis_c1_1",
@@ -5065,7 +5065,7 @@
       "coordinates": {
         "A": 50.0,
         "B1": 25.0,
-        "B2": 75.0,
+        "B2": 87.5,
         "C1": 25.0,
         "C2": 37.5,
         "D": 50.0
@@ -5105,7 +5105,7 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_b2_2",
@@ -5144,7 +5144,7 @@
       "coordinates": {
         "A": 62.5,
         "B1": 37.5,
-        "B2": 62.5,
+        "B2": 50.0,
         "C1": 100.0,
         "C2": 62.5,
         "D": 62.5
@@ -5184,7 +5184,7 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 4
+          "score": 3
         },
         {
           "question_id": "axis_b2_2",
@@ -5223,7 +5223,7 @@
       "coordinates": {
         "A": 12.5,
         "B1": 100.0,
-        "B2": 12.5,
+        "B2": 25.0,
         "C1": 37.5,
         "C2": 0.0,
         "D": 0.0
@@ -5267,7 +5267,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 1
+          "score": 2
         },
         {
           "question_id": "axis_c1_1",
@@ -5302,7 +5302,7 @@
       "coordinates": {
         "A": 12.5,
         "B1": 87.5,
-        "B2": 0.0,
+        "B2": 25.0,
         "C1": 75.0,
         "C2": 62.5,
         "D": 25.0
@@ -5342,11 +5342,11 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 1
+          "score": 2
         },
         {
           "question_id": "axis_b2_2",
-          "score": 1
+          "score": 2
         },
         {
           "question_id": "axis_c1_1",
@@ -5379,9 +5379,9 @@
       "name": "Dwight Howard",
       "team": "2011",
       "coordinates": {
-        "A": 25.0,
+        "A": 37.5,
         "B1": 12.5,
-        "B2": 100.0,
+        "B2": 87.5,
         "C1": 62.5,
         "C2": 100.0,
         "D": 87.5
@@ -5405,7 +5405,7 @@
       "mock_axis_answers": [
         {
           "question_id": "axis_a_1",
-          "score": 2
+          "score": 3
         },
         {
           "question_id": "axis_a_2",
@@ -5425,7 +5425,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 5
+          "score": 4
         },
         {
           "question_id": "axis_c1_1",
@@ -5539,7 +5539,7 @@
       "coordinates": {
         "A": 75.0,
         "B1": 75.0,
-        "B2": 25.0,
+        "B2": 12.5,
         "C1": 75.0,
         "C2": 37.5,
         "D": 25.0
@@ -5583,7 +5583,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 2
+          "score": 1
         },
         {
           "question_id": "axis_c1_1",
@@ -5618,7 +5618,7 @@
       "coordinates": {
         "A": 100.0,
         "B1": 75.0,
-        "B2": 62.5,
+        "B2": 50.0,
         "C1": 75.0,
         "C2": 50.0,
         "D": 62.5
@@ -5658,7 +5658,7 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 4
+          "score": 3
         },
         {
           "question_id": "axis_b2_2",
