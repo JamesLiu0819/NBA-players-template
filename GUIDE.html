@@ -356,8 +356,8 @@ player percentile = (1 − w) × rank in pool + w × population curve</span>
     <p>把距離對照門檻表，<b>距離小於等於哪一格，就拿那一格的星數</b>。兩個球員池各有一張表。</p>
     <div class="tbl-wrap"><table>
       <tr><th>星數</th><th>5</th><th>4.5</th><th>4</th><th>3.5</th><th>3</th><th>2.5</th><th>2</th><th>1.5</th><th>1</th></tr>
-      <tr><td><b>現役</b>（152 人）距離 ≤</td><td>52</td><td>56</td><td>60</td><td>63</td><td>67</td><td>69</td><td>73</td><td>78</td><td>其餘</td></tr>
-      <tr><td><b>歷史</b>（72 人）距離 ≤</td><td>61</td><td>65</td><td>71</td><td>74</td><td>77</td><td>81</td><td>87</td><td>92</td><td>其餘</td></tr>
+      <tr><td><b>現役</b>（142 人）距離 ≤</td><td>52</td><td>56</td><td>60</td><td>63</td><td>67</td><td>69</td><td>73</td><td>78</td><td>其餘</td></tr>
+      <tr><td><b>歷史</b>（69 人）距離 ≤</td><td>61</td><td>65</td><td>71</td><td>74</td><td>77</td><td>81</td><td>87</td><td>92</td><td>其餘</td></tr>
     </table></div>
     <div class="eg"><b>例：</b>現役池、距離 64 → 超過 63、沒超過 67 → <b>3 顆星</b>。</div>
     <ul>
@@ -472,8 +472,8 @@ P = G × E ÷ C</span>
     <h3><span class="n">5.2</span>首頁</h3>
     <div class="tbl-wrap"><table>
       <tr><th>按鍵</th><th>按了會怎樣</th><th>怎麼做到</th></tr>
-      <tr><td>現役球員模板</td><td>開始作答，之後跟 152 位現役球員比</td><td><code>openQuiz("current")</code></td></tr>
-      <tr><td>歷史球員模板</td><td>開始作答，之後跟 72 位歷史球員比</td><td><code>openQuiz("alltime")</code></td></tr>
+      <tr><td>現役球員模板</td><td>開始作答，之後跟 142 位現役球員比</td><td><code>openQuiz("current")</code></td></tr>
+      <tr><td>歷史球員模板</td><td>開始作答，之後跟 69 位歷史球員比</td><td><code>openQuiz("alltime")</code></td></tr>
     </table></div>
     <div class="tbl-wrap"><table>
       <tr><th>按鍵</th><th>按了會怎樣</th><th>怎麼做到</th></tr>
@@ -584,8 +584,8 @@ P = G × E ÷ C</span>
   <div class="tbl-wrap"><table>
     <tr><th>檔案</th><th>筆數</th><th>每一筆有什麼</th><th>誰在用</th></tr>
     <tr><td><code>題庫.json</code></td><td>12 + 6 題</td><td>六軸題：屬於哪一軸、題目、5 句選項。身材題：欄位、單位、上下限、是否必填</td><td>問卷畫面、座標計算</td></tr>
-    <tr><td><code>球員.json</code></td><td>152 人</td><td>六軸座標、身材、特點、招牌技能</td><td>配對、訓練計劃</td></tr>
-    <tr><td><code>歷史球員.json</code></td><td>72 人</td><td>同上，球隊欄位改放代表年份</td><td>選「歷史球員模板」時</td></tr>
+    <tr><td><code>球員.json</code></td><td>142 人</td><td>六軸座標、身材、特點、招牌技能</td><td>配對、訓練計劃</td></tr>
+    <tr><td><code>歷史球員.json</code></td><td>69 人</td><td>同上，球隊欄位改放代表年份</td><td>選「歷史球員模板」時</td></tr>
     <tr><td><code>原型.json</code></td><td>15 種</td><td>名稱、代表球員、六軸座標和體型（由代表球員算出）、一句話球探報告</td><td>原型分類</td></tr>
     <tr><td><code>技能.json</code></td><td>15 項</td><td>名稱、成本、跟六軸各自的關聯度、驗收標準</td><td>訓練計劃</td></tr>
     <tr><td><code>訓練菜單.json</code></td><td>45 筆</td><td>屬於哪項技能、哪個難度、名稱、組數、次數、分鐘</td><td>訓練計劃</td></tr>
@@ -726,9 +726,9 @@ const FILES = [
   { p: "data/zh/題庫.json", layer: "data", what: "18 題：六軸定位 12 題 + 身材 6 題",
     edit: ["改題目文字或五句選項", "改身高、體重等欄位的上下限", "改哪幾題必填"],
     kw: "題目 問卷 選項 問題 身高 體重 上限 下限 必填 臂展 摸高" },
-  { p: "data/zh/球員.json", layer: "data", what: "152 位現役球員：六軸座標、身材、特點、招牌技能",
+  { p: "data/zh/球員.json", layer: "data", what: "142 位現役球員：六軸座標、身材、特點、招牌技能",
     edit: ["不要手改。改 scripts/build_players_seed.py 再重新產生"], kw: "球員 現役 NBA 座標 特點 招牌技能 身材" },
-  { p: "data/zh/歷史球員.json", layer: "data", what: "72 位歷史球員，格式跟現役相同",
+  { p: "data/zh/歷史球員.json", layer: "data", what: "69 位歷史球員，格式跟現役相同",
     edit: ["不要手改。改 scripts/build_players_alltime_seed.py 再重新產生"], kw: "歷史 球員 退役 名人" },
   { p: "data/zh/原型.json", layer: "data", what: "15 種球場定位原型：名稱、代表球員、座標與體型（由代表球員算出）、一句話球探報告",
     edit: ["改原型名稱或球探報告文字", "換代表球員（再執行 scripts/build_archetype_anchors.py）", "新增或刪除原型"], kw: "原型 定位 球探報告 控場 射手 中鋒 側翼 代表球員 策應長人 控球前鋒 得分後衛" },
@@ -806,6 +806,10 @@ const FILES = [
   { p: "scripts/build_players_from_bbref.py", layer: "script", what: "用 Basketball-Reference 的數據重新估算球員六軸、身高體重、球隊，寫回種子腳本",
     edit: ["要調整某一軸用哪些數據、權重多少（AXIS_RECIPES）", "要調整每一軸有多少來自數據（STATS_SHARE）"],
     kw: "Basketball-Reference bbref 數據 換算 六軸 進階數據 重建 球員資料" },
+  { p: "scripts/apply_player_edits.py", layer: "script", what: "套用球員資料編輯器下載的修改檔：數值、手動原型、代表球員、刪除球員",
+    edit: ["不用改，拿到修改檔後執行它"], kw: "修改檔 套用 編輯器 刪除球員 代表球員" },
+  { p: "scripts/manual_overrides.json", layer: "data", what: "你在編輯器手動改過的六軸和身材，重算時最後套上，永遠優先",
+    edit: ["由 apply_player_edits.py 寫入，通常不用手改"], kw: "手動修改 覆寫 優先" },
   { p: "scripts/build_archetype_anchors.py", layer: "script", what: "依代表球員重算每個原型的座標和體型，寫回繁中和英文原型檔",
     edit: ["不用改，換了代表球員或球員資料更新後執行它"], kw: "原型 代表球員 錨點 重算" },
   { p: "scripts/pre_bbref_estimates.json", layer: "data", what: "改用 Basketball-Reference 之前的原始估算（固定不變），重算時數據量不到的部分用它補",
@@ -829,7 +833,7 @@ const FILES = [
 
   { p: "tools/survey.html", layer: "ui", what: "本機測試頁：填問卷後把作答匯出成檔案，不是正式網站",
     edit: ["想改本機測試流程"], kw: "測試頁 匯出 作答 本機" },
-  { p: "tools/player-editor.html", layer: "ui", what: "球員資料編輯器：依原型分區看全部 224 位球員的六軸和身材，可以修改並下載修改檔",
+  { p: "tools/player-editor.html", layer: "ui", what: "球員資料編輯器：依原型分區看全部 211 位球員的六軸和身材，可以修改並下載修改檔",
     edit: ["不用改它本身。要看或改球員數值就打開它；資料更新後執行 scripts/build_player_editor.py"], kw: "球員 編輯 修改 數值 六軸 身材 原型 編輯器 球員資料" },
   { p: "tools/README.md", layer: "doc", what: "本機測試頁的使用說明", edit: ["測試頁用法有變的時候"], kw: "測試頁 說明" },
 
@@ -852,6 +856,7 @@ const FILES = [
   { p: "tests/scripts/__init__.py", layer: "test", what: "讓 tests/scripts 可以被當成 package 執行", edit: ["不用改"], kw: "package" },
   { p: "tests/scripts/test_mock_answers.py", layer: "test", what: "測試模擬作答的推導", edit: ["mock_answers.py 有變"], kw: "測試 模擬作答" },
   { p: "tests/scripts/test_build_player_editor.py", layer: "test", what: "測試球員資料編輯器的資料整理和嵌入", edit: ["build_player_editor.py 有變"], kw: "測試 編輯器" },
+  { p: "tests/scripts/test_apply_player_edits.py", layer: "test", what: "測試修改檔的套用規則", edit: ["apply_player_edits.py 有變"], kw: "測試 修改檔" },
   { p: "tests/scripts/test_bbref.py", layer: "test", what: "測試 Basketball-Reference 表格解析、名字對照、六軸換算、改寫種子腳本", edit: ["bbref 相關腳本有變"], kw: "測試 bbref 數據" },
   { p: "tests/scripts/test_sync_en_players.py", layer: "test", what: "測試英文球員檔的數值同步", edit: ["sync_en_players.py 有變"], kw: "測試 英文 同步" },
   { p: "tests/scripts/test_check_guide.py", layer: "test", what: "測試導覽檢查腳本的比對規則", edit: ["check_guide.py 有變"], kw: "測試 導覽 檢查" },
@@ -902,7 +907,8 @@ const TASKS = [
   { want: "調整技能的成本、跟六軸的關係、驗收標準", kw: "技能 成本 關聯度 axis_relevance 驗收 指標",
     go: [{ p: "data/zh/技能.json", at: "cost_C、axis_relevance、metric；數字三個語言要一樣" }] },
   { want: "看全部球員的數值，或改某位球員的六軸、身材、原型", kw: "球員 數值 修改 六軸 身材 原型 指定原型 編輯 查看",
-    go: [{ p: "tools/player-editor.html", at: "直接雙擊打開，改完按「下載修改檔」交給 Claude" }] },
+    go: [{ p: "tools/player-editor.html", at: "直接雙擊打開，改完按「下載修改檔」交給 Claude" },
+         { p: "scripts/apply_player_edits.py", at: "Claude 用它套用修改檔" }] },
   { want: "用最新球季的 Basketball-Reference 數據更新全部球員", kw: "更新 球季 數據 Basketball-Reference bbref 重建",
     go: [{ p: "scripts/fetch_bbref.py", at: "改 CURRENT_SEASON，執行下載" },
          { p: "scripts/build_players_from_bbref.py", at: "先不加參數看報告，再加 --apply 寫回；之後跑兩支種子腳本、build_zh_hans_data.py、sync_en_players.py" }] },

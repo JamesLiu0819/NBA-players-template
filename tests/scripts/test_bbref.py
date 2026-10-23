@@ -11,6 +11,7 @@ from scripts.bbref_tables import height_to_cm, lb_to_kg, normalize_name, parse_t
 from scripts.build_players_from_bbref import (
     AXIS_RECIPES,
     STATS_SHARE,
+    apply_overrides,
     apply_to_seed,
     axis_score,
     first_row_per_player,
@@ -87,6 +88,20 @@ class ScoringTest(unittest.TestCase):
 
     def test_pool_percentiles_spread_scores_over_0_to_100(self):
         self.assertEqual(pool_percentiles({"a": 0.1, "b": 0.5, "c": 0.9}), {"a": 17, "b": 50, "c": 83})
+
+
+class OverridesTest(unittest.TestCase):
+    def test_manual_edits_win_over_rebuilt_values(self):
+        new = {"coordinates": {"A": 10, "B2": 20}, "team": "X", "height_cm": 200, "weight_kg": 100}
+        out = apply_overrides(new, {"coordinates": {"B2": 75}, "body": {"height_cm": 204, "sprint_100m_seconds": 13.5}})
+        self.assertEqual(out["coordinates"], {"A": 10, "B2": 75})
+        self.assertEqual(out["height_cm"], 204)
+        self.assertEqual(out["weight_kg"], 100)
+        self.assertEqual(out["body_extra"], {"sprint_100m_seconds": 13.5})
+
+    def test_no_override_changes_nothing(self):
+        new = {"coordinates": {"A": 10}, "team": "X", "height_cm": 200, "weight_kg": 100}
+        self.assertEqual(apply_overrides(new, {})["coordinates"], {"A": 10})
 
 
 SEED = '''PLAYERS = [

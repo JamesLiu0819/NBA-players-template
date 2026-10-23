@@ -69,11 +69,13 @@ python3 scripts/run_player_match.py data/answers/answers_20260908T153000.json
 
 ## 球員資料編輯器（`tools/player-editor.html`）
 
-**用途**：查看、修改全部 224 位球員（現役 152 + 歷史 72）的原型、六軸數值、身材數值。
+**用途**：查看、修改全部球員（目前現役 142 + 歷史 69）的原型、六軸數值、身材數值。
 
 - **直接雙擊打開就能用**，不需要啟動伺服器（資料已經寫在檔案裡）。
 - 依 12 個原型分區，每區有一句話說明、最強的兩軸、典型體型。
 - 改過的格子變黃色，修改會自動存在這台電腦的瀏覽器裡。
+- 修改檔用 `python3 scripts/apply_player_edits.py <檔案>` 套用（數值會同時記在 `scripts/manual_overrides.json`，
+  之後用 Basketball-Reference 重算時最後套上，手動修改永遠優先）。
 - 改完按「💾 下載修改檔」，得到 `球員資料修改-日期.json`，交給 Claude 寫進
   `scripts/build_players_seed.py`（現役）或 `scripts/build_players_alltime_seed.py`（歷史），
   再重新產生 `data/` 底下的球員資料。**不要直接改 `data/` 的球員檔**（CLAUDE.md 規定）。

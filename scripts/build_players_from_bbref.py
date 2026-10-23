@@ -25,6 +25,8 @@
 #      禁區得分這些數據量得很準就全用數據；禁區防守（阻攻、籃板）還算可靠；外圍防守
 #      跟運動表現在數據上幾乎看不出來（抄截多不等於防守好，例如 Jrue Holiday 抄截不多
 #      但是頂級外圍防守者），所以大部分保留原本的估算。
+#   6. 最後套上 scripts/manual_overrides.json（tools/player-editor.html 的手動修改，由
+#      scripts/apply_player_edits.py 寫入）：手動改過的六軸或身材永遠優先，重算不會蓋掉。
 #   臂展 Basketball-Reference 沒有，維持原值；體重改用真實數據。
 # 可手動調整的變數：CURRENT_SEASON / FALLBACK_SEASON、MIN_MINUTES、AXIS_RECIPES 的權重、
 # STATS_SHARE（每一軸有多少比例來自數據）。
@@ -210,11 +212,35 @@ def load_baseline():
     return {(pool, pid): v for pool in ("current", "alltime") for pid, v in data[pool].items()}
 
 
-def build(current_players, alltime_players, baseline=None):
+OVERRIDES_PATH = ROOT / "scripts" / "manual_overrides.json"
+
+
+def load_overrides():
+    if not OVERRIDES_PATH.exists():
+        return {}
+    with open(OVERRIDES_PATH, encoding="utf-8") as f:
+        data = json.load(f)
+    return {(pool, pid): v for pool, players in data.items() if pool != "_description" for pid, v in players.items()}
+
+
+def apply_overrides(new, override):
+    """Overlay one player's manual edits on the rebuilt values (both {"coordinates", "height_cm",
+    "weight_kg", ...}); other body fields are carried in new["body_extra"]."""
+    out = {**new, "coordinates": {**new["coordinates"], **override.get("coordinates", {})}, "body_extra": {}}
+    for field, value in override.get("body", {}).items():
+        if field in ("height_cm", "weight_kg"):
+            out[field] = value
+        else:
+            out["body_extra"][field] = value
+    return out
+
+
+def build(current_players, alltime_players, baseline=None, overrides=None):
     """baseline: {(pool, id): {"coordinates", "team", "height_cm"}} -- the existing
     estimates used where stats are missing or weak. Players not in it (added later)
     fall back to their seed-script values."""
     baseline = baseline or {}
+    overrides = overrides or {}
     seasons = {}
 
     def season(year):
@@ -280,7 +306,8 @@ def build(current_players, alltime_players, baseline=None):
         result.append({
             "pool": pool, "id": p["id"], "name": p["name"],
             "old": {"coordinates": base["coordinates"], "team": base["team"], "height_cm": base["height_cm"]},
-            "new": {"coordinates": new_coords[key], "team": team, "height_cm": height, "weight_kg": weight},
+            "new": apply_overrides({"coordinates": new_coords[key], "team": team, "height_cm": height, "weight_kg": weight},
+                                   overrides.get(key, {})),
             "note": notes[key],
         })
     return result
@@ -311,6 +338,7 @@ def apply_to_seed(path, changes_by_id):
                 body["height_cm"] = c["height_cm"]
             if c["weight_kg"]:
                 body["weight_kg"] = c["weight_kg"]
+            body.update(c.get("body_extra", {}))
             return '"body": {' + ", ".join(f'"{k}": {json.dumps(v)}' for k, v in body.items()) + "}"
         block, n2 = re.subn(r'"body": \{([^}]*)\}', body_sub, block, count=1)
         if n1 != 1 or n2 != 1:
@@ -328,7 +356,7 @@ def main():
     from scripts.build_players_alltime_seed import PLAYERS as ALLTIME
     from scripts.build_players_seed import PLAYERS as CURRENT
 
-    result = build(CURRENT, ALLTIME, load_baseline())
+    result = build(CURRENT, ALLTIME, load_baseline(), load_overrides())
     report = ROOT / "data" / "raw" / "bbref_rebuild_report.json"
     report.write_text(json.dumps(result, ensure_ascii=False, indent=1), encoding="utf-8")
     missing = [r for r in result if r["note"].startswith("no ")]

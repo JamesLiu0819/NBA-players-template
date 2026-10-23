@@ -1,0 +1,48 @@
+{
+ "_description": "Hand edits from tools/player-editor.html (applied by scripts/apply_player_edits.py). scripts/build_players_from_bbref.py applies these last, so they survive every rebuild.",
+ "current": {
+  "giannis_antetokounmpo": {
+   "coordinates": {
+    "B1": 25,
+    "B2": 100,
+    "C2": 100
+   }
+  },
+  "bam_adebayo": {
+   "coordinates": {
+    "B2": 75,
+    "C2": 87.5
+   },
+   "body": {
+    "sprint_100m_seconds": 13.5
+   }
+  },
+  "kawhi_leonard": {
+   "coordinates": {
+    "A": 62.5
+   }
+  },
+  "jimmy_butler": {
+   "coordinates": {
+    "B2": 75
+   }
+  },
+  "demar_derozan": {
+   "coordinates": {
+    "B2": 75
+   }
+  },
+  "jalen_johnson": {
+   "coordinates": {
+    "C1": 62.5
+   }
+  }
+ },
+ "alltime": {
+  "chris_bosh": {
+   "coordinates": {
+    "B1": 62.5
+   }
+  }
+ }
+}
