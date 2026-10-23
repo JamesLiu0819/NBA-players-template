@@ -65,7 +65,7 @@
     {
       "id": "axis_b2_2",
       "axis": "B2",
-      "prompt": "When you've sealed your defender in the paint and catch a teammate's pass, or grab an offensive rebound, how often do you finish right at the rim?",
+      "prompt": "When you seal in the paint and catch a pass, or grab an offensive rebound, how often do you finish at the rim?",
       "anchors": {
         "1": "I rarely catch the ball in the paint or get offensive rebounds",
         "2": "I get chances now and then, but often get blocked or miss",
