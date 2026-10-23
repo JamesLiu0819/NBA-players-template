@@ -237,7 +237,8 @@
           "question_id": "axis_d_2",
           "score": 4
         }
-      ]
+      ],
+      "archetype_id": "floor_general"
     },
     {
       "id": "larry_bird",
@@ -316,7 +317,8 @@
           "question_id": "axis_d_2",
           "score": 1
         }
-      ]
+      ],
+      "archetype_id": "do_it_all_forward"
     },
     {
       "id": "wilt_chamberlain",
@@ -631,85 +633,6 @@
         {
           "question_id": "axis_d_2",
           "score": 5
-        }
-      ]
-    },
-    {
-      "id": "jerry_west",
-      "name": "Jerry West",
-      "team": "1965",
-      "coordinates": {
-        "A": 87.5,
-        "B1": 87.5,
-        "B2": 50.0,
-        "C1": 100.0,
-        "C2": 0.0,
-        "D": 87.5
-      },
-      "body": {
-        "height_cm": 190,
-        "wingspan_cm": 193,
-        "weight_kg": 79,
-        "standing_reach_cm": 225,
-        "running_vertical_reach_cm": 318,
-        "sprint_100m_seconds": 11.75
-      },
-      "notable_traits": [
-        "Strong clutch scoring ability",
-        "Consistent mid-range jumper",
-        "Efficient ball-handling push"
-      ],
-      "signature_skill_id": "face_up_first_step",
-      "learnability_flag": "medium",
-      "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 5
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 5
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 5
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 5
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 1
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 5
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 4
         }
       ]
     },
@@ -1659,7 +1582,8 @@
           "question_id": "axis_d_2",
           "score": 5
         }
-      ]
+      ],
+      "archetype_id": "do_it_all_forward"
     },
     {
       "id": "patrick_ewing",
@@ -1975,7 +1899,8 @@
           "question_id": "axis_d_2",
           "score": 4
         }
-      ]
+      ],
+      "archetype_id": "lockdown_defender"
     },
     {
       "id": "dennis_rodman",
@@ -2370,7 +2295,8 @@
           "question_id": "axis_d_2",
           "score": 5
         }
-      ]
+      ],
+      "archetype_id": "back_to_basket_center"
     },
     {
       "id": "allen_iverson",
@@ -2686,7 +2612,8 @@
           "question_id": "axis_d_2",
           "score": 3
         }
-      ]
+      ],
+      "archetype_id": "explosive_slasher"
     },
     {
       "id": "tony_parker",
@@ -3081,7 +3008,8 @@
           "question_id": "axis_d_2",
           "score": 4
         }
-      ]
+      ],
+      "archetype_id": "floor_general"
     },
     {
       "id": "paul_pierce",
@@ -3563,7 +3491,7 @@
       "team": "2010",
       "coordinates": {
         "A": 50.0,
-        "B1": 37.5,
+        "B1": 62.5,
         "B2": 75.0,
         "C1": 25.0,
         "C2": 62.5,
@@ -3596,11 +3524,11 @@
         },
         {
           "question_id": "axis_b1_1",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_b1_2",
-          "score": 2
+          "score": 3
         },
         {
           "question_id": "axis_b2_1",
@@ -4190,85 +4118,6 @@
       ]
     },
     {
-      "id": "baron_davis",
-      "name": "Baron Davis",
-      "team": "2007",
-      "coordinates": {
-        "A": 100.0,
-        "B1": 37.5,
-        "B2": 37.5,
-        "C1": 100.0,
-        "C2": 37.5,
-        "D": 87.5
-      },
-      "body": {
-        "height_cm": 190,
-        "wingspan_cm": 196,
-        "weight_kg": 95,
-        "standing_reach_cm": 228,
-        "running_vertical_reach_cm": 321,
-        "sprint_100m_seconds": 11.75
-      },
-      "notable_traits": [
-        "Explosive ball-handling push",
-        "Deep three-point shooting range",
-        "Good transition finishing"
-      ],
-      "signature_skill_id": "pick_and_roll_ball_handling",
-      "learnability_flag": "medium",
-      "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 5
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 5
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 5
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 5
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 5
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 4
-        }
-      ]
-    },
-    {
       "id": "antawn_jamison",
       "name": "Antawn Jamison",
       "team": "2004",
@@ -4585,85 +4434,6 @@
       ]
     },
     {
-      "id": "walt_frazier",
-      "name": "Walt Frazier",
-      "team": "1970",
-      "coordinates": {
-        "A": 75.0,
-        "B1": 25.0,
-        "B2": 25.0,
-        "C1": 100.0,
-        "C2": 12.5,
-        "D": 87.5
-      },
-      "body": {
-        "height_cm": 193,
-        "wingspan_cm": 196,
-        "weight_kg": 91,
-        "standing_reach_cm": 228,
-        "running_vertical_reach_cm": 321,
-        "sprint_100m_seconds": 11.75
-      },
-      "notable_traits": [
-        "Strong on-ball isolation defender",
-        "Steady ball-handling push",
-        "Good clutch scoring touch"
-      ],
-      "signature_skill_id": "on_ball_perimeter_defense",
-      "learnability_flag": "medium",
-      "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 5
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 5
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 5
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 4
-        }
-      ]
-    },
-    {
       "id": "willis_reed",
       "name": "Willis Reed",
       "team": "1970",
@@ -4819,7 +4589,8 @@
           "question_id": "axis_d_2",
           "score": 4
         }
-      ]
+      ],
+      "archetype_id": "scoring_guard"
     },
     {
       "id": "pete_maravich",
@@ -5688,7 +5459,8 @@
           "question_id": "axis_d_2",
           "score": 3
         }
-      ]
+      ],
+      "archetype_id": "explosive_slasher"
     }
   ]
 }

@@ -316,7 +316,8 @@
           "question_id": "axis_d_2",
           "score": 3
         }
-      ]
+      ],
+      "archetype_id": "rim_protector"
     },
     {
       "id": "luka_doncic",
@@ -395,7 +396,8 @@
           "question_id": "axis_d_2",
           "score": 3
         }
-      ]
+      ],
+      "archetype_id": "floor_general"
     },
     {
       "id": "draymond_green",
@@ -561,10 +563,10 @@
       "team": "MIL",
       "coordinates": {
         "A": 87.5,
-        "B1": 12.5,
-        "B2": 75.0,
+        "B1": 25.0,
+        "B2": 100.0,
         "C1": 75.0,
-        "C2": 75.0,
+        "C2": 100.0,
         "D": 100.0
       },
       "body": {
@@ -598,15 +600,15 @@
         },
         {
           "question_id": "axis_b1_2",
-          "score": 1
+          "score": 2
         },
         {
           "question_id": "axis_b2_1",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_b2_2",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_c1_1",
@@ -618,11 +620,11 @@
         },
         {
           "question_id": "axis_c2_1",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_c2_2",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_d_1",
@@ -632,7 +634,8 @@
           "question_id": "axis_d_2",
           "score": 5
         }
-      ]
+      ],
+      "archetype_id": "do_it_all_forward"
     },
     {
       "id": "victor_wembanyama",
@@ -790,7 +793,8 @@
           "question_id": "axis_d_2",
           "score": 1
         }
-      ]
+      ],
+      "archetype_id": "lockdown_defender"
     },
     {
       "id": "domantas_sabonis",
@@ -869,7 +873,8 @@
           "question_id": "axis_d_2",
           "score": 2
         }
-      ]
+      ],
+      "archetype_id": "playmaking_big"
     },
     {
       "id": "mikal_bridges",
@@ -1194,18 +1199,18 @@
       "coordinates": {
         "A": 37.5,
         "B1": 25.0,
-        "B2": 62.5,
+        "B2": 75.0,
         "C1": 62.5,
-        "C2": 75.0,
+        "C2": 87.5,
         "D": 87.5
       },
       "body": {
         "height_cm": 206,
         "wingspan_cm": 216,
         "weight_kg": 118,
+        "sprint_100m_seconds": 13.5,
         "standing_reach_cm": 248,
-        "running_vertical_reach_cm": 341,
-        "sprint_100m_seconds": 11.75
+        "running_vertical_reach_cm": 341
       },
       "notable_traits": [
         "Rim protection and perimeter switching both covered",
@@ -1238,7 +1243,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_c1_1",
@@ -1250,7 +1255,7 @@
         },
         {
           "question_id": "axis_c2_1",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_c2_2",
@@ -1264,7 +1269,8 @@
           "question_id": "axis_d_2",
           "score": 4
         }
-      ]
+      ],
+      "archetype_id": "playmaking_big"
     },
     {
       "id": "buddy_hield",
@@ -1343,7 +1349,8 @@
           "question_id": "axis_d_2",
           "score": 1
         }
-      ]
+      ],
+      "archetype_id": "scoring_guard"
     },
     {
       "id": "anthony_davis",
@@ -1659,7 +1666,8 @@
           "question_id": "axis_d_2",
           "score": 2
         }
-      ]
+      ],
+      "archetype_id": "back_to_basket_center"
     },
     {
       "id": "karl_anthony_towns",
@@ -2528,7 +2536,8 @@
           "question_id": "axis_d_2",
           "score": 2
         }
-      ]
+      ],
+      "archetype_id": "blue_collar_energy"
     },
     {
       "id": "marcus_smart",
@@ -2686,7 +2695,8 @@
           "question_id": "axis_d_2",
           "score": 3
         }
-      ]
+      ],
+      "archetype_id": "lockdown_defender"
     },
     {
       "id": "derrick_white",
@@ -3160,7 +3170,8 @@
           "question_id": "axis_d_2",
           "score": 3
         }
-      ]
+      ],
+      "archetype_id": "explosive_slasher"
     },
     {
       "id": "shai_gilgeous_alexander",
@@ -3239,7 +3250,8 @@
           "question_id": "axis_d_2",
           "score": 3
         }
-      ]
+      ],
+      "archetype_id": "combo_scorer"
     },
     {
       "id": "myles_turner",
@@ -3476,7 +3488,8 @@
           "question_id": "axis_d_2",
           "score": 4
         }
-      ]
+      ],
+      "archetype_id": "three_and_d_wing"
     },
     {
       "id": "andrew_wiggins",
@@ -3716,85 +3729,6 @@
       ]
     },
     {
-      "id": "cj_mccollum",
-      "name": "CJ McCollum",
-      "team": "ATL",
-      "coordinates": {
-        "A": 62.5,
-        "B1": 75.0,
-        "B2": 25.0,
-        "C1": 0.0,
-        "C2": 25.0,
-        "D": 37.5
-      },
-      "body": {
-        "height_cm": 190,
-        "wingspan_cm": 193,
-        "weight_kg": 86,
-        "standing_reach_cm": 225,
-        "running_vertical_reach_cm": 291,
-        "sprint_100m_seconds": 14.75
-      },
-      "notable_traits": [
-        "Reliable midrange pull-up jumper",
-        "Efficient off-ball shooter",
-        "Sharp pick-and-roll decision-making"
-      ],
-      "signature_skill_id": "perimeter_shooting",
-      "learnability_flag": "medium",
-      "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 1
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 2
-        }
-      ]
-    },
-    {
       "id": "tyler_herro",
       "name": "Tyler Herro",
       "team": "MIA",
@@ -3957,7 +3891,7 @@
       "name": "Kawhi Leonard",
       "team": "LAC",
       "coordinates": {
-        "A": 75.0,
+        "A": 62.5,
         "B1": 87.5,
         "B2": 37.5,
         "C1": 100.0,
@@ -3987,7 +3921,7 @@
         },
         {
           "question_id": "axis_a_2",
-          "score": 4
+          "score": 3
         },
         {
           "question_id": "axis_b1_1",
@@ -4029,7 +3963,8 @@
           "question_id": "axis_d_2",
           "score": 4
         }
-      ]
+      ],
+      "archetype_id": "do_it_all_forward"
     },
     {
       "id": "paul_george",
@@ -4108,7 +4043,8 @@
           "question_id": "axis_d_2",
           "score": 3
         }
-      ]
+      ],
+      "archetype_id": "do_it_all_forward"
     },
     {
       "id": "devin_booker",
@@ -4424,7 +4360,8 @@
           "question_id": "axis_d_2",
           "score": 4
         }
-      ]
+      ],
+      "archetype_id": "cutting_finisher"
     },
     {
       "id": "ja_morant",
@@ -4503,7 +4440,8 @@
           "question_id": "axis_d_2",
           "score": 4
         }
-      ]
+      ],
+      "archetype_id": "explosive_slasher"
     },
     {
       "id": "donovan_mitchell",
@@ -4749,7 +4687,7 @@
       "coordinates": {
         "A": 62.5,
         "B1": 25.0,
-        "B2": 62.5,
+        "B2": 75.0,
         "C1": 87.5,
         "C2": 25.0,
         "D": 87.5
@@ -4793,7 +4731,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_c1_1",
@@ -4819,7 +4757,8 @@
           "question_id": "axis_d_2",
           "score": 4
         }
-      ]
+      ],
+      "archetype_id": "do_it_all_forward"
     },
     {
       "id": "kristaps_porzingis",
@@ -5697,7 +5636,7 @@
       "coordinates": {
         "A": 62.5,
         "B1": 25.0,
-        "B2": 12.5,
+        "B2": 75.0,
         "C1": 25.0,
         "C2": 12.5,
         "D": 50.0
@@ -5737,11 +5676,11 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 2
+          "score": 4
         },
         {
           "question_id": "axis_b2_2",
-          "score": 1
+          "score": 4
         },
         {
           "question_id": "axis_c1_1",
@@ -5767,7 +5706,8 @@
           "question_id": "axis_d_2",
           "score": 3
         }
-      ]
+      ],
+      "archetype_id": "point_forward"
     },
     {
       "id": "fred_vanvleet",
@@ -6939,85 +6879,6 @@
         {
           "question_id": "axis_c2_1",
           "score": 5
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 2
-        }
-      ]
-    },
-    {
-      "id": "kevon_looney",
-      "name": "Kevon Looney",
-      "team": "GSW",
-      "coordinates": {
-        "A": 25.0,
-        "B1": 0.0,
-        "B2": 75.0,
-        "C1": 37.5,
-        "C2": 75.0,
-        "D": 37.5
-      },
-      "body": {
-        "height_cm": 206,
-        "wingspan_cm": 216,
-        "weight_kg": 101,
-        "standing_reach_cm": 248,
-        "running_vertical_reach_cm": 314,
-        "sprint_100m_seconds": 14.75
-      },
-      "notable_traits": [
-        "Physical offensive rebounding position",
-        "Strong positioning instincts",
-        "Solid screen-setter"
-      ],
-      "signature_skill_id": "offensive_rebounding",
-      "learnability_flag": "high",
-      "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 1
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 4
         },
         {
           "question_id": "axis_c2_2",
@@ -8298,85 +8159,6 @@
       ]
     },
     {
-      "id": "gary_trent_jr",
-      "name": "Gary Trent Jr.",
-      "team": "MIL",
-      "coordinates": {
-        "A": 12.5,
-        "B1": 75.0,
-        "B2": 0.0,
-        "C1": 12.5,
-        "C2": 0.0,
-        "D": 12.5
-      },
-      "body": {
-        "height_cm": 196,
-        "wingspan_cm": 196,
-        "weight_kg": 93,
-        "standing_reach_cm": 228,
-        "running_vertical_reach_cm": 280,
-        "sprint_100m_seconds": 16.25
-      },
-      "notable_traits": [
-        "Efficient off-ball shooter",
-        "Steady spot-up three-point shooter",
-        "Decent one-on-one defender"
-      ],
-      "signature_skill_id": "off_ball_movement",
-      "learnability_flag": "high",
-      "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 1
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 1
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 1
-        }
-      ]
-    },
-    {
       "id": "bogdan_bogdanovic",
       "name": "Bogdan Bogdanovic",
       "team": "LAC",
@@ -8436,85 +8218,6 @@
         {
           "question_id": "axis_c1_2",
           "score": 2
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 1
-        }
-      ]
-    },
-    {
-      "id": "kentavious_caldwell_pope",
-      "name": "Kentavious Caldwell-Pope",
-      "team": "MEM",
-      "coordinates": {
-        "A": 25.0,
-        "B1": 37.5,
-        "B2": 25.0,
-        "C1": 75.0,
-        "C2": 12.5,
-        "D": 12.5
-      },
-      "body": {
-        "height_cm": 196,
-        "wingspan_cm": 201,
-        "weight_kg": 93,
-        "standing_reach_cm": 233,
-        "running_vertical_reach_cm": 285,
-        "sprint_100m_seconds": 16.25
-      },
-      "notable_traits": [
-        "Clear 3-and-D role",
-        "Steady off-ball shooter",
-        "Decent one-on-one defender"
-      ],
-      "signature_skill_id": "off_ball_movement",
-      "learnability_flag": "high",
-      "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 4
         },
         {
           "question_id": "axis_c2_1",
@@ -8847,85 +8550,6 @@
         {
           "question_id": "axis_d_2",
           "score": 1
-        }
-      ]
-    },
-    {
-      "id": "jeremy_sochan",
-      "name": "Jeremy Sochan",
-      "team": "SAS",
-      "coordinates": {
-        "A": 25.0,
-        "B1": 12.5,
-        "B2": 100.0,
-        "C1": 50.0,
-        "C2": 50.0,
-        "D": 50.0
-      },
-      "body": {
-        "height_cm": 203,
-        "wingspan_cm": 211,
-        "weight_kg": 104,
-        "standing_reach_cm": 243,
-        "running_vertical_reach_cm": 316,
-        "sprint_100m_seconds": 14.0
-      },
-      "notable_traits": [
-        "Sharp help-defense rotations",
-        "Decent ball advancement",
-        "Highly versatile switch defender"
-      ],
-      "signature_skill_id": "help_defense_rotation",
-      "learnability_flag": "high",
-      "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 5
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 5
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 3
         }
       ]
     },
@@ -10431,164 +10055,6 @@
       ]
     },
     {
-      "id": "kelly_oubre_jr",
-      "name": "Kelly Oubre Jr.",
-      "team": "PHI",
-      "coordinates": {
-        "A": 12.5,
-        "B1": 37.5,
-        "B2": 37.5,
-        "C1": 75.0,
-        "C2": 37.5,
-        "D": 62.5
-      },
-      "body": {
-        "height_cm": 203,
-        "wingspan_cm": 211,
-        "weight_kg": 95,
-        "standing_reach_cm": 243,
-        "running_vertical_reach_cm": 322,
-        "sprint_100m_seconds": 13.25
-      },
-      "notable_traits": [
-        "Decent transition finisher",
-        "Adequate outside shooting",
-        "Good physical matchup ability"
-      ],
-      "signature_skill_id": "transition_finishing",
-      "learnability_flag": "medium",
-      "_estimate_basis": "公開球評印象 + 臂展等公開身體數據,手動估算,非真實數據推導",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 3
-        }
-      ]
-    },
-    {
-      "id": "nickeil_alexander_walker",
-      "name": "Nickeil Alexander-Walker",
-      "team": "ATL",
-      "coordinates": {
-        "A": 50.0,
-        "B1": 100.0,
-        "B2": 37.5,
-        "C1": 75.0,
-        "C2": 37.5,
-        "D": 25.0
-      },
-      "body": {
-        "height_cm": 196,
-        "wingspan_cm": 206,
-        "weight_kg": 93,
-        "standing_reach_cm": 238,
-        "running_vertical_reach_cm": 297,
-        "sprint_100m_seconds": 15.5
-      },
-      "notable_traits": [
-        "Decent switch defender",
-        "Steady outside shooting",
-        "Sharp help-defense rotations"
-      ],
-      "signature_skill_id": "perimeter_switch_defense",
-      "learnability_flag": "high",
-      "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 5
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 5
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 2
-        }
-      ]
-    },
-    {
       "id": "jalen_johnson",
       "name": "Jalen Johnson",
       "team": "ATL",
@@ -10596,7 +10062,7 @@
         "A": 75.0,
         "B1": 37.5,
         "B2": 50.0,
-        "C1": 50.0,
+        "C1": 62.5,
         "C2": 62.5,
         "D": 62.5
       },
@@ -10643,7 +10109,7 @@
         },
         {
           "question_id": "axis_c1_1",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_c1_2",
@@ -10902,7 +10368,8 @@
           "question_id": "axis_d_2",
           "score": 1
         }
-      ]
+      ],
+      "archetype_id": "combo_scorer"
     },
     {
       "id": "jonathan_kuminga",
@@ -11130,164 +10597,6 @@
         {
           "question_id": "axis_c2_2",
           "score": 1
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 2
-        }
-      ]
-    },
-    {
-      "id": "jerami_grant",
-      "name": "Jerami Grant",
-      "team": "POR",
-      "coordinates": {
-        "A": 37.5,
-        "B1": 75.0,
-        "B2": 37.5,
-        "C1": 25.0,
-        "C2": 37.5,
-        "D": 50.0
-      },
-      "body": {
-        "height_cm": 201,
-        "wingspan_cm": 211,
-        "weight_kg": 97,
-        "standing_reach_cm": 243,
-        "running_vertical_reach_cm": 316,
-        "sprint_100m_seconds": 14.0
-      },
-      "notable_traits": [
-        "Consistent outside shooting",
-        "Efficient transition finisher",
-        "Quick in defensive rotations"
-      ],
-      "signature_skill_id": "perimeter_shooting",
-      "learnability_flag": "medium",
-      "_estimate_basis": "依公開 2K 屬性數值,用錨點球員校準回歸換算出來的座標,非官方 2K 百分位,也非真實比賽數據推導",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 3
-        }
-      ]
-    },
-    {
-      "id": "kyle_kuzma",
-      "name": "Kyle Kuzma",
-      "team": "MIL",
-      "coordinates": {
-        "A": 37.5,
-        "B1": 25.0,
-        "B2": 62.5,
-        "C1": 37.5,
-        "C2": 37.5,
-        "D": 37.5
-      },
-      "body": {
-        "height_cm": 203,
-        "wingspan_cm": 211,
-        "weight_kg": 100,
-        "standing_reach_cm": 243,
-        "running_vertical_reach_cm": 309,
-        "sprint_100m_seconds": 14.75
-      },
-      "notable_traits": [
-        "Multiple ways to score one-on-one",
-        "Active on the boards",
-        "Decent transition push"
-      ],
-      "signature_skill_id": "face_up_first_step",
-      "learnability_flag": "medium",
-      "_estimate_basis": "依公開 2K 屬性數值,用錨點球員校準回歸換算出來的座標,非官方 2K 百分位,也非真實比賽數據推導",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 2
         },
         {
           "question_id": "axis_d_1",
@@ -11770,85 +11079,6 @@
         {
           "question_id": "axis_d_2",
           "score": 3
-        }
-      ]
-    },
-    {
-      "id": "patrick_williams",
-      "name": "Patrick Williams",
-      "team": "CHI",
-      "coordinates": {
-        "A": 25.0,
-        "B1": 50.0,
-        "B2": 12.5,
-        "C1": 37.5,
-        "C2": 37.5,
-        "D": 25.0
-      },
-      "body": {
-        "height_cm": 198,
-        "wingspan_cm": 211,
-        "weight_kg": 107,
-        "standing_reach_cm": 243,
-        "running_vertical_reach_cm": 302,
-        "sprint_100m_seconds": 15.5
-      },
-      "notable_traits": [
-        "Solid switchable defense",
-        "Good help-defense reads",
-        "Passable mid-range shot"
-      ],
-      "signature_skill_id": "perimeter_switch_defense",
-      "learnability_flag": "high",
-      "_estimate_basis": "依公開 2K 屬性數值,用錨點球員校準回歸換算出來的座標,非官方 2K 百分位,也非真實比賽數據推導",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 2
         }
       ]
     },

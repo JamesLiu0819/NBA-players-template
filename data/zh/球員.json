@@ -265,6 +265,7 @@
         "禁區卡位能力強"
       ],
       "signature_skill_id": "rim_protection",
+      "archetype_id": "rim_protector",
       "learnability_flag": "medium",
       "_estimate_basis": "公開球評印象 + 臂展等公開身體數據,手動估算,非真實數據推導",
       "mock_axis_answers": [
@@ -344,6 +345,7 @@
         "傳導視野好"
       ],
       "signature_skill_id": "face_up_first_step",
+      "archetype_id": "floor_general",
       "learnability_flag": "low",
       "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
       "mock_axis_answers": [
@@ -561,10 +563,10 @@
       "team": "MIL",
       "coordinates": {
         "A": 87.5,
-        "B1": 12.5,
-        "B2": 75.0,
+        "B1": 25.0,
+        "B2": 100.0,
         "C1": 75.0,
-        "C2": 75.0,
+        "C2": 100.0,
         "D": 100.0
       },
       "body": {
@@ -581,6 +583,7 @@
         "防守覆蓋範圍大"
       ],
       "signature_skill_id": "face_up_first_step",
+      "archetype_id": "do_it_all_forward",
       "learnability_flag": "low",
       "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
       "mock_axis_answers": [
@@ -598,15 +601,15 @@
         },
         {
           "question_id": "axis_b1_2",
-          "score": 1
+          "score": 2
         },
         {
           "question_id": "axis_b2_1",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_b2_2",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_c1_1",
@@ -618,11 +621,11 @@
         },
         {
           "question_id": "axis_c2_1",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_c2_2",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_d_1",
@@ -739,6 +742,7 @@
         "無球跑動投射穩定"
       ],
       "signature_skill_id": "perimeter_switch_defense",
+      "archetype_id": "lockdown_defender",
       "learnability_flag": "medium",
       "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
       "mock_axis_answers": [
@@ -818,6 +822,7 @@
         "傳導視野好"
       ],
       "signature_skill_id": "high_post_playmaking",
+      "archetype_id": "playmaking_big",
       "learnability_flag": "medium",
       "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
       "mock_axis_answers": [
@@ -1194,18 +1199,18 @@
       "coordinates": {
         "A": 37.5,
         "B1": 25.0,
-        "B2": 62.5,
+        "B2": 75.0,
         "C1": 62.5,
-        "C2": 75.0,
+        "C2": 87.5,
         "D": 87.5
       },
       "body": {
         "height_cm": 206,
         "wingspan_cm": 216,
         "weight_kg": 118,
+        "sprint_100m_seconds": 13.5,
         "standing_reach_cm": 248,
-        "running_vertical_reach_cm": 341,
-        "sprint_100m_seconds": 11.75
+        "running_vertical_reach_cm": 341
       },
       "notable_traits": [
         "護框跟外圍換防都能做",
@@ -1213,6 +1218,7 @@
         "防守溝通指揮強"
       ],
       "signature_skill_id": "rim_protection",
+      "archetype_id": "playmaking_big",
       "learnability_flag": "medium",
       "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
       "mock_axis_answers": [
@@ -1238,7 +1244,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_c1_1",
@@ -1250,7 +1256,7 @@
         },
         {
           "question_id": "axis_c2_1",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_c2_2",
@@ -1292,6 +1298,7 @@
         "出手速度快"
       ],
       "signature_skill_id": "perimeter_shooting",
+      "archetype_id": "scoring_guard",
       "learnability_flag": "high",
       "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
       "mock_axis_answers": [
@@ -1608,6 +1615,7 @@
         "護框覆蓋佳"
       ],
       "signature_skill_id": "post_up",
+      "archetype_id": "back_to_basket_center",
       "learnability_flag": "low",
       "_estimate_basis": "公開球評印象 + 臂展等公開身體數據,手動估算,非真實數據推導",
       "mock_axis_answers": [
@@ -2477,6 +2485,7 @@
         "掩護扎實"
       ],
       "signature_skill_id": "offensive_rebounding",
+      "archetype_id": "blue_collar_energy",
       "learnability_flag": "high",
       "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
       "mock_axis_answers": [
@@ -2635,6 +2644,7 @@
         "貼身跟防穩定"
       ],
       "signature_skill_id": "on_ball_perimeter_defense",
+      "archetype_id": "lockdown_defender",
       "learnability_flag": "medium",
       "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
       "mock_axis_answers": [
@@ -3109,6 +3119,7 @@
         "身材對抗優勢"
       ],
       "signature_skill_id": "face_up_first_step",
+      "archetype_id": "explosive_slasher",
       "learnability_flag": "low",
       "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
       "mock_axis_answers": [
@@ -3188,6 +3199,7 @@
         "罰球製造能力強"
       ],
       "signature_skill_id": "face_up_first_step",
+      "archetype_id": "combo_scorer",
       "learnability_flag": "medium",
       "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
       "mock_axis_answers": [
@@ -3425,6 +3437,7 @@
         "體格對抗能力好"
       ],
       "signature_skill_id": "perimeter_switch_defense",
+      "archetype_id": "three_and_d_wing",
       "learnability_flag": "medium",
       "_estimate_basis": "公開球評印象 + 臂展等公開身體數據,手動估算,非真實數據推導",
       "mock_axis_answers": [
@@ -3716,85 +3729,6 @@
       ]
     },
     {
-      "id": "cj_mccollum",
-      "name": "CJ McCollum",
-      "team": "ATL",
-      "coordinates": {
-        "A": 62.5,
-        "B1": 75.0,
-        "B2": 25.0,
-        "C1": 0.0,
-        "C2": 25.0,
-        "D": 37.5
-      },
-      "body": {
-        "height_cm": 190,
-        "wingspan_cm": 193,
-        "weight_kg": 86,
-        "standing_reach_cm": 225,
-        "running_vertical_reach_cm": 291,
-        "sprint_100m_seconds": 14.75
-      },
-      "notable_traits": [
-        "中距離急停跳投穩定",
-        "無球跑動投射效率高",
-        "擋拆持球判斷好"
-      ],
-      "signature_skill_id": "perimeter_shooting",
-      "learnability_flag": "medium",
-      "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 1
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 2
-        }
-      ]
-    },
-    {
       "id": "tyler_herro",
       "name": "Tyler Herro",
       "team": "MIA",
@@ -3957,7 +3891,7 @@
       "name": "Kawhi Leonard",
       "team": "LAC",
       "coordinates": {
-        "A": 75.0,
+        "A": 62.5,
         "B1": 87.5,
         "B2": 37.5,
         "C1": 100.0,
@@ -3979,6 +3913,7 @@
       ],
       "signature_skill_id": "on_ball_perimeter_defense",
       "learnability_flag": "medium",
+      "archetype_id": "do_it_all_forward",
       "_estimate_basis": "公開球評印象 + 臂展等公開身體數據,手動估算,非真實數據推導",
       "mock_axis_answers": [
         {
@@ -3987,7 +3922,7 @@
         },
         {
           "question_id": "axis_a_2",
-          "score": 4
+          "score": 3
         },
         {
           "question_id": "axis_b1_1",
@@ -4058,6 +3993,7 @@
       ],
       "signature_skill_id": "perimeter_switch_defense",
       "learnability_flag": "medium",
+      "archetype_id": "do_it_all_forward",
       "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
       "mock_axis_answers": [
         {
@@ -4374,6 +4310,7 @@
       ],
       "signature_skill_id": "transition_finishing",
       "learnability_flag": "low",
+      "archetype_id": "cutting_finisher",
       "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
       "mock_axis_answers": [
         {
@@ -4453,6 +4390,7 @@
       ],
       "signature_skill_id": "transition_finishing",
       "learnability_flag": "low",
+      "archetype_id": "explosive_slasher",
       "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
       "mock_axis_answers": [
         {
@@ -4749,7 +4687,7 @@
       "coordinates": {
         "A": 62.5,
         "B1": 25.0,
-        "B2": 62.5,
+        "B2": 75.0,
         "C1": 87.5,
         "C2": 25.0,
         "D": 87.5
@@ -4769,6 +4707,7 @@
       ],
       "signature_skill_id": "free_throw_shooting",
       "learnability_flag": "medium",
+      "archetype_id": "do_it_all_forward",
       "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
       "mock_axis_answers": [
         {
@@ -4793,7 +4732,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_c1_1",
@@ -5697,7 +5636,7 @@
       "coordinates": {
         "A": 62.5,
         "B1": 25.0,
-        "B2": 12.5,
+        "B2": 75.0,
         "C1": 25.0,
         "C2": 12.5,
         "D": 50.0
@@ -5717,6 +5656,7 @@
       ],
       "signature_skill_id": "post_up",
       "learnability_flag": "medium",
+      "archetype_id": "point_forward",
       "_estimate_basis": "公開球評印象 + 臂展等公開身體數據,手動估算,非真實數據推導",
       "mock_axis_answers": [
         {
@@ -5737,11 +5677,11 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 2
+          "score": 4
         },
         {
           "question_id": "axis_b2_2",
-          "score": 1
+          "score": 4
         },
         {
           "question_id": "axis_c1_1",
@@ -6939,85 +6879,6 @@
         {
           "question_id": "axis_c2_1",
           "score": 5
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 2
-        }
-      ]
-    },
-    {
-      "id": "kevon_looney",
-      "name": "Kevon Looney",
-      "team": "GSW",
-      "coordinates": {
-        "A": 25.0,
-        "B1": 0.0,
-        "B2": 75.0,
-        "C1": 37.5,
-        "C2": 75.0,
-        "D": 37.5
-      },
-      "body": {
-        "height_cm": 206,
-        "wingspan_cm": 216,
-        "weight_kg": 101,
-        "standing_reach_cm": 248,
-        "running_vertical_reach_cm": 314,
-        "sprint_100m_seconds": 14.75
-      },
-      "notable_traits": [
-        "前場籃板卡位兇悍",
-        "卡位意識強",
-        "掩護扎實"
-      ],
-      "signature_skill_id": "offensive_rebounding",
-      "learnability_flag": "high",
-      "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 1
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 4
         },
         {
           "question_id": "axis_c2_2",
@@ -8298,85 +8159,6 @@
       ]
     },
     {
-      "id": "gary_trent_jr",
-      "name": "Gary Trent Jr.",
-      "team": "MIL",
-      "coordinates": {
-        "A": 12.5,
-        "B1": 75.0,
-        "B2": 0.0,
-        "C1": 12.5,
-        "C2": 0.0,
-        "D": 12.5
-      },
-      "body": {
-        "height_cm": 196,
-        "wingspan_cm": 196,
-        "weight_kg": 93,
-        "standing_reach_cm": 228,
-        "running_vertical_reach_cm": 280,
-        "sprint_100m_seconds": 16.25
-      },
-      "notable_traits": [
-        "無球跑動投射效率高",
-        "定點三分穩定",
-        "單防不錯"
-      ],
-      "signature_skill_id": "off_ball_movement",
-      "learnability_flag": "high",
-      "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 1
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 1
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 1
-        }
-      ]
-    },
-    {
       "id": "bogdan_bogdanovic",
       "name": "Bogdan Bogdanovic",
       "team": "LAC",
@@ -8436,85 +8218,6 @@
         {
           "question_id": "axis_c1_2",
           "score": 2
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 1
-        }
-      ]
-    },
-    {
-      "id": "kentavious_caldwell_pope",
-      "name": "Kentavious Caldwell-Pope",
-      "team": "MEM",
-      "coordinates": {
-        "A": 25.0,
-        "B1": 37.5,
-        "B2": 25.0,
-        "C1": 75.0,
-        "C2": 12.5,
-        "D": 12.5
-      },
-      "body": {
-        "height_cm": 196,
-        "wingspan_cm": 201,
-        "weight_kg": 93,
-        "standing_reach_cm": 233,
-        "running_vertical_reach_cm": 285,
-        "sprint_100m_seconds": 16.25
-      },
-      "notable_traits": [
-        "3&D 定位清楚",
-        "無球跑動投射穩定",
-        "單防能力不錯"
-      ],
-      "signature_skill_id": "off_ball_movement",
-      "learnability_flag": "high",
-      "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 4
         },
         {
           "question_id": "axis_c2_1",
@@ -8847,85 +8550,6 @@
         {
           "question_id": "axis_d_2",
           "score": 1
-        }
-      ]
-    },
-    {
-      "id": "jeremy_sochan",
-      "name": "Jeremy Sochan",
-      "team": "SAS",
-      "coordinates": {
-        "A": 25.0,
-        "B1": 12.5,
-        "B2": 100.0,
-        "C1": 50.0,
-        "C2": 50.0,
-        "D": 50.0
-      },
-      "body": {
-        "height_cm": 203,
-        "wingspan_cm": 211,
-        "weight_kg": 104,
-        "standing_reach_cm": 243,
-        "running_vertical_reach_cm": 316,
-        "sprint_100m_seconds": 14.0
-      },
-      "notable_traits": [
-        "協防補位判斷好",
-        "持球推進不錯",
-        "換防彈性大"
-      ],
-      "signature_skill_id": "help_defense_rotation",
-      "learnability_flag": "high",
-      "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 5
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 5
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 3
         }
       ]
     },
@@ -10431,164 +10055,6 @@
       ]
     },
     {
-      "id": "kelly_oubre_jr",
-      "name": "Kelly Oubre Jr.",
-      "team": "PHI",
-      "coordinates": {
-        "A": 12.5,
-        "B1": 37.5,
-        "B2": 37.5,
-        "C1": 75.0,
-        "C2": 37.5,
-        "D": 62.5
-      },
-      "body": {
-        "height_cm": 203,
-        "wingspan_cm": 211,
-        "weight_kg": 95,
-        "standing_reach_cm": 243,
-        "running_vertical_reach_cm": 322,
-        "sprint_100m_seconds": 13.25
-      },
-      "notable_traits": [
-        "轉換終結能力不錯",
-        "外線出手尚可",
-        "體格對抗能力好"
-      ],
-      "signature_skill_id": "transition_finishing",
-      "learnability_flag": "medium",
-      "_estimate_basis": "公開球評印象 + 臂展等公開身體數據,手動估算,非真實數據推導",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 3
-        }
-      ]
-    },
-    {
-      "id": "nickeil_alexander_walker",
-      "name": "Nickeil Alexander-Walker",
-      "team": "ATL",
-      "coordinates": {
-        "A": 50.0,
-        "B1": 100.0,
-        "B2": 37.5,
-        "C1": 75.0,
-        "C2": 37.5,
-        "D": 25.0
-      },
-      "body": {
-        "height_cm": 196,
-        "wingspan_cm": 206,
-        "weight_kg": 93,
-        "standing_reach_cm": 238,
-        "running_vertical_reach_cm": 297,
-        "sprint_100m_seconds": 15.5
-      },
-      "notable_traits": [
-        "換防跟防能力不錯",
-        "外線出手穩定",
-        "協防補位判斷好"
-      ],
-      "signature_skill_id": "perimeter_switch_defense",
-      "learnability_flag": "high",
-      "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 5
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 5
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 2
-        }
-      ]
-    },
-    {
       "id": "jalen_johnson",
       "name": "Jalen Johnson",
       "team": "ATL",
@@ -10596,7 +10062,7 @@
         "A": 75.0,
         "B1": 37.5,
         "B2": 50.0,
-        "C1": 50.0,
+        "C1": 62.5,
         "C2": 62.5,
         "D": 62.5
       },
@@ -10643,7 +10109,7 @@
         },
         {
           "question_id": "axis_c1_1",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_c1_2",
@@ -10852,6 +10318,7 @@
       ],
       "signature_skill_id": "post_up",
       "learnability_flag": "medium",
+      "archetype_id": "combo_scorer",
       "_estimate_basis": "依公開 2K 屬性數值,用錨點球員校準回歸換算出來的座標,非官方 2K 百分位,也非真實比賽數據推導",
       "mock_axis_answers": [
         {
@@ -11130,164 +10597,6 @@
         {
           "question_id": "axis_c2_2",
           "score": 1
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 2
-        }
-      ]
-    },
-    {
-      "id": "jerami_grant",
-      "name": "Jerami Grant",
-      "team": "POR",
-      "coordinates": {
-        "A": 37.5,
-        "B1": 75.0,
-        "B2": 37.5,
-        "C1": 25.0,
-        "C2": 37.5,
-        "D": 50.0
-      },
-      "body": {
-        "height_cm": 201,
-        "wingspan_cm": 211,
-        "weight_kg": 97,
-        "standing_reach_cm": 243,
-        "running_vertical_reach_cm": 316,
-        "sprint_100m_seconds": 14.0
-      },
-      "notable_traits": [
-        "外線出手穩定",
-        "轉換終結效率高",
-        "協防補位移動快"
-      ],
-      "signature_skill_id": "perimeter_shooting",
-      "learnability_flag": "medium",
-      "_estimate_basis": "依公開 2K 屬性數值,用錨點球員校準回歸換算出來的座標,非官方 2K 百分位,也非真實比賽數據推導",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 3
-        }
-      ]
-    },
-    {
-      "id": "kyle_kuzma",
-      "name": "Kyle Kuzma",
-      "team": "MIL",
-      "coordinates": {
-        "A": 37.5,
-        "B1": 25.0,
-        "B2": 62.5,
-        "C1": 37.5,
-        "C2": 37.5,
-        "D": 37.5
-      },
-      "body": {
-        "height_cm": 203,
-        "wingspan_cm": 211,
-        "weight_kg": 100,
-        "standing_reach_cm": 243,
-        "running_vertical_reach_cm": 309,
-        "sprint_100m_seconds": 14.75
-      },
-      "notable_traits": [
-        "持球單打手段多",
-        "籃板卡位積極",
-        "轉換推進速度尚可"
-      ],
-      "signature_skill_id": "face_up_first_step",
-      "learnability_flag": "medium",
-      "_estimate_basis": "依公開 2K 屬性數值,用錨點球員校準回歸換算出來的座標,非官方 2K 百分位,也非真實比賽數據推導",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 2
         },
         {
           "question_id": "axis_d_1",
@@ -11770,85 +11079,6 @@
         {
           "question_id": "axis_d_2",
           "score": 3
-        }
-      ]
-    },
-    {
-      "id": "patrick_williams",
-      "name": "Patrick Williams",
-      "team": "CHI",
-      "coordinates": {
-        "A": 25.0,
-        "B1": 50.0,
-        "B2": 12.5,
-        "C1": 37.5,
-        "C2": 37.5,
-        "D": 25.0
-      },
-      "body": {
-        "height_cm": 198,
-        "wingspan_cm": 211,
-        "weight_kg": 107,
-        "standing_reach_cm": 243,
-        "running_vertical_reach_cm": 302,
-        "sprint_100m_seconds": 15.5
-      },
-      "notable_traits": [
-        "換防跟防能力不錯",
-        "協防補位判斷好",
-        "中距離出手尚可"
-      ],
-      "signature_skill_id": "perimeter_switch_defense",
-      "learnability_flag": "high",
-      "_estimate_basis": "依公開 2K 屬性數值,用錨點球員校準回歸換算出來的座標,非官方 2K 百分位,也非真實比賽數據推導",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 2
         }
       ]
     },

@@ -186,6 +186,7 @@
         "禁区低位单打技巧不错"
       ],
       "signature_skill_id": "high_post_playmaking",
+      "archetype_id": "floor_general",
       "learnability_flag": "low",
       "_estimate_basis": "2K 公开历史/All-Time 卡属性数值换算百分位推算,非真实比赛数据推导",
       "mock_axis_answers": [
@@ -265,6 +266,7 @@
         "比赛阅读能力出色"
       ],
       "signature_skill_id": "perimeter_shooting",
+      "archetype_id": "do_it_all_forward",
       "learnability_flag": "high",
       "_estimate_basis": "2K 公开历史/All-Time 卡属性数值换算百分位推算,非真实比赛数据推导",
       "mock_axis_answers": [
@@ -631,85 +633,6 @@
         {
           "question_id": "axis_d_2",
           "score": 5
-        }
-      ]
-    },
-    {
-      "id": "jerry_west",
-      "name": "Jerry West",
-      "team": "1965",
-      "coordinates": {
-        "A": 87.5,
-        "B1": 87.5,
-        "B2": 50.0,
-        "C1": 100.0,
-        "C2": 0.0,
-        "D": 87.5
-      },
-      "body": {
-        "height_cm": 190,
-        "wingspan_cm": 193,
-        "weight_kg": 79,
-        "standing_reach_cm": 225,
-        "running_vertical_reach_cm": 318,
-        "sprint_100m_seconds": 11.75
-      },
-      "notable_traits": [
-        "关键时刻得分能力强",
-        "中距离跳投稳定",
-        "持球推进效率高"
-      ],
-      "signature_skill_id": "face_up_first_step",
-      "learnability_flag": "medium",
-      "_estimate_basis": "2K 公开历史/All-Time 卡属性数值换算百分位推算,非真实比赛数据推导",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 5
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 5
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 5
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 5
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 1
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 5
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 4
         }
       ]
     },
@@ -1608,6 +1531,7 @@
         "转换防守到进攻速度快"
       ],
       "signature_skill_id": "perimeter_switch_defense",
+      "archetype_id": "do_it_all_forward",
       "learnability_flag": "medium",
       "_estimate_basis": "2K 公开历史/All-Time 卡属性数值换算百分位推算,非真实比赛数据推导",
       "mock_axis_answers": [
@@ -1924,6 +1848,7 @@
         "防守专注力极高"
       ],
       "signature_skill_id": "on_ball_perimeter_defense",
+      "archetype_id": "lockdown_defender",
       "learnability_flag": "high",
       "_estimate_basis": "2K 公开历史/All-Time 卡属性数值换算百分位推算,非真实比赛数据推导",
       "mock_axis_answers": [
@@ -2319,6 +2244,7 @@
         "体能天赋联盟史上顶级"
       ],
       "signature_skill_id": "post_up",
+      "archetype_id": "back_to_basket_center",
       "learnability_flag": "low",
       "_estimate_basis": "2K 公开历史/All-Time 卡属性数值换算百分位推算,非真实比赛数据推导",
       "mock_axis_answers": [
@@ -2635,6 +2561,7 @@
         "传导视野不错"
       ],
       "signature_skill_id": "transition_finishing",
+      "archetype_id": "explosive_slasher",
       "learnability_flag": "high",
       "_estimate_basis": "2K 公开历史/All-Time 卡属性数值换算百分位推算,非真实比赛数据推导",
       "mock_axis_answers": [
@@ -3030,6 +2957,7 @@
         "篮板意识不错"
       ],
       "signature_skill_id": "high_post_playmaking",
+      "archetype_id": "floor_general",
       "learnability_flag": "high",
       "_estimate_basis": "2K 公开历史/All-Time 卡属性数值换算百分位推算,非真实比赛数据推导",
       "mock_axis_answers": [
@@ -3563,7 +3491,7 @@
       "team": "2010",
       "coordinates": {
         "A": 50.0,
-        "B1": 37.5,
+        "B1": 62.5,
         "B2": 75.0,
         "C1": 25.0,
         "C2": 62.5,
@@ -3596,11 +3524,11 @@
         },
         {
           "question_id": "axis_b1_1",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_b1_2",
-          "score": 2
+          "score": 3
         },
         {
           "question_id": "axis_b2_1",
@@ -4190,85 +4118,6 @@
       ]
     },
     {
-      "id": "baron_davis",
-      "name": "Baron Davis",
-      "team": "2007",
-      "coordinates": {
-        "A": 100.0,
-        "B1": 37.5,
-        "B2": 37.5,
-        "C1": 100.0,
-        "C2": 37.5,
-        "D": 87.5
-      },
-      "body": {
-        "height_cm": 190,
-        "wingspan_cm": 196,
-        "weight_kg": 95,
-        "standing_reach_cm": 228,
-        "running_vertical_reach_cm": 321,
-        "sprint_100m_seconds": 11.75
-      },
-      "notable_traits": [
-        "持球推进爆发力强",
-        "三分出手范围广",
-        "转换终结能力好"
-      ],
-      "signature_skill_id": "pick_and_roll_ball_handling",
-      "learnability_flag": "medium",
-      "_estimate_basis": "2K 公开历史/All-Time 卡属性数值换算百分位推算,非真实比赛数据推导",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 5
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 5
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 5
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 5
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 3
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 5
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 4
-        }
-      ]
-    },
-    {
       "id": "antawn_jamison",
       "name": "Antawn Jamison",
       "team": "2004",
@@ -4585,85 +4434,6 @@
       ]
     },
     {
-      "id": "walt_frazier",
-      "name": "Walt Frazier",
-      "team": "1970",
-      "coordinates": {
-        "A": 75.0,
-        "B1": 25.0,
-        "B2": 25.0,
-        "C1": 100.0,
-        "C2": 12.5,
-        "D": 87.5
-      },
-      "body": {
-        "height_cm": 193,
-        "wingspan_cm": 196,
-        "weight_kg": 91,
-        "standing_reach_cm": 228,
-        "running_vertical_reach_cm": 321,
-        "sprint_100m_seconds": 11.75
-      },
-      "notable_traits": [
-        "一对一单防能力强",
-        "持球推进稳定",
-        "关键时刻得分手感好"
-      ],
-      "signature_skill_id": "on_ball_perimeter_defense",
-      "learnability_flag": "medium",
-      "_estimate_basis": "2K 公开历史/All-Time 卡属性数值换算百分位推算,非真实比赛数据推导",
-      "mock_axis_answers": [
-        {
-          "question_id": "axis_a_1",
-          "score": 4
-        },
-        {
-          "question_id": "axis_a_2",
-          "score": 4
-        },
-        {
-          "question_id": "axis_b1_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b1_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_b2_2",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c1_1",
-          "score": 5
-        },
-        {
-          "question_id": "axis_c1_2",
-          "score": 5
-        },
-        {
-          "question_id": "axis_c2_1",
-          "score": 2
-        },
-        {
-          "question_id": "axis_c2_2",
-          "score": 1
-        },
-        {
-          "question_id": "axis_d_1",
-          "score": 5
-        },
-        {
-          "question_id": "axis_d_2",
-          "score": 4
-        }
-      ]
-    },
-    {
       "id": "willis_reed",
       "name": "Willis Reed",
       "team": "1970",
@@ -4768,6 +4538,7 @@
         "转换快攻终结强"
       ],
       "signature_skill_id": "transition_finishing",
+      "archetype_id": "scoring_guard",
       "learnability_flag": "medium",
       "_estimate_basis": "依公开 2K All-Time 卡属性数值,用锚点球员校准回归换算出来的座标,非官方 2K 百分位,也非真实比赛数据推导",
       "mock_axis_answers": [
@@ -5637,6 +5408,7 @@
         "前场篮板积极"
       ],
       "signature_skill_id": "transition_finishing",
+      "archetype_id": "explosive_slasher",
       "learnability_flag": "medium",
       "_estimate_basis": "依公开 2K All-Time 卡属性数值,用锚点球员校准回归换算出来的座标,非官方 2K 百分位,也非真实比赛数据推导",
       "mock_axis_answers": [
