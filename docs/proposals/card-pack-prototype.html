@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>每日球員卡 — 試玩版</title>
+<!--
+  用途：每日球員卡抽卡的試玩版，給網站擁有者感受開包流程、動畫、音效、機率夠不夠吸引人。
+  不是正式網站的程式；定案後正式版的抽卡邏輯要放進 src/engine（純函數 + 單元測試），
+  抽卡結果存在資料庫。球員與等級是 2026-11-01 的資料快照。
+  這裡的「抽卡」用「使用者代號 + 第幾天」算出固定結果，同一天重新整理結果不變，跟正式版的規則一樣。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --night: #0e1118; --panel: #181d28; --line: #2a3142; --ink: #eef1f6; --soft: #9aa3b5;
+    --common: #9aa4b6; --rare: #39a8ff; --epic: #b05cff; --legend: #ffc93c;
+    --wood: #c9822b;
+    --display: "Big Shoulders Display", "Arial Narrow", "PingFang TC", "Noto Sans TC", sans-serif;
+    --body: "Noto Sans TC", -apple-system, "PingFang TC", "Microsoft JhengHei", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--night); color: var(--ink); font: 15px/1.6 var(--body); }
+  body { min-height: 100vh; overflow-x: hidden; }
+  body::before { /* faint hardwood planks under the night */
+    content: ""; position: fixed; inset: 0; pointer-events: none; opacity: .07;
+    background: repeating-linear-gradient(90deg, #c9822b 0 46px, #a96a20 46px 47px, #b8772a 47px 93px, #9c6220 93px 94px);
+  }
+  button { font: inherit; cursor: pointer; color: inherit; }
+  button:focus-visible, .card:focus-visible { outline: 3px solid var(--legend); outline-offset: 3px; }
+  .wrap { position: relative; max-width: 980px; margin: 0 auto; padding: 14px 16px 80px; }
+
+  /* ---------- top strip ---------- */
+  .strip { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; justify-content: space-between; }
+  .brand { font: 900 1.05rem/1 var(--body); letter-spacing: .04em; }
+  .brand small { display: block; font: 600 .72rem/1.4 var(--display); letter-spacing: .22em; color: var(--soft); text-transform: uppercase; }
+  .stats { display: flex; gap: 18px; align-items: center; }
+  .stat { text-align: right; }
+  .stat b { display: block; font: 900 1.7rem/1 var(--display); letter-spacing: .02em; }
+  .stat span { font-size: .74rem; color: var(--soft); }
+  .stat.streak b { color: var(--wood); }
+  .bar { height: 6px; border-radius: 4px; background: var(--line); overflow: hidden; margin-top: 10px; }
+  .bar > i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--rare), var(--epic), var(--legend)); transition: width 1.2s cubic-bezier(.2,.8,.2,1); }
+  .pity { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 8px; font-size: .8rem; color: var(--soft); }
+  .pity b { color: var(--ink); }
+
+  /* ---------- stage ---------- */
+  .stage { position: relative; min-height: 480px; display: grid; place-items: center; margin-top: 18px; }
+  .hint { position: absolute; bottom: 6px; left: 0; right: 0; text-align: center; color: var(--soft); font-size: .9rem; }
+  .hint b { color: var(--ink); }
+
+  /* the foil pack */
+  .pack {
+    --glow: #ffffff; position: relative; width: 230px; height: 330px; border: 0; padding: 0; background: none;
+    filter: drop-shadow(0 24px 40px rgba(0,0,0,.55)); animation: float 3.4s ease-in-out infinite;
+  }
+  .pack .body {
+    position: absolute; inset: 0;
+    clip-path: polygon(0 4%, 4% 0, 8% 4%, 12% 0, 16% 4%, 20% 0, 24% 4%, 28% 0, 32% 4%, 36% 0, 40% 4%, 44% 0, 48% 4%, 52% 0, 56% 4%, 60% 0, 64% 4%, 68% 0, 72% 4%, 76% 0, 80% 4%, 84% 0, 88% 4%, 92% 0, 96% 4%, 100% 0, 100% 100%, 96% 96%, 92% 100%, 88% 96%, 84% 100%, 80% 96%, 76% 100%, 72% 96%, 68% 100%, 64% 96%, 60% 100%, 56% 96%, 52% 100%, 48% 96%, 44% 100%, 40% 96%, 36% 100%, 32% 96%, 28% 100%, 24% 96%, 20% 100%, 16% 96%, 12% 100%, 8% 96%, 4% 100%, 0 96%);
+    background:
+      linear-gradient(115deg, transparent 30%, rgba(255,255,255,.28) 45%, transparent 60%) 0 0 / 260% 100%,
+      linear-gradient(160deg, #262d3d, #11151d 55%, #1f2533);
+    animation: sheen 3.2s linear infinite;
+  }
+  .pack .seam { position: absolute; left: 6%; right: 6%; top: 15%; height: 3px; border-radius: 3px; background: var(--glow); box-shadow: 0 0 10px var(--glow), 0 0 26px var(--glow); opacity: .35; transition: opacity .3s; }
+  .pack .tear { position: absolute; inset: 0 0 auto 0; height: 15%; clip-path: inherit; }
+  .pack .tear::after { content: "沿這裡撕開 ⟶"; position: absolute; right: 12px; top: 40%; font: 700 .7rem var(--body); color: var(--soft); letter-spacing: .08em; }
+  .pack .label { position: absolute; inset: 22% 10% auto; text-align: center; }
+  .pack .label > span { display: block; }
+  .pack .label .eyebrow { font: 800 .78rem/1 var(--display); letter-spacing: .32em; color: var(--wood); }
+  .pack .label .title { font: 900 2.6rem/.95 var(--display); letter-spacing: .02em; margin-top: 10px; }
+  .pack .label .zh { font: 900 1.2rem/1.2 var(--body); margin-top: 8px; }
+  .pack .label .count { margin-top: 14px; font: 800 .9rem/1 var(--display); letter-spacing: .2em; color: var(--soft); }
+  .pack .ball { position: absolute; left: 50%; bottom: 8%; width: 70px; height: 70px; margin-left: -35px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #f0a24a, #c46c17 60%, #7a3d08);
+    box-shadow: inset 0 0 0 2px rgba(0,0,0,.35); }
+  .pack .ball::before, .pack .ball::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 2px solid rgba(20,10,0,.55); clip-path: inset(0 48% 0 48%); }
+  .pack .ball::after { clip-path: inset(48% 0 48% 0); }
+  .pack.charging { animation: none; }
+  .pack.charging .seam { opacity: 1; }
+  .pack.shake-1 { animation: shake .09s linear infinite; }
+  .pack.shake-2 { animation: shake .07s linear infinite; }
+  .pack.shake-3 { animation: shake .05s linear infinite; }
+  .pack.torn .tear { animation: flyoff .6s cubic-bezier(.3,.6,.2,1) forwards; }
+  .pack.gone { animation: drop .45s ease-in forwards; }
+  @keyframes float { 50% { transform: translateY(-10px) rotate(-1deg); } }
+  @keyframes sheen { to { background-position: -260% 0, 0 0; } }
+  @keyframes shake { 0% { transform: translate(0,0) rotate(0); } 25% { transform: translate(-3px,1px) rotate(-1.5deg); } 50% { transform: translate(3px,-1px) rotate(1.5deg); } 75% { transform: translate(-2px,-1px) rotate(-1deg); } }
+  @keyframes flyoff { to { transform: translate(140px,-160px) rotate(38deg); opacity: 0; } }
+  @keyframes drop { to { transform: translateY(70px) scale(.85); opacity: 0; } }
+
+  .burst { position: absolute; width: 10px; height: 10px; border-radius: 50%; pointer-events: none; opacity: 0; }
+  .burst.go { animation: burst .8s ease-out forwards; }
+  @keyframes burst { 0% { opacity: .95; transform: scale(1); } 100% { opacity: 0; transform: scale(70); } }
+
+  /* ---------- cards ---------- */
+  .row { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; perspective: 1200px; }
+  .card { --c: var(--common); position: relative; width: 200px; height: 290px; border: 0; padding: 0; background: none; transform-style: preserve-3d;
+    transition: transform .7s cubic-bezier(.2,.9,.25,1.15); animation: dealt .55s cubic-bezier(.2,.8,.2,1) backwards; }
+  .card:nth-child(2) { animation-delay: .12s; } .card:nth-child(3) { animation-delay: .24s; }
+  @keyframes dealt { from { transform: translateY(160px) rotate(-8deg) scale(.6); opacity: 0; } }
+  .card.flipped { transform: rotateY(180deg); }
+  .face { position: absolute; inset: 0; border-radius: 14px; backface-visibility: hidden; -webkit-backface-visibility: hidden; overflow: hidden; }
+  .back { background: linear-gradient(150deg, #232a3a, #121620); border: 2px solid #343c50; display: grid; place-items: center; }
+  .back .mark { font: 900 2.4rem/1 var(--display); color: #3a4358; letter-spacing: .06em; }
+  .back .q { position: absolute; bottom: 14px; font: 700 .75rem var(--body); color: var(--soft); }
+  .card.peek .back { box-shadow: 0 0 0 2px var(--c), 0 0 22px var(--c); } /* the edge leaks the tier colour on hover */
+  .front { transform: rotateY(180deg); background: linear-gradient(170deg, #1d2330, #0f131b); border: 3px solid var(--c); padding: 12px 12px 10px; display: flex; flex-direction: column; text-align: left; }
+  .front .top { display: flex; justify-content: space-between; align-items: center; }
+  .tier { font: 900 .74rem/1 var(--body); color: #0e1118; background: var(--c); border-radius: 999px; padding: 4px 9px; letter-spacing: .06em; }
+  .num { font: 800 .82rem/1 var(--display); color: var(--soft); letter-spacing: .08em; }
+  .front svg { display: block; margin: 6px auto 2px; }
+  .front .name { font: 900 1.55rem/1 var(--display); letter-spacing: .01em; margin-top: auto; overflow-wrap: anywhere; }
+  .front .meta { font-size: .78rem; color: var(--soft); margin-top: 4px; }
+  .front .arch { display: inline-block; margin-top: 6px; font: 700 .74rem var(--body); color: var(--c); border: 1px solid var(--c); border-radius: 6px; padding: 1px 7px; width: max-content; }
+  .new { position: absolute; top: -10px; left: -10px; z-index: 3; font: 900 .8rem/1 var(--display); letter-spacing: .12em; background: #ff4d4d; color: #fff; padding: 6px 9px; border-radius: 8px; transform: rotateY(180deg) rotate(-12deg) scale(0); transition: transform .35s cubic-bezier(.3,1.6,.5,1) .55s; }
+  .card.flipped .new { transform: rotateY(180deg) rotate(-12deg) scale(1); }
+  .t-rare { --c: var(--rare); } .t-epic { --c: var(--epic); } .t-legend { --c: var(--legend); }
+  /* glow lives on the front face: a filter on the 3D card itself would flatten it and break the flip */
+  .card.flipped.t-rare .front { box-shadow: 0 0 18px rgba(57,168,255,.6); }
+  .card.flipped.t-epic .front { box-shadow: 0 0 26px rgba(176,92,255,.8); animation: epicPulse 1.6s ease-in-out .7s 2; }
+  @keyframes epicPulse { 50% { box-shadow: 0 0 46px rgba(176,92,255,1); } }
+  /* the prizm refractor: only legends get it */
+  .t-legend .front { background: linear-gradient(165deg, #4a3810, #1d160a 45%, #2e230b); }
+  .t-legend .front::after { content: ""; position: absolute; inset: 0; mix-blend-mode: screen; opacity: .28; pointer-events: none;
+    background: linear-gradient(115deg, transparent 20%, #ff6ad5 32%, #c774e8 40%, #ad8cff 48%, #8795e8 56%, #94d0ff 64%, transparent 76%) 0 0 / 300% 300%;
+    animation: prizm 2.6s linear infinite; }
+  @keyframes prizm { to { background-position: 300% 300%; } }
+  .card.flipped.t-legend { z-index: 5; }
+  .card.flipped.t-legend .front { box-shadow: 0 0 40px rgba(255,201,60,.9), 0 0 90px rgba(255,201,60,.45); }
+  .card.hero { transform: rotateY(180deg) scale(1.12); }
+
+  /* legend overlay */
+  .veil { position: fixed; inset: 0; z-index: 4; pointer-events: none; opacity: 0; background: radial-gradient(circle at 50% 50%, rgba(255,201,60,.18), rgba(5,6,10,.86) 60%); transition: opacity .4s; }
+  .veil.on { opacity: 1; }
+  .rays { position: fixed; left: 50%; top: 50%; width: 140vmax; height: 140vmax; margin: -70vmax 0 0 -70vmax; z-index: 4; pointer-events: none; opacity: 0;
+    background: repeating-conic-gradient(from 0deg, rgba(255,201,60,.16) 0 6deg, transparent 6deg 18deg); transition: opacity .5s; animation: spin 14s linear infinite; }
+  .rays.on { opacity: 1; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  canvas#fx { position: fixed; inset: 0; z-index: 6; pointer-events: none; }
+  .shake-screen { animation: screen .45s linear; }
+  @keyframes screen { 20% { transform: translate(-6px,2px); } 40% { transform: translate(5px,-3px); } 60% { transform: translate(-4px,3px); } 80% { transform: translate(3px,-2px); } }
+
+  /* ---------- after ---------- */
+  .after { text-align: center; margin-top: 22px; }
+  .after h2 { margin: 0; font: 900 1.25rem var(--body); }
+  .after .next { font: 800 1.6rem/1 var(--display); letter-spacing: .08em; color: var(--wood); margin: 8px 0 2px; }
+  .btn { border: 1px solid var(--line); background: var(--panel); color: var(--ink); padding: 9px 16px; border-radius: 10px; font-weight: 700; }
+  .btn.main { background: var(--wood); border-color: var(--wood); color: #1a1006; }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 14px; }
+
+  /* ---------- album ---------- */
+  section.album { margin-top: 44px; }
+  .album h2 { font: 900 1.3rem var(--body); margin: 0 0 4px; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 12px; }
+  .tab { border: 2px solid var(--line); background: transparent; color: var(--ink); padding: 4px 12px; border-radius: 999px; font-weight: 700; font-size: .85rem; }
+  .tab.on { border-color: var(--c, var(--ink)); color: var(--c, var(--ink)); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; }
+  .mini { --c: var(--common); border-radius: 8px; border: 2px solid var(--c); padding: 6px; min-height: 92px; background: #141924; display: flex; flex-direction: column; justify-content: space-between; }
+  .mini b { font: 800 .9rem/1.05 var(--display); overflow-wrap: anywhere; }
+  .mini span { font: 700 .66rem var(--display); color: var(--soft); letter-spacing: .08em; }
+  .mini.locked { border-style: dashed; border-color: #2c3344; background: repeating-linear-gradient(45deg, #121621 0 6px, #151a26 6px 12px); }
+  .mini.locked b { color: #3a4255; }
+
+  .odds { margin-top: 36px; border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; background: var(--panel); font-size: .88rem; }
+  .odds h3 { margin: 0 0 6px; font: 900 1rem var(--body); }
+  .odds table { width: 100%; border-collapse: collapse; }
+  .odds td, .odds th { padding: 5px 6px; border-bottom: 1px solid var(--line); text-align: left; }
+  .odds .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--c); margin-right: 6px; }
+  .proto { margin-top: 26px; border: 1px dashed #4a5268; border-radius: 12px; padding: 10px 14px; font-size: .85rem; color: var(--soft); }
+  .proto b { color: var(--ink); }
+  .proto .actions { justify-content: flex-start; }
+  .sound { border: 1px solid var(--line); background: transparent; color: var(--soft); border-radius: 999px; padding: 4px 10px; font-size: .8rem; }
+  [hidden] { display: none !important; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+  }
+  @media (max-width: 520px) {
+    .card { width: calc((100vw - 52px) / 3); height: calc((100vw - 52px) / 3 * 1.45); }
+    .stats { gap: 10px; } .stat b { font-size: 1.35rem; }
+    .row { gap: 8px; }
+    .front .name { font-size: 1.05rem; } .front svg { width: 64px; height: 64px; }
+    .front .meta { font-size: .66rem; } .front .arch, .tier { font-size: .62rem; } .num { font-size: .66rem; }
+  }
+</style>
+</head>
+<body>
+<div class="veil" id="veil"></div>
+<div class="rays" id="rays"></div>
+<canvas id="fx"></canvas>
+<div class="wrap" id="wrap">
+
+  <div class="strip">
+    <div class="brand">每日球員卡<small>Scouting Report · Daily Pack</small></div>
+    <div class="stats">
+      <div class="stat streak"><b id="streak">0</b><span>連續天數</span></div>
+      <div class="stat"><b id="owned">0</b><span>/ <span id="total"></span> 張</span></div>
+      <button class="sound" id="sound" aria-pressed="true">🔊 音效開</button>
+    </div>
+  </div>
+  <div class="bar"><i id="bar"></i></div>
+  <div class="pity" id="pity"></div>
+
+  <div class="stage" id="stage"></div>
+
+  <section class="album" aria-labelledby="album-title">
+    <h2 id="album-title">收藏冊</h2>
+    <div class="tabs" id="tabs"></div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <div class="odds">
+    <h3>機率公開</h3>
+    <table id="odds"></table>
+    <p style="margin:8px 0 0;color:var(--soft)">每張卡各自抽一次等級。同一張卡不會抽到兩次；某個等級收齊後，它的機率分給其他等級。每天一包，以台灣時間午夜換日。</p>
+  </div>
+
+  <div class="proto">
+    <b>試玩用控制（正式版不會有）</b>：正式版一天只能開一包。這裡可以直接跳到下一天，快速感受收集的過程。
+    <div class="actions">
+      <button class="btn" id="next-day">跳到下一天</button>
+      <button class="btn" id="force-legend">下一包保證出傳奇</button>
+      <button class="btn" id="reset">清空收藏重來</button>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+const DATA = {"snapshot":"2026-11-01","players":[{"id":"michael_jordan","n":"Michael Jordan","t":"1996","pool":"h","c":{"A":75.0,"B1":75.0,"B2":87.5,"C1":100.0,"C2":50.0,"D":87.5},"a":"得分後衛","s":"面框第一步過人","tier":"legend","no":1},{"id":"lebron_james","n":"LeBron James","t":"LAL","pool":"c","c":{"A":75.0,"B1":12.5,"B2":50.0,"C1":25.0,"C2":62.5,"D":87.5},"a":"全能鋒線","s":"高位傳導視野","tier":"legend","no":2},{"id":"kareem_abdul_jabbar","n":"Kareem Abdul-Jabbar","t":"1977","pool":"h","c":{"A":12.5,"B1":12.5,"B2":100.0,"C1":37.5,"C2":100.0,"D":12.5},"a":"背框中鋒","s":"背框單打","tier":"legend","no":3},{"id":"magic_johnson","n":"Magic Johnson","t":"1987","pool":"h","c":{"A":100.0,"B1":37.5,"B2":75.0,"C1":75.0,"C2":50.0,"D":87.5},"a":"控場指揮官","s":"高位傳導視野","tier":"legend","no":4},{"id":"larry_bird","n":"Larry Bird","t":"1986","pool":"h","c":{"A":62.5,"B1":100.0,"B2":75.0,"C1":87.5,"C2":62.5,"D":12.5},"a":"全能鋒線","s":"外線投射","tier":"legend","no":5},{"id":"kobe_bryant","n":"Kobe Bryant","t":"2006","pool":"h","c":{"A":75.0,"B1":87.5,"B2":37.5,"C1":75.0,"C2":37.5,"D":87.5},"a":"得分後衛","s":"面框第一步過人","tier":"legend","no":6},{"id":"tim_duncan","n":"Tim Duncan","t":"2003","pool":"h","c":{"A":62.5,"B1":25.0,"B2":75.0,"C1":50.0,"C2":100.0,"D":87.5},"a":"策應長人","s":"擋拆持球判斷","tier":"legend","no":7},{"id":"shaquille_oneal","n":"Shaquille O'Neal","t":"2000","pool":"h","c":{"A":50.0,"B1":12.5,"B2":87.5,"C1":37.5,"C2":100.0,"D":100.0},"a":"背框中鋒","s":"背框單打","tier":"legend","no":8},{"id":"stephen_curry","n":"Stephen Curry","t":"GSW","pool":"c","c":{"A":75.0,"B1":100.0,"B2":25.0,"C1":50.0,"C2":25.0,"D":12.5},"a":"雙能衛","s":"外線投射","tier":"legend","no":9},{"id":"wilt_chamberlain","n":"Wilt Chamberlain","t":"1967","pool":"h","c":{"A":25.0,"B1":0.0,"B2":87.5,"C1":62.5,"C2":100.0,"D":25.0},"a":"護框長人","s":"前場籃板/二次進攻","tier":"legend","no":10},{"id":"bill_russell","n":"Bill Russell","t":"1962","pool":"h","c":{"A":0.0,"B1":0.0,"B2":75.0,"C1":75.0,"C2":100.0,"D":100.0},"a":"護框長人","s":"護框","tier":"legend","no":11},{"id":"hakeem_olajuwon","n":"Hakeem Olajuwon","t":"1994","pool":"h","c":{"A":37.5,"B1":50.0,"B2":100.0,"C1":50.0,"C2":100.0,"D":37.5},"a":"背框中鋒","s":"背框單打","tier":"legend","no":12},{"id":"nikola_jokic","n":"Nikola Jokic","t":"DEN","pool":"c","c":{"A":75.0,"B1":50.0,"B2":75.0,"C1":62.5,"C2":75.0,"D":87.5},"a":"策應長人","s":"高位傳導視野","tier":"legend","no":13},{"id":"kevin_durant","n":"Kevin Durant","t":"HOU","pool":"c","c":{"A":62.5,"B1":75.0,"B2":12.5,"C1":25.0,"C2":62.5,"D":50.0},"a":"空間型內線","s":"面框第一步過人","tier":"legend","no":14},{"id":"giannis_antetokounmpo","n":"Giannis Antetokounmpo","t":"MIL","pool":"c","c":{"A":87.5,"B1":25.0,"B2":100.0,"C1":75.0,"C2":100.0,"D":100.0},"a":"全能鋒線","s":"面框第一步過人","tier":"legend","no":15},{"id":"dwight_howard","n":"Dwight Howard","t":"2011","pool":"h","c":{"A":37.5,"B1":12.5,"B2":87.5,"C1":62.5,"C2":100.0,"D":87.5},"a":"護框長人","s":"護框","tier":"epic","no":16},{"id":"victor_wembanyama","n":"Victor Wembanyama","t":"SAS","pool":"c","c":{"A":50.0,"B1":62.5,"B2":87.5,"C1":62.5,"C2":100.0,"D":75.0},"a":"策應長人","s":"護框","tier":"epic","no":17},{"id":"kevin_garnett","n":"Kevin Garnett","t":"2004","pool":"h","c":{"A":50.0,"B1":25.0,"B2":75.0,"C1":62.5,"C2":87.5,"D":100.0},"a":"策應長人","s":"協防補位輪轉","tier":"epic","no":18},{"id":"david_robinson","n":"David Robinson","t":"1995","pool":"h","c":{"A":25.0,"B1":50.0,"B2":87.5,"C1":37.5,"C2":100.0,"D":62.5},"a":"背框中鋒","s":"護框","tier":"epic","no":19},{"id":"karl_malone","n":"Karl Malone","t":"1997","pool":"h","c":{"A":50.0,"B1":12.5,"B2":100.0,"C1":50.0,"C2":75.0,"D":75.0},"a":"策應長人","s":"擋拆持球判斷","tier":"epic","no":20},{"id":"moses_malone","n":"Moses Malone","t":"1983","pool":"h","c":{"A":0.0,"B1":37.5,"B2":100.0,"C1":62.5,"C2":87.5,"D":62.5},"a":"護框長人","s":"前場籃板/二次進攻","tier":"epic","no":21},{"id":"willis_reed","n":"Willis Reed","t":"1970","pool":"h","c":{"A":0.0,"B1":12.5,"B2":62.5,"C1":12.5,"C2":87.5,"D":0.0},"a":"藍領工兵","s":"背框單打","tier":"epic","no":22},{"id":"jason_kidd","n":"Jason Kidd","t":"2002","pool":"h","c":{"A":87.5,"B1":62.5,"B2":12.5,"C1":100.0,"C2":37.5,"D":87.5},"a":"控場指揮官","s":"高位傳導視野","tier":"epic","no":23},{"id":"alonzo_mourning","n":"Alonzo Mourning","t":"1999","pool":"h","c":{"A":25.0,"B1":12.5,"B2":87.5,"C1":62.5,"C2":100.0,"D":37.5},"a":"背框中鋒","s":"護框","tier":"epic","no":24},{"id":"scottie_pippen","n":"Scottie Pippen","t":"1996","pool":"h","c":{"A":75.0,"B1":75.0,"B2":62.5,"C1":87.5,"C2":62.5,"D":100.0},"a":"全能鋒線","s":"換防跟防","tier":"epic","no":25},{"id":"oscar_robertson","n":"Oscar Robertson","t":"1964","pool":"h","c":{"A":100.0,"B1":100.0,"B2":62.5,"C1":75.0,"C2":12.5,"D":100.0},"a":"得分後衛","s":"決策效率/失誤控制","tier":"epic","no":26},{"id":"dwyane_wade","n":"Dwyane Wade","t":"2009","pool":"h","c":{"A":100.0,"B1":25.0,"B2":62.5,"C1":87.5,"C2":62.5,"D":87.5},"a":"得分後衛","s":"轉換快攻終結","tier":"epic","no":27},{"id":"charles_barkley","n":"Charles Barkley","t":"1993","pool":"h","c":{"A":50.0,"B1":62.5,"B2":87.5,"C1":50.0,"C2":75.0,"D":87.5},"a":"策應長人","s":"前場籃板/二次進攻","tier":"epic","no":28},{"id":"russell_westbrook","n":"Russell Westbrook","t":"2017","pool":"h","c":{"A":100.0,"B1":75.0,"B2":50.0,"C1":75.0,"C2":50.0,"D":62.5},"a":"爆發突破手","s":"轉換快攻終結","tier":"epic","no":29},{"id":"shai_gilgeous_alexander","n":"Shai Gilgeous-Alexander","t":"OKC","pool":"c","c":{"A":100.0,"B1":62.5,"B2":37.5,"C1":87.5,"C2":62.5,"D":62.5},"a":"雙能衛","s":"面框第一步過人","tier":"epic","no":30},{"id":"allen_iverson","n":"Allen Iverson","t":"2001","pool":"h","c":{"A":87.5,"B1":62.5,"B2":25.0,"C1":100.0,"C2":25.0,"D":75.0},"a":"爆發突破手","s":"面框第一步過人","tier":"epic","no":31},{"id":"steve_nash","n":"Steve Nash","t":"2005","pool":"h","c":{"A":87.5,"B1":87.5,"B2":25.0,"C1":50.0,"C2":0.0,"D":50.0},"a":"控場指揮官","s":"擋拆持球判斷","tier":"epic","no":32},{"id":"dirk_nowitzki","n":"Dirk Nowitzki","t":"2007","pool":"h","c":{"A":62.5,"B1":75.0,"B2":50.0,"C1":12.5,"C2":75.0,"D":12.5},"a":"空間型內線","s":"面框第一步過人","tier":"epic","no":33},{"id":"julius_erving","n":"Julius Erving","t":"1980","pool":"h","c":{"A":75.0,"B1":75.0,"B2":87.5,"C1":87.5,"C2":75.0,"D":100.0},"a":"得分後衛","s":"轉換快攻終結","tier":"epic","no":34},{"id":"clyde_drexler","n":"Clyde Drexler","t":"1992","pool":"h","c":{"A":75.0,"B1":87.5,"B2":75.0,"C1":87.5,"C2":62.5,"D":75.0},"a":"得分後衛","s":"轉換快攻終結","tier":"epic","no":35},{"id":"dominique_wilkins","n":"Dominique Wilkins","t":"1986","pool":"h","c":{"A":37.5,"B1":50.0,"B2":75.0,"C1":75.0,"C2":37.5,"D":87.5},"a":"空切終結者","s":"轉換快攻終結","tier":"epic","no":36},{"id":"bill_walton","n":"Bill Walton","t":"1977","pool":"h","c":{"A":25.0,"B1":0.0,"B2":100.0,"C1":62.5,"C2":100.0,"D":12.5},"a":"背框中鋒","s":"高位傳導視野","tier":"epic","no":37},{"id":"grant_hill","n":"Grant Hill","t":"1997","pool":"h","c":{"A":100.0,"B1":25.0,"B2":50.0,"C1":87.5,"C2":62.5,"D":100.0},"a":"全能鋒線","s":"轉換快攻終結","tier":"epic","no":38},{"id":"george_gervin","n":"George Gervin","t":"1980","pool":"h","c":{"A":37.5,"B1":75.0,"B2":75.0,"C1":75.0,"C2":50.0,"D":100.0},"a":"得分後衛","s":"面框第一步過人","tier":"epic","no":39},{"id":"penny_hardaway","n":"Penny Hardaway","t":"1996","pool":"h","c":{"A":87.5,"B1":50.0,"B2":75.0,"C1":87.5,"C2":37.5,"D":75.0},"a":"得分後衛","s":"高位傳導視野","tier":"epic","no":40},{"id":"gary_payton","n":"Gary Payton","t":"1996","pool":"h","c":{"A":87.5,"B1":37.5,"B2":62.5,"C1":100.0,"C2":25.0,"D":75.0},"a":"防守大鎖","s":"一對一外圍單防","tier":"epic","no":41},{"id":"pete_maravich","n":"Pete Maravich","t":"1977","pool":"h","c":{"A":87.5,"B1":100.0,"B2":12.5,"C1":50.0,"C2":12.5,"D":25.0},"a":"雙能衛","s":"高位傳導視野","tier":"epic","no":42},{"id":"tracy_mcgrady","n":"Tracy McGrady","t":"2003","pool":"h","c":{"A":87.5,"B1":100.0,"B2":50.0,"C1":62.5,"C2":50.0,"D":87.5},"a":"得分後衛","s":"面框第一步過人","tier":"epic","no":43},{"id":"elgin_baylor","n":"Elgin Baylor","t":"1962","pool":"h","c":{"A":50.0,"B1":37.5,"B2":75.0,"C1":75.0,"C2":50.0,"D":100.0},"a":"空切終結者","s":"轉換快攻終結","tier":"epic","no":44},{"id":"luka_doncic","n":"Luka Doncic","t":"LAL","pool":"c","c":{"A":100.0,"B1":87.5,"B2":12.5,"C1":62.5,"C2":62.5,"D":50.0},"a":"控場指揮官","s":"面框第一步過人","tier":"epic","no":45},{"id":"cade_cunningham","n":"Cade Cunningham","t":"DET","pool":"c","c":{"A":100.0,"B1":50.0,"B2":25.0,"C1":75.0,"C2":75.0,"D":75.0},"a":"全能鋒線","s":"擋拆持球判斷","tier":"epic","no":46},{"id":"carmelo_anthony","n":"Carmelo Anthony","t":"2013","pool":"h","c":{"A":62.5,"B1":87.5,"B2":50.0,"C1":62.5,"C2":50.0,"D":75.0},"a":"全能鋒線","s":"面框第一步過人","tier":"epic","no":47},{"id":"ben_wallace","n":"Ben Wallace","t":"2004","pool":"h","c":{"A":12.5,"B1":12.5,"B2":75.0,"C1":87.5,"C2":100.0,"D":87.5},"a":"護框長人","s":"防守籃板卡位","tier":"epic","no":48},{"id":"patrick_ewing","n":"Patrick Ewing","t":"1990","pool":"h","c":{"A":25.0,"B1":25.0,"B2":87.5,"C1":12.5,"C2":87.5,"D":25.0},"a":"背框中鋒","s":"護框","tier":"epic","no":49},{"id":"jaylen_brown","n":"Jaylen Brown","t":"BOS","pool":"c","c":{"A":87.5,"B1":50.0,"B2":37.5,"C1":12.5,"C2":37.5,"D":62.5},"a":"控球前鋒","s":"轉換快攻終結","tier":"epic","no":50},{"id":"kawhi_leonard","n":"Kawhi Leonard","t":"LAC","pool":"c","c":{"A":62.5,"B1":87.5,"B2":37.5,"C1":100.0,"C2":50.0,"D":75.0},"a":"全能鋒線","s":"一對一外圍單防","tier":"rare","no":51},{"id":"donovan_mitchell","n":"Donovan Mitchell","t":"CLE","pool":"c","c":{"A":87.5,"B1":87.5,"B2":37.5,"C1":75.0,"C2":25.0,"D":75.0},"a":"得分後衛","s":"罰球","tier":"rare","no":52},{"id":"metta_world_peace","n":"Metta World Peace","t":"2004","pool":"h","c":{"A":62.5,"B1":37.5,"B2":50.0,"C1":100.0,"C2":62.5,"D":62.5},"a":"全能鋒線","s":"一對一外圍單防","tier":"rare","no":53},{"id":"shawn_kemp","n":"Shawn Kemp","t":"1996","pool":"h","c":{"A":25.0,"B1":37.5,"B2":87.5,"C1":50.0,"C2":87.5,"D":75.0},"a":"背框中鋒","s":"前場籃板/二次進攻","tier":"rare","no":54},{"id":"chet_holmgren","n":"Chet Holmgren","t":"OKC","pool":"c","c":{"A":12.5,"B1":37.5,"B2":87.5,"C1":50.0,"C2":100.0,"D":37.5},"a":"背框中鋒","s":"護框","tier":"rare","no":55},{"id":"amare_stoudemire","n":"Amar'e Stoudemire","t":"2007","pool":"h","c":{"A":12.5,"B1":25.0,"B2":87.5,"C1":50.0,"C2":75.0,"D":62.5},"a":"護框長人","s":"擋拆持球判斷","tier":"rare","no":56},{"id":"chris_webber","n":"Chris Webber","t":"1999","pool":"h","c":{"A":50.0,"B1":12.5,"B2":75.0,"C1":62.5,"C2":87.5,"D":100.0},"a":"策應長人","s":"高位傳導視野","tier":"rare","no":57},{"id":"marc_gasol","n":"Marc Gasol","t":"2013","pool":"h","c":{"A":37.5,"B1":25.0,"B2":62.5,"C1":50.0,"C2":87.5,"D":25.0},"a":"背框中鋒","s":"高位傳導視野","tier":"rare","no":58},{"id":"vince_carter","n":"Vince Carter","t":"2000","pool":"h","c":{"A":62.5,"B1":75.0,"B2":62.5,"C1":62.5,"C2":62.5,"D":87.5},"a":"得分後衛","s":"轉換快攻終結","tier":"rare","no":59},{"id":"john_stockton","n":"John Stockton","t":"1997","pool":"h","c":{"A":62.5,"B1":75.0,"B2":37.5,"C1":87.5,"C2":12.5,"D":0.0},"a":"控場指揮官","s":"高位傳導視野","tier":"rare","no":60},{"id":"larry_johnson","n":"Larry Johnson","t":"1993","pool":"h","c":{"A":50.0,"B1":25.0,"B2":87.5,"C1":25.0,"C2":37.5,"D":50.0},"a":"控球前鋒","s":"背框單打","tier":"rare","no":61},{"id":"jalen_brunson","n":"Jalen Brunson","t":"NYK","pool":"c","c":{"A":100.0,"B1":75.0,"B2":12.5,"C1":25.0,"C2":0.0,"D":12.5},"a":"雙能衛","s":"擋拆持球判斷","tier":"rare","no":62},{"id":"shawn_marion","n":"Shawn Marion","t":"2005","pool":"h","c":{"A":12.5,"B1":75.0,"B2":87.5,"C1":87.5,"C2":75.0,"D":62.5},"a":"3D 側翼","s":"換防跟防","tier":"rare","no":63},{"id":"tyrese_maxey","n":"Tyrese Maxey","t":"PHI","pool":"c","c":{"A":87.5,"B1":87.5,"B2":25.0,"C1":87.5,"C2":50.0,"D":50.0},"a":"控場指揮官","s":"轉換快攻終結","tier":"rare","no":64},{"id":"jalen_johnson","n":"Jalen Johnson","t":"ATL","pool":"c","c":{"A":75.0,"B1":37.5,"B2":50.0,"C1":62.5,"C2":62.5,"D":62.5},"a":"全能鋒線","s":"轉換快攻終結","tier":"rare","no":65},{"id":"jalen_duren","n":"Jalen Duren","t":"DET","pool":"c","c":{"A":25.0,"B1":12.5,"B2":100.0,"C1":25.0,"C2":75.0,"D":100.0},"a":"策應長人","s":"前場籃板/二次進攻","tier":"rare","no":66},{"id":"paul_pierce","n":"Paul Pierce","t":"2008","pool":"h","c":{"A":75.0,"B1":87.5,"B2":37.5,"C1":62.5,"C2":50.0,"D":25.0},"a":"控場指揮官","s":"面框第一步過人","tier":"rare","no":67},{"id":"deandre_jordan","n":"DeAndre Jordan","t":"2015","pool":"h","c":{"A":0.0,"B1":12.5,"B2":100.0,"C1":37.5,"C2":87.5,"D":75.0},"a":"護框長人","s":"護框","tier":"rare","no":68},{"id":"yao_ming","n":"Yao Ming","t":"2006","pool":"h","c":{"A":37.5,"B1":25.0,"B2":87.5,"C1":25.0,"C2":87.5,"D":25.0},"a":"背框中鋒","s":"背框單打","tier":"rare","no":69},{"id":"pau_gasol","n":"Pau Gasol","t":"2009","pool":"h","c":{"A":50.0,"B1":12.5,"B2":75.0,"C1":37.5,"C2":75.0,"D":25.0},"a":"背框中鋒","s":"高位傳導視野","tier":"rare","no":70},{"id":"jamal_murray","n":"Jamal Murray","t":"DEN","pool":"c","c":{"A":87.5,"B1":100.0,"B2":12.5,"C1":25.0,"C2":12.5,"D":12.5},"a":"雙能衛","s":"外線投射","tier":"rare","no":71},{"id":"reggie_miller","n":"Reggie Miller","t":"1995","pool":"h","c":{"A":37.5,"B1":100.0,"B2":12.5,"C1":37.5,"C2":12.5,"D":0.0},"a":"無球射手","s":"掩護無球跑動","tier":"rare","no":72},{"id":"scottie_barnes","n":"Scottie Barnes","t":"TOR","pool":"c","c":{"A":62.5,"B1":25.0,"B2":62.5,"C1":87.5,"C2":87.5,"D":87.5},"a":"策應長人","s":"高位傳導視野","tier":"rare","no":73},{"id":"ausar_thompson","n":"Ausar Thompson","t":"DET","pool":"c","c":{"A":25.0,"B1":12.5,"B2":75.0,"C1":100.0,"C2":87.5,"D":100.0},"a":"空切終結者","s":"轉換快攻終結","tier":"rare","no":74},{"id":"manu_ginobili","n":"Manu Ginobili","t":"2005","pool":"h","c":{"A":75.0,"B1":75.0,"B2":50.0,"C1":87.5,"C2":50.0,"D":62.5},"a":"爆發突破手","s":"轉換快攻終結","tier":"rare","no":75},{"id":"isiah_thomas","n":"Isiah Thomas","t":"1990","pool":"h","c":{"A":100.0,"B1":50.0,"B2":25.0,"C1":87.5,"C2":25.0,"D":87.5},"a":"爆發突破手","s":"擋拆持球判斷","tier":"rare","no":76},{"id":"anthony_edwards","n":"Anthony Edwards","t":"MIN","pool":"c","c":{"A":75.0,"B1":87.5,"B2":25.0,"C1":75.0,"C2":50.0,"D":50.0},"a":"爆發突破手","s":"面框第一步過人","tier":"rare","no":77},{"id":"karl_anthony_towns","n":"Karl-Anthony Towns","t":"NYK","pool":"c","c":{"A":50.0,"B1":50.0,"B2":75.0,"C1":12.5,"C2":75.0,"D":87.5},"a":"空間型內線","s":"背框單打","tier":"rare","no":78},{"id":"tyrese_haliburton","n":"Tyrese Haliburton","t":"IND","pool":"c","c":{"A":75.0,"B1":87.5,"B2":12.5,"C1":75.0,"C2":50.0,"D":37.5},"a":"控場指揮官","s":"擋拆持球判斷","tier":"rare","no":79},{"id":"alperen_sengun","n":"Alperen Sengun","t":"HOU","pool":"c","c":{"A":75.0,"B1":12.5,"B2":62.5,"C1":50.0,"C2":75.0,"D":50.0},"a":"策應長人","s":"高位傳導視野","tier":"rare","no":80},{"id":"tony_parker","n":"Tony Parker","t":"2007","pool":"h","c":{"A":87.5,"B1":37.5,"B2":37.5,"C1":87.5,"C2":12.5,"D":62.5},"a":"爆發突破手","s":"擋拆持球判斷","tier":"rare","no":81},{"id":"chris_bosh","n":"Chris Bosh","t":"2010","pool":"h","c":{"A":50.0,"B1":62.5,"B2":75.0,"C1":25.0,"C2":62.5,"D":37.5},"a":"空間型內線","s":"擋拆持球判斷","tier":"rare","no":82},{"id":"deni_avdija","n":"Deni Avdija","t":"POR","pool":"c","c":{"A":87.5,"B1":37.5,"B2":50.0,"C1":25.0,"C2":62.5,"D":50.0},"a":"控球前鋒","s":"協防補位輪轉","tier":"rare","no":83},{"id":"james_worthy","n":"James Worthy","t":"1988","pool":"h","c":{"A":50.0,"B1":25.0,"B2":75.0,"C1":50.0,"C2":50.0,"D":62.5},"a":"空切終結者","s":"轉換快攻終結","tier":"rare","no":84},{"id":"damian_lillard","n":"Damian Lillard","t":"MIL","pool":"c","c":{"A":87.5,"B1":100.0,"B2":12.5,"C1":50.0,"C2":0.0,"D":50.0},"a":"雙能衛","s":"罰球","tier":"rare","no":85},{"id":"deaaron_fox","n":"De'Aaron Fox","t":"SAS","pool":"c","c":{"A":87.5,"B1":37.5,"B2":25.0,"C1":75.0,"C2":25.0,"D":50.0},"a":"爆發突破手","s":"面框第一步過人","tier":"rare","no":86},{"id":"kyle_lowry","n":"Kyle Lowry","t":"2019","pool":"h","c":{"A":75.0,"B1":75.0,"B2":12.5,"C1":75.0,"C2":37.5,"D":25.0},"a":"控場指揮官","s":"一對一外圍單防","tier":"rare","no":87},{"id":"pascal_siakam","n":"Pascal Siakam","t":"IND","pool":"c","c":{"A":62.5,"B1":37.5,"B2":50.0,"C1":50.0,"C2":37.5,"D":50.0},"a":"控球前鋒","s":"轉換快攻終結","tier":"rare","no":88},{"id":"ray_allen","n":"Ray Allen","t":"2008","pool":"h","c":{"A":50.0,"B1":100.0,"B2":37.5,"C1":50.0,"C2":12.5,"D":25.0},"a":"無球射手","s":"外線投射","tier":"rare","no":89},{"id":"brandon_ingram","n":"Brandon Ingram","t":"TOR","pool":"c","c":{"A":62.5,"B1":50.0,"B2":25.0,"C1":25.0,"C2":50.0,"D":50.0},"a":"控球前鋒","s":"面框第一步過人","tier":"rare","no":90},{"id":"kyrie_irving","n":"Kyrie Irving","t":"DAL","pool":"c","c":{"A":75.0,"B1":87.5,"B2":25.0,"C1":37.5,"C2":25.0,"D":12.5},"a":"雙能衛","s":"擋拆持球判斷","tier":"rare","no":91},{"id":"norman_powell","n":"Norman Powell","t":"MIA","pool":"c","c":{"A":37.5,"B1":87.5,"B2":37.5,"C1":62.5,"C2":12.5,"D":25.0},"a":"無球射手","s":"掩護無球跑動","tier":"rare","no":92},{"id":"trae_young","n":"Trae Young","t":"ATL","pool":"c","c":{"A":100.0,"B1":75.0,"B2":0.0,"C1":25.0,"C2":0.0,"D":12.5},"a":"雙能衛","s":"擋拆持球判斷","tier":"rare","no":93},{"id":"devin_booker","n":"Devin Booker","t":"PHX","pool":"c","c":{"A":87.5,"B1":50.0,"B2":12.5,"C1":0.0,"C2":12.5,"D":37.5},"a":"雙能衛","s":"罰球","tier":"rare","no":94},{"id":"derrick_white","n":"Derrick White","t":"BOS","pool":"c","c":{"A":62.5,"B1":62.5,"B2":12.5,"C1":62.5,"C2":62.5,"D":25.0},"a":"控場指揮官","s":"協防補位輪轉","tier":"rare","no":95},{"id":"dennis_rodman","n":"Dennis Rodman","t":"1996","pool":"h","c":{"A":12.5,"B1":12.5,"B2":62.5,"C1":37.5,"C2":62.5,"D":75.0},"a":"藍領工兵","s":"防守籃板卡位","tier":"rare","no":96},{"id":"rudy_gobert","n":"Rudy Gobert","t":"MIN","pool":"c","c":{"A":0.0,"B1":0.0,"B2":100.0,"C1":12.5,"C2":87.5,"D":50.0},"a":"護框長人","s":"護框","tier":"rare","no":97},{"id":"og_anunoby","n":"OG Anunoby","t":"NYK","pool":"c","c":{"A":12.5,"B1":75.0,"B2":62.5,"C1":75.0,"C2":75.0,"D":87.5},"a":"3D 側翼","s":"換防跟防","tier":"rare","no":98},{"id":"bam_adebayo","n":"Bam Adebayo","t":"MIA","pool":"c","c":{"A":37.5,"B1":25.0,"B2":75.0,"C1":62.5,"C2":87.5,"D":87.5},"a":"策應長人","s":"護框","tier":"rare","no":99},{"id":"dyson_daniels","n":"Dyson Daniels","t":"ATL","pool":"c","c":{"A":50.0,"B1":0.0,"B2":75.0,"C1":100.0,"C2":50.0,"D":62.5},"a":"空切終結者","s":"一對一外圍單防","tier":"rare","no":100},{"id":"cason_wallace","n":"Cason Wallace","t":"OKC","pool":"c","c":{"A":25.0,"B1":37.5,"B2":37.5,"C1":100.0,"C2":37.5,"D":37.5},"a":"防守大鎖","s":"一對一外圍單防","tier":"rare","no":101},{"id":"amen_thompson","n":"Amen Thompson","t":"HOU","pool":"c","c":{"A":50.0,"B1":12.5,"B2":75.0,"C1":87.5,"C2":62.5,"D":100.0},"a":"空切終結者","s":"換防跟防","tier":"rare","no":102},{"id":"anthony_davis","n":"Anthony Davis","t":"DAL","pool":"c","c":{"A":50.0,"B1":12.5,"B2":75.0,"C1":62.5,"C2":87.5,"D":100.0},"a":"策應長人","s":"護框","tier":"rare","no":103},{"id":"jalen_suggs","n":"Jalen Suggs","t":"ORL","pool":"c","c":{"A":75.0,"B1":62.5,"B2":25.0,"C1":100.0,"C2":62.5,"D":62.5},"a":"控場指揮官","s":"換防跟防","tier":"rare","no":104},{"id":"brandon_miller","n":"Brandon Miller","t":"CHA","pool":"c","c":{"A":62.5,"B1":100.0,"B2":25.0,"C1":50.0,"C2":50.0,"D":75.0},"a":"得分後衛","s":"外線投射","tier":"rare","no":105},{"id":"jalen_williams","n":"Jalen Williams","t":"OKC","pool":"c","c":{"A":87.5,"B1":25.0,"B2":37.5,"C1":87.5,"C2":50.0,"D":75.0},"a":"全能鋒線","s":"協防補位輪轉","tier":"rare","no":106},{"id":"jayson_tatum","n":"Jayson Tatum","t":"BOS","pool":"c","c":{"A":87.5,"B1":62.5,"B2":12.5,"C1":87.5,"C2":50.0,"D":62.5},"a":"全能鋒線","s":"罰球","tier":"rare","no":107},{"id":"jimmy_butler","n":"Jimmy Butler","t":"GSW","pool":"c","c":{"A":62.5,"B1":25.0,"B2":75.0,"C1":87.5,"C2":25.0,"D":87.5},"a":"全能鋒線","s":"罰球","tier":"rare","no":108},{"id":"mikal_bridges","n":"Mikal Bridges","t":"NYK","pool":"c","c":{"A":25.0,"B1":62.5,"B2":50.0,"C1":87.5,"C2":62.5,"D":75.0},"a":"3D 側翼","s":"換防跟防","tier":"rare","no":109},{"id":"robert_williams_iii","n":"Robert Williams III","t":"POR","pool":"c","c":{"A":0.0,"B1":25.0,"B2":100.0,"C1":62.5,"C2":100.0,"D":75.0},"a":"護框長人","s":"前場籃板/二次進攻","tier":"rare","no":110},{"id":"nic_claxton","n":"Nic Claxton","t":"BKN","pool":"c","c":{"A":37.5,"B1":0.0,"B2":87.5,"C1":50.0,"C2":87.5,"D":87.5},"a":"策應長人","s":"防守籃板卡位","tier":"common","no":111},{"id":"onyeka_okongwu","n":"Onyeka Okongwu","t":"ATL","pool":"c","c":{"A":25.0,"B1":50.0,"B2":75.0,"C1":50.0,"C2":75.0,"D":75.0},"a":"策應長人","s":"協防補位輪轉","tier":"common","no":112},{"id":"tari_eason","n":"Tari Eason","t":"HOU","pool":"c","c":{"A":25.0,"B1":50.0,"B2":50.0,"C1":87.5,"C2":62.5,"D":75.0},"a":"3D 側翼","s":"協防補位輪轉","tier":"common","no":113},{"id":"lamelo_ball","n":"LaMelo Ball","t":"CHA","pool":"c","c":{"A":100.0,"B1":100.0,"B2":12.5,"C1":75.0,"C2":25.0,"D":25.0},"a":"控場指揮官","s":"擋拆持球判斷","tier":"common","no":114},{"id":"paul_george","n":"Paul George","t":"PHI","pool":"c","c":{"A":62.5,"B1":87.5,"B2":0.0,"C1":87.5,"C2":50.0,"D":50.0},"a":"全能鋒線","s":"換防跟防","tier":"common","no":115},{"id":"alex_caruso","n":"Alex Caruso","t":"OKC","pool":"c","c":{"A":25.0,"B1":37.5,"B2":62.5,"C1":100.0,"C2":50.0,"D":50.0},"a":"防守大鎖","s":"換防跟防","tier":"common","no":116},{"id":"isaiah_hartenstein","n":"Isaiah Hartenstein","t":"OKC","pool":"c","c":{"A":25.0,"B1":0.0,"B2":100.0,"C1":37.5,"C2":87.5,"D":75.0},"a":"護框長人","s":"防守籃板卡位","tier":"common","no":117},{"id":"jaden_mcdaniels","n":"Jaden McDaniels","t":"MIN","pool":"c","c":{"A":25.0,"B1":50.0,"B2":50.0,"C1":75.0,"C2":62.5,"D":62.5},"a":"3D 側翼","s":"換防跟防","tier":"common","no":118},{"id":"michael_porter_jr","n":"Michael Porter Jr.","t":"BKN","pool":"c","c":{"A":50.0,"B1":87.5,"B2":62.5,"C1":37.5,"C2":25.0,"D":62.5},"a":"全能鋒線","s":"掩護無球跑動","tier":"common","no":119},{"id":"shaedon_sharpe","n":"Shaedon Sharpe","t":"POR","pool":"c","c":{"A":62.5,"B1":62.5,"B2":50.0,"C1":75.0,"C2":12.5,"D":62.5},"a":"防守大鎖","s":"轉換快攻終結","tier":"common","no":120},{"id":"trey_murphy_iii","n":"Trey Murphy III","t":"NOP","pool":"c","c":{"A":25.0,"B1":87.5,"B2":62.5,"C1":50.0,"C2":37.5,"D":62.5},"a":"3D 側翼","s":"外線投射","tier":"common","no":121},{"id":"aaron_gordon","n":"Aaron Gordon","t":"DEN","pool":"c","c":{"A":37.5,"B1":50.0,"B2":75.0,"C1":37.5,"C2":37.5,"D":75.0},"a":"空切終結者","s":"轉換快攻終結","tier":"common","no":122},{"id":"andrew_wiggins","n":"Andrew Wiggins","t":"MIA","pool":"c","c":{"A":37.5,"B1":62.5,"B2":50.0,"C1":25.0,"C2":62.5,"D":75.0},"a":"空切終結者","s":"換防跟防","tier":"common","no":123},{"id":"chauncey_billups","n":"Chauncey Billups","t":"2004","pool":"h","c":{"A":87.5,"B1":100.0,"B2":0.0,"C1":62.5,"C2":12.5,"D":50.0},"a":"雙能衛","s":"擋拆持球判斷","tier":"common","no":124},{"id":"jaren_jackson_jr","n":"Jaren Jackson Jr.","t":"UTA","pool":"c","c":{"A":37.5,"B1":50.0,"B2":37.5,"C1":50.0,"C2":87.5,"D":50.0},"a":"空間型內線","s":"護框","tier":"common","no":125},{"id":"jrue_holiday","n":"Jrue Holiday","t":"POR","pool":"c","c":{"A":87.5,"B1":87.5,"B2":25.0,"C1":87.5,"C2":12.5,"D":12.5},"a":"防守大鎖","s":"換防跟防","tier":"common","no":126},{"id":"matas_buzelis","n":"Matas Buzelis","t":"CHI","pool":"c","c":{"A":25.0,"B1":62.5,"B2":62.5,"C1":12.5,"C2":75.0,"D":75.0},"a":"空間型內線","s":"外線投射","tier":"common","no":127},{"id":"rasheed_wallace","n":"Rasheed Wallace","t":"2004","pool":"h","c":{"A":37.5,"B1":62.5,"B2":50.0,"C1":37.5,"C2":75.0,"D":50.0},"a":"空間型內線","s":"協防補位輪轉","tier":"common","no":128},{"id":"al_horford","n":"Al Horford","t":"GSW","pool":"c","c":{"A":25.0,"B1":62.5,"B2":50.0,"C1":37.5,"C2":87.5,"D":37.5},"a":"空間型內線","s":"高位傳導視野","tier":"common","no":129},{"id":"collin_sexton","n":"Collin Sexton","t":"CHI","pool":"c","c":{"A":75.0,"B1":75.0,"B2":37.5,"C1":75.0,"C2":0.0,"D":37.5},"a":"控場指揮官","s":"罰球","tier":"common","no":130},{"id":"draymond_green","n":"Draymond Green","t":"GSW","pool":"c","c":{"A":25.0,"B1":25.0,"B2":62.5,"C1":75.0,"C2":75.0,"D":37.5},"a":"藍領工兵","s":"換防跟防","tier":"common","no":131},{"id":"evan_mobley","n":"Evan Mobley","t":"CLE","pool":"c","c":{"A":37.5,"B1":12.5,"B2":87.5,"C1":0.0,"C2":87.5,"D":75.0},"a":"背框中鋒","s":"高位傳導視野","tier":"common","no":132},{"id":"jalen_green","n":"Jalen Green","t":"PHX","pool":"c","c":{"A":75.0,"B1":50.0,"B2":25.0,"C1":62.5,"C2":25.0,"D":62.5},"a":"爆發突破手","s":"轉換快攻終結","tier":"common","no":133},{"id":"josh_hart","n":"Josh Hart","t":"NYK","pool":"c","c":{"A":37.5,"B1":37.5,"B2":62.5,"C1":62.5,"C2":50.0,"D":50.0},"a":"防守大鎖","s":"決策效率/失誤控制","tier":"common","no":134},{"id":"mitchell_robinson","n":"Mitchell Robinson","t":"NYK","pool":"c","c":{"A":0.0,"B1":0.0,"B2":87.5,"C1":62.5,"C2":87.5,"D":62.5},"a":"護框長人","s":"前場籃板/二次進攻","tier":"common","no":135},{"id":"naz_reid","n":"Naz Reid","t":"MIN","pool":"c","c":{"A":37.5,"B1":62.5,"B2":50.0,"C1":37.5,"C2":75.0,"D":37.5},"a":"空間型內線","s":"背框單打","tier":"common","no":136},{"id":"rj_barrett","n":"RJ Barrett","t":"TOR","pool":"c","c":{"A":50.0,"B1":37.5,"B2":62.5,"C1":37.5,"C2":37.5,"D":75.0},"a":"空切終結者","s":"轉換快攻終結","tier":"common","no":137},{"id":"daniel_gafford","n":"Daniel Gafford","t":"DAL","pool":"c","c":{"A":0.0,"B1":12.5,"B2":87.5,"C1":25.0,"C2":87.5,"D":75.0},"a":"護框長人","s":"護框","tier":"common","no":138},{"id":"danny_green","n":"Danny Green","t":"2014","pool":"h","c":{"A":12.5,"B1":87.5,"B2":25.0,"C1":75.0,"C2":62.5,"D":25.0},"a":"3D 側翼","s":"換防跟防","tier":"common","no":139},{"id":"jarrett_allen","n":"Jarrett Allen","t":"CLE","pool":"c","c":{"A":12.5,"B1":0.0,"B2":100.0,"C1":12.5,"C2":75.0,"D":87.5},"a":"護框長人","s":"防守籃板卡位","tier":"common","no":140},{"id":"jonathan_kuminga","n":"Jonathan Kuminga","t":"ATL","pool":"c","c":{"A":50.0,"B1":25.0,"B2":50.0,"C1":37.5,"C2":50.0,"D":75.0},"a":"空切終結者","s":"轉換快攻終結","tier":"common","no":141},{"id":"kristaps_porzingis","n":"Kristaps Porzingis","t":"GSW","pool":"c","c":{"A":50.0,"B1":62.5,"B2":50.0,"C1":0.0,"C2":75.0,"D":50.0},"a":"空間型內線","s":"護框","tier":"common","no":142},{"id":"obi_toppin","n":"Obi Toppin","t":"IND","pool":"c","c":{"A":12.5,"B1":62.5,"B2":75.0,"C1":12.5,"C2":50.0,"D":75.0},"a":"空間型內線","s":"轉換快攻終結","tier":"common","no":143},{"id":"buddy_hield","n":"Buddy Hield","t":"ATL","pool":"c","c":{"A":37.5,"B1":75.0,"B2":50.0,"C1":75.0,"C2":25.0,"D":12.5},"a":"得分後衛","s":"外線投射","tier":"common","no":144},{"id":"jaden_ivey","n":"Jaden Ivey","t":"CHI","pool":"c","c":{"A":37.5,"B1":62.5,"B2":37.5,"C1":50.0,"C2":37.5,"D":50.0},"a":"防守大鎖","s":"轉換快攻終結","tier":"common","no":145},{"id":"james_harden","n":"James Harden","t":"CLE","pool":"c","c":{"A":100.0,"B1":87.5,"B2":0.0,"C1":12.5,"C2":25.0,"D":50.0},"a":"雙能衛","s":"擋拆持球判斷","tier":"common","no":146},{"id":"josh_giddey","n":"Josh Giddey","t":"CHI","pool":"c","c":{"A":87.5,"B1":50.0,"B2":37.5,"C1":25.0,"C2":50.0,"D":25.0},"a":"控球前鋒","s":"高位傳導視野","tier":"common","no":147},{"id":"scoot_henderson","n":"Scoot Henderson","t":"POR","pool":"c","c":{"A":75.0,"B1":62.5,"B2":25.0,"C1":50.0,"C2":12.5,"D":50.0},"a":"雙能衛","s":"擋拆持球判斷","tier":"common","no":148},{"id":"zion_williamson","n":"Zion Williamson","t":"NOP","pool":"c","c":{"A":50.0,"B1":0.0,"B2":75.0,"C1":12.5,"C2":50.0,"D":87.5},"a":"空切終結者","s":"轉換快攻終結","tier":"common","no":149},{"id":"austin_reaves","n":"Austin Reaves","t":"LAL","pool":"c","c":{"A":87.5,"B1":62.5,"B2":25.0,"C1":37.5,"C2":25.0,"D":25.0},"a":"雙能衛","s":"決策效率/失誤控制","tier":"common","no":150},{"id":"deandre_ayton","n":"Deandre Ayton","t":"LAL","pool":"c","c":{"A":0.0,"B1":12.5,"B2":100.0,"C1":0.0,"C2":75.0,"D":75.0},"a":"護框長人","s":"前場籃板/二次進攻","tier":"common","no":151},{"id":"desmond_bane","n":"Desmond Bane","t":"ORL","pool":"c","c":{"A":50.0,"B1":75.0,"B2":50.0,"C1":50.0,"C2":25.0,"D":12.5},"a":"無球射手","s":"掩護無球跑動","tier":"common","no":152},{"id":"donovan_clingan","n":"Donovan Clingan","t":"POR","pool":"c","c":{"A":25.0,"B1":25.0,"B2":87.5,"C1":0.0,"C2":87.5,"D":37.5},"a":"背框中鋒","s":"護框","tier":"common","no":153},{"id":"franz_wagner","n":"Franz Wagner","t":"ORL","pool":"c","c":{"A":50.0,"B1":37.5,"B2":62.5,"C1":50.0,"C2":37.5,"D":25.0},"a":"控球前鋒","s":"決策效率/失誤控制","tier":"common","no":154},{"id":"fred_vanvleet","n":"Fred VanVleet","t":"HOU","pool":"c","c":{"A":62.5,"B1":62.5,"B2":0.0,"C1":87.5,"C2":25.0,"D":25.0},"a":"控場指揮官","s":"決策效率/失誤控制","tier":"common","no":155},{"id":"grayson_allen","n":"Grayson Allen","t":"PHX","pool":"c","c":{"A":62.5,"B1":75.0,"B2":12.5,"C1":75.0,"C2":12.5,"D":25.0},"a":"控場指揮官","s":"掩護無球跑動","tier":"common","no":156},{"id":"herbert_jones","n":"Herbert Jones","t":"NOP","pool":"c","c":{"A":25.0,"B1":25.0,"B2":25.0,"C1":100.0,"C2":50.0,"D":37.5},"a":"防守大鎖","s":"轉換快攻終結","tier":"common","no":157},{"id":"joel_embiid","n":"Joel Embiid","t":"PHI","pool":"c","c":{"A":50.0,"B1":37.5,"B2":62.5,"C1":12.5,"C2":75.0,"D":25.0},"a":"背框中鋒","s":"背框單打","tier":"common","no":158},{"id":"jonas_valanciunas","n":"Jonas Valanciunas","t":"DEN","pool":"c","c":{"A":50.0,"B1":12.5,"B2":87.5,"C1":0.0,"C2":75.0,"D":37.5},"a":"背框中鋒","s":"背框單打","tier":"common","no":159},{"id":"julius_randle","n":"Julius Randle","t":"MIN","pool":"c","c":{"A":75.0,"B1":25.0,"B2":62.5,"C1":12.5,"C2":25.0,"D":62.5},"a":"控球前鋒","s":"高位傳導視野","tier":"common","no":160},{"id":"lu_dort","n":"Lu Dort","t":"OKC","pool":"c","c":{"A":0.0,"B1":50.0,"B2":25.0,"C1":75.0,"C2":50.0,"D":62.5},"a":"防守大鎖","s":"一對一外圍單防","tier":"common","no":161},{"id":"paolo_banchero","n":"Paolo Banchero","t":"ORL","pool":"c","c":{"A":75.0,"B1":12.5,"B2":37.5,"C1":12.5,"C2":62.5,"D":62.5},"a":"控球前鋒","s":"罰球","tier":"common","no":162},{"id":"clint_capela","n":"Clint Capela","t":"HOU","pool":"c","c":{"A":0.0,"B1":0.0,"B2":75.0,"C1":37.5,"C2":87.5,"D":50.0},"a":"護框長人","s":"前場籃板/二次進攻","tier":"common","no":163},{"id":"demar_derozan","n":"DeMar DeRozan","t":"SAC","pool":"c","c":{"A":62.5,"B1":25.0,"B2":75.0,"C1":25.0,"C2":12.5,"D":50.0},"a":"控球前鋒","s":"背框單打","tier":"common","no":164},{"id":"immanuel_quickley","n":"Immanuel Quickley","t":"TOR","pool":"c","c":{"A":62.5,"B1":75.0,"B2":12.5,"C1":75.0,"C2":12.5,"D":12.5},"a":"控場指揮官","s":"擋拆持球判斷","tier":"common","no":165},{"id":"ja_morant","n":"Ja Morant","t":"MEM","pool":"c","c":{"A":100.0,"B1":25.0,"B2":12.5,"C1":25.0,"C2":12.5,"D":75.0},"a":"爆發突破手","s":"轉換快攻終結","tier":"common","no":166},{"id":"jabari_smith_jr","n":"Jabari Smith Jr.","t":"HOU","pool":"c","c":{"A":12.5,"B1":62.5,"B2":50.0,"C1":12.5,"C2":62.5,"D":50.0},"a":"空間型內線","s":"護框","tier":"common","no":167},{"id":"jakob_poeltl","n":"Jakob Poeltl","t":"TOR","pool":"c","c":{"A":12.5,"B1":0.0,"B2":100.0,"C1":25.0,"C2":75.0,"D":37.5},"a":"背框中鋒","s":"護框","tier":"common","no":168},{"id":"myles_turner","n":"Myles Turner","t":"MIL","pool":"c","c":{"A":0.0,"B1":62.5,"B2":50.0,"C1":25.0,"C2":87.5,"D":25.0},"a":"空間型內線","s":"護框","tier":"common","no":169},{"id":"antawn_jamison","n":"Antawn Jamison","t":"2004","pool":"h","c":{"A":0.0,"B1":50.0,"B2":100.0,"C1":25.0,"C2":37.5,"D":25.0},"a":"藍領工兵","s":"前場籃板/二次進攻","tier":"common","no":170},{"id":"chris_paul","n":"Chris Paul","t":"SAS","pool":"c","c":{"A":75.0,"B1":62.5,"B2":0.0,"C1":75.0,"C2":25.0,"D":0.0},"a":"控場指揮官","s":"高位傳導視野","tier":"common","no":171},{"id":"dikembe_mutombo","n":"Dikembe Mutombo","t":"2001","pool":"h","c":{"A":12.5,"B1":25.0,"B2":62.5,"C1":12.5,"C2":100.0,"D":25.0},"a":"護框長人","s":"護框","tier":"common","no":172},{"id":"ivica_zubac","n":"Ivica Zubac","t":"IND","pool":"c","c":{"A":25.0,"B1":12.5,"B2":87.5,"C1":0.0,"C2":75.0,"D":37.5},"a":"背框中鋒","s":"防守籃板卡位","tier":"common","no":173},{"id":"keldon_johnson","n":"Keldon Johnson","t":"SAS","pool":"c","c":{"A":25.0,"B1":50.0,"B2":75.0,"C1":25.0,"C2":25.0,"D":37.5},"a":"藍領工兵","s":"轉換快攻終結","tier":"common","no":174},{"id":"kevin_love","n":"Kevin Love","t":"UTA","pool":"c","c":{"A":25.0,"B1":75.0,"B2":50.0,"C1":12.5,"C2":50.0,"D":25.0},"a":"空間型內線","s":"防守籃板卡位","tier":"common","no":175},{"id":"rip_hamilton","n":"Rip Hamilton","t":"2004","pool":"h","c":{"A":62.5,"B1":25.0,"B2":50.0,"C1":62.5,"C2":12.5,"D":25.0},"a":"防守大鎖","s":"掩護無球跑動","tier":"common","no":176},{"id":"walker_kessler","n":"Walker Kessler","t":"UTA","pool":"c","c":{"A":12.5,"B1":0.0,"B2":87.5,"C1":12.5,"C2":87.5,"D":37.5},"a":"護框長人","s":"護框","tier":"common","no":177},{"id":"zach_edey","n":"Zach Edey","t":"MEM","pool":"c","c":{"A":0.0,"B1":25.0,"B2":87.5,"C1":0.0,"C2":87.5,"D":37.5},"a":"背框中鋒","s":"防守籃板卡位","tier":"common","no":178},{"id":"bradley_beal","n":"Bradley Beal","t":"PHX","pool":"c","c":{"A":50.0,"B1":50.0,"B2":25.0,"C1":37.5,"C2":25.0,"D":37.5},"a":"雙能衛","s":"掩護無球跑動","tier":"common","no":179},{"id":"dangelo_russell","n":"D'Angelo Russell","t":"BKN","pool":"c","c":{"A":75.0,"B1":50.0,"B2":0.0,"C1":25.0,"C2":25.0,"D":50.0},"a":"雙能衛","s":"擋拆持球判斷","tier":"common","no":180},{"id":"domantas_sabonis","n":"Domantas Sabonis","t":"SAC","pool":"c","c":{"A":50.0,"B1":12.5,"B2":87.5,"C1":12.5,"C2":37.5,"D":25.0},"a":"策應長人","s":"高位傳導視野","tier":"common","no":181},{"id":"keegan_murray","n":"Keegan Murray","t":"SAC","pool":"c","c":{"A":12.5,"B1":25.0,"B2":25.0,"C1":50.0,"C2":75.0,"D":37.5},"a":"藍領工兵","s":"掩護無球跑動","tier":"common","no":182},{"id":"marcus_smart","n":"Marcus Smart","t":"LAL","pool":"c","c":{"A":37.5,"B1":50.0,"B2":12.5,"C1":87.5,"C2":37.5,"D":0.0},"a":"防守大鎖","s":"一對一外圍單防","tier":"common","no":183},{"id":"nikola_vucevic","n":"Nikola Vucevic","t":"BOS","pool":"c","c":{"A":25.0,"B1":50.0,"B2":75.0,"C1":0.0,"C2":62.5,"D":12.5},"a":"空間型內線","s":"高位傳導視野","tier":"common","no":184},{"id":"terry_rozier","n":"Terry Rozier","t":"MIA","pool":"c","c":{"A":50.0,"B1":37.5,"B2":25.0,"C1":25.0,"C2":25.0,"D":62.5},"a":"爆發突破手","s":"擋拆持球判斷","tier":"common","no":185},{"id":"zach_lavine","n":"Zach LaVine","t":"SAC","pool":"c","c":{"A":37.5,"B1":87.5,"B2":25.0,"C1":12.5,"C2":12.5,"D":50.0},"a":"無球射手","s":"轉換快攻終結","tier":"common","no":186},{"id":"aaron_nesmith","n":"Aaron Nesmith","t":"IND","pool":"c","c":{"A":12.5,"B1":75.0,"B2":37.5,"C1":25.0,"C2":37.5,"D":25.0},"a":"無球射手","s":"掩護無球跑動","tier":"common","no":187},{"id":"malik_monk","n":"Malik Monk","t":"SAC","pool":"c","c":{"A":62.5,"B1":87.5,"B2":0.0,"C1":12.5,"C2":25.0,"D":25.0},"a":"雙能衛","s":"罰球","tier":"common","no":188},{"id":"bobby_portis","n":"Bobby Portis","t":"MIL","pool":"c","c":{"A":25.0,"B1":62.5,"B2":50.0,"C1":25.0,"C2":25.0,"D":12.5},"a":"空間型內線","s":"前場籃板/二次進攻","tier":"common","no":189},{"id":"brook_lopez","n":"Brook Lopez","t":"LAC","pool":"c","c":{"A":12.5,"B1":50.0,"B2":25.0,"C1":12.5,"C2":87.5,"D":12.5},"a":"空間型內線","s":"護框","tier":"common","no":190},{"id":"coby_white","n":"Coby White","t":"CHA","pool":"c","c":{"A":87.5,"B1":75.0,"B2":25.0,"C1":0.0,"C2":0.0,"D":12.5},"a":"雙能衛","s":"掩護無球跑動","tier":"common","no":191},{"id":"devin_vassell","n":"Devin Vassell","t":"SAS","pool":"c","c":{"A":12.5,"B1":75.0,"B2":25.0,"C1":37.5,"C2":37.5,"D":12.5},"a":"無球射手","s":"掩護無球跑動","tier":"common","no":192},{"id":"harrison_barnes","n":"Harrison Barnes","t":"SAS","pool":"c","c":{"A":12.5,"B1":75.0,"B2":37.5,"C1":25.0,"C2":12.5,"D":37.5},"a":"無球射手","s":"掩護無球跑動","tier":"common","no":193},{"id":"tyler_herro","n":"Tyler Herro","t":"MIA","pool":"c","c":{"A":62.5,"B1":87.5,"B2":12.5,"C1":0.0,"C2":37.5,"D":0.0},"a":"無球射手","s":"外線投射","tier":"common","no":194},{"id":"andrew_nembhard","n":"Andrew Nembhard","t":"IND","pool":"c","c":{"A":87.5,"B1":50.0,"B2":0.0,"C1":50.0,"C2":0.0,"D":0.0},"a":"雙能衛","s":"決策效率/失誤控制","tier":"common","no":195},{"id":"bennedict_mathurin","n":"Bennedict Mathurin","t":"LAC","pool":"c","c":{"A":37.5,"B1":37.5,"B2":37.5,"C1":25.0,"C2":12.5,"D":37.5},"a":"控球前鋒","s":"轉換快攻終結","tier":"common","no":196},{"id":"bogdan_bogdanovic","n":"Bogdan Bogdanovic","t":"LAC","pool":"c","c":{"A":37.5,"B1":75.0,"B2":12.5,"C1":37.5,"C2":12.5,"D":12.5},"a":"無球射手","s":"掩護無球跑動","tier":"common","no":197},{"id":"cam_johnson","n":"Cam Johnson","t":"DEN","pool":"c","c":{"A":12.5,"B1":62.5,"B2":50.0,"C1":25.0,"C2":25.0,"D":12.5},"a":"無球射手","s":"掩護無球跑動","tier":"common","no":198},{"id":"malcolm_brogdon","n":"Malcolm Brogdon","t":"WAS","pool":"c","c":{"A":75.0,"B1":25.0,"B2":37.5,"C1":25.0,"C2":12.5,"D":12.5},"a":"控球前鋒","s":"決策效率/失誤控制","tier":"common","no":199},{"id":"payton_pritchard","n":"Payton Pritchard","t":"BOS","pool":"c","c":{"A":75.0,"B1":87.5,"B2":12.5,"C1":12.5,"C2":0.0,"D":0.0},"a":"雙能衛","s":"掩護無球跑動","tier":"common","no":200},{"id":"steven_adams","n":"Steven Adams","t":"HOU","pool":"c","c":{"A":12.5,"B1":0.0,"B2":62.5,"C1":12.5,"C2":75.0,"D":25.0},"a":"藍領工兵","s":"前場籃板/二次進攻","tier":"common","no":201},{"id":"anfernee_simons","n":"Anfernee Simons","t":"CHI","pool":"c","c":{"A":62.5,"B1":100.0,"B2":0.0,"C1":0.0,"C2":0.0,"D":12.5},"a":"無球射手","s":"掩護無球跑動","tier":"common","no":202},{"id":"jj_redick","n":"JJ Redick","t":"2016","pool":"h","c":{"A":12.5,"B1":100.0,"B2":25.0,"C1":37.5,"C2":0.0,"D":0.0},"a":"無球射手","s":"掩護無球跑動","tier":"common","no":203},{"id":"khris_middleton","n":"Khris Middleton","t":"DAL","pool":"c","c":{"A":50.0,"B1":50.0,"B2":12.5,"C1":37.5,"C2":12.5,"D":12.5},"a":"雙能衛","s":"背框單打","tier":"common","no":204},{"id":"mike_conley","n":"Mike Conley","t":"MIN","pool":"c","c":{"A":12.5,"B1":50.0,"B2":12.5,"C1":62.5,"C2":25.0,"D":12.5},"a":"無球射手","s":"決策效率/失誤控制","tier":"common","no":205},{"id":"dennis_schroder","n":"Dennis Schroder","t":"CLE","pool":"c","c":{"A":75.0,"B1":37.5,"B2":0.0,"C1":50.0,"C2":0.0,"D":0.0},"a":"雙能衛","s":"擋拆持球判斷","tier":"common","no":206},{"id":"duncan_robinson","n":"Duncan Robinson","t":"DET","pool":"c","c":{"A":0.0,"B1":87.5,"B2":37.5,"C1":12.5,"C2":25.0,"D":0.0},"a":"無球射手","s":"掩護無球跑動","tier":"common","no":207},{"id":"jordan_poole","n":"Jordan Poole","t":"NOP","pool":"c","c":{"A":62.5,"B1":75.0,"B2":0.0,"C1":0.0,"C2":25.0,"D":0.0},"a":"無球射手","s":"罰球","tier":"common","no":208},{"id":"klay_thompson","n":"Klay Thompson","t":"DAL","pool":"c","c":{"A":12.5,"B1":87.5,"B2":12.5,"C1":25.0,"C2":25.0,"D":0.0},"a":"無球射手","s":"外線投射","tier":"common","no":209},{"id":"tyus_jones","n":"Tyus Jones","t":"DEN","pool":"c","c":{"A":37.5,"B1":25.0,"B2":0.0,"C1":62.5,"C2":0.0,"D":0.0},"a":"防守大鎖","s":"決策效率/失誤控制","tier":"common","no":210},{"id":"cameron_thomas","n":"Cameron Thomas","t":"MIL","pool":"c","c":{"A":75.0,"B1":37.5,"B2":0.0,"C1":0.0,"C2":0.0,"D":0.0},"a":"雙能衛","s":"罰球","tier":"common","no":211}]};
+const TIERS = [
+  { key: "common", name: "普通", rate: 0.55, color: "var(--common)" },
+  { key: "rare", name: "稀有", rate: 0.30, color: "var(--rare)" },
+  { key: "epic", name: "史詩", rate: 0.12, color: "var(--epic)" },
+  { key: "legend", name: "傳奇", rate: 0.03, color: "var(--legend)" },
+];
+const RANK = { common: 0, rare: 1, epic: 2, legend: 3 };
+const LEGEND_PITY_DAYS = 14;   // 連續 14 天沒開到傳奇，第 14 天的第 3 張保證傳奇
+const STREAK_PITY_EVERY = 7;   // 連續登入每第 7 天，保證至少一張史詩
+const AX = ["A", "B1", "B2", "D", "C2", "C1"]; // radar order around the hexagon
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const byTier = {}; for (const t of TIERS) byTier[t.key] = DATA.players.filter((p) => p.tier === t.key);
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// ---------- deterministic randomness: same user + same day -> same pack ----------
+function fnv(str) { let h = 0x811c9dc5; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h >>> 0; }
+function rng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+
+// ---------- state (prototype keeps it in the browser; the real one lives in the database) ----------
+const KEY = "card-pack-prototype:" + DATA.snapshot;
+function load() { try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch (e) { return null; } }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* 存不了就只在這個分頁有效 */ } }
+let S = load() || { user: "demo", day: 1, opened: 0, owned: [], streak: 0, sinceLegend: 0, forceLegend: false };
+let sound = true;
+
+function drawPack(day) {
+  const r = rng(fnv(S.user + "|" + day));
+  const owned = new Set(S.owned);
+  const left = (t) => byTier[t].filter((p) => !owned.has(p.id));
+  const picks = [];
+  const streakDay = S.streak + 1;
+  for (let slot = 0; slot < 3; slot++) {
+    const avail = TIERS.filter((t) => left(t.key).length > 0);
+    if (!avail.length) break;
+    let tier = null;
+    const best = picks.reduce((m, p) => Math.max(m, RANK[p.tier]), -1);
+    if (slot === 2) {
+      if ((S.forceLegend || S.sinceLegend >= LEGEND_PITY_DAYS - 1) && left("legend").length && best < 3) tier = "legend";
+      else if (streakDay % STREAK_PITY_EVERY === 0 && best < 2) tier = left("epic").length ? "epic" : (left("legend").length ? "legend" : null);
+    }
+    if (!tier) {
+      const total = avail.reduce((s, t) => s + t.rate, 0); let x = r() * total;
+      for (const t of avail) { x -= t.rate; if (x <= 0) { tier = t.key; break; } }
+      tier = tier || avail[avail.length - 1].key;
+    }
+    const pool = left(tier).filter((p) => !picks.includes(p));
+    if (!pool.length) { slot--; continue; }
+    const card = pool[Math.floor(r() * pool.length)];
+    picks.push(card); owned.add(card.id);
+  }
+  return picks.sort((a, b) => RANK[a.tier] - RANK[b.tier] || a.no - b.no); // weakest first, best saved for last
+}
+
+// ---------- sound (synthesised, no files) ----------
+let ac = null;
+function audio() { if (!sound) return null; ac = ac || new (window.AudioContext || window.webkitAudioContext)(); return ac; }
+function tone(freq, t0, dur, type = "triangle", gain = 0.18) {
+  const a = audio(); if (!a) return;
+  const o = a.createOscillator(), g = a.createGain(); o.type = type; o.frequency.value = freq;
+  g.gain.setValueAtTime(0.0001, a.currentTime + t0); g.gain.exponentialRampToValueAtTime(gain, a.currentTime + t0 + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001, a.currentTime + t0 + dur);
+  o.connect(g).connect(a.destination); o.start(a.currentTime + t0); o.stop(a.currentTime + t0 + dur + 0.05);
+}
+function noise(dur, gain = 0.25) {
+  const a = audio(); if (!a) return;
+  const buf = a.createBuffer(1, a.sampleRate * dur, a.sampleRate), d = buf.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
+  const src = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
+  f.type = "highpass"; f.frequency.value = 1800; g.gain.value = gain; src.buffer = buf; src.connect(f).connect(g).connect(a.destination); src.start();
+}
+const SFX = {
+  charge(level) { for (let i = 0; i < 6 + level * 3; i++) tone(180 + i * (40 + level * 25), i * 0.09, 0.12, "sawtooth", 0.04 + level * 0.01); },
+  tear() { noise(0.35, 0.3); },
+  flip() { tone(880, 0, 0.06, "square", 0.05); },
+  common() { tone(523, 0, 0.25); },
+  rare() { tone(659, 0, 0.22); tone(988, 0.1, 0.35); },
+  epic() { [523, 659, 784, 1047].forEach((f, i) => tone(f, i * 0.08, 0.4)); },
+  legend() { [392, 523, 659, 784, 1047, 1319].forEach((f, i) => tone(f, i * 0.09, 0.55, "triangle", 0.2)); [1568, 2093].forEach((f, i) => tone(f, 0.7 + i * 0.12, 1.2, "sine", 0.08)); },
+};
+function buzz(pattern) { if (!REDUCED && navigator.vibrate) navigator.vibrate(pattern); }
+
+// ---------- confetti / sparks ----------
+const fx = $("fx"), ctx = fx.getContext("2d"); let parts = [];
+function sizeFx() { fx.width = innerWidth * devicePixelRatio; fx.height = innerHeight * devicePixelRatio; ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0); }
+addEventListener("resize", sizeFx); sizeFx();
+function spray(x, y, n, colors, spread = 1) {
+  if (REDUCED) return;
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * Math.PI * 2, v = (3 + Math.random() * 7) * spread;
+    parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 4, life: 70 + Math.random() * 50, c: colors[i % colors.length], s: 3 + Math.random() * 5, r: Math.random() * 6 });
+  }
+  if (parts.length === n) requestAnimationFrame(tick);
+}
+function tick() {
+  ctx.clearRect(0, 0, innerWidth, innerHeight);
+  parts = parts.filter((p) => p.life-- > 0);
+  for (const p of parts) { p.vy += 0.18; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.r += 0.2;
+    ctx.save(); ctx.globalAlpha = Math.min(1, p.life / 40); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.fillStyle = p.c; ctx.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); ctx.restore(); }
+  if (parts.length) requestAnimationFrame(tick); else ctx.clearRect(0, 0, innerWidth, innerHeight);
+}
+function center(el) { const r = el.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; }
+
+// ---------- rendering ----------
+const tierOf = (k) => TIERS.find((t) => t.key === k);
+function radar(c, size = 92) {
+  const R = size / 2 - 6, cx = size / 2, cy = size / 2;
+  const pt = (i, v) => { const a = -Math.PI / 2 + i * Math.PI / 3; return [cx + Math.cos(a) * R * v / 100, cy + Math.sin(a) * R * v / 100]; };
+  const ring = AX.map((_, i) => pt(i, 100).join(",")).join(" ");
+  const shape = AX.map((ax, i) => pt(i, Math.max(c[ax], 4)).join(",")).join(" ");
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true"><polygon points="${ring}" fill="none" stroke="#3a4255"/><polygon points="${shape}" fill="var(--c)" fill-opacity=".35" stroke="var(--c)" stroke-width="2"/></svg>`;
+}
+function cardHtml(p, isNew) {
+  const t = tierOf(p.tier);
+  return `<button class="card t-${p.tier}" data-id="${esc(p.id)}" aria-label="翻開卡片">
+    ${isNew ? '<span class="new">NEW!</span>' : ""}
+    <span class="face back"><span class="mark">SR</span><span class="q">點一下翻開</span></span>
+    <span class="face front">
+      <span class="top"><span class="tier">${t.name}</span><span class="num">#${String(p.no).padStart(3, "0")} / ${DATA.players.length}</span></span>
+      ${radar(p.c)}
+      <span class="name">${esc(p.n)}</span>
+      <span class="meta">${esc(p.t)}${p.pool === "h" ? "・歷史" : ""}　招牌：${esc(p.s)}</span>
+      <span class="arch">${esc(p.a)}</span>
+    </span>
+  </button>`;
+}
+
+function header() {
+  $("total").textContent = DATA.players.length;
+  $("owned").textContent = S.owned.length;
+  $("streak").textContent = S.streak;
+  $("bar").style.width = (S.owned.length / DATA.players.length * 100).toFixed(1) + "%";
+  const toStreakPity = STREAK_PITY_EVERY - (S.streak % STREAK_PITY_EVERY);
+  const toLegendPity = Math.max(1, LEGEND_PITY_DAYS - S.sinceLegend);
+  $("pity").innerHTML = `<span>再 <b>${toStreakPity}</b> 天連續登入：保證一張<b style="color:var(--epic)">史詩</b>以上</span><span>最晚 <b>${toLegendPity}</b> 天內：保證一張<b style="color:var(--legend)">傳奇</b></span>`;
+}
+
+function showPack() {
+  const pack = drawPack(S.day);
+  const best = pack.reduce((m, p) => Math.max(m, RANK[p.tier]), 0);
+  const glow = ["#ffffff", "#39a8ff", "#b05cff", "#ffc93c"][best];
+  $("stage").innerHTML = `
+    <button class="pack" id="pack" style="--glow:${glow}" aria-label="撕開今天的卡包">
+      <span class="body"></span><span class="tear"></span><span class="seam"></span>
+      <span class="label"><span class="eyebrow">DAY ${S.day}</span><span class="title">DAILY<br>PACK</span><span class="zh">今日卡包</span><span class="count">3 CARDS</span></span>
+      <span class="ball"></span>
+    </button>
+    <p class="hint">點卡包撕開。<b>封口透出的光，就是這包裡最高的等級</b>。</p>`;
+  $("pack").addEventListener("click", () => openPack(pack, best), { once: true });
+}
+
+function openPack(pack, best) {
+  const el = $("pack");
+  el.classList.add("charging");
+  if (best >= 1) el.classList.add("shake-" + Math.min(best, 3));
+  SFX.charge(best); buzz(best >= 2 ? [30, 40, 30, 40, 60] : 20);
+  const chargeMs = REDUCED ? 50 : 700 + best * 350;
+  setTimeout(() => {
+    el.classList.remove("shake-1", "shake-2", "shake-3"); el.classList.add("torn"); SFX.tear();
+    const [x, y] = center(el), b = document.createElement("span");
+    b.className = "burst"; b.style.cssText = `left:${x}px;top:${y}px;position:fixed;background:${getComputedStyle(el).getPropertyValue("--glow")}`;
+    document.body.appendChild(b); requestAnimationFrame(() => b.classList.add("go")); setTimeout(() => b.remove(), 900);
+    if (best >= 2) spray(x, y - 120, 40 + best * 20, best === 3 ? ["#ffc93c", "#fff3c4", "#ff6ad5"] : ["#b05cff", "#e2c4ff"], 0.8);
+    setTimeout(() => { el.classList.add("gone"); setTimeout(() => dealCards(pack), 380); }, 450);
+  }, chargeMs);
+}
+
+function dealCards(pack) {
+  const ownedBefore = new Set(S.owned);
+  $("stage").innerHTML = `<div style="width:100%"><div class="row" id="row">${pack.map((p) => cardHtml(p, !ownedBefore.has(p.id))).join("")}</div>
+    <p class="hint" style="position:static;margin-top:16px">由左到右等級越來越高，<b>最好的在最右邊</b>。點卡片翻開。</p>
+    <div class="actions"><button class="btn" id="flip-all">全部翻開</button></div><div id="after"></div></div>`;
+  let flipped = 0;
+  const flip = (btn) => {
+    if (btn.classList.contains("flipped")) return;
+    const p = pack.find((x) => x.id === btn.dataset.id);
+    btn.classList.add("flipped"); SFX.flip(); flipped++;
+    setTimeout(() => reveal(btn, p), 330);
+    if (flipped === pack.length) setTimeout(() => finish(pack), p.tier === "legend" ? 3600 : 1100);
+  };
+  document.querySelectorAll("#row .card").forEach((btn) => {
+    btn.addEventListener("click", () => flip(btn));
+    btn.addEventListener("pointerenter", () => btn.classList.add("peek"));
+    btn.addEventListener("pointerleave", () => btn.classList.remove("peek"));
+  });
+  $("flip-all").addEventListener("click", () => { [...document.querySelectorAll("#row .card")].forEach((b, i) => setTimeout(() => flip(b), i * 650)); $("flip-all").hidden = true; });
+}
+
+function reveal(btn, p) {
+  const [x, y] = center(btn);
+  if (p.tier === "common") SFX.common();
+  if (p.tier === "rare") { SFX.rare(); spray(x, y, 18, ["#39a8ff", "#bfe3ff"], 0.5); }
+  if (p.tier === "epic") { SFX.epic(); buzz([40, 30, 60]); spray(x, y, 60, ["#b05cff", "#e2c4ff", "#ffffff"], 0.8); document.body.classList.add("shake-screen"); setTimeout(() => document.body.classList.remove("shake-screen"), 500); }
+  if (p.tier === "legend") {
+    SFX.legend(); buzz([80, 40, 120, 40, 200]);
+    $("veil").classList.add("on"); $("rays").classList.add("on"); btn.classList.add("hero");
+    document.body.classList.add("shake-screen"); setTimeout(() => document.body.classList.remove("shake-screen"), 500);
+    spray(x, y, 160, ["#ffc93c", "#fff3c4", "#ff6ad5", "#94d0ff", "#ffffff"], 1.3);
+    setTimeout(() => spray(x, y - 40, 90, ["#ffc93c", "#ffffff"], 1), 600);
+    setTimeout(() => { $("veil").classList.remove("on"); $("rays").classList.remove("on"); btn.classList.remove("hero"); }, 3200);
+  }
+}
+
+function finish(pack) {
+  for (const p of pack) if (!S.owned.includes(p.id)) S.owned.push(p.id);
+  S.streak += 1; S.opened = S.day;
+  S.sinceLegend = pack.some((p) => p.tier === "legend") ? 0 : S.sinceLegend + 1;
+  S.forceLegend = false; save(); header(); renderAlbum();
+  const now = new Date(), mid = new Date(now); mid.setHours(24, 0, 0, 0);
+  const left = Math.max(0, mid - now), hh = String(Math.floor(left / 3.6e6)).padStart(2, "0"), mm = String(Math.floor(left % 3.6e6 / 6e4)).padStart(2, "0");
+  $("flip-all").hidden = true;
+  $("after").innerHTML = `<div class="after"><h2>今天收下 ${pack.length} 張新卡</h2><div class="next">下一包 ${hh}:${mm} 後</div>
+    <div style="color:var(--soft);font-size:.85rem">收集進度 ${S.owned.length} / ${DATA.players.length}</div>
+    <div class="actions"><button class="btn main" id="to-album">看收藏冊</button></div></div>`;
+  $("to-album").addEventListener("click", () => document.querySelector(".album").scrollIntoView({ behavior: "smooth" }));
+}
+
+let albumTab = "all";
+function renderAlbum() {
+  const owned = new Set(S.owned);
+  $("tabs").innerHTML = [{ key: "all", name: "全部", color: "var(--ink)" }, ...TIERS.slice().reverse()].map((t) => {
+    const list = t.key === "all" ? DATA.players : byTier[t.key];
+    const have = list.filter((p) => owned.has(p.id)).length;
+    return `<button class="tab${albumTab === t.key ? " on" : ""}" style="--c:${t.color}" data-tab="${t.key}">${t.name} ${have}/${list.length}</button>`;
+  }).join("");
+  const list = (albumTab === "all" ? DATA.players : byTier[albumTab]).slice().sort((a, b) => a.no - b.no);
+  $("grid").innerHTML = list.map((p) => owned.has(p.id)
+    ? `<div class="mini t-${p.tier}" title="${esc(p.n)}"><span>#${String(p.no).padStart(3, "0")}</span><b>${esc(p.n)}</b><span>${tierOf(p.tier).name}</span></div>`
+    : `<div class="mini locked"><span>#${String(p.no).padStart(3, "0")}</span><b>？？？</b><span>${tierOf(p.tier).name}</span></div>`).join("");
+}
+$("tabs").addEventListener("click", (e) => { const b = e.target.closest("[data-tab]"); if (b) { albumTab = b.dataset.tab; renderAlbum(); } });
+
+function renderOdds() {
+  $("odds").innerHTML = `<tr><th>等級</th><th>每張卡的機率</th><th>總張數</th></tr>` + TIERS.slice().reverse().map((t) =>
+    `<tr style="--c:${t.color}"><td><span class="dot"></span>${t.name}</td><td>${Math.round(t.rate * 100)}%</td><td>${byTier[t.key].length}</td></tr>`).join("");
+}
+
+function startDay() {
+  header();
+  if (S.opened >= S.day) {
+    $("stage").innerHTML = `<div class="after"><h2>今天的卡包已經開過了</h2><div class="next">明天見</div><p style="color:var(--soft)">試玩版可以按下方「跳到下一天」。</p></div>`;
+  } else if (S.owned.length >= DATA.players.length) {
+    $("stage").innerHTML = `<div class="after"><h2>🏆 全部 ${DATA.players.length} 張都收齊了</h2></div>`;
+  } else showPack();
+}
+$("next-day").addEventListener("click", () => { if (S.opened < S.day) S.streak = S.streak; S.day += 1; save(); startDay(); scrollTo({ top: 0, behavior: "smooth" }); });
+$("force-legend").addEventListener("click", () => { S.forceLegend = true; if (S.opened >= S.day) S.day += 1; save(); startDay(); scrollTo({ top: 0, behavior: "smooth" }); });
+$("reset").addEventListener("click", (e) => {
+  if (e.currentTarget.dataset.armed !== "1") { e.currentTarget.dataset.armed = "1"; e.currentTarget.textContent = "再按一次確認"; return; }
+  S = { user: "demo", day: 1, opened: 0, owned: [], streak: 0, sinceLegend: 0, forceLegend: false }; save();
+  e.currentTarget.dataset.armed = ""; e.currentTarget.textContent = "清空收藏重來"; renderAlbum(); startDay();
+});
+$("sound").addEventListener("click", () => { sound = !sound; $("sound").setAttribute("aria-pressed", String(sound)); $("sound").textContent = sound ? "🔊 音效開" : "🔇 音效關"; });
+
+renderOdds(); renderAlbum(); startDay();
+</script>
+</body>
+</html>
