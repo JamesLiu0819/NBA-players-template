@@ -52,10 +52,16 @@
   .hint b { color: var(--ink); }
 
   /* the foil pack */
+  .packs { display: flex; gap: 26px; justify-content: center; align-items: flex-end; flex-wrap: nowrap; }
   .pack {
-    --glow: #ffffff; position: relative; width: 230px; height: 330px; border: 0; padding: 0; background: none;
+    --glow: #ffffff; position: relative; width: 190px; height: 272px; border: 0; padding: 0; background: none; flex: none;
     filter: drop-shadow(0 24px 40px rgba(0,0,0,.55)); animation: float 3.4s ease-in-out infinite;
+    transition: transform .35s cubic-bezier(.2,.8,.2,1), opacity .35s, margin .45s;
   }
+  .pack:nth-child(2) { animation-delay: -1.1s; } .pack:nth-child(3) { animation-delay: -2.2s; }
+  .packs:not(.chosen) .pack:hover, .packs:not(.chosen) .pack:focus-visible { animation-play-state: paused; transform: translateY(-18px) scale(1.04); }
+  .packs.chosen .pack:not(.picked) { opacity: 0; transform: translateY(60px) scale(.8); pointer-events: none; }
+  .packs.chosen .pack.picked { transform: scale(1.18); }
   .pack .body {
     position: absolute; inset: 0;
     clip-path: polygon(0 4%, 4% 0, 8% 4%, 12% 0, 16% 4%, 20% 0, 24% 4%, 28% 0, 32% 4%, 36% 0, 40% 4%, 44% 0, 48% 4%, 52% 0, 56% 4%, 60% 0, 64% 4%, 68% 0, 72% 4%, 76% 0, 80% 4%, 84% 0, 88% 4%, 92% 0, 96% 4%, 100% 0, 100% 100%, 96% 96%, 92% 100%, 88% 96%, 84% 100%, 80% 96%, 76% 100%, 72% 96%, 68% 100%, 64% 96%, 60% 100%, 56% 96%, 52% 100%, 48% 96%, 44% 100%, 40% 96%, 36% 100%, 32% 96%, 28% 100%, 24% 96%, 20% 100%, 16% 96%, 12% 100%, 8% 96%, 4% 100%, 0 96%);
@@ -70,7 +76,7 @@
   .pack .label { position: absolute; inset: 22% 10% auto; text-align: center; }
   .pack .label > span { display: block; }
   .pack .label .eyebrow { font: 800 .78rem/1 var(--display); letter-spacing: .32em; color: var(--wood); }
-  .pack .label .title { font: 900 2.6rem/.95 var(--display); letter-spacing: .02em; margin-top: 10px; }
+  .pack .label .title { font: 900 2.2rem/.95 var(--display); letter-spacing: .02em; margin-top: 10px; }
   .pack .label .zh { font: 900 1.2rem/1.2 var(--body); margin-top: 8px; }
   .pack .label .count { margin-top: 14px; font: 800 .9rem/1 var(--display); letter-spacing: .2em; color: var(--soft); }
   .pack .ball { position: absolute; left: 50%; bottom: 8%; width: 70px; height: 70px; margin-left: -35px; border-radius: 50%;
@@ -80,9 +86,7 @@
   .pack .ball::after { clip-path: inset(48% 0 48% 0); }
   .pack.charging { animation: none; }
   .pack.charging .seam { opacity: 1; }
-  .pack.shake-1 { animation: shake .09s linear infinite; }
-  .pack.shake-2 { animation: shake .07s linear infinite; }
-  .pack.shake-3 { animation: shake .05s linear infinite; }
+  .pack.shaking { animation: shake .07s linear infinite; }
   .pack.torn .tear { animation: flyoff .6s cubic-bezier(.3,.6,.2,1) forwards; }
   .pack.gone { animation: drop .45s ease-in forwards; }
   @keyframes float { 50% { transform: translateY(-10px) rotate(-1deg); } }
@@ -97,6 +101,20 @@
 
   /* ---------- cards ---------- */
   .row { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; perspective: 1200px; }
+  .stack { position: relative; width: 220px; height: 320px; margin: 0 auto; perspective: 1400px; touch-action: none; }
+  .stack .card { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .stack .card[data-depth="1"] { transform: translate(10px, 10px) rotate(2.5deg); }
+  .stack .card[data-depth="2"] { transform: translate(20px, 20px) rotate(5deg); }
+  .stack .card.flipped { transform: rotateY(180deg); }
+  .stack .card.hero { transform: rotateY(180deg) scale(1.12); }
+  .stack .card.away { transform: translateX(var(--away, -140%)) rotate(var(--spin, -18deg)) rotateY(180deg); opacity: 0; pointer-events: none;
+    transition: transform .5s cubic-bezier(.4,0,.2,1), opacity .5s; }
+  .stack .card.dragging { transition: none; }
+  .counter { text-align: center; margin-top: 18px; font: 800 1rem var(--display); letter-spacing: .18em; color: var(--soft); }
+  .summary { display: flex; gap: 10px; justify-content: center; margin-top: 18px; }
+  .summary .card { width: 120px; height: 174px; animation: none; pointer-events: none; }
+  .summary .front .name { font-size: 1rem; } .summary .front svg { width: 54px; height: 54px; } .summary .front .meta, .summary .arch { font-size: .6rem; } .summary .tier, .summary .num { font-size: .6rem; }
+  .summary .new { display: none; }
   .card { --c: var(--common); position: relative; width: 200px; height: 290px; border: 0; padding: 0; background: none; transform-style: preserve-3d;
     transition: transform .7s cubic-bezier(.2,.9,.25,1.15); animation: dealt .55s cubic-bezier(.2,.8,.2,1) backwards; }
   .card:nth-child(2) { animation-delay: .12s; } .card:nth-child(3) { animation-delay: .24s; }
@@ -106,7 +124,6 @@
   .back { background: linear-gradient(150deg, #232a3a, #121620); border: 2px solid #343c50; display: grid; place-items: center; }
   .back .mark { font: 900 2.4rem/1 var(--display); color: #3a4358; letter-spacing: .06em; }
   .back .q { position: absolute; bottom: 14px; font: 700 .75rem var(--body); color: var(--soft); }
-  .card.peek .back { box-shadow: 0 0 0 2px var(--c), 0 0 22px var(--c); } /* the edge leaks the tier colour on hover */
   .front { transform: rotateY(180deg); background: linear-gradient(170deg, #1d2330, #0f131b); border: 3px solid var(--c); padding: 12px 12px 10px; display: flex; flex-direction: column; text-align: left; }
   .front .top { display: flex; justify-content: space-between; align-items: center; }
   .tier { font: 900 .74rem/1 var(--body); color: #0e1118; background: var(--c); border-radius: 999px; padding: 4px 9px; letter-spacing: .06em; }
@@ -124,10 +141,11 @@
   @keyframes epicPulse { 50% { box-shadow: 0 0 46px rgba(176,92,255,1); } }
   /* the prizm refractor: only legends get it */
   .t-legend .front { background: linear-gradient(165deg, #4a3810, #1d160a 45%, #2e230b); }
-  .t-legend .front::after { content: ""; position: absolute; inset: 0; mix-blend-mode: screen; opacity: .28; pointer-events: none;
-    background: linear-gradient(115deg, transparent 20%, #ff6ad5 32%, #c774e8 40%, #ad8cff 48%, #8795e8 56%, #94d0ff 64%, transparent 76%) 0 0 / 300% 300%;
+  /* one wide non-repeating stripe that slides across; a repeating tile would show its seams as hard rectangles */
+  .t-legend .front::after { content: ""; position: absolute; top: 0; bottom: 0; left: -100%; width: 300%; mix-blend-mode: screen; opacity: .28; pointer-events: none;
+    background: linear-gradient(115deg, transparent 30%, #ff6ad5 40%, #c774e8 44%, #ad8cff 48%, #8795e8 52%, #94d0ff 56%, transparent 66%) no-repeat;
     animation: prizm 2.6s linear infinite; }
-  @keyframes prizm { to { background-position: 300% 300%; } }
+  @keyframes prizm { from { transform: translateX(-34%); } to { transform: translateX(34%); } }
   .card.flipped.t-legend { z-index: 5; }
   .card.flipped.t-legend .front { box-shadow: 0 0 40px rgba(255,201,60,.9), 0 0 90px rgba(255,201,60,.45); }
   .card.hero { transform: rotateY(180deg) scale(1.12); }
@@ -178,7 +196,11 @@
     *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
   }
   @media (max-width: 520px) {
-    .card { width: calc((100vw - 52px) / 3); height: calc((100vw - 52px) / 3 * 1.45); }
+    .packs { gap: 10px; } .pack { width: calc((100vw - 52px) / 3); height: calc((100vw - 52px) / 3 * 1.43); }
+    .pack .label .title { font-size: 1.35rem; } .pack .label .zh { font-size: .8rem; } .pack .label .count, .pack .label .eyebrow { font-size: .6rem; letter-spacing: .14em; }
+    .pack .ball { width: 40px; height: 40px; margin-left: -20px; } .pack .tear::after { display: none; }
+    .stack { width: 62vw; height: 90vw; }
+    .summary .card { width: calc((100vw - 52px) / 3); height: calc((100vw - 52px) / 3 * 1.45); }
     .stats { gap: 10px; } .stat b { font-size: 1.35rem; }
     .row { gap: 8px; }
     .front .name { font-size: 1.05rem; } .front svg { width: 64px; height: 64px; }
@@ -256,8 +278,8 @@ function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e
 let S = load() || { user: "demo", day: 1, opened: 0, owned: [], streak: 0, sinceLegend: 0, forceLegend: false };
 let sound = true;
 
-function drawPack(day) {
-  const r = rng(fnv(S.user + "|" + day));
+function drawPack(day, k) {
+  const r = rng(fnv(S.user + "|" + day + "|" + k));
   const owned = new Set(S.owned);
   const left = (t) => byTier[t].filter((p) => !owned.has(p.id));
   const picks = [];
@@ -367,55 +389,98 @@ function header() {
   $("pity").innerHTML = `<span>再 <b>${toStreakPity}</b> 天連續登入：保證一張<b style="color:var(--epic)">史詩</b>以上</span><span>最晚 <b>${toLegendPity}</b> 天內：保證一張<b style="color:var(--legend)">傳奇</b></span>`;
 }
 
-function showPack() {
-  const pack = drawPack(S.day);
-  const best = pack.reduce((m, p) => Math.max(m, RANK[p.tier]), 0);
-  const glow = ["#ffffff", "#39a8ff", "#b05cff", "#ffc93c"][best];
+function showPacks() {
+  // Three packs, all fixed by user + day; the one you pick is the one you get.
+  const packs = [0, 1, 2].map((k) => drawPack(S.day, k));
   $("stage").innerHTML = `
-    <button class="pack" id="pack" style="--glow:${glow}" aria-label="撕開今天的卡包">
-      <span class="body"></span><span class="tear"></span><span class="seam"></span>
-      <span class="label"><span class="eyebrow">DAY ${S.day}</span><span class="title">DAILY<br>PACK</span><span class="zh">今日卡包</span><span class="count">3 CARDS</span></span>
-      <span class="ball"></span>
-    </button>
-    <p class="hint">點卡包撕開。<b>封口透出的光，就是這包裡最高的等級</b>。</p>`;
-  $("pack").addEventListener("click", () => openPack(pack, best), { once: true });
+    <div style="width:100%">
+      <div class="packs" id="packs">${packs.map((_, k) => `
+        <button class="pack" data-k="${k}" aria-label="選第 ${k + 1} 包">
+          <span class="body"></span><span class="tear"></span><span class="seam"></span>
+          <span class="label"><span class="eyebrow">DAY ${S.day}</span><span class="title">DAILY<br>PACK</span><span class="zh">今日卡包</span><span class="count">3 CARDS</span></span>
+          <span class="ball"></span>
+        </button>`).join("")}</div>
+      <p class="hint" style="position:static;margin-top:22px">三包裡選一包。<b>每一包裡面都不一樣</b>，選了就不能換。</p>
+    </div>`;
+  document.querySelectorAll("#packs .pack").forEach((el) => el.addEventListener("click", () => pickPack(el, packs[+el.dataset.k]), { once: true }));
 }
 
-function openPack(pack, best) {
-  const el = $("pack");
-  el.classList.add("charging");
-  if (best >= 1) el.classList.add("shake-" + Math.min(best, 3));
-  SFX.charge(best); buzz(best >= 2 ? [30, 40, 30, 40, 60] : 20);
-  const chargeMs = REDUCED ? 50 : 700 + best * 350;
+function pickPack(el, pack) {
+  if ($("packs").classList.contains("chosen")) return;
+  $("packs").classList.add("chosen"); el.classList.add("picked");
+  document.querySelector(".hint").textContent = "撕開中…";
+  setTimeout(() => openPack(el, pack), REDUCED ? 0 : 500);
+}
+
+function openPack(el, pack) {
+  // Same light, same shake, same wait for every pack: nothing gives away what is inside.
+  el.classList.add("charging", "shaking");
+  SFX.charge(1); buzz([30, 40, 30]);
   setTimeout(() => {
-    el.classList.remove("shake-1", "shake-2", "shake-3"); el.classList.add("torn"); SFX.tear();
+    el.classList.remove("shaking"); el.classList.add("torn"); SFX.tear();
     const [x, y] = center(el), b = document.createElement("span");
-    b.className = "burst"; b.style.cssText = `left:${x}px;top:${y}px;position:fixed;background:${getComputedStyle(el).getPropertyValue("--glow")}`;
+    b.className = "burst"; b.style.cssText = `left:${x}px;top:${y}px;position:fixed;background:#ffffff`;
     document.body.appendChild(b); requestAnimationFrame(() => b.classList.add("go")); setTimeout(() => b.remove(), 900);
-    if (best >= 2) spray(x, y - 120, 40 + best * 20, best === 3 ? ["#ffc93c", "#fff3c4", "#ff6ad5"] : ["#b05cff", "#e2c4ff"], 0.8);
-    setTimeout(() => { el.classList.add("gone"); setTimeout(() => dealCards(pack), 380); }, 450);
-  }, chargeMs);
+    setTimeout(() => { el.classList.add("gone"); setTimeout(() => dealStack(pack), 380); }, 450);
+  }, REDUCED ? 50 : 1100);
 }
 
-function dealCards(pack) {
+function dealStack(pack) {
   const ownedBefore = new Set(S.owned);
-  $("stage").innerHTML = `<div style="width:100%"><div class="row" id="row">${pack.map((p) => cardHtml(p, !ownedBefore.has(p.id))).join("")}</div>
-    <p class="hint" style="position:static;margin-top:16px">由左到右等級越來越高，<b>最好的在最右邊</b>。點卡片翻開。</p>
-    <div class="actions"><button class="btn" id="flip-all">全部翻開</button></div><div id="after"></div></div>`;
-  let flipped = 0;
-  const flip = (btn) => {
-    if (btn.classList.contains("flipped")) return;
-    const p = pack.find((x) => x.id === btn.dataset.id);
-    btn.classList.add("flipped"); SFX.flip(); flipped++;
-    setTimeout(() => reveal(btn, p), 330);
-    if (flipped === pack.length) setTimeout(() => finish(pack), p.tier === "legend" ? 3600 : 1100);
+  // DOM order = bottom to top, so the weakest card (pack[0]) ends up on top and the best is last.
+  const order = pack.slice().reverse();
+  $("stage").innerHTML = `<div style="width:100%">
+      <div class="stack" id="stack">${order.map((p) => cardHtml(p, !ownedBefore.has(p.id))).join("")}</div>
+      <div class="counter" id="counter"></div>
+      <p class="hint" id="stack-hint" style="position:static;margin-top:6px">點卡片翻開，再點一次（或往旁邊滑掉）看下一張。</p>
+      <div class="actions"><button class="btn" id="flip-all">自動翻完</button></div><div id="after"></div></div>`;
+  let index = 0; // how many cards have been dismissed
+  const cards = () => [...document.querySelectorAll("#stack .card")].reverse(); // top first
+  const layout = () => {
+    cards().forEach((c, i) => { if (!c.classList.contains("away")) c.dataset.depth = String(Math.max(0, i - index)); c.style.zIndex = String(10 - i); });
+    $("counter").textContent = `${Math.min(index + 1, pack.length)} / ${pack.length}`;
   };
-  document.querySelectorAll("#row .card").forEach((btn) => {
-    btn.addEventListener("click", () => flip(btn));
-    btn.addEventListener("pointerenter", () => btn.classList.add("peek"));
-    btn.addEventListener("pointerleave", () => btn.classList.remove("peek"));
+  layout();
+  const top = () => cards()[index];
+  const flipTop = () => {
+    const btn = top(); if (!btn || btn.classList.contains("flipped")) return false;
+    const p = pack.find((x) => x.id === btn.dataset.id);
+    delete btn.dataset.depth; btn.classList.add("flipped"); SFX.flip();
+    setTimeout(() => reveal(btn, p), 330);
+    if (index === pack.length - 1) setTimeout(() => finish(pack), p.tier === "legend" ? 3600 : 1100);
+    return true;
+  };
+  const dismissTop = (dir = -1) => {
+    const btn = top(); if (!btn || !btn.classList.contains("flipped") || index >= pack.length - 1) return;
+    btn.style.setProperty("--away", dir < 0 ? "-140%" : "140%"); btn.style.setProperty("--spin", dir < 0 ? "-18deg" : "18deg");
+    btn.classList.add("away"); tone(330, 0, 0.08, "triangle", 0.06); index++; layout();
+  };
+  const tap = () => { if (!flipTop()) dismissTop(-1); };
+  // drag the top card sideways to send it away
+  let startX = null, moved = 0;
+  $("stack").addEventListener("pointerdown", (e) => { if (!e.target.closest(".card")) return; startX = e.clientX; moved = 0; });
+  $("stack").addEventListener("pointermove", (e) => {
+    if (startX === null) return; const btn = top(); moved = e.clientX - startX;
+    if (btn && btn.classList.contains("flipped") && index < pack.length - 1 && Math.abs(moved) > 6) {
+      btn.classList.add("dragging"); btn.style.transform = `translateX(${moved}px) rotate(${moved / 14}deg) rotateY(180deg)`;
+    }
   });
-  $("flip-all").addEventListener("click", () => { [...document.querySelectorAll("#row .card")].forEach((b, i) => setTimeout(() => flip(b), i * 650)); $("flip-all").hidden = true; });
+  const end = () => {
+    if (startX === null) return; const btn = top(); startX = null;
+    if (btn) { btn.classList.remove("dragging"); btn.style.transform = ""; }
+    if (Math.abs(moved) > 70) dismissTop(Math.sign(moved)); else tap();
+  };
+  $("stack").addEventListener("pointerup", end); $("stack").addEventListener("pointercancel", () => { startX = null; });
+  $("stack").addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); tap(); } });
+  $("flip-all").addEventListener("click", () => {
+    $("flip-all").hidden = true;
+    const step = () => {
+      const btn = top(); if (!btn) return;
+      if (!btn.classList.contains("flipped")) { flipTop(); const p = pack.find((x) => x.id === btn.dataset.id); if (index < pack.length - 1) setTimeout(step, p.tier === "legend" ? 3400 : 1300); }
+      else { dismissTop(-1); setTimeout(step, 500); }
+    };
+    step();
+  });
 }
 
 function reveal(btn, p) {
@@ -441,7 +506,9 @@ function finish(pack) {
   const now = new Date(), mid = new Date(now); mid.setHours(24, 0, 0, 0);
   const left = Math.max(0, mid - now), hh = String(Math.floor(left / 3.6e6)).padStart(2, "0"), mm = String(Math.floor(left % 3.6e6 / 6e4)).padStart(2, "0");
   $("flip-all").hidden = true;
-  $("after").innerHTML = `<div class="after"><h2>今天收下 ${pack.length} 張新卡</h2><div class="next">下一包 ${hh}:${mm} 後</div>
+  for (const id of ["stack", "counter", "stack-hint"]) $(id).hidden = true; // the summary row replaces the big stack
+  $("after").innerHTML = `<div class="summary">${pack.map((p) => cardHtml(p, false).replace('class="card ', 'class="card flipped ')).join("")}</div>
+    <div class="after"><h2>今天收下 ${pack.length} 張新卡</h2><div class="next">下一包 ${hh}:${mm} 後</div>
     <div style="color:var(--soft);font-size:.85rem">收集進度 ${S.owned.length} / ${DATA.players.length}</div>
     <div class="actions"><button class="btn main" id="to-album">看收藏冊</button></div></div>`;
   $("to-album").addEventListener("click", () => document.querySelector(".album").scrollIntoView({ behavior: "smooth" }));
@@ -473,7 +540,7 @@ function startDay() {
     $("stage").innerHTML = `<div class="after"><h2>今天的卡包已經開過了</h2><div class="next">明天見</div><p style="color:var(--soft)">試玩版可以按下方「跳到下一天」。</p></div>`;
   } else if (S.owned.length >= DATA.players.length) {
     $("stage").innerHTML = `<div class="after"><h2>🏆 全部 ${DATA.players.length} 張都收齊了</h2></div>`;
-  } else showPack();
+  } else showPacks();
 }
 $("next-day").addEventListener("click", () => { if (S.opened < S.day) S.streak = S.streak; S.day += 1; save(); startDay(); scrollTo({ top: 0, behavior: "smooth" }); });
 $("force-legend").addEventListener("click", () => { S.forceLegend = true; if (S.opened >= S.day) S.day += 1; save(); startDay(); scrollTo({ top: 0, behavior: "smooth" }); });
