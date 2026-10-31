@@ -117,11 +117,11 @@
   /* ---------- cards: modelled on a chrome NBA card (metallic border, photo window, angled nameplate, white card-stock edge) ---------- */
   .row { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; perspective: 1200px; }
   /* the pile is seen a little from the side, like a stack in a card case: straight cards, one behind the other */
-  .stack { --rx: 3deg; --ry: -18deg; --mx: 30%; --my: 20%; position: relative; z-index: 5; width: 220px; height: 308px; margin: 0 auto; perspective: 1100px; touch-action: none; }
+  .stack { --rx: 2deg; --ry: -8deg; --mx: 30%; --my: 20%; position: relative; z-index: 5; width: 220px; height: 308px; margin: 0 auto; perspective: 1100px; touch-action: none; }
   .stack .tilt { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotateX(var(--rx)) rotateY(var(--ry)); transition: transform .3s ease-out; }
   .stack .card { position: absolute; inset: 0; width: 100%; height: 100%; }
-  .stack .card[data-depth="1"] { transform: translate3d(9px, -4px, -18px); }
-  .stack .card[data-depth="2"] { transform: translate3d(18px, -8px, -36px); }
+  .stack .card[data-depth="1"] { transform: translate3d(4px, -2px, -10px); }
+  .stack .card[data-depth="2"] { transform: translate3d(8px, -4px, -20px); }
   .stack .card.flipped { transform: rotateY(180deg); }
   .stack .card.hero, .card.hero { transform: translateZ(40px) rotateY(180deg) scale(1.12); }
   .stack .card.away { transform: translateX(var(--away, -140%)) rotate(var(--spin, -18deg)) rotateY(180deg); opacity: 0; pointer-events: none;
@@ -518,14 +518,14 @@ function finishTear(el, pack) {
   setTimeout(() => { el.classList.add("gone"); setTimeout(() => dealStack(pack), 380); }, 650);
 }
 
-// The pack or card pile leans toward the pointer, so the edges (and their thickness) catch the eye.
+// The card pile leans a little toward the pointer, so the card edges catch the light.
 function tilt(e) {
-  const host = document.querySelector("#packs, #stack"); if (!host) return;
+  const host = $("stack"); if (!host) return; // packs keep their own slow sway; only the card pile follows the pointer
   const r = host.getBoundingClientRect(), clamp = (v) => Math.max(-1, Math.min(1, v));
   const nx = clamp(((e.clientX - r.left) / r.width) * 2 - 1), ny = clamp(((e.clientY - r.top) / r.height) * 2 - 1);
   host.classList.add("live");
-  const [bx, by] = host.id === "stack" ? [-18, 3] : [0, 6]; // the pile stays turned to one side so the cards behind show
-  host.style.setProperty("--ry", (bx + nx * 12).toFixed(1) + "deg"); host.style.setProperty("--rx", (by - ny * 8).toFixed(1) + "deg");
+  const [bx, by] = [-8, 2]; // the pile stays turned to one side so the cards behind show
+  host.style.setProperty("--ry", (bx + nx * 6).toFixed(1) + "deg"); host.style.setProperty("--rx", (by - ny * 5).toFixed(1) + "deg");
   host.style.setProperty("--mx", (50 + nx * 35).toFixed(0) + "%"); host.style.setProperty("--my", (35 + ny * 30).toFixed(0) + "%");
 }
 
@@ -657,7 +657,7 @@ $("sound").addEventListener("click", () => { sound = !sound; $("sound").setAttri
 
 renderOdds(); renderAlbum(); startDay();
 $("stage").addEventListener("pointermove", tilt);
-$("stage").addEventListener("pointerleave", () => { const h = document.querySelector("#packs, #stack"); if (h) { h.classList.remove("live"); for (const v of ["--rx", "--ry", "--mx", "--my"]) h.style.removeProperty(v); } });
+$("stage").addEventListener("pointerleave", () => { const h = $("stack"); if (h) { h.classList.remove("live"); for (const v of ["--rx", "--ry", "--mx", "--my"]) h.style.removeProperty(v); } });
 </script>
 </body>
 </html>
