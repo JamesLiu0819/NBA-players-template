@@ -61,13 +61,13 @@
   .trace.on { opacity: 1; }
 
   /* ---------- packs: one in front, two waiting behind (a carousel); covers are decoration only ---------- */
-  .packs { position: relative; height: 410px; width: 100%; touch-action: pan-y; }
-  .pack { --p: 0; position: absolute; left: 50%; top: 0; width: 210px; height: 300px; margin-left: -105px; border: 0; padding: 0; background: none;
+  .packs { position: relative; height: 450px; width: 100%; touch-action: pan-y; }
+  .pack { --p: 0; position: absolute; left: 50%; top: 0; width: 210px; height: 330px; margin-left: -105px; border: 0; padding: 0; background: none;
     perspective: 1000px; container-type: inline-size; transition: transform .55s cubic-bezier(.2,.8,.2,1), opacity .4s; }
   .pack[data-slot="0"] { z-index: 3; }
   .pack[data-slot="1"] { z-index: 1; transform: translate(60%, -5%) scale(.8); }
   .pack[data-slot="-1"] { z-index: 1; transform: translate(-60%, -5%) scale(.8); }
-  .pack .dim { position: absolute; inset: 0; border-radius: 3cqw; background: rgba(14,17,24,.5); opacity: 0; transition: opacity .4s; pointer-events: none; }
+  .pack .dim { position: absolute; inset: 0; border-radius: 7cqw; background: rgba(14,17,24,.5); opacity: 0; transition: opacity .4s; pointer-events: none; }
   .pack:not([data-slot="0"]) .dim { opacity: 1; }
   .packs.chosen .pack:not(.picked) { opacity: 0; pointer-events: none; }
   .packs.chosen .pack[data-slot="1"]:not(.picked) { transform: translate(130%, 0) scale(.7); }
@@ -77,13 +77,13 @@
   .pack .pk { position: absolute; inset: 0; transform-style: preserve-3d; animation: sway 5s ease-in-out infinite alternate; }
   .pack:nth-child(2) .pk { animation-delay: -1.7s; } .pack:nth-child(3) .pk { animation-delay: -3.3s; }
   @keyframes sway { from { transform: translateY(0) rotateX(3deg) rotateY(-9deg); } to { transform: translateY(-8px) rotateX(1deg) rotateY(9deg); } }
-  .pack .pf { position: absolute; inset: 0; transform: translateZ(5px); -webkit-box-reflect: below 14px linear-gradient(transparent 74%, rgba(255,255,255,.32)); }
+  .pack .pf { position: absolute; inset: 0; transform: translateZ(8px); -webkit-box-reflect: below 14px linear-gradient(transparent 74%, rgba(255,255,255,.32)); }
   /* back panel and side edges stop at the tear line: behind the top band there is nothing, so once it tears off the page shows through */
-  .pack .pback { position: absolute; inset: 18.5% 0 1%; border-radius: 0 0 3cqw 3cqw; transform: translateZ(-5px); background: #262a3d; }
-  .pack .edge { position: absolute; top: 18.5%; bottom: 3%; width: 10px; background: linear-gradient(180deg, #5c6283, #262a3d 50%, #4a5070); }
-  .pack .edge.l { left: -5px; transform: rotateY(-90deg); } .pack .edge.r { right: -5px; transform: rotateY(90deg); }
+  .pack .pback { position: absolute; inset: 18.5% 0 1%; border-radius: 0 0 7cqw 7cqw; transform: translateZ(-8px); background: #262a3d; }
+  .pack .edge { position: absolute; top: 18.5%; bottom: 6%; width: 16px; background: linear-gradient(180deg, #5c6283, #262a3d 50%, #4a5070); }
+  .pack .edge.l { left: -8px; transform: rotateY(-90deg); } .pack .edge.r { right: -8px; transform: rotateY(90deg); }
   /* top band: the part that tears off */
-  .pack .strip { position: absolute; left: 0; right: 0; top: 0; height: 18.5%; border-radius: 3cqw 3cqw 0 0; overflow: hidden;
+  .pack .strip { position: absolute; left: 0; right: 0; top: 0; height: 18.5%; border-radius: 7cqw 7cqw 0 0; overflow: hidden;
     transform-origin: 100% 100%; transform: translateY(calc(var(--p) * -9px)) rotate(calc(var(--p) * -6deg)); }
   .pack .band { position: absolute; left: 0; right: 0; overflow: hidden;
     background: var(--hexes) 0 0 / 7cqw auto, linear-gradient(110deg, #353a52, #4a5070 40%, #5c6283 52%, #4a5070 64%, #353a52); }
@@ -96,7 +96,7 @@
   .pack .wm b { font: 900 7.4cqw/1 var(--body); color: #ffe36e; -webkit-text-stroke: .35cqw #1d2030; paint-order: stroke fill; letter-spacing: .06em; }
   .pack .wm i { margin-top: 1cqw; font: 900 3cqw/1 var(--display); font-style: normal; color: #fff; background: #d8262f; border: .5cqw solid #fff; border-radius: 1cqw; padding: .6cqw 1.6cqw; letter-spacing: .12em; }
   /* the art: a big white silhouette in a colour swirl */
-  .pack .body { position: absolute; left: 0; right: 0; top: 18.5%; bottom: 0; border-radius: 0 0 3cqw 3cqw; overflow: hidden; background: var(--sky); }
+  .pack .body { position: absolute; left: 0; right: 0; top: 18.5%; bottom: 0; border-radius: 0 0 7cqw 7cqw; overflow: hidden; background: var(--sky); }
   .cover-0 { --sky: radial-gradient(circle at 50% 38%, #8be3ff, #2b6de0 55%, #1a2e9c); }
   .cover-1 { --sky: radial-gradient(circle at 50% 38%, #d9ffb0, #33c3a6 55%, #0f6c7d); }
   .cover-2 { --sky: radial-gradient(circle at 50% 38%, #ffd0a8, #ec4f72 55%, #6a1f8f); }
@@ -106,9 +106,14 @@
   .pack .gloss { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.32) 47%, transparent 58%) 0 0 / 260% 100%; animation: sheen 4.2s linear infinite; }
   .pack .strip .gloss { animation-delay: 0s; }
   @keyframes sheen { from { background-position: 130% 0; } to { background-position: -130% 0; } }
-  .pack .pillow { position: absolute; inset: 0; pointer-events: none; border-radius: 3cqw; }
-  .pack.torn .pillow { top: 18.5%; border-radius: 0 0 3cqw 3cqw; } /* the side shading goes with the band */
-  .pack .pillow { background: linear-gradient(90deg, rgba(0,0,30,.32), transparent 9%, transparent 91%, rgba(0,0,30,.32)); }
+  .pack .pillow { position: absolute; inset: 0; pointer-events: none; border-radius: 7cqw; }
+  .pack.torn .pillow { top: 18.5%; border-radius: 0 0 7cqw 7cqw; } /* the side shading goes with the band */
+  /* a puffy foil bag: darker toward every edge, a soft highlight where it bulges, a rim light along the sides */
+  .pack .pillow { background:
+      radial-gradient(ellipse 70% 55% at 45% 42%, rgba(255,255,255,.16), transparent 70%),
+      linear-gradient(90deg, rgba(0,0,30,.45), rgba(0,0,30,.12) 7%, transparent 16%, transparent 84%, rgba(0,0,30,.12) 93%, rgba(0,0,30,.45)),
+      linear-gradient(180deg, transparent 80%, rgba(0,0,30,.28));
+    box-shadow: inset 2px 0 0 rgba(255,255,255,.18), inset -2px 0 0 rgba(255,255,255,.1), 0 18px 34px rgba(0,0,0,.45); }
   /* the tear line: always there, like a real perforation; glows and gets a guide dot once the pack is picked */
   .pack .seam { position: absolute; left: 0; right: 0; top: calc(18.5% - .8cqw); height: 1.6cqw; background: var(--seam); box-shadow: 0 0 2cqw var(--seam); }
   .pack .seam::after { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 1cqw; background: #fff; }
@@ -133,7 +138,7 @@
   @keyframes burst { 0% { opacity: .95; transform: scale(1); } 100% { opacity: 0; transform: scale(70); } }
 
   /* ---------- the card pile: arrives turned to show its thickness, then faces you ---------- */
-  .stack { --rx: 2deg; --ry: -6deg; --mx: 30%; --my: 20%; position: relative; z-index: 5; width: 230px; height: 322px; margin: 46px auto 0; perspective: 1100px; touch-action: none; }
+  .stack { --rx: 2deg; --ry: -6deg; --mx: 30%; --my: 20%; position: relative; z-index: 5; width: 230px; height: 342px; margin: 46px auto 0; perspective: 1100px; touch-action: none; }
   .stack .tilt { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotateX(var(--rx)) rotateY(var(--ry)); transition: transform .3s ease-out;
     animation: arrive 1s cubic-bezier(.2,.8,.2,1) backwards; }
   @keyframes arrive { from { transform: translateY(90px) rotateX(12deg) rotateY(-30deg) scale(.86); } }
@@ -166,10 +171,10 @@
   .ff.held span { transform: scale(.92); background: rgba(255,255,255,.22); }
   .ff svg { width: 34px; height: 34px; }
   .summary { display: flex; gap: 10px; justify-content: center; margin-top: 18px; }
-  .summary .card { width: 120px; height: 168px; pointer-events: none; }
+  .summary .card { width: 120px; height: 178px; pointer-events: none; }
   .summary .new { display: none; }
 
-  .card { --c: var(--common); --th: 3px; position: relative; width: 200px; height: 280px; border: 0; padding: 0; background: none; transform-style: preserve-3d;
+  .card { --c: var(--common); --th: 5px; position: relative; width: 200px; height: 297px; border: 0; padding: 0; background: none; transform-style: preserve-3d;
     transition: transform .6s cubic-bezier(.3,.7,.3,1); }
   .card.flipped { transform: rotateY(180deg); }
   /* a 230px card turning in place swings 115px behind itself and cuts into the pile, so it rises as it turns */
@@ -180,20 +185,21 @@
     50% { transform: translateZ(140px) rotateY(90deg); }
     85% { transform: translateZ(90px) rotateY(155deg); }
     100% { transform: translateZ(0) rotateY(180deg); } }
-  .face { position: absolute; inset: 0; border-radius: 9px; backface-visibility: hidden; -webkit-backface-visibility: hidden; overflow: hidden; }
+  .face { position: absolute; inset: 0; border-radius: 16px; backface-visibility: hidden; -webkit-backface-visibility: hidden; overflow: hidden; }
   /* card-stock thickness: four thin strips between the two faces */
   .card .edge { position: absolute; background: linear-gradient(90deg, #aab3c0, #eef1f5, #aab3c0); }
-  .card .edge.l, .card .edge.r { top: 9px; bottom: 9px; width: var(--th); transform: rotateY(90deg); }
+  .card .edge.l, .card .edge.r { top: 15px; bottom: 15px; width: var(--th); transform: rotateY(90deg); }
   .card .edge.l { left: calc(var(--th) / -2); } .card .edge.r { right: calc(var(--th) / -2); }
-  .card .edge.t, .card .edge.b { left: 9px; right: 9px; height: var(--th); transform: rotateX(90deg); background: linear-gradient(#aab3c0, #eef1f5, #aab3c0); }
+  .card .edge.t, .card .edge.b { left: 15px; right: 15px; height: var(--th); transform: rotateX(90deg); background: linear-gradient(#aab3c0, #eef1f5, #aab3c0); }
   .card .edge.t { top: calc(var(--th) / -2); } .card .edge.b { bottom: calc(var(--th) / -2); }
   /* silver frame shared by both faces */
-  .back, .front { background: linear-gradient(135deg, #fbfcfd, #c9ced6 38%, #f2f4f7 55%, #b6bdc7 78%, #eef1f4); box-shadow: 0 10px 30px rgba(0,0,0,.45); }
+  .back, .front { background: linear-gradient(135deg, #fbfcfd, #c9ced6 38%, #f2f4f7 55%, #b6bdc7 78%, #eef1f4);
+    box-shadow: inset 0 2px 0 rgba(255,255,255,.95), inset 0 -3px 5px rgba(0,0,0,.28), inset 3px 0 4px rgba(255,255,255,.5), inset -3px 0 4px rgba(0,0,0,.18), 0 14px 32px rgba(0,0,0,.5); } /* bevelled silver frame */
   /* card back: identical on every card, so nothing leaks before the flip */
   .back { transform: translateZ(calc(var(--th) / 2)); }
-  .back .bk { position: absolute; inset: 5%; border-radius: 6px; display: grid; place-items: center; align-content: center; gap: 8px;
+  .back .bk { position: absolute; inset: 5%; border-radius: 11px; display: grid; place-items: center; align-content: center; gap: 8px;
     background: radial-gradient(circle at 50% 40%, #243049, #141a28 70%); box-shadow: inset 0 0 0 1px rgba(255,255,255,.14); }
-  .back .bk::before { content: ""; position: absolute; inset: 7px; border-radius: 4px; border: 1px solid rgba(217,160,63,.35); }
+  .back .bk::before { content: ""; position: absolute; inset: 7px; border-radius: 8px; border: 1px solid rgba(217,160,63,.35); }
   .back .bk > * { position: relative; }
   .back .bk svg { width: 84px; height: 84px; }
   .back .mark { font: 900 1.05rem/1 var(--body); color: #e9e7e0; letter-spacing: .32em; margin-right: -.32em; }
@@ -202,7 +208,7 @@
   /* card front, modelled on a Topps Now card: faceted art with the radar as the hero, corner panel with the team crest,
      slanted dark nameplate over a silver subtitle bar. Sizes use cqw so every card size scales. */
   .front { transform: rotateY(180deg) translateZ(calc(var(--th) / 2)); container-type: inline-size; text-align: left; }
-  .frame { position: absolute; inset: 4.2%; border-radius: 5px; overflow: hidden; }
+  .frame { position: absolute; inset: 4.6%; border-radius: 10px; overflow: hidden; box-shadow: 0 0 0 1px rgba(0,0,0,.35); }
   .art { position: absolute; inset: 0;
     background:
       conic-gradient(from 200deg at 28% 42%, rgba(255,255,255,.13) 0 22deg, transparent 22deg 64deg, rgba(255,255,255,.07) 64deg 92deg, transparent 92deg 150deg, rgba(255,255,255,.11) 150deg 172deg, transparent 172deg),
@@ -260,15 +266,15 @@
   .card.flipped .new { transform: rotateY(180deg) translateZ(4px) scale(1); }
   .t-rare { --c: var(--rare); } .t-epic { --c: var(--epic); } .t-legend { --c: var(--legend); }
   /* glow lives on the front face: a filter on the 3D card itself would flatten it and break the flip */
-  .card.flipped.t-rare .front { box-shadow: 0 0 22px rgba(42,134,232,.7); }
-  .card.flipped.t-epic .front { box-shadow: 0 0 28px rgba(143,69,240,.8); animation: epicPulse 1.6s ease-in-out .7s 2; }
-  @keyframes epicPulse { 50% { box-shadow: 0 0 50px rgba(143,69,240,1); } }
+  .card.flipped.t-rare .front { box-shadow: inset 0 2px 0 rgba(255,255,255,.95), inset 0 -3px 5px rgba(0,0,0,.28), 0 0 22px rgba(42,134,232,.7); }
+  .card.flipped.t-epic .front { box-shadow: inset 0 2px 0 rgba(255,255,255,.95), inset 0 -3px 5px rgba(0,0,0,.28), 0 0 28px rgba(143,69,240,.8); animation: epicPulse 1.6s ease-in-out .7s 2; }
+  @keyframes epicPulse { 50% { box-shadow: inset 0 2px 0 rgba(255,255,255,.95), inset 0 -3px 5px rgba(0,0,0,.28), 0 0 50px rgba(143,69,240,1); } }
   /* the prizm refractor: only legends get it; one wide non-repeating stripe that slides across, so no tile seams show */
   .t-legend .front::after { content: ""; position: absolute; z-index: 2; top: 0; bottom: 0; left: -100%; width: 300%; mix-blend-mode: screen; opacity: .3; pointer-events: none;
     background: linear-gradient(115deg, transparent 30%, #ff6ad5 40%, #c774e8 44%, #ad8cff 48%, #8795e8 52%, #94d0ff 56%, transparent 66%) no-repeat;
     animation: prizm 2.6s linear infinite; }
   @keyframes prizm { from { transform: translateX(-34%); } to { transform: translateX(34%); } }
-  .card.flipped.t-legend .front { box-shadow: 0 0 40px rgba(240,168,24,.95), 0 0 90px rgba(240,168,24,.5); }
+  .card.flipped.t-legend .front { box-shadow: inset 0 2px 0 rgba(255,255,255,.95), inset 0 -3px 5px rgba(0,0,0,.28), 0 0 40px rgba(240,168,24,.95), 0 0 90px rgba(240,168,24,.5); }
 
   /* legend overlay */
   .veil { position: fixed; inset: 0; z-index: 4; pointer-events: none; opacity: 0; background: radial-gradient(circle at 50% 50%, rgba(255,215,90,.25), rgba(12,16,40,.82) 62%); transition: opacity .4s; }
@@ -321,11 +327,11 @@
     *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
   }
   @media (max-width: 520px) {
-    .packs { height: 108vw; }
-    .pack { width: 58vw; height: 82.9vw; margin-left: -29vw; }
+    .packs { height: 118vw; }
+    .pack { width: 58vw; height: 91.1vw; margin-left: -29vw; }
     .pack[data-slot="1"] { transform: translate(52%, -5%) scale(.78); } .pack[data-slot="-1"] { transform: translate(-52%, -5%) scale(.78); }
-    .stack, .rarity { width: 62vw; } .stack { height: 86.8vw; }
-    .summary .card { width: calc((100vw - 52px) / 3); height: calc((100vw - 52px) / 3 * 1.4); }
+    .stack, .rarity { width: 62vw; } .stack { height: 92.2vw; }
+    .summary .card { width: calc((100vw - 52px) / 3); height: calc((100vw - 52px) / 3 * 1.48); }
     .stats { gap: 10px; } .stat b { font-size: 1.35rem; }
     .dia { width: 24px; height: 32px; } .star { width: 36px; height: 36px; }
   }
