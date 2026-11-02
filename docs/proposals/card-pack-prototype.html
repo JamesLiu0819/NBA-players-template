@@ -79,33 +79,30 @@
   @keyframes sway { from { transform: translateY(0) rotateX(3deg) rotateY(-9deg); } to { transform: translateY(-8px) rotateX(1deg) rotateY(9deg); } }
   .pack .pf { position: absolute; inset: 0; transform: translateZ(5px); -webkit-box-reflect: below 14px linear-gradient(transparent 74%, rgba(255,255,255,.32)); }
   /* back panel and side edges stop at the tear line: behind the top band there is nothing, so once it tears off the page shows through */
-  .pack .pback { position: absolute; inset: 18.5% 0 1%; border-radius: 0 0 3cqw 3cqw; transform: translateZ(-5px); background: #2a1f66; }
-  .pack .edge { position: absolute; top: 18.5%; bottom: 3%; width: 10px; background: linear-gradient(180deg, #8a6cf0, #3a2b8a 50%, #6b4fd8); }
+  .pack .pback { position: absolute; inset: 18.5% 0 1%; border-radius: 0 0 3cqw 3cqw; transform: translateZ(-5px); background: #262a3d; }
+  .pack .edge { position: absolute; top: 18.5%; bottom: 3%; width: 10px; background: linear-gradient(180deg, #5c6283, #262a3d 50%, #4a5070); }
   .pack .edge.l { left: -5px; transform: rotateY(-90deg); } .pack .edge.r { right: -5px; transform: rotateY(90deg); }
   /* top band: the part that tears off */
   .pack .strip { position: absolute; left: 0; right: 0; top: 0; height: 18.5%; border-radius: 3cqw 3cqw 0 0; overflow: hidden;
     transform-origin: 100% 100%; transform: translateY(calc(var(--p) * -9px)) rotate(calc(var(--p) * -6deg)); }
   .pack .band { position: absolute; left: 0; right: 0; overflow: hidden;
-    background: var(--hexes) 0 0 / 7cqw auto, linear-gradient(110deg, #6e52e8, #9b74ff 38%, #c9a2ff 52%, #a079ff 64%, #7553ea); }
-  .pack .band::before { content: ""; position: absolute; inset: 0; background: linear-gradient(110deg, rgba(110,82,232,.15), rgba(110,82,232,.55) 40%, rgba(110,82,232,.15)); }
+    background: var(--hexes) 0 0 / 7cqw auto, linear-gradient(110deg, #353a52, #4a5070 40%, #5c6283 52%, #4a5070 64%, #353a52); }
+  .pack .band::before { content: ""; position: absolute; inset: 0; background: linear-gradient(110deg, rgba(53,58,82,.55), rgba(53,58,82,.8) 40%, rgba(53,58,82,.55)); } /* mutes the hex grid */
   .pack .band.t { inset: 0; }
   .pack .band.b { bottom: 0; height: 6%; }
   .pack .plogo { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -48%); display: flex; align-items: center; gap: 2.4cqw; }
-  .pack .plogo svg { width: 13cqw; height: 13cqw; filter: drop-shadow(0 1px 0 rgba(30,15,80,.6)); }
+  .pack .plogo svg { width: 13cqw; height: 13cqw; filter: drop-shadow(0 1px 0 rgba(15,18,30,.6)); }
   .pack .wm { display: flex; flex-direction: column; align-items: flex-start; line-height: 1; }
-  .pack .wm b { font: 900 7.4cqw/1 var(--body); color: #ffe36e; -webkit-text-stroke: .35cqw #2b1a6e; paint-order: stroke fill; letter-spacing: .06em; }
+  .pack .wm b { font: 900 7.4cqw/1 var(--body); color: #ffe36e; -webkit-text-stroke: .35cqw #1d2030; paint-order: stroke fill; letter-spacing: .06em; }
   .pack .wm i { margin-top: 1cqw; font: 900 3cqw/1 var(--display); font-style: normal; color: #fff; background: #d8262f; border: .5cqw solid #fff; border-radius: 1cqw; padding: .6cqw 1.6cqw; letter-spacing: .12em; }
-  .pack .code { position: absolute; right: 4cqw; top: 4cqw; font: 900 4.2cqw/1 var(--display); color: #fff; background: #12121a; border: .6cqw solid #3a3a46; border-radius: 1.4cqw; padding: .8cqw 2.6cqw; letter-spacing: .08em; }
   /* the art: a big white silhouette in a colour swirl */
   .pack .body { position: absolute; left: 0; right: 0; top: 18.5%; bottom: 0; border-radius: 0 0 3cqw 3cqw; overflow: hidden; background: var(--sky); }
   .cover-0 { --sky: radial-gradient(circle at 50% 38%, #8be3ff, #2b6de0 55%, #1a2e9c); }
   .cover-1 { --sky: radial-gradient(circle at 50% 38%, #d9ffb0, #33c3a6 55%, #0f6c7d); }
   .cover-2 { --sky: radial-gradient(circle at 50% 38%, #ffd0a8, #ec4f72 55%, #6a1f8f); }
   .pack .sil { position: absolute; left: 50%; bottom: 23%; height: 66%; transform: translateX(-50%); filter: drop-shadow(0 0 2cqw rgba(255,255,255,.85)) drop-shadow(0 2cqw 3cqw rgba(0,0,40,.35)); }
-  .pack .ptitle { position: absolute; left: 0; right: 0; bottom: 15%; text-align: center; font: 900 15.5cqw/.9 var(--display); letter-spacing: .01em; font-style: italic;
-    color: #fff; -webkit-text-stroke: .9cqw #241a5a; paint-order: stroke fill; text-shadow: 0 1.2cqw 0 #241a5a; transform: skewX(-6deg); }
-  .pack .psub { position: absolute; left: 50%; bottom: 7.5%; transform: translateX(-50%); white-space: nowrap; font: 900 5cqw/1 var(--body); color: #4b1d7a; letter-spacing: .04em;
-    background: linear-gradient(180deg, #ffffff, #efdcff); padding: 1.4cqw 6cqw; clip-path: polygon(7% 0, 93% 0, 100% 50%, 93% 100%, 7% 100%, 0 50%); }
+  .pack .ptitle { position: absolute; left: 0; right: 0; bottom: 11%; text-align: center; font: 900 15.5cqw/.9 var(--display); letter-spacing: .01em; font-style: italic;
+    color: #fff; -webkit-text-stroke: .9cqw #1d2030; paint-order: stroke fill; text-shadow: 0 1.2cqw 0 #1d2030; transform: skewX(-6deg); }
   .pack .gloss { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.32) 47%, transparent 58%) 0 0 / 260% 100%; animation: sheen 4.2s linear infinite; }
   .pack .strip .gloss { animation-delay: 0s; }
   @keyframes sheen { from { background-position: 130% 0; } to { background-position: -130% 0; } }
@@ -195,12 +192,12 @@
   /* card back: identical on every card, so nothing leaks before the flip */
   .back { transform: translateZ(calc(var(--th) / 2)); }
   .back .bk { position: absolute; inset: 5%; border-radius: 6px; display: grid; place-items: center; align-content: center; gap: 8px;
-    background: var(--hexes) 0 0 / 30px auto, linear-gradient(160deg, #3f74e6, #6a52dc 60%, #4a3bb8); }
-  .back .bk::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 50% 42%, rgba(255,255,255,.35), rgba(63,116,230,.75) 60%); }
+    background: radial-gradient(circle at 50% 40%, #243049, #141a28 70%); box-shadow: inset 0 0 0 1px rgba(255,255,255,.14); }
+  .back .bk::before { content: ""; position: absolute; inset: 7px; border-radius: 4px; border: 1px solid rgba(217,160,63,.35); }
   .back .bk > * { position: relative; }
-  .back .bk svg { width: 92px; height: 92px; filter: drop-shadow(0 3px 0 rgba(30,20,90,.45)); }
-  .back .mark { font: 900 1.3rem/1 var(--body); color: #ffe36e; -webkit-text-stroke: 4px #2b1a6e; paint-order: stroke fill; letter-spacing: .08em; }
-  .back .q { position: absolute; bottom: 9%; left: 0; right: 0; text-align: center; font: 700 .72rem var(--body); color: rgba(255,255,255,.85); }
+  .back .bk svg { width: 84px; height: 84px; }
+  .back .mark { font: 900 1.05rem/1 var(--body); color: #e9e7e0; letter-spacing: .32em; margin-right: -.32em; }
+  .back .q { position: absolute; bottom: 9%; left: 0; right: 0; text-align: center; font: 700 .72rem var(--body); color: rgba(233,231,224,.55); }
 
   /* card front, modelled on a Topps Now card: faceted art with the radar as the hero, corner panel with the team crest,
      slanted dark nameplate over a silver subtitle bar. Sizes use cqw so every card size scales. */
@@ -544,10 +541,10 @@ function packHtml(k) {
         <span class="pback"></span><span class="edge l"></span><span class="edge r"></span>
         <span class="pf">
           <span class="body cover-${k}"><img class="sil" src="${SIL[COVERS[k]]}" alt="">
-            <span class="ptitle">DAILY PACK</span><span class="psub">第 ${S.day} 天・3 張</span>
+            <span class="ptitle">DAILY PACK</span>
             <span class="band b"></span><span class="gloss"></span></span>
           <span class="mouth"></span>
-          <span class="strip"><span class="band t"><span class="plogo">${mark("#ffffff")}<span class="wm"><b>球探報告</b><i>DAILY CARD PACK</i></span></span><span class="code">S1</span></span><span class="gloss"></span></span>
+          <span class="strip"><span class="band t"><span class="plogo">${mark("#ffffff")}<span class="wm"><b>球探報告</b><i>DAILY CARD PACK</i></span></span></span><span class="gloss"></span></span>
           <span class="seam"></span><span class="guide"></span><span class="cut"></span>
           <span class="pillow"></span><span class="dim"></span>
         </span>
