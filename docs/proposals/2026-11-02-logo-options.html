@@ -142,6 +142,14 @@ const MARKS = {
       <g clip-path="url(#radarA1)"><rect width="100" height="100" fill="url(#ballA1)"/>
         <g fill="none" stroke="#1d1208" stroke-width="3.6" stroke-linecap="round"><path d="M50 0 V100 M0 52 H100"/><path d="M27 8 Q45 52 27 96"/><path d="M73 8 Q55 52 73 96"/></g></g>
     </svg>`,
+  // A1b: A1 with all six axes the same length, so the ball skin is a regular hexagon inside the frame
+  A1b: (fg) => `<svg viewBox="0 0 100 100" aria-hidden="true">
+      <defs><clipPath id="radarA1b"><polygon points="${hexPts(33, [1,1,1,1,1,1])}"/></clipPath>
+        <radialGradient id="ballA1b" cx="40%" cy="30%" r="80%"><stop offset="0" stop-color="#f6a456"/><stop offset=".6" stop-color="#e0762a"/><stop offset="1" stop-color="#b3561a"/></radialGradient></defs>
+      <polygon points="${hexPts(44, [1,1,1,1,1,1])}" fill="none" stroke="${fg}" stroke-width="7" stroke-linejoin="round"/>
+      <g clip-path="url(#radarA1b)"><rect width="100" height="100" fill="url(#ballA1b)"/>
+        <g fill="none" stroke="#1d1208" stroke-width="3.6" stroke-linecap="round"><path d="M50 0 V100 M0 50 H100"/><path d="M33 16 Q46 50 33 84"/><path d="M67 16 Q54 50 67 84"/></g></g>
+    </svg>`,
   // A2: the hexagon is the ball; six corners stand for the six axes
   A2: () => `<svg viewBox="0 0 100 100" aria-hidden="true">
       <defs><clipPath id="hexA2"><polygon points="${hexPts(45, [1,1,1,1,1,1])}"/></clipPath>
@@ -186,6 +194,10 @@ const OPTS = [
     idea: "A 的六角外框不變，裡面的雷達形狀換成一塊籃球皮：橘色加上球縫。雷達刻意不對稱，像一位真的球員。（2026-11-03 網站擁有者選定）",
     pros: ["保留「六軸雷達」這個網站最核心的圖", "橘色加球縫，一眼知道是籃球", "外框細、裡面實心，小尺寸很清楚"],
     cons: ["雷達形狀不規則，球縫只露出一部分"] },
+  { k: "A1b", name: "球皮雷達・六軸等長", added: true,
+    idea: "A1 的等長版：六根軸一樣長，裡面的籃球皮變成一個正六角形，跟外框之間留一圈空隙。",
+    pros: ["最整齊，像一枚正式的徽章", "左右對稱，縮小後輪廓最穩", "球縫完整露出，籃球感比不對稱版更強"],
+    cons: ["看不出「雷達」的感覺，比較像六角框裡放一顆籃球"] },
   { k: "A2", name: "六角籃球", added: true,
     idea: "整個六角形就是一顆籃球，六個角代表六軸。三個版本裡最簡單。",
     pros: ["最簡潔有力，像一枚徽章", "16 像素也是一個清楚的橘色六角形", "印在卡包、卡背上很搶眼"],
