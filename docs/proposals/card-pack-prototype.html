@@ -185,21 +185,21 @@
     50% { transform: translateZ(140px) rotateY(90deg); }
     85% { transform: translateZ(90px) rotateY(155deg); }
     100% { transform: translateZ(0) rotateY(180deg); } }
-  .face { position: absolute; inset: 0; border-radius: 16px; backface-visibility: hidden; -webkit-backface-visibility: hidden; overflow: hidden; }
+  .face { position: absolute; inset: 0; border-radius: 9px; backface-visibility: hidden; -webkit-backface-visibility: hidden; overflow: hidden; }
   /* card-stock thickness: four thin strips between the two faces */
   .card .edge { position: absolute; background: linear-gradient(90deg, #aab3c0, #eef1f5, #aab3c0); }
-  .card .edge.l, .card .edge.r { top: 15px; bottom: 15px; width: var(--th); transform: rotateY(90deg); }
+  .card .edge.l, .card .edge.r { top: 9px; bottom: 9px; width: var(--th); transform: rotateY(90deg); }
   .card .edge.l { left: calc(var(--th) / -2); } .card .edge.r { right: calc(var(--th) / -2); }
-  .card .edge.t, .card .edge.b { left: 15px; right: 15px; height: var(--th); transform: rotateX(90deg); background: linear-gradient(#aab3c0, #eef1f5, #aab3c0); }
+  .card .edge.t, .card .edge.b { left: 9px; right: 9px; height: var(--th); transform: rotateX(90deg); background: linear-gradient(#aab3c0, #eef1f5, #aab3c0); }
   .card .edge.t { top: calc(var(--th) / -2); } .card .edge.b { bottom: calc(var(--th) / -2); }
   /* silver frame shared by both faces */
   .back, .front { background: linear-gradient(135deg, #fbfcfd, #c9ced6 38%, #f2f4f7 55%, #b6bdc7 78%, #eef1f4);
     box-shadow: inset 0 2px 0 rgba(255,255,255,.95), inset 0 -3px 5px rgba(0,0,0,.28), inset 3px 0 4px rgba(255,255,255,.5), inset -3px 0 4px rgba(0,0,0,.18), 0 14px 32px rgba(0,0,0,.5); } /* bevelled silver frame */
   /* card back: identical on every card, so nothing leaks before the flip */
   .back { transform: translateZ(calc(var(--th) / 2)); }
-  .back .bk { position: absolute; inset: 5%; border-radius: 11px; display: grid; place-items: center; align-content: center; gap: 8px;
+  .back .bk { position: absolute; inset: 5%; border-radius: 6px; display: grid; place-items: center; align-content: center; gap: 8px;
     background: radial-gradient(circle at 50% 40%, #243049, #141a28 70%); box-shadow: inset 0 0 0 1px rgba(255,255,255,.14); }
-  .back .bk::before { content: ""; position: absolute; inset: 7px; border-radius: 8px; border: 1px solid rgba(217,160,63,.35); }
+  .back .bk::before { content: ""; position: absolute; inset: 7px; border-radius: 4px; border: 1px solid rgba(217,160,63,.35); }
   .back .bk > * { position: relative; }
   .back .bk svg { width: 84px; height: 84px; }
   .back .mark { font: 900 1.05rem/1 var(--body); color: #e9e7e0; letter-spacing: .32em; margin-right: -.32em; }
@@ -208,7 +208,7 @@
   /* card front, modelled on a Topps Now card: faceted art with the radar as the hero, corner panel with the team crest,
      slanted dark nameplate over a silver subtitle bar. Sizes use cqw so every card size scales. */
   .front { transform: rotateY(180deg) translateZ(calc(var(--th) / 2)); container-type: inline-size; text-align: left; }
-  .frame { position: absolute; inset: 4.6%; border-radius: 10px; overflow: hidden; box-shadow: 0 0 0 1px rgba(0,0,0,.35); }
+  .frame { position: absolute; inset: 4.6%; border-radius: 5px; overflow: hidden; box-shadow: 0 0 0 1px rgba(0,0,0,.35); }
   .art { position: absolute; inset: 0;
     background:
       conic-gradient(from 200deg at 28% 42%, rgba(255,255,255,.13) 0 22deg, transparent 22deg 64deg, rgba(255,255,255,.07) 64deg 92deg, transparent 92deg 150deg, rgba(255,255,255,.11) 150deg 172deg, transparent 172deg),
