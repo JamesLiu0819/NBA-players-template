@@ -76,8 +76,9 @@
   .pack:nth-child(2) .pk { animation-delay: -1.7s; } .pack:nth-child(3) .pk { animation-delay: -3.3s; }
   @keyframes sway { from { transform: translateY(0) rotateX(3deg) rotateY(-9deg); } to { transform: translateY(-8px) rotateX(1deg) rotateY(9deg); } }
   .pack .pf { position: absolute; inset: 0; transform: translateZ(5px); -webkit-box-reflect: below 14px linear-gradient(transparent 74%, rgba(255,255,255,.32)); }
-  .pack .pback { position: absolute; inset: 1% 0; border-radius: 3cqw; transform: translateZ(-5px); background: #2a1f66; }
-  .pack .edge { position: absolute; top: 3%; bottom: 3%; width: 10px; background: linear-gradient(180deg, #8a6cf0, #3a2b8a 50%, #6b4fd8); }
+  /* back panel and side edges stop at the tear line: behind the top band there is nothing, so once it tears off the page shows through */
+  .pack .pback { position: absolute; inset: 18.5% 0 1%; border-radius: 0 0 3cqw 3cqw; transform: translateZ(-5px); background: #2a1f66; }
+  .pack .edge { position: absolute; top: 18.5%; bottom: 3%; width: 10px; background: linear-gradient(180deg, #8a6cf0, #3a2b8a 50%, #6b4fd8); }
   .pack .edge.l { left: -5px; transform: rotateY(-90deg); } .pack .edge.r { right: -5px; transform: rotateY(90deg); }
   /* top band: the part that tears off */
   .pack .strip { position: absolute; left: 0; right: 0; top: 0; height: 18.5%; border-radius: 3cqw 3cqw 0 0; overflow: hidden;
@@ -106,7 +107,9 @@
   .pack .gloss { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.32) 47%, transparent 58%) 0 0 / 260% 100%; animation: sheen 4.2s linear infinite; }
   .pack .strip .gloss { animation-delay: 0s; }
   @keyframes sheen { from { background-position: 130% 0; } to { background-position: -130% 0; } }
-  .pack .pillow { position: absolute; inset: 0; pointer-events: none; border-radius: 3cqw; background: linear-gradient(90deg, rgba(0,0,30,.32), transparent 9%, transparent 91%, rgba(0,0,30,.32)); }
+  .pack .pillow { position: absolute; inset: 0; pointer-events: none; border-radius: 3cqw; }
+  .pack.torn .pillow { top: 18.5%; border-radius: 0 0 3cqw 3cqw; } /* the side shading goes with the band */
+  .pack .pillow { background: linear-gradient(90deg, rgba(0,0,30,.32), transparent 9%, transparent 91%, rgba(0,0,30,.32)); }
   /* the tear line: always there, like a real perforation; glows and gets a guide dot once the pack is picked */
   .pack .seam { position: absolute; left: 0; right: 0; top: calc(18.5% - .8cqw); height: 1.6cqw; background: var(--seam); box-shadow: 0 0 2cqw var(--seam); }
   .pack .seam::after { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 1cqw; background: #fff; }
@@ -168,8 +171,16 @@
   .summary .new { display: none; }
 
   .card { --c: var(--common); --th: 3px; position: relative; width: 200px; height: 280px; border: 0; padding: 0; background: none; transform-style: preserve-3d;
-    transition: transform .7s cubic-bezier(.2,.9,.25,1.15); }
+    transition: transform .6s cubic-bezier(.3,.7,.3,1); }
   .card.flipped { transform: rotateY(180deg); }
+  /* a 230px card turning in place swings 115px behind itself and cuts into the pile, so it rises as it turns */
+  .stack .card.flipping { transition: none; animation: flipLift .6s cubic-bezier(.3,.7,.3,1) forwards; }
+  @keyframes flipLift {
+    0% { transform: translateZ(0) rotateY(0deg); }
+    15% { transform: translateZ(90px) rotateY(25deg); }
+    50% { transform: translateZ(140px) rotateY(90deg); }
+    85% { transform: translateZ(90px) rotateY(155deg); }
+    100% { transform: translateZ(0) rotateY(180deg); } }
   .face { position: absolute; inset: 0; border-radius: 9px; backface-visibility: hidden; -webkit-backface-visibility: hidden; overflow: hidden; }
   /* card-stock thickness: four thin strips between the two faces */
   .card .edge { position: absolute; background: linear-gradient(90deg, #aab3c0, #eef1f5, #aab3c0); }
@@ -627,7 +638,8 @@ function dealStack(pack) {
   const flipTop = () => {
     const btn = top(); if (!btn || btn.classList.contains("flipped")) return false;
     const p = pack.find((x) => x.id === btn.dataset.id);
-    delete btn.dataset.depth; btn.classList.add("flipped"); SFX.flip();
+    delete btn.dataset.depth; btn.classList.add("flipped", "flipping"); SFX.flip();
+    btn.addEventListener("animationend", (e) => { if (e.animationName === "flipLift") btn.classList.remove("flipping"); });
     setTimeout(() => { reveal(btn, p); $("rarity").innerHTML = RARITY[p.tier]; }, 330);
     hold(p.tier === "legend" ? 3400 : p.tier === "epic" ? 1300 : 900);
     if (index === pack.length - 1) setTimeout(() => { done = true; stopLoop(); finish(pack); }, p.tier === "legend" ? 3600 : 1100);
