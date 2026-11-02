@@ -76,7 +76,7 @@
 <body>
 <div class="wrap">
   <h1>球探報告 Logo 提案</h1>
-  <p class="lead">現在網站的 logo 是一顆 🏀 表情符號，球員卡和卡包上也只放了暫時的「SR」字樣。下面四個方向都<b>已經放進實際會出現的地方</b>：導覽列（深色和淺色）、瀏覽器分頁、球員卡左上角、卡包正面。</p>
+  <p class="lead">現在網站的 logo 是一顆 🏀 表情符號，球員卡和卡包上也只放了暫時的「SR」字樣。下面六個方向（E、F 是 11/3 依你的「籃球裡面有六軸」想法新增的）都<b>已經放進實際會出現的地方</b>：導覽列（深色和淺色）、瀏覽器分頁、球員卡左上角、卡包正面。</p>
 
   <div class="why">
     <h2>挑 logo 時看三件事</h2>
@@ -92,7 +92,7 @@
   <div class="decide">
     <h2>需要你決定</h2>
     <ol>
-      <li><b>選一個方向</b>（A / B / C / D），或說「A 的形狀配 D 的顏色」這種組合。</li>
+      <li><b>選一個方向</b>（A–F），或說「E 的球配 D 的標籤字」這種組合。</li>
       <li>名字要不要維持<b>「球探報告」</b>？英文是 <b>Scouting Report</b>，縮寫 <b>SR</b>。</li>
     </ol>
     <div class="q">選定之後我會一次改好：導覽列 logo、瀏覽器分頁圖示、卡包正面、卡背、球員卡左上角。正式網站要等你看過再推上去。</div>
@@ -134,6 +134,23 @@ const MARKS = {
         <g fill="none" stroke="#1a1206" stroke-width="2.2" stroke-linecap="round"><path d="M50 33 V67 M33 50 H67"/><path d="M39 38 Q46 50 39 62"/><path d="M61 38 Q54 50 61 62"/></g>
       </g>
     </svg>`,
+  // E: the ball's seams are the six axes; the radar fills between them
+  E: () => `<svg viewBox="0 0 100 100" aria-hidden="true">
+      <defs><radialGradient id="ballE" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#f6a456"/><stop offset=".55" stop-color="#e0762a"/><stop offset="1" stop-color="#a94e12"/></radialGradient></defs>
+      <circle cx="50" cy="50" r="45" fill="url(#ballE)"/>
+      <polygon points="${hexPts(38, RADAR)}" fill="#fff1d2" fill-opacity=".92" stroke="#fff1d2" stroke-width="2" stroke-linejoin="round"/>
+      ${[0, 1, 2].map((i) => { const a = -Math.PI / 2 + i * Math.PI / 3; const x = Math.cos(a) * 45, y = Math.sin(a) * 45; return `<line x1="${(50 - x).toFixed(1)}" y1="${(50 - y).toFixed(1)}" x2="${(50 + x).toFixed(1)}" y2="${(50 + y).toFixed(1)}" stroke="#1d1208" stroke-width="4.5" stroke-linecap="round"/>`; }).join("")}
+      <circle cx="50" cy="50" r="45" fill="none" stroke="#1d1208" stroke-width="4.5"/>
+    </svg>`,
+  // F: a real basketball (one vertical, one horizontal seam, two side arcs) with a small hexagon radar in the middle
+  F: () => `<svg viewBox="0 0 100 100" aria-hidden="true">
+      <defs><radialGradient id="ballF" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#f6a456"/><stop offset=".55" stop-color="#e0762a"/><stop offset="1" stop-color="#a94e12"/></radialGradient></defs>
+      <circle cx="50" cy="50" r="45" fill="url(#ballF)"/>
+      <g fill="none" stroke="#1d1208" stroke-width="4" stroke-linecap="round"><path d="M50 5 V95 M5 50 H95"/><path d="M22 14 Q40 50 22 86"/><path d="M78 14 Q60 50 78 86"/></g>
+      <polygon points="${hexPts(19, [1,1,1,1,1,1])}" fill="#1d1208" stroke="#1d1208" stroke-width="3" stroke-linejoin="round"/>
+      <polygon points="${hexPts(15, RADAR)}" fill="#ffd23d"/>
+      <circle cx="50" cy="50" r="45" fill="none" stroke="#1d1208" stroke-width="4.5"/>
+    </svg>`,
   D: (fg, acc, bg) => `<svg viewBox="0 0 100 100" aria-hidden="true">
       <g transform="skewX(-10) translate(9 0)">
         <rect x="6" y="18" width="84" height="64" rx="11" fill="${acc}"/>
@@ -142,7 +159,15 @@ const MARKS = {
     </svg>`,
 };
 const OPTS = [
-  { k: "A", name: "六軸雷達章", rec: true,
+  { k: "E", name: "六軸籃球", rec: true, added: true,
+    idea: "一顆籃球，球上的三條球縫剛好就是六軸的六根軸線，中間填上一個不對稱的雷達形狀。（網站擁有者 2026-11-03 的想法）",
+    pros: ["一眼看得出是籃球，又帶著六軸，A 跟 B 的優點都有", "縮到 16 像素還是一顆橘色的球，很好認", "跟球員卡上的雷達圖、原型分析是同一個語言"],
+    cons: ["三條直線的球縫跟真的籃球不太一樣，比較像「設計過的球」"] },
+  { k: "F", name: "球縫雷達", added: true,
+    idea: "保留真的籃球球縫（一直一橫兩道弧），正中間放一個小六角雷達。",
+    pros: ["最像真的籃球", "放大看細節最豐富，適合卡包、卡背"],
+    cons: ["16 像素時中間的雷達會糊掉，只剩一顆球", "球縫加雷達線條比較多"] },
+  { k: "A", name: "六軸雷達章",
     idea: "六角形外框裡面一個不對稱的雷達形狀，就是網站算出來的那張六軸圖。",
     pros: ["一看就知道是「把球員拆成六項能力」的網站", "縮到 16 像素還看得出六角形", "跟球員卡上的雷達圖、原型分析是同一個語言"],
     cons: ["沒有籃球元素，第一眼不一定知道是籃球"] },
@@ -178,7 +203,7 @@ document.getElementById("opts").innerHTML = OPTS.map((o) => `
     <div class="head">
       <div class="hero">${MARKS[o.k](COLORS.ink, COLORS.gold, COLORS.dark)}</div>
       <div style="flex:1;min-width:220px">
-        <h2>${o.k}・${o.name}${o.rec ? '<span class="tag">我的推薦</span>' : ""}</h2>
+        <h2>${o.k}・${o.name}${o.rec ? '<span class="tag">我的推薦</span>' : ""}${o.added ? '<span class="tag" style="background:var(--teal)">新增</span>' : ""}</h2>
         <p class="idea">${o.idea}</p>
       </div>
     </div>
