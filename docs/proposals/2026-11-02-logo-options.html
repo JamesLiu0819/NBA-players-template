@@ -76,7 +76,7 @@
 <body>
 <div class="wrap">
   <h1>球探報告 Logo 提案</h1>
-  <p class="lead">現在網站的 logo 是一顆 🏀 表情符號，球員卡和卡包上也只放了暫時的「SR」字樣。下面六個方向（E、F 是 11/3 依你的「籃球裡面有六軸」想法新增的）都<b>已經放進實際會出現的地方</b>：導覽列（深色和淺色）、瀏覽器分頁、球員卡左上角、卡包正面。</p>
+  <p class="lead">現在網站的 logo 是一顆 🏀 表情符號，球員卡和卡包上也只放了暫時的「SR」字樣。最上面三個是 A 的籃球版本（11/3 新增），E、F 是「籃球裡面有六軸」的版本；全部都<b>已經放進實際會出現的地方</b>：導覽列（深色和淺色）、瀏覽器分頁、球員卡左上角、卡包正面。</p>
 
   <div class="why">
     <h2>挑 logo 時看三件事</h2>
@@ -92,7 +92,7 @@
   <div class="decide">
     <h2>需要你決定</h2>
     <ol>
-      <li><b>選一個方向</b>（A–F），或說「E 的球配 D 的標籤字」這種組合。</li>
+      <li><b>選一個方向</b>（A1、A2、A3 或 A–F），或說「A2 的形狀配 A1 的顏色」這種組合。</li>
       <li>名字要不要維持<b>「球探報告」</b>？英文是 <b>Scouting Report</b>，縮寫 <b>SR</b>。</li>
     </ol>
     <div class="q">選定之後我會一次改好：導覽列 logo、瀏覽器分頁圖示、卡包正面、卡背、球員卡左上角。正式網站要等你看過再推上去。</div>
@@ -134,6 +134,29 @@ const MARKS = {
         <g fill="none" stroke="#1a1206" stroke-width="2.2" stroke-linecap="round"><path d="M50 33 V67 M33 50 H67"/><path d="M39 38 Q46 50 39 62"/><path d="M61 38 Q54 50 61 62"/></g>
       </g>
     </svg>`,
+  // A1: A's hexagon frame; the radar shape is cut from basketball skin (orange + seams)
+  A1: (fg) => `<svg viewBox="0 0 100 100" aria-hidden="true">
+      <defs><clipPath id="radarA1"><polygon points="${hexPts(40, RADAR)}"/></clipPath>
+        <radialGradient id="ballA1" cx="40%" cy="30%" r="80%"><stop offset="0" stop-color="#f6a456"/><stop offset=".6" stop-color="#e0762a"/><stop offset="1" stop-color="#b3561a"/></radialGradient></defs>
+      <polygon points="${hexPts(44, [1,1,1,1,1,1])}" fill="none" stroke="${fg}" stroke-width="7" stroke-linejoin="round"/>
+      <g clip-path="url(#radarA1)"><rect width="100" height="100" fill="url(#ballA1)"/>
+        <g fill="none" stroke="#1d1208" stroke-width="3.6" stroke-linecap="round"><path d="M50 0 V100 M0 52 H100"/><path d="M27 8 Q45 52 27 96"/><path d="M73 8 Q55 52 73 96"/></g></g>
+    </svg>`,
+  // A2: the hexagon is the ball; six corners stand for the six axes
+  A2: () => `<svg viewBox="0 0 100 100" aria-hidden="true">
+      <defs><clipPath id="hexA2"><polygon points="${hexPts(45, [1,1,1,1,1,1])}"/></clipPath>
+        <radialGradient id="ballA2" cx="38%" cy="30%" r="80%"><stop offset="0" stop-color="#f6a456"/><stop offset=".6" stop-color="#e0762a"/><stop offset="1" stop-color="#a94e12"/></radialGradient></defs>
+      <polygon points="${hexPts(45, [1,1,1,1,1,1])}" fill="url(#ballA2)"/>
+      <g clip-path="url(#hexA2)" fill="none" stroke="#1d1208" stroke-width="5" stroke-linecap="round"><path d="M50 0 V100 M0 50 H100"/><path d="M24 6 Q44 50 24 94"/><path d="M76 6 Q56 50 76 94"/></g>
+      <polygon points="${hexPts(45, [1,1,1,1,1,1])}" fill="none" stroke="#1d1208" stroke-width="5" stroke-linejoin="round"/>
+    </svg>`,
+  // A3: A's frame with basketball seams instead of the six spokes, over an orange radar
+  A3: (fg) => `<svg viewBox="0 0 100 100" aria-hidden="true">
+      <defs><clipPath id="hexA3"><polygon points="${hexPts(42, [1,1,1,1,1,1])}"/></clipPath></defs>
+      <polygon points="${hexPts(40, RADAR)}" fill="#e57a2c" stroke="#e57a2c" stroke-width="2" stroke-linejoin="round"/>
+      <g clip-path="url(#hexA3)" fill="none" stroke="${fg}" stroke-width="3.4" stroke-linecap="round"><path d="M50 0 V100 M0 50 H100"/><path d="M26 6 Q45 50 26 94"/><path d="M74 6 Q55 50 74 94"/></g>
+      <polygon points="${hexPts(44, [1,1,1,1,1,1])}" fill="none" stroke="${fg}" stroke-width="7" stroke-linejoin="round"/>
+    </svg>`,
   // E: the ball's seams are the six axes; the radar fills between them
   E: () => `<svg viewBox="0 0 100 100" aria-hidden="true">
       <defs><radialGradient id="ballE" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#f6a456"/><stop offset=".55" stop-color="#e0762a"/><stop offset="1" stop-color="#a94e12"/></radialGradient></defs>
@@ -159,7 +182,19 @@ const MARKS = {
     </svg>`,
 };
 const OPTS = [
-  { k: "E", name: "六軸籃球", rec: true, added: true,
+  { k: "A1", name: "球皮雷達", rec: true, added: true,
+    idea: "A 的六角外框不變，裡面的雷達形狀換成一塊籃球皮：橘色加上球縫。",
+    pros: ["保留「六軸雷達」這個網站最核心的圖", "橘色加球縫，一眼知道是籃球", "外框細、裡面實心，小尺寸很清楚"],
+    cons: ["雷達形狀不規則，球縫只露出一部分"] },
+  { k: "A2", name: "六角籃球", added: true,
+    idea: "整個六角形就是一顆籃球，六個角代表六軸。三個版本裡最簡單。",
+    pros: ["最簡潔有力，像一枚徽章", "16 像素也是一個清楚的橘色六角形", "印在卡包、卡背上很搶眼"],
+    cons: ["裡面沒有雷達形狀，「六軸」只靠六個角暗示"] },
+  { k: "A3", name: "球縫軸線", added: true,
+    idea: "六角外框裡畫滿籃球球縫，取代 A 原本的六根軸線；底下是橘色雷達。",
+    pros: ["外框是六角、線條是籃球、填色是雷達，三個元素都在", "跟 A 原版最接近"],
+    cons: ["線條最多，三個版本裡最不簡潔"] },
+  { k: "E", name: "六軸籃球", added: true,
     idea: "一顆籃球，球上的三條球縫剛好就是六軸的六根軸線，中間填上一個不對稱的雷達形狀。（網站擁有者 2026-11-03 的想法）",
     pros: ["一眼看得出是籃球，又帶著六軸，A 跟 B 的優點都有", "縮到 16 像素還是一顆橘色的球，很好認", "跟球員卡上的雷達圖、原型分析是同一個語言"],
     cons: ["三條直線的球縫跟真的籃球不太一樣，比較像「設計過的球」"] },
