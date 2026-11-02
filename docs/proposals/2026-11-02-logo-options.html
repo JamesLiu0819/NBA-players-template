@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>球探報告 Logo 提案</title>
+<!-- 用途：網站 logo 的四個方向，放進導覽列、分頁圖示、球員卡、卡包裡比較，給網站擁有者挑選。
+     選定後才會改 src/ui/index.html 的導覽列與 favicon、卡包試玩版的 logo 位置。
+     可手動調整的變數：script 裡的 RADAR（A 案雷達的六個值）、COLORS（各情境用的顏色）。 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #1c2027; --raised: #262b34; --sunken: #14171c; --ink: #e9e7e0; --soft: #9aa1ab; --line: rgba(255,255,255,.12);
+    --gold: #d9a03f; --gold-ink: #f0c76e; --teal: #4fb3a9; --red: #e2563a;
+    --display: "Big Shoulders Display", "Arial Narrow", "PingFang TC", sans-serif;
+    --body: "Noto Sans TC", -apple-system, "PingFang TC", "Microsoft JhengHei", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--sunken); color: var(--ink); font: 15px/1.65 var(--body); }
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 28px 18px 80px; }
+  h1 { font: 900 1.7rem/1.2 var(--body); margin: 0 0 6px; }
+  .lead { color: var(--soft); margin: 0 0 22px; }
+  .lead b { color: var(--gold-ink); }
+  .why { background: var(--paper); border: 1px solid var(--line); border-left: 4px solid var(--gold); border-radius: 10px; padding: 12px 16px; margin-bottom: 28px; }
+  .why h2 { margin: 0 0 4px; font-size: 1rem; }
+  .why ul { margin: 0; padding-left: 1.2em; }
+  .why li b { color: var(--gold-ink); }
+
+  .opt { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-bottom: 22px; }
+  .opt.rec { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold), 0 10px 30px rgba(217,160,63,.12); }
+  .head { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+  .hero { width: 116px; height: 116px; flex: none; display: grid; place-items: center; background: var(--raised); border-radius: 14px; }
+  .hero svg { width: 92px; height: 92px; }
+  .head h2 { margin: 0; font: 900 1.25rem/1.2 var(--body); }
+  .tag { display: inline-block; font: 800 .72rem/1 var(--body); padding: 4px 8px; border-radius: 999px; background: var(--gold); color: #1a1206; margin-left: 6px; vertical-align: 3px; }
+  .idea { margin: 4px 0 0; color: var(--soft); }
+  .pros { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 18px; margin: 12px 0 0; padding: 0; list-style: none; font-size: .9rem; }
+  .pros li::before { content: "✅ "; } .pros li.con::before { content: "⚠️ "; }
+  @media (max-width: 640px) { .pros { grid-template-columns: 1fr; } }
+
+  /* the four places a logo shows up */
+  .ctx { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 16px; }
+  @media (max-width: 860px) { .ctx { grid-template-columns: repeat(2, 1fr); } }
+  .cell { background: var(--sunken); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .cell > small { color: var(--soft); font-size: .72rem; letter-spacing: .04em; }
+  .nav { display: flex; align-items: center; gap: 7px; padding: 9px 10px; border-radius: 8px; background: var(--paper); border: 1px solid var(--line); font: 800 .9rem var(--body); }
+  .nav.light { background: #faf5ea; color: #2a2318; border-color: rgba(42,35,24,.14); }
+  .nav svg { width: 24px; height: 24px; flex: none; }
+  .tab { display: flex; align-items: center; gap: 6px; background: #2c313b; border-radius: 8px 8px 0 0; padding: 6px 10px; font-size: .74rem; width: max-content; max-width: 100%; }
+  .tab svg { width: 16px; height: 16px; flex: none; }
+  .fav { display: flex; gap: 10px; align-items: flex-end; }
+  .fav svg { display: block; }
+  /* mini Topps-style card and pack, same look as the card prototype */
+  .minicard { position: relative; width: 104px; aspect-ratio: 5 / 7; border-radius: 5px; background: #eef0f3; padding: 3px; align-self: center; }
+  .minicard .art { position: absolute; inset: 3px; border-radius: 3px; overflow: hidden;
+    background: conic-gradient(from 200deg at 28% 42%, rgba(255,255,255,.13) 0 22deg, transparent 22deg 64deg, rgba(255,255,255,.08) 64deg 92deg, transparent 92deg), radial-gradient(circle at 50% 36%, #5b84dd, #0c2470 55%, #050b26); }
+  .minicard .lg { position: absolute; left: 7px; top: 7px; width: 30px; height: 30px; }
+  .minicard .np { position: absolute; left: 3px; bottom: 26%; width: 78%; height: 10%; background: linear-gradient(90deg,#101217,#2c3039); clip-path: polygon(0 0,92% 0,100% 100%,0 100%); color: #fff; font: 900 .5rem/1 var(--display); display: flex; align-items: center; padding-left: 7px; letter-spacing: .03em; }
+  .minicard .sb { position: absolute; left: 6%; right: 12%; bottom: 17%; height: 7%; background: linear-gradient(#fff,#cfd5de); clip-path: polygon(0 0,100% 0,96% 100%,4% 100%); }
+  .minipack { position: relative; width: 96px; aspect-ratio: 190 / 272; align-self: center; border-radius: 3px; display: grid; place-items: center; overflow: hidden;
+    background: radial-gradient(circle at 30% 20%, rgba(255,255,255,.3), transparent 40%), linear-gradient(90deg, rgba(0,0,0,.5), transparent 14%, transparent 86%, rgba(0,0,0,.5)), linear-gradient(160deg, #2e374b, #10141c 52%, #232b3c); }
+  .minipack::before, .minipack::after { content: ""; position: absolute; left: 0; right: 0; height: 7%; background: repeating-linear-gradient(90deg, rgba(255,255,255,.1) 0 2px, rgba(0,0,0,.25) 2px 4px); }
+  .minipack::before { top: 0; } .minipack::after { bottom: 0; }
+  .minipack svg { width: 50px; height: 50px; margin-top: 46%; }
+  .minipack .pk-t { position: absolute; top: 18%; left: 0; right: 0; text-align: center; font: 900 .9rem/.9 var(--display); letter-spacing: .02em; }
+
+  .decide { background: var(--paper); border: 1px solid var(--gold); border-radius: 14px; padding: 16px 18px; }
+  .decide h2 { margin: 0 0 6px; font-size: 1.1rem; }
+  .decide ol { margin: 6px 0 0; padding-left: 1.3em; }
+  .decide b { color: var(--gold-ink); }
+  .decide .q { margin-top: 12px; padding: 10px 12px; background: var(--sunken); border-radius: 8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>球探報告 Logo 提案</h1>
+  <p class="lead">現在網站的 logo 是一顆 🏀 表情符號，球員卡和卡包上也只放了暫時的「SR」字樣。下面四個方向都<b>已經放進實際會出現的地方</b>：導覽列（深色和淺色）、瀏覽器分頁、球員卡左上角、卡包正面。</p>
+
+  <div class="why">
+    <h2>挑 logo 時看三件事</h2>
+    <ul>
+      <li><b>縮到 16 像素還認得出來</b>：分頁圖示、手機主畫面都很小。</li>
+      <li><b>看得出跟這個網站有關</b>：別的籃球網站也能用的圖案（例如一顆籃球）不夠特別。</li>
+      <li><b>深色和淺色背景都好看</b>：網站有兩種主題，球員卡是藍底、卡包是深灰底。</li>
+    </ul>
+  </div>
+
+  <div id="opts"></div>
+
+  <div class="decide">
+    <h2>需要你決定</h2>
+    <ol>
+      <li><b>選一個方向</b>（A / B / C / D），或說「A 的形狀配 D 的顏色」這種組合。</li>
+      <li>名字要不要維持<b>「球探報告」</b>？英文是 <b>Scouting Report</b>，縮寫 <b>SR</b>。</li>
+    </ol>
+    <div class="q">選定之後我會一次改好：導覽列 logo、瀏覽器分頁圖示、卡包正面、卡背、球員卡左上角。正式網站要等你看過再推上去。</div>
+  </div>
+</div>
+
+<script>
+"use strict";
+// A 案雷達的六個值（0–1），刻意不對稱，看起來像一位真的球員
+const RADAR = [0.9, 0.72, 0.4, 0.82, 0.48, 0.66];
+const COLORS = { gold: "#d9a03f", ink: "#e9e7e0", dark: "#1c2027", brown: "#2a2318", ball: "#e07a2e" };
+
+function hexPts(r, vals) {
+  return vals.map((v, i) => { const a = -Math.PI / 2 + i * Math.PI / 3; return `${(50 + Math.cos(a) * r * v).toFixed(1)},${(50 + Math.sin(a) * r * v).toFixed(1)}`; }).join(" ");
+}
+// Each mark draws on a 100×100 box. `fg` is the line colour, `acc` the fill accent, `bg` what sits behind it.
+const MARKS = {
+  A: (fg, acc) => `<svg viewBox="0 0 100 100" aria-hidden="true">
+      <polygon points="${hexPts(44, [1,1,1,1,1,1])}" fill="none" stroke="${fg}" stroke-width="7" stroke-linejoin="round"/>
+      <polygon points="${hexPts(40, RADAR)}" fill="${acc}" stroke="${acc}" stroke-width="2" stroke-linejoin="round"/>
+      ${[0,1,2,3,4,5].map((i) => { const a = -Math.PI / 2 + i * Math.PI / 3; return `<line x1="50" y1="50" x2="${(50 + Math.cos(a) * 40).toFixed(1)}" y2="${(50 + Math.sin(a) * 40).toFixed(1)}" stroke="${fg}" stroke-opacity=".4" stroke-width="2.5"/>`; }).join("")}
+    </svg>`,
+  B: (fg, acc) => `<svg viewBox="0 0 100 100" aria-hidden="true">
+      <path d="M5 50 Q50 6 95 50 Q50 94 5 50 Z" fill="none" stroke="${fg}" stroke-width="7" stroke-linejoin="round"/>
+      <circle cx="50" cy="50" r="21" fill="${acc}"/>
+      <g fill="none" stroke="#1a1206" stroke-width="2.6" stroke-linecap="round">
+        <path d="M50 29 V71 M29 50 H71"/><path d="M36 35 Q45 50 36 65"/><path d="M64 35 Q55 50 64 65"/>
+      </g>
+      <circle cx="42" cy="41" r="4" fill="#fff" fill-opacity=".75"/>
+    </svg>`,
+  C: (fg, acc) => `<svg viewBox="0 0 100 100" aria-hidden="true">
+      <defs><path id="ring-${fg.slice(1)}" d="M50 50 m-38 0 a38 38 0 1 1 76 0 a38 38 0 1 1 -76 0"/></defs>
+      <g transform="rotate(-10 50 50)">
+        <circle cx="50" cy="50" r="46" fill="none" stroke="${fg}" stroke-width="4.5"/>
+        <circle cx="50" cy="50" r="30" fill="none" stroke="${fg}" stroke-width="2"/>
+        <text font-family="Big Shoulders Display, Arial Narrow, sans-serif" font-weight="900" font-size="12.5" letter-spacing="2.2" fill="${fg}">
+          <textPath href="#ring-${fg.slice(1)}">SCOUTING REPORT ★ 球探報告 ★</textPath></text>
+        <circle cx="50" cy="50" r="17" fill="${acc}"/>
+        <g fill="none" stroke="#1a1206" stroke-width="2.2" stroke-linecap="round"><path d="M50 33 V67 M33 50 H67"/><path d="M39 38 Q46 50 39 62"/><path d="M61 38 Q54 50 61 62"/></g>
+      </g>
+    </svg>`,
+  D: (fg, acc, bg) => `<svg viewBox="0 0 100 100" aria-hidden="true">
+      <g transform="skewX(-10) translate(9 0)">
+        <rect x="6" y="18" width="84" height="64" rx="11" fill="${acc}"/>
+        <text x="48" y="70" text-anchor="middle" font-family="Big Shoulders Display, Arial Narrow, sans-serif" font-weight="900" font-size="58" fill="${bg}" letter-spacing="-1">SR</text>
+      </g>
+    </svg>`,
+};
+const OPTS = [
+  { k: "A", name: "六軸雷達章", rec: true,
+    idea: "六角形外框裡面一個不對稱的雷達形狀，就是網站算出來的那張六軸圖。",
+    pros: ["一看就知道是「把球員拆成六項能力」的網站", "縮到 16 像素還看得出六角形", "跟球員卡上的雷達圖、原型分析是同一個語言"],
+    cons: ["沒有籃球元素，第一眼不一定知道是籃球"] },
+  { k: "B", name: "球探之眼", idea: "一隻眼睛，瞳孔是一顆籃球：球探的工作就是「看」。",
+    pros: ["好記、有故事，一句話講得完", "籃球元素很清楚", "小尺寸也認得出眼睛形狀"],
+    cons: ["比較像「看球」而不是「分析」，跟六軸沒有直接關係"] },
+  { k: "C", name: "球探印章", idea: "圓形橡皮章，外圈寫 SCOUTING REPORT・球探報告，中間一顆籃球，像蓋在報告上的認證章。",
+    pros: ["最有「報告」的感覺，適合結果頁和分享圖", "放在卡背、卡包上很有收藏感"],
+    cons: ["外圈的字在 16 像素完全看不到，分頁圖示只能剩中間的球", "細節多，深色小尺寸會糊"] },
+  { k: "D", name: "SR 卡牌標籤", idea: "斜體 SR 字母放在圓角方塊裡，跟 Topps 卡左上角的品牌標籤同一種做法。",
+    pros: ["放在球員卡、卡包上最像真的球員卡", "最簡單，任何尺寸都清楚"],
+    cons: ["只是字母，看不出網站在做什麼", "SR 這個縮寫一般人不認得"] },
+];
+
+function contexts(k) {
+  const m = MARKS[k];
+  return `<div class="ctx">
+    <div class="cell"><small>導覽列（深色 / 淺色）</small>
+      <div class="nav">${m(COLORS.ink, COLORS.gold, COLORS.dark)}球探報告</div>
+      <div class="nav light">${m(COLORS.brown, "#b06a1f", "#faf5ea")}球探報告</div></div>
+    <div class="cell"><small>瀏覽器分頁 / 實際 16 與 32 像素</small>
+      <div class="tab">${m(COLORS.ink, COLORS.gold, COLORS.dark)}幫自己寫一份球探報告</div>
+      <div class="fav"><span style="width:16px;height:16px">${m(COLORS.ink, COLORS.gold, COLORS.dark).replace("<svg", '<svg width="16" height="16"')}</span>
+        <span style="width:32px;height:32px">${m(COLORS.ink, COLORS.gold, COLORS.dark).replace("<svg", '<svg width="32" height="32"')}</span></div></div>
+    <div class="cell"><small>球員卡左上角</small>
+      <div class="minicard"><div class="art"></div><span class="lg">${m("#ffffff", COLORS.gold, "#0c2470")}</span><span class="np">LEBRON JAMES</span><span class="sb"></span></div></div>
+    <div class="cell"><small>卡包正面</small>
+      <div class="minipack"><span class="pk-t">DAILY<br>PACK</span>${m(COLORS.ink, COLORS.gold, "#151a24")}</div></div>
+  </div>`;
+}
+document.getElementById("opts").innerHTML = OPTS.map((o) => `
+  <section class="opt${o.rec ? " rec" : ""}">
+    <div class="head">
+      <div class="hero">${MARKS[o.k](COLORS.ink, COLORS.gold, COLORS.dark)}</div>
+      <div style="flex:1;min-width:220px">
+        <h2>${o.k}・${o.name}${o.rec ? '<span class="tag">我的推薦</span>' : ""}</h2>
+        <p class="idea">${o.idea}</p>
+      </div>
+    </div>
+    <ul class="pros">${o.pros.map((p) => `<li>${p}</li>`).join("")}${o.cons.map((c) => `<li class="con">${c}</li>`).join("")}</ul>
+    ${contexts(o.k)}
+  </section>`).join("");
+</script>
+</body>
+</html>
