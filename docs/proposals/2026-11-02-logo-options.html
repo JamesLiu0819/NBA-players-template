@@ -102,7 +102,7 @@
 <script>
 "use strict";
 // A 案雷達的六個值（0–1），刻意不對稱，看起來像一位真的球員
-const RADAR = [0.9, 0.72, 0.4, 0.82, 0.48, 0.66];
+const RADAR = [0.74, 0.98, 0.5, 0.66, 0.92, 0.36]; // top, upper-right, lower-right, bottom, lower-left, upper-left: no mirrored pairs, so it reads as one real player
 const COLORS = { gold: "#d9a03f", ink: "#e9e7e0", dark: "#1c2027", brown: "#2a2318", ball: "#e07a2e" };
 
 function hexPts(r, vals) {
@@ -183,7 +183,7 @@ const MARKS = {
 };
 const OPTS = [
   { k: "A1", name: "球皮雷達", rec: true, added: true,
-    idea: "A 的六角外框不變，裡面的雷達形狀換成一塊籃球皮：橘色加上球縫。",
+    idea: "A 的六角外框不變，裡面的雷達形狀換成一塊籃球皮：橘色加上球縫。雷達刻意不對稱，像一位真的球員。（2026-11-03 網站擁有者選定）",
     pros: ["保留「六軸雷達」這個網站最核心的圖", "橘色加球縫，一眼知道是籃球", "外框細、裡面實心，小尺寸很清楚"],
     cons: ["雷達形狀不規則，球縫只露出一部分"] },
   { k: "A2", name: "六角籃球", added: true,
@@ -238,7 +238,7 @@ document.getElementById("opts").innerHTML = OPTS.map((o) => `
     <div class="head">
       <div class="hero">${MARKS[o.k](COLORS.ink, COLORS.gold, COLORS.dark)}</div>
       <div style="flex:1;min-width:220px">
-        <h2>${o.k}・${o.name}${o.rec ? '<span class="tag">我的推薦</span>' : ""}${o.added ? '<span class="tag" style="background:var(--teal)">新增</span>' : ""}</h2>
+        <h2>${o.k}・${o.name}${o.rec ? '<span class="tag">已選定</span>' : ""}${o.added ? '<span class="tag" style="background:var(--teal)">新增</span>' : ""}</h2>
         <p class="idea">${o.idea}</p>
       </div>
     </div>
