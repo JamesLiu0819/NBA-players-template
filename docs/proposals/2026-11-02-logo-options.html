@@ -154,7 +154,7 @@ const MARKS = {
         <g fill="none" stroke="#1d1208" stroke-width="3.6" stroke-linecap="round"><path d="M50 0 V100 M0 52 H100"/><path d="M27 8 Q45 52 27 96"/><path d="M73 8 Q55 52 73 96"/></g></g>
     </svg>`,
   // A1d / A1e: diamond-shaped radars, same frame and ball skin as A1
-  A1d: (fg) => skinMark(fg, "A1d", [0.98, 0.5, 0.5, 0.98, 0.5, 0.5]),
+  A1d: (fg) => skinMark(fg, "A1d", [0.98, 0.72, 0.72, 0.98, 0.72, 0.72]), // 2026-11-03: side axes 0.5 -> 0.72 for a fuller diamond
   A1e: (fg) => skinMark(fg, "A1e", [0.5, 0.95, 0.5, 1, 0.5, 0.95]),
   // A1c: mirror-symmetric radar (upper-right = upper-left, lower-right = lower-left) with four different lengths
   A1c: (fg) => `<svg viewBox="0 0 100 100" aria-hidden="true">
@@ -217,7 +217,7 @@ const OPTS = [
     pros: ["保留「六軸雷達」這個網站最核心的圖", "橘色加球縫，一眼知道是籃球", "外框細、裡面實心，小尺寸很清楚"],
     cons: ["雷達形狀不規則，球縫只露出一部分"] },
   { k: "A1d", name: "球皮雷達・菱形鑽石", added: true,
-    idea: "雷達做成菱形 ◆：上下兩根軸最長、四根斜軸一樣短，跟卡片下方的稀有度鑽石同一個形狀。",
+    idea: "雷達做成菱形 ◆：上下兩根軸最長、四根斜軸一樣長但短一些，跟卡片下方的稀有度鑽石同一個形狀。（11/3 加寬過一次）",
     pros: ["跟抽卡的稀有度 ◆ 呼應，logo 本身就像一張稀有卡", "左右、上下都對稱，最穩"],
     cons: ["六軸裡四根一樣長，雷達感最弱"] },
   { k: "A1e", name: "球皮雷達・寶石切面", added: true,
