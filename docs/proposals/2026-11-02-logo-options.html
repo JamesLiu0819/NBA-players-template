@@ -110,6 +110,16 @@ function hexPts(r, vals) {
   return vals.map((v, i) => { const a = -Math.PI / 2 + i * Math.PI / 3; return `${(50 + Math.cos(a) * r * v).toFixed(1)},${(50 + Math.sin(a) * r * v).toFixed(1)}`; }).join(" ");
 }
 // Each mark draws on a 100×100 box. `fg` is the line colour, `acc` the fill accent, `bg` what sits behind it.
+// hexagon frame + a radar of the given shape cut from basketball skin (the A1 family)
+function skinMark(fg, id, vals) {
+  return `<svg viewBox="0 0 100 100" aria-hidden="true">
+      <defs><clipPath id="radar${id}"><polygon points="${hexPts(40, vals)}"/></clipPath>
+        <radialGradient id="ball${id}" cx="40%" cy="30%" r="80%"><stop offset="0" stop-color="#f6a456"/><stop offset=".6" stop-color="#e0762a"/><stop offset="1" stop-color="#b3561a"/></radialGradient></defs>
+      <polygon points="${hexPts(44, [1,1,1,1,1,1])}" fill="none" stroke="${fg}" stroke-width="7" stroke-linejoin="round"/>
+      <g clip-path="url(#radar${id})"><rect width="100" height="100" fill="url(#ball${id})"/>
+        <g fill="none" stroke="#1d1208" stroke-width="3.6" stroke-linecap="round"><path d="M50 0 V100 M0 52 H100"/><path d="M34 14 Q46 52 34 90"/><path d="M66 14 Q54 52 66 90"/></g></g>
+    </svg>`;
+}
 const MARKS = {
   A: (fg, acc) => `<svg viewBox="0 0 100 100" aria-hidden="true">
       <polygon points="${hexPts(44, [1,1,1,1,1,1])}" fill="none" stroke="${fg}" stroke-width="7" stroke-linejoin="round"/>
@@ -143,6 +153,9 @@ const MARKS = {
       <g clip-path="url(#radarA1)"><rect width="100" height="100" fill="url(#ballA1)"/>
         <g fill="none" stroke="#1d1208" stroke-width="3.6" stroke-linecap="round"><path d="M50 0 V100 M0 52 H100"/><path d="M27 8 Q45 52 27 96"/><path d="M73 8 Q55 52 73 96"/></g></g>
     </svg>`,
+  // A1d / A1e: diamond-shaped radars, same frame and ball skin as A1
+  A1d: (fg) => skinMark(fg, "A1d", [0.98, 0.5, 0.5, 0.98, 0.5, 0.5]),
+  A1e: (fg) => skinMark(fg, "A1e", [0.5, 0.95, 0.5, 1, 0.5, 0.95]),
   // A1c: mirror-symmetric radar (upper-right = upper-left, lower-right = lower-left) with four different lengths
   A1c: (fg) => `<svg viewBox="0 0 100 100" aria-hidden="true">
       <defs><clipPath id="radarA1c"><polygon points="${hexPts(40, RADAR_SYM)}"/></clipPath>
@@ -203,6 +216,14 @@ const OPTS = [
     idea: "A 的六角外框不變，裡面的雷達形狀換成一塊籃球皮：橘色加上球縫。雷達刻意不對稱，像一位真的球員。（2026-11-03 網站擁有者選定）",
     pros: ["保留「六軸雷達」這個網站最核心的圖", "橘色加球縫，一眼知道是籃球", "外框細、裡面實心，小尺寸很清楚"],
     cons: ["雷達形狀不規則，球縫只露出一部分"] },
+  { k: "A1d", name: "球皮雷達・菱形鑽石", added: true,
+    idea: "雷達做成菱形 ◆：上下兩根軸最長、四根斜軸一樣短，跟卡片下方的稀有度鑽石同一個形狀。",
+    pros: ["跟抽卡的稀有度 ◆ 呼應，logo 本身就像一張稀有卡", "左右、上下都對稱，最穩"],
+    cons: ["六軸裡四根一樣長，雷達感最弱"] },
+  { k: "A1e", name: "球皮雷達・寶石切面", added: true,
+    idea: "雷達做成 💎 寶石：上方是一條平的寬冠，下面收成一個尖，像切割過的寶石。",
+    pros: ["一看就是「寶石」，有收藏、稀有的感覺", "六軸長短不一，還保有雷達感"],
+    cons: ["上寬下尖，整個 logo 的重心偏上"] },
   { k: "A1c", name: "球皮雷達・左右對稱", added: true,
     idea: "A1 的對稱版：左右兩邊互為鏡像，但頂、上兩側、下兩側、底四種長度都不一樣——頂端最長、上兩側收窄、下兩側變寬、底部最短，像一面盾牌。",
     pros: ["左右對稱，像正式的徽章，縮小後輪廓很穩", "六根軸長短不一，還是看得出「雷達」", "介於 A1（不對稱）和 A1b（等長）中間"],
