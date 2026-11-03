@@ -321,6 +321,16 @@
   .proto b { color: var(--ink); }
   .proto .actions { justify-content: flex-start; }
   .sound { border: 1px solid var(--line); background: transparent; color: var(--soft); border-radius: 999px; padding: 4px 10px; font-size: .8rem; }
+  /* prototype-only: every card face up, filter by tier, tap one to see it big */
+  .gallery { position: fixed; inset: 0; z-index: 8; overflow-y: auto; background: rgba(9,11,16,.97); padding: calc(12px + env(safe-area-inset-top, 0px)) 16px 40px; }
+  .g-bar { position: sticky; top: 0; z-index: 1; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 8px 0 12px; background: rgba(9,11,16,.97); }
+  .g-bar > b { font: 900 1.1rem var(--body); } .g-bar .tabs { margin: 0; flex: 1; } .g-bar .btn { margin-left: auto; }
+  .g-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+  .g-grid .card { width: 100%; height: auto; aspect-ratio: 200 / 297; animation: none; cursor: zoom-in; }
+  .g-grid .card .new { display: none; }
+  .gallery .g-grid .card.flipped[class] .front { box-shadow: inset 0 2px 0 rgba(255,255,255,.95), inset 0 -3px 5px rgba(0,0,0,.28), 0 0 0 2px var(--c), 0 8px 18px rgba(0,0,0,.5); animation: none; } /* a thin tier outline instead of the reveal glow, which floods the page when 211 cards sit together */
+  .zoom { position: fixed; inset: 0; z-index: 9; display: grid; place-items: center; background: rgba(0,0,0,.8); cursor: zoom-out; }
+  .zoom .card { width: min(78vw, 340px); height: auto; aspect-ratio: 200 / 297; animation: none; pointer-events: none; }
   [hidden] { display: none !important; }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
@@ -373,9 +383,15 @@
       <button class="btn" id="next-day">跳到下一天</button>
       <button class="btn" id="force-legend">下一包保證出傳奇</button>
       <button class="btn" id="reset">清空收藏重來</button>
+      <button class="btn main" id="show-all">看全部 211 張卡片</button>
     </div>
   </div>
 </div>
+<div class="gallery" id="gallery" hidden role="dialog" aria-label="全部卡片">
+  <div class="g-bar"><b>全部卡片</b><span class="tabs" id="g-tabs"></span><button class="btn" id="g-close">關閉</button></div>
+  <div class="g-grid" id="g-grid"></div>
+</div>
+<div class="zoom" id="zoom" hidden></div>
 <button class="ff" id="flip-all" hidden aria-label="按住快轉，放開停止"><span><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M7 9 L19 20 L7 31 Z M20 9 L32 20 L20 31 Z" fill="none" stroke="#d5dbe6" stroke-width="2.6" stroke-linejoin="round"/></svg></span>按住快轉</button>
 
 <script>
@@ -516,7 +532,7 @@ function cardHtml(p, isNew) {
     <span class="face back"><span class="bk">${mark()}<span class="mark">球探報告</span></span><span class="q">點一下翻開</span></span>
     <span class="face front"><span class="frame">
       ${p.ph
-        ? `<span class="art has-photo"><img class="photo" src="${esc(p.ph.u)}" alt="" referrerpolicy="no-referrer"><span class="shard s1"></span><span class="mini-radar">${radar(p.c)}</span></span>`
+        ? `<span class="art has-photo"><img class="photo" src="${esc(p.ph.u)}" alt="" loading="lazy" referrerpolicy="no-referrer"><span class="shard s1"></span><span class="mini-radar">${radar(p.c)}</span></span>`
         : `<span class="art"><span class="shard s1"></span><span class="shard s2"></span><span class="shard s3"></span><span class="spark k1"></span><span class="spark k2"></span>${radar(p.c)}</span>`}
       <span class="logo">${mark()}</span>
       <span class="tier">${t.name}</span>
@@ -793,6 +809,23 @@ $("reset").addEventListener("click", (e) => {
 $("sound").addEventListener("click", () => { sound = !sound; $("sound").setAttribute("aria-pressed", String(sound)); $("sound").textContent = sound ? "🔊 音效開" : "🔇 音效關"; });
 
 $("brand-mark").innerHTML = mark("#eef1f6");
+let galleryTab = "all";
+function renderGallery() {
+  $("g-tabs").innerHTML = [{ key: "all", name: "全部", color: "var(--ink)" }, ...TIERS.slice().reverse()].map((t) =>
+    `<button class="tab${galleryTab === t.key ? " on" : ""}" style="--c:${t.color}" data-gtab="${t.key}">${t.name} ${(t.key === "all" ? DATA.players : byTier[t.key]).length}</button>`).join("");
+  const list = (galleryTab === "all" ? DATA.players : byTier[galleryTab]).slice().sort((a, b) => RANK[b.tier] - RANK[a.tier] || a.no - b.no);
+  $("g-grid").innerHTML = list.map((p) => cardHtml(p, false).replace('class="card ', 'class="card flipped ')).join("");
+  fitNames($("g-grid"));
+}
+$("show-all").addEventListener("click", () => { $("gallery").hidden = false; document.body.style.overflow = "hidden"; renderGallery(); });
+$("g-close").addEventListener("click", () => { $("gallery").hidden = true; document.body.style.overflow = ""; });
+$("g-tabs").addEventListener("click", (e) => { const b = e.target.closest("[data-gtab]"); if (b) { galleryTab = b.dataset.gtab; renderGallery(); $("gallery").scrollTop = 0; } });
+$("g-grid").addEventListener("click", (e) => {
+  const c = e.target.closest(".card"); if (!c) return;
+  $("zoom").innerHTML = c.outerHTML; $("zoom").hidden = false; fitNames($("zoom"));
+});
+$("zoom").addEventListener("click", () => { $("zoom").hidden = true; });
+addEventListener("keydown", (e) => { if (e.key === "Escape") { if (!$("zoom").hidden) $("zoom").hidden = true; else if (!$("gallery").hidden) $("g-close").click(); } });
 renderOdds(); renderAlbum(); startDay();
 $("stage").addEventListener("pointermove", tilt);
 $("stage").addEventListener("pointerleave", () => { const h = $("stack"); if (h) { h.classList.remove("live"); for (const v of ["--rx", "--ry", "--mx", "--my"]) h.style.removeProperty(v); } });
