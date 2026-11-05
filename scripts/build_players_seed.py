@@ -1279,6 +1279,22 @@ PLAYERS = [
         "signature_skill_id": "defensive_rebounding_boxout", "learnability_flag": "medium",
         "_estimate_basis": "依公開 2K 屬性數值,用錨點球員校準回歸換算出來的座標,非官方 2K 百分位,也非真實比賽數據推導",
     },
+    {
+        "id": "ty_jerome", "name": "Ty Jerome", "team": "MEM",
+        "coordinates": {"A": 62, "B1": 88, "B2": 25, "C1": 18, "C2": 12, "D": 24},
+        "body": {"height_cm": 196, "wingspan_cm": 193, "weight_kg": 88},
+        "notable_traits": ["定點與擋拆後投籃效率高", "節奏掌控與傳球視野出色", "持球進攻決策成熟"],
+        "signature_skill_id": "perimeter_shooting", "learnability_flag": "high",
+        "_estimate_basis": "公開球評印象 + 2026-27 賽季初期表現,手動估算,非真實數據推導",
+    },
+    {
+        "id": "yaxel_lendeborg", "name": "Yaxel Lendeborg", "team": "GSW",
+        "coordinates": {"A": 48, "B1": 58, "B2": 72, "C1": 72, "C2": 66, "D": 42},
+        "body": {"height_cm": 206, "wingspan_cm": 218, "weight_kg": 104},
+        "notable_traits": ["進攻位置多元能背框也能面框", "傳導視野佳失誤率低", "協防補位意識出色"],
+        "signature_skill_id": "help_defense_rotation", "learnability_flag": "medium",
+        "_estimate_basis": "2026 選秀球探報告印象(新秀,尚無 NBA 例行賽數據),手動估算,非真實數據推導",
+    },
 ]
 
 

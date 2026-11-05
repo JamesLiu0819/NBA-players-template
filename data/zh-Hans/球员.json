@@ -11242,6 +11242,164 @@
           "score": 2
         }
       ]
+    },
+    {
+      "id": "ty_jerome",
+      "name": "Ty Jerome",
+      "team": "MEM",
+      "coordinates": {
+        "A": 62.5,
+        "B1": 87.5,
+        "B2": 25.0,
+        "C1": 12.5,
+        "C2": 12.5,
+        "D": 25.0
+      },
+      "body": {
+        "height_cm": 196,
+        "wingspan_cm": 193,
+        "weight_kg": 88,
+        "standing_reach_cm": 225,
+        "running_vertical_reach_cm": 284,
+        "sprint_100m_seconds": 15.5
+      },
+      "notable_traits": [
+        "定点与挡拆后投篮效率高",
+        "节奏掌控与传球视野出色",
+        "持球进攻决策成熟"
+      ],
+      "signature_skill_id": "perimeter_shooting",
+      "learnability_flag": "high",
+      "_estimate_basis": "公开球评印象 + 2026-27 赛季初期表现,手动估算,非真实数据推导",
+      "mock_axis_answers": [
+        {
+          "question_id": "axis_a_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_a_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b1_1",
+          "score": 5
+        },
+        {
+          "question_id": "axis_b1_2",
+          "score": 4
+        },
+        {
+          "question_id": "axis_b2_1",
+          "score": 2
+        },
+        {
+          "question_id": "axis_b2_2",
+          "score": 2
+        },
+        {
+          "question_id": "axis_c1_1",
+          "score": 2
+        },
+        {
+          "question_id": "axis_c1_2",
+          "score": 1
+        },
+        {
+          "question_id": "axis_c2_1",
+          "score": 2
+        },
+        {
+          "question_id": "axis_c2_2",
+          "score": 1
+        },
+        {
+          "question_id": "axis_d_1",
+          "score": 2
+        },
+        {
+          "question_id": "axis_d_2",
+          "score": 2
+        }
+      ]
+    },
+    {
+      "id": "yaxel_lendeborg",
+      "name": "Yaxel Lendeborg",
+      "team": "GSW",
+      "coordinates": {
+        "A": 50.0,
+        "B1": 62.5,
+        "B2": 75.0,
+        "C1": 75.0,
+        "C2": 62.5,
+        "D": 37.5
+      },
+      "body": {
+        "height_cm": 206,
+        "wingspan_cm": 218,
+        "weight_kg": 104,
+        "standing_reach_cm": 250,
+        "running_vertical_reach_cm": 316,
+        "sprint_100m_seconds": 14.75
+      },
+      "notable_traits": [
+        "进攻位置多元能背框也能面框",
+        "传导视野佳失误率低",
+        "协防补位意识出色"
+      ],
+      "signature_skill_id": "help_defense_rotation",
+      "learnability_flag": "medium",
+      "_estimate_basis": "2026 选秀球探报告印象(新秀,尚无 NBA 例行赛数据),手动估算,非真实数据推导",
+      "mock_axis_answers": [
+        {
+          "question_id": "axis_a_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_a_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b1_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_b1_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_b2_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_b2_2",
+          "score": 4
+        },
+        {
+          "question_id": "axis_c1_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_c1_2",
+          "score": 4
+        },
+        {
+          "question_id": "axis_c2_1",
+          "score": 4
+        },
+        {
+          "question_id": "axis_c2_2",
+          "score": 3
+        },
+        {
+          "question_id": "axis_d_1",
+          "score": 3
+        },
+        {
+          "question_id": "axis_d_2",
+          "score": 2
+        }
+      ]
     }
   ]
 }
