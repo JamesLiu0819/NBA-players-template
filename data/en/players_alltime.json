@@ -7,7 +7,7 @@
       "name": "Michael Jordan",
       "team": "1996",
       "coordinates": {
-        "A": 75.0,
+        "A": 100.0,
         "B1": 75.0,
         "B2": 87.5,
         "C1": 100.0,
@@ -33,11 +33,11 @@
       "mock_axis_answers": [
         {
           "question_id": "axis_a_1",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_a_2",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_b1_1",
@@ -86,10 +86,10 @@
       "name": "Kobe Bryant",
       "team": "2006",
       "coordinates": {
-        "A": 75.0,
+        "A": 100.0,
         "B1": 87.5,
         "B2": 37.5,
-        "C1": 75.0,
+        "C1": 87.5,
         "C2": 37.5,
         "D": 87.5
       },
@@ -112,11 +112,11 @@
       "mock_axis_answers": [
         {
           "question_id": "axis_a_1",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_a_2",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_b1_1",
@@ -136,7 +136,7 @@
         },
         {
           "question_id": "axis_c1_1",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_c1_2",
@@ -327,18 +327,18 @@
       "coordinates": {
         "A": 25.0,
         "B1": 0.0,
-        "B2": 87.5,
+        "B2": 100.0,
         "C1": 62.5,
         "C2": 100.0,
-        "D": 25.0
+        "D": 100.0
       },
       "body": {
         "height_cm": 216,
         "wingspan_cm": 229,
         "weight_kg": 125,
         "standing_reach_cm": 261,
-        "running_vertical_reach_cm": 320,
-        "sprint_100m_seconds": 15.5
+        "running_vertical_reach_cm": 361,
+        "sprint_100m_seconds": 11.0
       },
       "notable_traits": [
         "Astonishing interior scoring efficiency",
@@ -371,7 +371,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_c1_1",
@@ -391,11 +391,11 @@
         },
         {
           "question_id": "axis_d_1",
-          "score": 2
+          "score": 5
         },
         {
           "question_id": "axis_d_2",
-          "score": 2
+          "score": 5
         }
       ]
     },
@@ -407,7 +407,7 @@
         "A": 0.0,
         "B1": 0.0,
         "B2": 75.0,
-        "C1": 75.0,
+        "C1": 37.5,
         "C2": 100.0,
         "D": 100.0
       },
@@ -454,11 +454,11 @@
         },
         {
           "question_id": "axis_c1_1",
-          "score": 4
+          "score": 3
         },
         {
           "question_id": "axis_c1_2",
-          "score": 4
+          "score": 2
         },
         {
           "question_id": "axis_c2_1",
@@ -563,19 +563,19 @@
       "team": "1964",
       "coordinates": {
         "A": 100.0,
-        "B1": 100.0,
+        "B1": 37.5,
         "B2": 62.5,
         "C1": 75.0,
         "C2": 12.5,
-        "D": 100.0
+        "D": 75.0
       },
       "body": {
         "height_cm": 196,
         "wingspan_cm": 201,
         "weight_kg": 93,
         "standing_reach_cm": 233,
-        "running_vertical_reach_cm": 333,
-        "sprint_100m_seconds": 11.0
+        "running_vertical_reach_cm": 319,
+        "sprint_100m_seconds": 12.5
       },
       "notable_traits": [
         "Triple-double-level all-around game",
@@ -596,11 +596,11 @@
         },
         {
           "question_id": "axis_b1_1",
-          "score": 5
+          "score": 3
         },
         {
           "question_id": "axis_b1_2",
-          "score": 5
+          "score": 2
         },
         {
           "question_id": "axis_b2_1",
@@ -628,11 +628,11 @@
         },
         {
           "question_id": "axis_d_1",
-          "score": 5
+          "score": 4
         },
         {
           "question_id": "axis_d_2",
-          "score": 5
+          "score": 4
         }
       ]
     },
@@ -1117,7 +1117,7 @@
       "coordinates": {
         "A": 50.0,
         "B1": 62.5,
-        "B2": 87.5,
+        "B2": 100.0,
         "C1": 50.0,
         "C2": 75.0,
         "D": 87.5
@@ -1161,7 +1161,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_c1_1",
@@ -1195,19 +1195,19 @@
       "team": "1994",
       "coordinates": {
         "A": 37.5,
-        "B1": 50.0,
+        "B1": 37.5,
         "B2": 100.0,
         "C1": 50.0,
         "C2": 100.0,
-        "D": 37.5
+        "D": 100.0
       },
       "body": {
         "height_cm": 213,
         "wingspan_cm": 224,
         "weight_kg": 116,
         "standing_reach_cm": 256,
-        "running_vertical_reach_cm": 322,
-        "sprint_100m_seconds": 14.75
+        "running_vertical_reach_cm": 356,
+        "sprint_100m_seconds": 11.0
       },
       "notable_traits": [
         "League-best post footwork",
@@ -1232,7 +1232,7 @@
         },
         {
           "question_id": "axis_b1_2",
-          "score": 3
+          "score": 2
         },
         {
           "question_id": "axis_b2_1",
@@ -1260,11 +1260,11 @@
         },
         {
           "question_id": "axis_d_1",
-          "score": 3
+          "score": 5
         },
         {
           "question_id": "axis_d_2",
-          "score": 2
+          "score": 5
         }
       ]
     },
@@ -1352,7 +1352,7 @@
       "name": "John Stockton",
       "team": "1997",
       "coordinates": {
-        "A": 62.5,
+        "A": 87.5,
         "B1": 75.0,
         "B2": 37.5,
         "C1": 87.5,
@@ -1378,11 +1378,11 @@
       "mock_axis_answers": [
         {
           "question_id": "axis_a_1",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_a_2",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_b1_1",
@@ -1433,7 +1433,7 @@
       "team": "1995",
       "coordinates": {
         "A": 25.0,
-        "B1": 50.0,
+        "B1": 12.5,
         "B2": 87.5,
         "C1": 37.5,
         "C2": 100.0,
@@ -1466,11 +1466,11 @@
         },
         {
           "question_id": "axis_b1_1",
-          "score": 3
+          "score": 2
         },
         {
           "question_id": "axis_b1_2",
-          "score": 3
+          "score": 1
         },
         {
           "question_id": "axis_b2_1",
@@ -1514,7 +1514,7 @@
         "A": 75.0,
         "B1": 75.0,
         "B2": 62.5,
-        "C1": 87.5,
+        "C1": 100.0,
         "C2": 62.5,
         "D": 100.0
       },
@@ -1565,7 +1565,7 @@
         },
         {
           "question_id": "axis_c1_2",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_c2_1",
@@ -1596,15 +1596,15 @@
         "B2": 87.5,
         "C1": 12.5,
         "C2": 87.5,
-        "D": 25.0
+        "D": 87.5
       },
       "body": {
         "height_cm": 213,
         "wingspan_cm": 224,
         "weight_kg": 109,
         "standing_reach_cm": 256,
-        "running_vertical_reach_cm": 315,
-        "sprint_100m_seconds": 15.5
+        "running_vertical_reach_cm": 349,
+        "sprint_100m_seconds": 11.75
       },
       "notable_traits": [
         "Consistent mid-range jumper",
@@ -1657,11 +1657,11 @@
         },
         {
           "question_id": "axis_d_1",
-          "score": 2
+          "score": 5
         },
         {
           "question_id": "axis_d_2",
-          "score": 2
+          "score": 4
         }
       ]
     },
@@ -1832,7 +1832,7 @@
         "B1": 37.5,
         "B2": 62.5,
         "C1": 100.0,
-        "C2": 25.0,
+        "C2": 12.5,
         "D": 75.0
       },
       "body": {
@@ -1890,7 +1890,7 @@
         },
         {
           "question_id": "axis_c2_2",
-          "score": 2
+          "score": 1
         },
         {
           "question_id": "axis_d_1",
@@ -1912,7 +1912,7 @@
         "B1": 12.5,
         "B2": 62.5,
         "C1": 37.5,
-        "C2": 62.5,
+        "C2": 87.5,
         "D": 75.0
       },
       "body": {
@@ -1966,11 +1966,11 @@
         },
         {
           "question_id": "axis_c2_1",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_c2_2",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_d_1",
@@ -2070,7 +2070,7 @@
         "B1": 25.0,
         "B2": 75.0,
         "C1": 62.5,
-        "C2": 87.5,
+        "C2": 100.0,
         "D": 100.0
       },
       "body": {
@@ -2128,7 +2128,7 @@
         },
         {
           "question_id": "axis_c2_2",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_d_1",
@@ -2147,7 +2147,7 @@
       "coordinates": {
         "A": 62.5,
         "B1": 25.0,
-        "B2": 75.0,
+        "B2": 87.5,
         "C1": 50.0,
         "C2": 100.0,
         "D": 87.5
@@ -2187,7 +2187,7 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_b2_2",
@@ -2226,7 +2226,7 @@
       "coordinates": {
         "A": 50.0,
         "B1": 12.5,
-        "B2": 87.5,
+        "B2": 100.0,
         "C1": 37.5,
         "C2": 100.0,
         "D": 100.0
@@ -2270,7 +2270,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_c1_1",
@@ -2304,10 +2304,10 @@
       "name": "Allen Iverson",
       "team": "2001",
       "coordinates": {
-        "A": 87.5,
+        "A": 100.0,
         "B1": 62.5,
         "B2": 25.0,
-        "C1": 100.0,
+        "C1": 50.0,
         "C2": 25.0,
         "D": 75.0
       },
@@ -2334,7 +2334,7 @@
         },
         {
           "question_id": "axis_a_2",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_b1_1",
@@ -2354,11 +2354,11 @@
         },
         {
           "question_id": "axis_c1_1",
-          "score": 5
+          "score": 3
         },
         {
           "question_id": "axis_c1_2",
-          "score": 5
+          "score": 3
         },
         {
           "question_id": "axis_c2_1",
@@ -2384,7 +2384,7 @@
       "team": "2005",
       "coordinates": {
         "A": 87.5,
-        "B1": 87.5,
+        "B1": 100.0,
         "B2": 25.0,
         "C1": 50.0,
         "C2": 0.0,
@@ -2421,7 +2421,7 @@
         },
         {
           "question_id": "axis_b1_2",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_b2_1",
@@ -2464,7 +2464,7 @@
       "team": "2007",
       "coordinates": {
         "A": 62.5,
-        "B1": 75.0,
+        "B1": 87.5,
         "B2": 50.0,
         "C1": 12.5,
         "C2": 75.0,
@@ -2497,7 +2497,7 @@
         },
         {
           "question_id": "axis_b1_1",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_b1_2",
@@ -3338,16 +3338,16 @@
         "B1": 12.5,
         "B2": 87.5,
         "C1": 62.5,
-        "C2": 100.0,
-        "D": 37.5
+        "C2": 87.5,
+        "D": 87.5
       },
       "body": {
         "height_cm": 208,
         "wingspan_cm": 218,
         "weight_kg": 109,
         "standing_reach_cm": 250,
-        "running_vertical_reach_cm": 316,
-        "sprint_100m_seconds": 14.75
+        "running_vertical_reach_cm": 343,
+        "sprint_100m_seconds": 11.75
       },
       "notable_traits": [
         "Fierce rim-protection willpower",
@@ -3396,15 +3396,15 @@
         },
         {
           "question_id": "axis_c2_2",
-          "score": 5
+          "score": 4
         },
         {
           "question_id": "axis_d_1",
-          "score": 3
+          "score": 5
         },
         {
           "question_id": "axis_d_2",
-          "score": 2
+          "score": 4
         }
       ]
     },
@@ -3418,15 +3418,15 @@
         "B2": 62.5,
         "C1": 12.5,
         "C2": 100.0,
-        "D": 25.0
+        "D": 62.5
       },
       "body": {
         "height_cm": 218,
         "wingspan_cm": 236,
         "weight_kg": 111,
         "standing_reach_cm": 268,
-        "running_vertical_reach_cm": 327,
-        "sprint_100m_seconds": 15.5
+        "running_vertical_reach_cm": 347,
+        "sprint_100m_seconds": 13.25
       },
       "notable_traits": [
         "Historic-level rim-protection coverage",
@@ -3479,11 +3479,11 @@
         },
         {
           "question_id": "axis_d_1",
-          "score": 2
+          "score": 4
         },
         {
           "question_id": "axis_d_2",
-          "score": 2
+          "score": 3
         }
       ],
       "archetype_id": "rim_protector"
@@ -3970,7 +3970,7 @@
         "A": 12.5,
         "B1": 12.5,
         "B2": 75.0,
-        "C1": 87.5,
+        "C1": 37.5,
         "C2": 100.0,
         "D": 87.5
       },
@@ -4017,11 +4017,11 @@
         },
         {
           "question_id": "axis_c1_1",
-          "score": 5
+          "score": 3
         },
         {
           "question_id": "axis_c1_2",
-          "score": 4
+          "score": 2
         },
         {
           "question_id": "axis_c2_1",
@@ -4443,7 +4443,7 @@
       "team": "1977",
       "coordinates": {
         "A": 87.5,
-        "B1": 100.0,
+        "B1": 37.5,
         "B2": 12.5,
         "C1": 50.0,
         "C2": 12.5,
@@ -4476,11 +4476,11 @@
         },
         {
           "question_id": "axis_b1_1",
-          "score": 5
+          "score": 3
         },
         {
           "question_id": "axis_b1_2",
-          "score": 5
+          "score": 2
         },
         {
           "question_id": "axis_b2_1",
@@ -4997,18 +4997,18 @@
       "coordinates": {
         "A": 37.5,
         "B1": 12.5,
-        "B2": 87.5,
+        "B2": 100.0,
         "C1": 62.5,
         "C2": 100.0,
-        "D": 87.5
+        "D": 100.0
       },
       "body": {
         "height_cm": 208,
         "wingspan_cm": 229,
         "weight_kg": 120,
         "standing_reach_cm": 261,
-        "running_vertical_reach_cm": 354,
-        "sprint_100m_seconds": 11.75
+        "running_vertical_reach_cm": 361,
+        "sprint_100m_seconds": 11.0
       },
       "notable_traits": [
         "Elite rim protection",
@@ -5041,7 +5041,7 @@
         },
         {
           "question_id": "axis_b2_2",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_c1_1",
@@ -5065,7 +5065,7 @@
         },
         {
           "question_id": "axis_d_2",
-          "score": 4
+          "score": 5
         }
       ]
     },
@@ -5233,19 +5233,19 @@
       "team": "2017",
       "coordinates": {
         "A": 100.0,
-        "B1": 75.0,
+        "B1": 37.5,
         "B2": 50.0,
         "C1": 75.0,
         "C2": 50.0,
-        "D": 62.5
+        "D": 100.0
       },
       "body": {
         "height_cm": 193,
         "wingspan_cm": 203,
         "weight_kg": 91,
         "standing_reach_cm": 235,
-        "running_vertical_reach_cm": 314,
-        "sprint_100m_seconds": 13.25
+        "running_vertical_reach_cm": 335,
+        "sprint_100m_seconds": 11.0
       },
       "notable_traits": [
         "Strong transition finishing",
@@ -5266,11 +5266,11 @@
         },
         {
           "question_id": "axis_b1_1",
-          "score": 4
+          "score": 3
         },
         {
           "question_id": "axis_b1_2",
-          "score": 4
+          "score": 2
         },
         {
           "question_id": "axis_b2_1",
@@ -5298,11 +5298,11 @@
         },
         {
           "question_id": "axis_d_1",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_d_2",
-          "score": 3
+          "score": 5
         }
       ],
       "archetype_id": "explosive_slasher"

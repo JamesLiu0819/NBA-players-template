@@ -63,7 +63,7 @@ _BASIS_CALIBRATED = "依公開 2K All-Time 卡屬性數值,用錨點球員校準
 PLAYERS = [
     {
         "id": "michael_jordan", "name": "Michael Jordan", "team": "1996",
-        "coordinates": {"A": 76, "B1": 81, "B2": 82, "C1": 94, "C2": 51, "D": 88},
+        "coordinates": {"A": 100, "B1": 81, "B2": 82, "C1": 94, "C2": 51, "D": 88},
         "body": {"height_cm": 198, "wingspan_cm": 207, "weight_kg": 90},
         "notable_traits": ["中距離急停跳投致命", "一對一單防很難被過", "轉換快攻終結能力強"],
         "signature_skill_id": "face_up_first_step",
@@ -72,7 +72,7 @@ PLAYERS = [
     },
     {
         "id": "kobe_bryant", "name": "Kobe Bryant", "team": "2006",
-        "coordinates": {"A": 79, "B1": 91, "B2": 41, "C1": 77, "C2": 35, "D": 85},
+        "coordinates": {"A": 100, "B1": 91, "B2": 41, "C1": 87.5, "C2": 35, "D": 85},
         "body": {"height_cm": 198, "wingspan_cm": 200, "weight_kg": 96},
         "notable_traits": ["中距離跟後仰跳投多樣", "高強度訓練出來的得分手感", "關鍵時刻單打選擇多"],
         "signature_skill_id": "face_up_first_step",
@@ -101,7 +101,7 @@ PLAYERS = [
     },
     {
         "id": "wilt_chamberlain", "name": "Wilt Chamberlain", "team": "1967",
-        "coordinates": {"A": 27, "B1": 0, "B2": 88, "C1": 60, "C2": 98, "D": 20},
+        "coordinates": {"A": 27, "B1": 0, "B2": 100, "C1": 60, "C2": 98, "D": 100},
         "body": {"height_cm": 216, "wingspan_cm": 229, "weight_kg": 125},
         "notable_traits": ["禁區得分效率驚人", "籃板控制力強", "體能天賦聯盟史上頂級"],
         "signature_skill_id": "offensive_rebounding",
@@ -110,7 +110,7 @@ PLAYERS = [
     },
     {
         "id": "bill_russell", "name": "Bill Russell", "team": "1962",
-        "coordinates": {"A": 2, "B1": 1, "B2": 81, "C1": 81, "C2": 100, "D": 97},
+        "coordinates": {"A": 2, "B1": 1, "B2": 81, "C1": 37.5, "C2": 100, "D": 97},
         "body": {"height_cm": 208, "wingspan_cm": 221, "weight_kg": 98},
         "notable_traits": ["護框覆蓋範圍大", "籃板卡位意識強", "團隊防守指揮官"],
         "signature_skill_id": "rim_protection",
@@ -128,7 +128,7 @@ PLAYERS = [
     },
     {
         "id": "oscar_robertson", "name": "Oscar Robertson", "team": "1964",
-        "coordinates": {"A": 95, "B1": 99, "B2": 63, "C1": 81, "C2": 10, "D": 100},
+        "coordinates": {"A": 95, "B1": 37.5, "B2": 63, "C1": 81, "C2": 10, "D": 75},
         "body": {"height_cm": 196, "wingspan_cm": 201, "weight_kg": 93},
         "notable_traits": ["場均大三元等級的全面性", "持球推進穩定", "中距離出手可靠"],
         "signature_skill_id": "decision_making_turnover_control",
@@ -191,7 +191,7 @@ PLAYERS = [
     },
     {
         "id": "charles_barkley", "name": "Charles Barkley", "team": "1993",
-        "coordinates": {"A": 48, "B1": 58, "B2": 87, "C1": 45, "C2": 74, "D": 88},
+        "coordinates": {"A": 48, "B1": 58, "B2": 100, "C1": 45, "C2": 74, "D": 88},
         "body": {"height_cm": 198, "wingspan_cm": 213, "weight_kg": 114},
         "notable_traits": ["籃板卡位意識強", "禁區對抗能力好", "體型不高但終結效率高"],
         "signature_skill_id": "offensive_rebounding",
@@ -200,7 +200,7 @@ PLAYERS = [
     },
     {
         "id": "hakeem_olajuwon", "name": "Hakeem Olajuwon", "team": "1994",
-        "coordinates": {"A": 39, "B1": 45, "B2": 94, "C1": 51, "C2": 97, "D": 33},
+        "coordinates": {"A": 39, "B1": 37.5, "B2": 94, "C1": 51, "C2": 97, "D": 100},
         "body": {"height_cm": 213, "wingspan_cm": 224, "weight_kg": 116},
         "notable_traits": ["禁區腳步全聯盟頂級", "護框跟協防都強", "轉身終結技巧細膩"],
         "signature_skill_id": "post_up",
@@ -218,7 +218,7 @@ PLAYERS = [
     },
     {
         "id": "john_stockton", "name": "John Stockton", "team": "1997",
-        "coordinates": {"A": 68, "B1": 72, "B2": 33, "C1": 93, "C2": 14, "D": 5},
+        "coordinates": {"A": 87.5, "B1": 72, "B2": 33, "C1": 93, "C2": 14, "D": 5},
         "body": {"height_cm": 185, "wingspan_cm": 188, "weight_kg": 77},
         "notable_traits": ["擋拆傳導視野聯盟頂級", "失誤控制能力好", "持球推進穩定"],
         "signature_skill_id": "high_post_playmaking",
@@ -228,7 +228,7 @@ PLAYERS = [
     },
     {
         "id": "david_robinson", "name": "David Robinson", "team": "1995",
-        "coordinates": {"A": 31, "B1": 44, "B2": 88, "C1": 42, "C2": 95, "D": 61},
+        "coordinates": {"A": 31, "B1": 12.5, "B2": 88, "C1": 42, "C2": 100, "D": 61},
         "body": {"height_cm": 216, "wingspan_cm": 224, "weight_kg": 107},
         "notable_traits": ["護框覆蓋範圍大", "運動能力領先同位置", "禁區得分效率高"],
         "signature_skill_id": "rim_protection",
@@ -237,7 +237,7 @@ PLAYERS = [
     },
     {
         "id": "scottie_pippen", "name": "Scottie Pippen", "team": "1996",
-        "coordinates": {"A": 80, "B1": 69, "B2": 64, "C1": 92, "C2": 68, "D": 94},
+        "coordinates": {"A": 80, "B1": 69, "B2": 64, "C1": 100, "C2": 68, "D": 94},
         "body": {"height_cm": 203, "wingspan_cm": 224, "weight_kg": 95},
         "notable_traits": ["換防跟防能力全聯盟頂級", "持球推進穩定", "轉換防守到進攻速度快"],
         "signature_skill_id": "perimeter_switch_defense",
@@ -247,7 +247,7 @@ PLAYERS = [
     },
     {
         "id": "patrick_ewing", "name": "Patrick Ewing", "team": "1990",
-        "coordinates": {"A": 20, "B1": 26, "B2": 93, "C1": 9, "C2": 93, "D": 21},
+        "coordinates": {"A": 20, "B1": 26, "B2": 93, "C1": 9, "C2": 87.5, "D": 87.5},
         "body": {"height_cm": 213, "wingspan_cm": 224, "weight_kg": 109},
         "notable_traits": ["中距離跳投穩定", "護框能力強", "禁區對抗強悍"],
         "signature_skill_id": "rim_protection",
@@ -274,7 +274,7 @@ PLAYERS = [
     },
     {
         "id": "gary_payton", "name": "Gary Payton", "team": "1996",
-        "coordinates": {"A": 92, "B1": 42, "B2": 64, "C1": 100, "C2": 28, "D": 75},
+        "coordinates": {"A": 92, "B1": 42, "B2": 64, "C1": 100, "C2": 12.5, "D": 75},
         "body": {"height_cm": 193, "wingspan_cm": 196, "weight_kg": 82},
         "notable_traits": ["一對一單防壓迫性強", "持球推進穩定", "防守專注力極高"],
         "signature_skill_id": "on_ball_perimeter_defense",
@@ -284,7 +284,7 @@ PLAYERS = [
     },
     {
         "id": "dennis_rodman", "name": "Dennis Rodman", "team": "1996",
-        "coordinates": {"A": 10, "B1": 13, "B2": 60, "C1": 40, "C2": 67, "D": 81},
+        "coordinates": {"A": 10, "B1": 13, "B2": 60, "C1": 40, "C2": 87.5, "D": 81},
         "body": {"height_cm": 201, "wingspan_cm": 213, "weight_kg": 95},
         "notable_traits": ["籃板卡位意識聯盟史上頂級", "協防補位判斷好", "防守專注力極高"],
         "signature_skill_id": "defensive_rebounding_boxout",
@@ -302,7 +302,7 @@ PLAYERS = [
     },
     {
         "id": "kevin_garnett", "name": "Kevin Garnett", "team": "2004",
-        "coordinates": {"A": 53, "B1": 24, "B2": 78, "C1": 59, "C2": 93, "D": 98},
+        "coordinates": {"A": 53, "B1": 24, "B2": 78, "C1": 59, "C2": 100, "D": 98},
         "body": {"height_cm": 211, "wingspan_cm": 221, "weight_kg": 109},
         "notable_traits": ["協防補位判斷聯盟頂級", "中距離跳投穩定", "防守溝通指揮強"],
         "signature_skill_id": "help_defense_rotation",
@@ -311,7 +311,7 @@ PLAYERS = [
     },
     {
         "id": "tim_duncan", "name": "Tim Duncan", "team": "2003",
-        "coordinates": {"A": 66, "B1": 30, "B2": 69, "C1": 56, "C2": 98, "D": 90},
+        "coordinates": {"A": 66, "B1": 30, "B2": 87.5, "C1": 56, "C2": 98, "D": 90},
         "body": {"height_cm": 211, "wingspan_cm": 224, "weight_kg": 113},
         "notable_traits": ["擋拆後中距離出手穩定", "護框跟協防判斷好", "籃板卡位意識強"],
         "signature_skill_id": "pick_and_roll_ball_handling",
@@ -320,7 +320,7 @@ PLAYERS = [
     },
     {
         "id": "shaquille_oneal", "name": "Shaquille O'Neal", "team": "2000",
-        "coordinates": {"A": 54, "B1": 15, "B2": 92, "C1": 34, "C2": 95, "D": 95},
+        "coordinates": {"A": 54, "B1": 15, "B2": 100, "C1": 34, "C2": 95, "D": 95},
         "body": {"height_cm": 216, "wingspan_cm": 226, "weight_kg": 147},
         "notable_traits": ["禁區終結力量壓制性強", "籃板卡位能力強", "體能天賦聯盟史上頂級"],
         "signature_skill_id": "post_up",
@@ -330,7 +330,7 @@ PLAYERS = [
     },
     {
         "id": "allen_iverson", "name": "Allen Iverson", "team": "2001",
-        "coordinates": {"A": 82, "B1": 60, "B2": 27, "C1": 97, "C2": 19, "D": 81},
+        "coordinates": {"A": 100, "B1": 60, "B2": 27, "C1": 50, "C2": 19, "D": 81},
         "body": {"height_cm": 183, "wingspan_cm": 185, "weight_kg": 75},
         "notable_traits": ["面框第一步過人速度快", "小體型高強度得分手", "持球推進突破能力強"],
         "signature_skill_id": "face_up_first_step",
@@ -339,7 +339,7 @@ PLAYERS = [
     },
     {
         "id": "steve_nash", "name": "Steve Nash", "team": "2005",
-        "coordinates": {"A": 91, "B1": 85, "B2": 22, "C1": 48, "C2": 2, "D": 46},
+        "coordinates": {"A": 91, "B1": 100, "B2": 22, "C1": 48, "C2": 2, "D": 46},
         "body": {"height_cm": 190, "wingspan_cm": 191, "weight_kg": 88},
         "notable_traits": ["擋拆持球判斷聯盟頂級", "三分出手效率高", "失誤控制能力好"],
         "signature_skill_id": "pick_and_roll_ball_handling",
@@ -349,7 +349,7 @@ PLAYERS = [
     },
     {
         "id": "dirk_nowitzki", "name": "Dirk Nowitzki", "team": "2007",
-        "coordinates": {"A": 60, "B1": 77, "B2": 49, "C1": 11, "C2": 74, "D": 9},
+        "coordinates": {"A": 60, "B1": 87.5, "B2": 49, "C1": 11, "C2": 74, "D": 9},
         "body": {"height_cm": 213, "wingspan_cm": 213, "weight_kg": 111},
         "notable_traits": ["金雞獨立跳投難以防守", "外線出手穩定", "單打腳步細膩"],
         "signature_skill_id": "face_up_first_step",
@@ -450,7 +450,7 @@ PLAYERS = [
     },
     {
         "id": "alonzo_mourning", "name": "Alonzo Mourning", "team": "1999",
-        "coordinates": {"A": 29, "B1": 18, "B2": 85, "C1": 58, "C2": 96, "D": 36},
+        "coordinates": {"A": 29, "B1": 18, "B2": 85, "C1": 58, "C2": 87.5, "D": 87.5},
         "body": {"height_cm": 208, "wingspan_cm": 218, "weight_kg": 109},
         "notable_traits": ["護框意志力強", "禁區對抗強悍", "協防補位判斷好"],
         "signature_skill_id": "rim_protection",
@@ -459,7 +459,7 @@ PLAYERS = [
     },
     {
         "id": "dikembe_mutombo", "name": "Dikembe Mutombo", "team": "2001",
-        "coordinates": {"A": 18, "B1": 20, "B2": 62, "C1": 15, "C2": 94, "D": 29},
+        "coordinates": {"A": 18, "B1": 20, "B2": 62, "C1": 15, "C2": 94, "D": 62.5},
         "body": {"height_cm": 218, "wingspan_cm": 236, "weight_kg": 111},
         "notable_traits": ["護框覆蓋範圍聯盟史上頂級", "籃板卡位意識強", "協防威懾力強"],
         "signature_skill_id": "rim_protection",
@@ -523,7 +523,7 @@ PLAYERS = [
     },
     {
         "id": "ben_wallace", "name": "Ben Wallace", "team": "2004",
-        "coordinates": {"A": 12, "B1": 11, "B2": 71, "C1": 90, "C2": 97, "D": 85},
+        "coordinates": {"A": 12, "B1": 11, "B2": 71, "C1": 37.5, "C2": 97, "D": 85},
         "body": {"height_cm": 206, "wingspan_cm": 218, "weight_kg": 109},
         "notable_traits": ["護框跟籃板卡位聯盟頂級", "協防補位判斷好", "防守專注力極高"],
         "signature_skill_id": "defensive_rebounding_boxout",
@@ -580,7 +580,7 @@ PLAYERS = [
     },
     {
         "id": "pete_maravich", "name": "Pete Maravich", "team": "1977",
-        "coordinates": {"A": 83, "B1": 96, "B2": 8, "C1": 52, "C2": 10, "D": 26},
+        "coordinates": {"A": 83, "B1": 37.5, "B2": 8, "C1": 52, "C2": 10, "D": 26},
         "body": {"height_cm": 196, "wingspan_cm": 201, "weight_kg": 89},
         "notable_traits": ["花式控球視野好", "中距離跳投穩定", "持球推進創造力強"],
         "signature_skill_id": "high_post_playmaking",
@@ -643,7 +643,7 @@ PLAYERS = [
     },
     {
         "id": "dwight_howard", "name": "Dwight Howard", "team": "2011",
-        "coordinates": {"A": 35, "B1": 10, "B2": 86, "C1": 67, "C2": 96, "D": 93},
+        "coordinates": {"A": 35, "B1": 10, "B2": 100, "C1": 67, "C2": 96, "D": 100},
         "body": {"height_cm": 208, "wingspan_cm": 229, "weight_kg": 120},
         "notable_traits": ["護框能力頂級", "籃板卡位意識強", "扣籃終結爆發力強"],
         "signature_skill_id": "rim_protection",
@@ -670,7 +670,7 @@ PLAYERS = [
     },
     {
         "id": "russell_westbrook", "name": "Russell Westbrook", "team": "2017",
-        "coordinates": {"A": 100, "B1": 80, "B2": 48, "C1": 70, "C2": 46, "D": 68},
+        "coordinates": {"A": 100, "B1": 37.5, "B2": 48, "C1": 70, "C2": 46, "D": 100},
         "body": {"height_cm": 193, "wingspan_cm": 203, "weight_kg": 91},
         "notable_traits": ["轉換快攻終結能力強", "運動能力出色", "前場籃板積極"],
         "signature_skill_id": "transition_finishing",

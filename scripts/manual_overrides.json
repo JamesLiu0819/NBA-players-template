@@ -19,7 +19,8 @@
   },
   "kawhi_leonard": {
    "coordinates": {
-    "A": 62.5
+    "A": 62.5,
+    "D": 87.5
    }
   },
   "jimmy_butler": {
@@ -29,12 +30,346 @@
   },
   "demar_derozan": {
    "coordinates": {
-    "B2": 75
+    "B2": 75,
+    "D": 87.5
    }
   },
   "jalen_johnson": {
    "coordinates": {
     "C1": 62.5
+   }
+  },
+  "lebron_james": {
+   "coordinates": {
+    "D": 100,
+    "A": 100,
+    "B2": 100,
+    "C1": 87.5
+   }
+  },
+  "victor_wembanyama": {
+   "coordinates": {
+    "D": 100
+   }
+  },
+  "zion_williamson": {
+   "coordinates": {
+    "D": 100,
+    "B2": 87.5
+   }
+  },
+  "ja_morant": {
+   "coordinates": {
+    "D": 100,
+    "B2": 87.5
+   }
+  },
+  "anthony_davis": {
+   "coordinates": {
+    "D": 87.5,
+    "B2": 100
+   }
+  },
+  "rudy_gobert": {
+   "coordinates": {
+    "C2": 100
+   }
+  },
+  "brook_lopez": {
+   "coordinates": {
+    "C2": 75
+   }
+  },
+  "jaren_jackson_jr": {
+   "coordinates": {
+    "C2": 87.5
+   }
+  },
+  "chet_holmgren": {
+   "coordinates": {
+    "C2": 87.5
+   }
+  },
+  "evan_mobley": {
+   "coordinates": {
+    "C2": 75
+   }
+  },
+  "jrue_holiday": {
+   "coordinates": {
+    "C1": 100
+   }
+  },
+  "derrick_white": {
+   "coordinates": {
+    "C1": 87.5,
+    "C2": 37.5
+   }
+  },
+  "jaden_mcdaniels": {
+   "coordinates": {
+    "C1": 87.5
+   }
+  },
+  "lu_dort": {
+   "coordinates": {
+    "C1": 87.5
+   }
+  },
+  "nikola_jokic": {
+   "coordinates": {
+    "A": 100,
+    "B2": 100,
+    "D": 25,
+    "C1": 12.5
+   }
+  },
+  "kevin_durant": {
+   "coordinates": {
+    "A": 100,
+    "D": 87.5,
+    "C1": 62.5,
+    "B1": 100
+   }
+  },
+  "chris_paul": {
+   "coordinates": {
+    "A": 87.5
+   }
+  },
+  "stephen_curry": {
+   "coordinates": {
+    "A": 100
+   }
+  },
+  "kyrie_irving": {
+   "coordinates": {
+    "A": 100
+   }
+  },
+  "klay_thompson": {
+   "coordinates": {
+    "B1": 100
+   }
+  },
+  "buddy_hield": {
+   "coordinates": {
+    "B1": 87.5,
+    "C1": 25
+   }
+  },
+  "myles_turner": {
+   "coordinates": {
+    "B1": 75
+   }
+  },
+  "karl_anthony_towns": {
+   "coordinates": {
+    "B1": 75
+   }
+  },
+  "shai_gilgeous_alexander": {
+   "coordinates": {
+    "B2": 87.5
+   }
+  },
+  "joel_embiid": {
+   "coordinates": {
+    "B2": 100,
+    "D": 37.5
+   }
+  },
+  "alperen_sengun": {
+   "coordinates": {
+    "B2": 75
+   }
+  },
+  "anthony_edwards": {
+   "coordinates": {
+    "D": 100,
+    "A": 87.5
+   }
+  },
+  "zach_lavine": {
+   "coordinates": {
+    "D": 100
+   }
+  },
+  "jalen_green": {
+   "coordinates": {
+    "D": 100
+   }
+  },
+  "deaaron_fox": {
+   "coordinates": {
+    "D": 87.5
+   }
+  },
+  "yaxel_lendeborg": {
+   "coordinates": {
+    "D": 62.5
+   }
+  },
+  "draymond_green": {
+   "coordinates": {
+    "C2": 87.5
+   }
+  },
+  "aaron_gordon": {
+   "coordinates": {
+    "C2": 62.5,
+    "B2": 87.5
+   }
+  },
+  "og_anunoby": {
+   "coordinates": {
+    "C1": 100
+   }
+  },
+  "jaylen_brown": {
+   "coordinates": {
+    "C1": 87.5
+   }
+  },
+  "andrew_wiggins": {
+   "coordinates": {
+    "C1": 75
+   }
+  },
+  "jalen_duren": {
+   "coordinates": {
+    "D": 75
+   }
+  },
+  "matas_buzelis": {
+   "coordinates": {
+    "D": 50
+   }
+  },
+  "luka_doncic": {
+   "coordinates": {
+    "D": 25,
+    "C2": 0,
+    "C1": 12.5
+   }
+  },
+  "robert_williams_iii": {
+   "coordinates": {
+    "C2": 75
+   }
+  },
+  "ausar_thompson": {
+   "coordinates": {
+    "C2": 50
+   }
+  },
+  "cade_cunningham": {
+   "coordinates": {
+    "C2": 37.5,
+    "A": 75
+   }
+  },
+  "tyrese_maxey": {
+   "coordinates": {
+    "C1": 25
+   }
+  },
+  "damian_lillard": {
+   "coordinates": {
+    "A": 100
+   }
+  },
+  "lamelo_ball": {
+   "coordinates": {
+    "A": 75,
+    "B1": 75,
+    "B2": 0
+   }
+  },
+  "andrew_nembhard": {
+   "coordinates": {
+    "A": 62.5
+   }
+  },
+  "austin_reaves": {
+   "coordinates": {
+    "A": 62.5
+   }
+  },
+  "deni_avdija": {
+   "coordinates": {
+    "A": 50
+   }
+  },
+  "devin_booker": {
+   "coordinates": {
+    "B1": 87.5
+   }
+  },
+  "trae_young": {
+   "coordinates": {
+    "B1": 87.5
+   }
+  },
+  "desmond_bane": {
+   "coordinates": {
+    "B1": 87.5
+   }
+  },
+  "jayson_tatum": {
+   "coordinates": {
+    "B1": 87.5
+   }
+  },
+  "bradley_beal": {
+   "coordinates": {
+    "B1": 87.5
+   }
+  },
+  "khris_middleton": {
+   "coordinates": {
+    "B1": 87.5
+   }
+  },
+  "mike_conley": {
+   "coordinates": {
+    "B1": 87.5,
+    "B2": 0
+   }
+  },
+  "keegan_murray": {
+   "coordinates": {
+    "B1": 75
+   }
+  },
+  "anfernee_simons": {
+   "coordinates": {
+    "B1": 87.5
+   }
+  },
+  "brandon_miller": {
+   "coordinates": {
+    "B1": 75
+   }
+  },
+  "dyson_daniels": {
+   "coordinates": {
+    "B1": 62.5
+   }
+  },
+  "deandre_ayton": {
+   "coordinates": {
+    "B2": 75
+   }
+  },
+  "isaiah_hartenstein": {
+   "coordinates": {
+    "B2": 75
+   }
+  },
+  "jakob_poeltl": {
+   "coordinates": {
+    "B2": 75
    }
   }
  },
@@ -42,6 +377,142 @@
   "chris_bosh": {
    "coordinates": {
     "B1": 62.5
+   }
+  },
+  "wilt_chamberlain": {
+   "coordinates": {
+    "D": 100,
+    "B2": 100
+   }
+  },
+  "dwight_howard": {
+   "coordinates": {
+    "D": 100,
+    "B2": 100
+   }
+  },
+  "russell_westbrook": {
+   "coordinates": {
+    "D": 100,
+    "B1": 37.5
+   }
+  },
+  "bill_russell": {
+   "coordinates": {
+    "C2": 100,
+    "C1": 37.5
+   }
+  },
+  "david_robinson": {
+   "coordinates": {
+    "C2": 100,
+    "B1": 12.5
+   }
+  },
+  "dennis_rodman": {
+   "coordinates": {
+    "C2": 87.5
+   }
+  },
+  "alonzo_mourning": {
+   "coordinates": {
+    "C2": 87.5,
+    "D": 87.5
+   }
+  },
+  "patrick_ewing": {
+   "coordinates": {
+    "C2": 87.5,
+    "D": 87.5
+   }
+  },
+  "scottie_pippen": {
+   "coordinates": {
+    "C1": 100
+   }
+  },
+  "kobe_bryant": {
+   "coordinates": {
+    "C1": 87.5,
+    "A": 100
+   }
+  },
+  "michael_jordan": {
+   "coordinates": {
+    "A": 100
+   }
+  },
+  "dirk_nowitzki": {
+   "coordinates": {
+    "B1": 87.5
+   }
+  },
+  "shaquille_oneal": {
+   "coordinates": {
+    "B2": 100
+   }
+  },
+  "tim_duncan": {
+   "coordinates": {
+    "B2": 87.5
+   }
+  },
+  "hakeem_olajuwon": {
+   "coordinates": {
+    "D": 100,
+    "B1": 37.5
+   }
+  },
+  "dikembe_mutombo": {
+   "coordinates": {
+    "D": 62.5
+   }
+  },
+  "kevin_garnett": {
+   "coordinates": {
+    "C2": 100
+   }
+  },
+  "oscar_robertson": {
+   "coordinates": {
+    "D": 75,
+    "B1": 37.5
+   }
+  },
+  "gary_payton": {
+   "coordinates": {
+    "C2": 12.5
+   }
+  },
+  "allen_iverson": {
+   "coordinates": {
+    "C1": 50,
+    "A": 100
+   }
+  },
+  "ben_wallace": {
+   "coordinates": {
+    "C1": 37.5
+   }
+  },
+  "john_stockton": {
+   "coordinates": {
+    "A": 87.5
+   }
+  },
+  "steve_nash": {
+   "coordinates": {
+    "B1": 100
+   }
+  },
+  "pete_maravich": {
+   "coordinates": {
+    "B1": 37.5
+   }
+  },
+  "charles_barkley": {
+   "coordinates": {
+    "B2": 100
    }
   }
  }
