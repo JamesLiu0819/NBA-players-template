@@ -1043,14 +1043,6 @@ PLAYERS = [
         "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
     },
     {
-        "id": "terry_rozier", "name": "Terry Rozier", "team": "MIA",
-        "coordinates": {"A": 49, "B1": 40, "B2": 19, "C1": 21, "C2": 20, "D": 59},
-        "body": {"height_cm": 185, "wingspan_cm": 188, "weight_kg": 86},
-        "notable_traits": ["持球投籃節奏獨特", "擋拆持球判斷不錯", "轉換終結能力不錯"],
-        "signature_skill_id": "pick_and_roll_ball_handling", "learnability_flag": "medium",
-        "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
-    },
-    {
         "id": "malcolm_brogdon", "name": "Malcolm Brogdon", "team": "WAS",
         "coordinates": {"A": 80, "B1": 25, "B2": 36, "C1": 31, "C2": 14, "D": 7},
         "body": {"height_cm": 193, "wingspan_cm": 196, "weight_kg": 104},
