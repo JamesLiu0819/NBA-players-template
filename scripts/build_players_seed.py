@@ -99,7 +99,7 @@ PLAYERS = [
     },
     {
         "id": "luka_doncic", "name": "Luka Doncic", "team": "LAL",
-        "coordinates": {"A": 99, "B1": 83, "B2": 11, "C1": 12.5, "C2": 0, "D": 25},
+        "coordinates": {"A": 99, "B1": 83, "B2": 50, "C1": 12.5, "C2": 0, "D": 25},
         "body": {"height_cm": 203, "wingspan_cm": 208, "weight_kg": 104},
         "notable_traits": ["持球創造能力強", "後撤步跳投製造空間", "傳導視野好"],
         "signature_skill_id": "face_up_first_step",
@@ -109,10 +109,11 @@ PLAYERS = [
     },
     {
         "id": "draymond_green", "name": "Draymond Green", "team": "GSW",
-        "coordinates": {"A": 28, "B1": 27, "B2": 57, "C1": 79, "C2": 87.5, "D": 33},
+        "coordinates": {"A": 50, "B1": 27, "B2": 57, "C1": 79, "C2": 87.5, "D": 33},
         "body": {"height_cm": 198, "wingspan_cm": 208, "weight_kg": 107},
         "notable_traits": ["高位傳導組織進攻", "換防彈性大", "防守溝通指揮強"],
         "signature_skill_id": "perimeter_switch_defense",
+        "archetype_id": "playmaking_big",
         "learnability_flag": "medium",
         "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
     },
@@ -141,6 +142,7 @@ PLAYERS = [
         "body": {"height_cm": 224, "wingspan_cm": 245, "weight_kg": 107},
         "notable_traits": ["護框跟外圍換防都能做", "臂展跟移動能力罕見組合", "身材加持的多位置防守"],
         "signature_skill_id": "rim_protection",
+        "archetype_id": "rim_protector",
         "learnability_flag": "low",
         "_estimate_basis": "公開球評印象 + 臂展等公開身體數據,手動估算,非真實數據推導",
     },
@@ -175,7 +177,7 @@ PLAYERS = [
     },
     {
         "id": "kevin_durant", "name": "Kevin Durant", "team": "HOU",
-        "coordinates": {"A": 100, "B1": 100, "B2": 13, "C1": 62.5, "C2": 63, "D": 87.5},
+        "coordinates": {"A": 100, "B1": 100, "B2": 50, "C1": 62.5, "C2": 63, "D": 87.5},
         "body": {"height_cm": 211, "wingspan_cm": 226, "weight_kg": 109},
         "notable_traits": ["中距離跳投難防守", "面框單打腳步好", "身材優勢下的投籃選擇多"],
         "signature_skill_id": "face_up_first_step",
@@ -264,7 +266,7 @@ PLAYERS = [
     },
     {
         "id": "karl_anthony_towns", "name": "Karl-Anthony Towns", "team": "NYK",
-        "coordinates": {"A": 45, "B1": 75, "B2": 80, "C1": 12, "C2": 69, "D": 84},
+        "coordinates": {"A": 45, "B1": 75, "B2": 80, "C1": 12, "C2": 69, "D": 50},
         "body": {"height_cm": 213, "wingspan_cm": 224, "weight_kg": 112},
         "notable_traits": ["背框腳步柔軟", "外線出手穩定", "換防彈性一般"],
         "signature_skill_id": "post_up",
@@ -407,6 +409,7 @@ PLAYERS = [
         "body": {"height_cm": 211, "wingspan_cm": 224, "weight_kg": 98},
         "notable_traits": ["防守籃板積極", "護框覆蓋不錯", "轉換終結速度快"],
         "signature_skill_id": "defensive_rebounding_boxout",
+        "archetype_id": "rim_protector",
         "learnability_flag": "medium",
         "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
     },
@@ -416,15 +419,17 @@ PLAYERS = [
         "body": {"height_cm": 196, "wingspan_cm": 203, "weight_kg": 98},
         "notable_traits": ["持球推進穩定不失誤", "籃板意識好", "防守肯拚"],
         "signature_skill_id": "decision_making_turnover_control",
+        "archetype_id": "blue_collar_energy",
         "learnability_flag": "high",
         "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
     },
     {
         "id": "mike_conley", "name": "Mike Conley", "team": "MIN",
-        "coordinates": {"A": 17, "B1": 87.5, "B2": 0, "C1": 60, "C2": 24, "D": 12},
+        "coordinates": {"A": 62.5, "B1": 87.5, "B2": 0, "C1": 60, "C2": 24, "D": 12},
         "body": {"height_cm": 185, "wingspan_cm": 191, "weight_kg": 79},
         "notable_traits": ["持球節奏掌控力強", "失誤率極低", "傳導視野好"],
         "signature_skill_id": "decision_making_turnover_control",
+        "archetype_id": "floor_general",
         "learnability_flag": "high",
         "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
     },
@@ -459,7 +464,7 @@ PLAYERS = [
     },
     {
         "id": "brook_lopez", "name": "Brook Lopez", "team": "LAC",
-        "coordinates": {"A": 13, "B1": 54, "B2": 30, "C1": 8, "C2": 75, "D": 13},
+        "coordinates": {"A": 13, "B1": 75, "B2": 30, "C1": 8, "C2": 75, "D": 13},
         "body": {"height_cm": 216, "wingspan_cm": 224, "weight_kg": 128},
         "notable_traits": ["護框覆蓋範圍大", "外線出手穩定", "卡位意識好"],
         "signature_skill_id": "rim_protection",
@@ -496,10 +501,11 @@ PLAYERS = [
     },
     {
         "id": "evan_mobley", "name": "Evan Mobley", "team": "CLE",
-        "coordinates": {"A": 38, "B1": 12, "B2": 87, "C1": 2, "C2": 75, "D": 77},
+        "coordinates": {"A": 38, "B1": 12, "B2": 87, "C1": 62.5, "C2": 75, "D": 77},
         "body": {"height_cm": 211, "wingspan_cm": 224, "weight_kg": 98},
         "notable_traits": ["高位策應傳導不錯", "護框補位效率高", "轉換速度快"],
         "signature_skill_id": "high_post_playmaking",
+        "archetype_id": "rim_protector",
         "learnability_flag": "low",
         "_estimate_basis": "公開球評印象 + 臂展等公開身體數據,手動估算,非真實數據推導",
     },
@@ -535,7 +541,7 @@ PLAYERS = [
     },
     {
         "id": "paul_george", "name": "Paul George", "team": "PHI",
-        "coordinates": {"A": 62, "B1": 84, "B2": 3, "C1": 92, "C2": 53, "D": 49},
+        "coordinates": {"A": 62, "B1": 84, "B2": 37.5, "C1": 92, "C2": 53, "D": 49},
         "body": {"height_cm": 203, "wingspan_cm": 208, "weight_kg": 104},
         "notable_traits": ["三分出手多樣", "單防能力強", "轉換終結穩定"],
         "signature_skill_id": "perimeter_switch_defense", "learnability_flag": "medium",
@@ -552,7 +558,7 @@ PLAYERS = [
     },
     {
         "id": "kyrie_irving", "name": "Kyrie Irving", "team": "DAL",
-        "coordinates": {"A": 100, "B1": 90, "B2": 28, "C1": 40, "C2": 25, "D": 10},
+        "coordinates": {"A": 100, "B1": 90, "B2": 62.5, "C1": 40, "C2": 25, "D": 10},
         "body": {"height_cm": 188, "wingspan_cm": 196, "weight_kg": 88},
         "notable_traits": ["持球變向過人頂級", "終結手法多樣", "罰球穩定"],
         "signature_skill_id": "pick_and_roll_ball_handling", "learnability_flag": "low",
@@ -560,7 +566,7 @@ PLAYERS = [
     },
     {
         "id": "james_harden", "name": "James Harden", "team": "CLE",
-        "coordinates": {"A": 96, "B1": 92, "B2": 4, "C1": 17, "C2": 31, "D": 52},
+        "coordinates": {"A": 96, "B1": 92, "B2": 50, "C1": 17, "C2": 31, "D": 52},
         "body": {"height_cm": 196, "wingspan_cm": 208, "weight_kg": 100},
         "notable_traits": ["擋拆持球判斷頂級", "罰球製造能力強", "傳導視野好"],
         "signature_skill_id": "pick_and_roll_ball_handling", "learnability_flag": "low",
@@ -590,6 +596,7 @@ PLAYERS = [
         "body": {"height_cm": 188, "wingspan_cm": 191, "weight_kg": 98},
         "notable_traits": ["持球得分效率高", "轉換終結能力強", "罰球穩定"],
         "signature_skill_id": "free_throw_shooting", "learnability_flag": "medium",
+        "archetype_id": "scoring_guard",
         "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
     },
     {
@@ -720,6 +727,7 @@ PLAYERS = [
         "body": {"height_cm": 183, "wingspan_cm": 185, "weight_kg": 89},
         "notable_traits": ["持球節奏掌控力強", "外線出手穩定", "抄截嗅覺不錯"],
         "signature_skill_id": "decision_making_turnover_control", "learnability_flag": "high",
+        "archetype_id": "floor_general",
         "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
     },
     {
@@ -728,6 +736,7 @@ PLAYERS = [
         "body": {"height_cm": 188, "wingspan_cm": 196, "weight_kg": 86},
         "notable_traits": ["擋拆持球判斷不錯", "外線出手穩定", "罰球穩定"],
         "signature_skill_id": "pick_and_roll_ball_handling", "learnability_flag": "medium",
+        "archetype_id": "combo_scorer",
         "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
     },
     {
@@ -756,10 +765,11 @@ PLAYERS = [
     },
     {
         "id": "chet_holmgren", "name": "Chet Holmgren", "team": "OKC",
-        "coordinates": {"A": 17, "B1": 38, "B2": 82, "C1": 52, "C2": 87.5, "D": 38},
+        "coordinates": {"A": 17, "B1": 62.5, "B2": 82, "C1": 52, "C2": 87.5, "D": 38},
         "body": {"height_cm": 216, "wingspan_cm": 224, "weight_kg": 94},
         "notable_traits": ["護框補位效率高", "外線出手穩定", "轉換速度快"],
         "signature_skill_id": "rim_protection", "learnability_flag": "low",
+        "archetype_id": "rim_protector",
         "_estimate_basis": "公開球評印象 + 臂展等公開身體數據,手動估算,非真實數據推導",
     },
     {
@@ -768,6 +778,7 @@ PLAYERS = [
         "body": {"height_cm": 208, "wingspan_cm": 216, "weight_kg": 110},
         "notable_traits": ["護框覆蓋範圍大", "外線出手穩定", "轉換速度不錯"],
         "signature_skill_id": "rim_protection", "learnability_flag": "medium",
+        "archetype_id": "rim_protector",
         "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
     },
     {
@@ -840,6 +851,7 @@ PLAYERS = [
         "body": {"height_cm": 211, "wingspan_cm": 224, "weight_kg": 120},
         "notable_traits": ["背框腳步扎實", "防守籃板卡位穩定", "卡位意識好"],
         "signature_skill_id": "post_up", "learnability_flag": "medium",
+        "archetype_id": "back_to_basket_center",
         "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
     },
     {
@@ -872,6 +884,7 @@ PLAYERS = [
         "body": {"height_cm": 201, "wingspan_cm": 211, "weight_kg": 90},
         "notable_traits": ["一對一單防兇悍", "抄截嗅覺強", "防守覆蓋範圍大"],
         "signature_skill_id": "on_ball_perimeter_defense", "learnability_flag": "low",
+        "archetype_id": "lockdown_defender",
         "_estimate_basis": "公開球評印象 + 臂展等公開身體數據,手動估算,非真實數據推導",
     },
     {
@@ -884,7 +897,7 @@ PLAYERS = [
     },
     {
         "id": "jalen_williams", "name": "Jalen Williams", "team": "OKC",
-        "coordinates": {"A": 85, "B1": 19, "B2": 40, "C1": 85, "C2": 45, "D": 76},
+        "coordinates": {"A": 85, "B1": 62.5, "B2": 40, "C1": 85, "C2": 45, "D": 76},
         "body": {"height_cm": 196, "wingspan_cm": 211, "weight_kg": 96},
         "notable_traits": ["持球推進穩定", "協防補位判斷好", "中距離跳投穩定"],
         "signature_skill_id": "help_defense_rotation", "learnability_flag": "medium",
@@ -992,6 +1005,7 @@ PLAYERS = [
         "body": {"height_cm": 198, "wingspan_cm": 201, "weight_kg": 100},
         "notable_traits": ["轉換終結能力不錯", "面框單打腳步好", "籃板意識好"],
         "signature_skill_id": "transition_finishing", "learnability_flag": "medium",
+        "archetype_id": "cutting_finisher",
         "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
     },
     {
@@ -1012,10 +1026,11 @@ PLAYERS = [
     },
     {
         "id": "tyus_jones", "name": "Tyus Jones", "team": "DEN",
-        "coordinates": {"A": 35, "B1": 23, "B2": 3, "C1": 65, "C2": 3, "D": 2},
+        "coordinates": {"A": 35, "B1": 62.5, "B2": 3, "C1": 65, "C2": 3, "D": 2},
         "body": {"height_cm": 183, "wingspan_cm": 188, "weight_kg": 89},
         "notable_traits": ["持球節奏掌控力強", "失誤率極低", "傳導視野好"],
         "signature_skill_id": "decision_making_turnover_control", "learnability_flag": "high",
+        "archetype_id": "floor_general",
         "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
     },
     {
@@ -1040,14 +1055,16 @@ PLAYERS = [
         "body": {"height_cm": 190, "wingspan_cm": 188, "weight_kg": 86},
         "notable_traits": ["轉換終結能力不錯", "持球投籃節奏獨特", "罰球穩定"],
         "signature_skill_id": "free_throw_shooting", "learnability_flag": "medium",
+        "archetype_id": "combo_scorer",
         "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
     },
     {
         "id": "malcolm_brogdon", "name": "Malcolm Brogdon", "team": "WAS",
-        "coordinates": {"A": 80, "B1": 25, "B2": 36, "C1": 31, "C2": 14, "D": 7},
+        "coordinates": {"A": 80, "B1": 62.5, "B2": 36, "C1": 31, "C2": 14, "D": 7},
         "body": {"height_cm": 193, "wingspan_cm": 196, "weight_kg": 104},
         "notable_traits": ["持球節奏掌控力強", "罰球穩定", "傳導視野好"],
         "signature_skill_id": "decision_making_turnover_control", "learnability_flag": "high",
+        "archetype_id": "combo_scorer",
         "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
     },
     {
@@ -1112,6 +1129,7 @@ PLAYERS = [
         "body": {"height_cm": 196, "wingspan_cm": 201, "weight_kg": 95},
         "notable_traits": ["轉換終結爆發力強", "罰球穩定", "持球投籃節奏不錯"],
         "signature_skill_id": "transition_finishing", "learnability_flag": "medium",
+        "archetype_id": "explosive_slasher",
         "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
     },
     {
@@ -1213,6 +1231,7 @@ PLAYERS = [
         "body": {"height_cm": 190, "wingspan_cm": 196, "weight_kg": 90},
         "notable_traits": ["無球跑動投射精準", "罰球線穩定", "體能耐力好"],
         "signature_skill_id": "off_ball_movement", "learnability_flag": "high",
+        "archetype_id": "offball_shooter",
         "_estimate_basis": "依公開 2K 屬性數值,用錨點球員校準回歸換算出來的座標,非官方 2K 百分位,也非真實比賽數據推導",
     },
     {
@@ -1221,6 +1240,7 @@ PLAYERS = [
         "body": {"height_cm": 196, "wingspan_cm": 206, "weight_kg": 93},
         "notable_traits": ["換防跟防能力頂級", "抄截嗅覺敏銳", "協防補位判斷好"],
         "signature_skill_id": "perimeter_switch_defense", "learnability_flag": "high",
+        "archetype_id": "lockdown_defender",
         "_estimate_basis": "依公開 2K 屬性數值,用錨點球員校準回歸換算出來的座標,非官方 2K 百分位,也非真實比賽數據推導",
     },
     {
@@ -1229,6 +1249,7 @@ PLAYERS = [
         "body": {"height_cm": 196, "wingspan_cm": 206, "weight_kg": 95},
         "notable_traits": ["運動能力出色", "轉換終結能力強", "持球突破有爆發力"],
         "signature_skill_id": "transition_finishing", "learnability_flag": "high",
+        "archetype_id": "explosive_slasher",
         "_estimate_basis": "依公開 2K 屬性數值,用錨點球員校準回歸換算出來的座標,非官方 2K 百分位,也非真實比賽數據推導",
     },
     {
@@ -1237,6 +1258,7 @@ PLAYERS = [
         "body": {"height_cm": 190, "wingspan_cm": 198, "weight_kg": 88},
         "notable_traits": ["持球推進速度快", "運動能力出色", "轉換終結能力不錯"],
         "signature_skill_id": "transition_finishing", "learnability_flag": "high",
+        "archetype_id": "explosive_slasher",
         "_estimate_basis": "依公開 2K 屬性數值,用錨點球員校準回歸換算出來的座標,非官方 2K 百分位,也非真實比賽數據推導",
     },
     {

@@ -88,7 +88,7 @@
       "coordinates": {
         "A": 100.0,
         "B1": 87.5,
-        "B2": 37.5,
+        "B2": 62.5,
         "C1": 87.5,
         "C2": 37.5,
         "D": 87.5
@@ -128,11 +128,11 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_b2_2",
-          "score": 2
+          "score": 3
         },
         {
           "question_id": "axis_c1_1",
@@ -248,7 +248,7 @@
         "A": 62.5,
         "B1": 100.0,
         "B2": 75.0,
-        "C1": 87.5,
+        "C1": 50.0,
         "C2": 62.5,
         "D": 12.5
       },
@@ -295,11 +295,11 @@
         },
         {
           "question_id": "axis_c1_1",
-          "score": 5
+          "score": 3
         },
         {
           "question_id": "axis_c1_2",
-          "score": 4
+          "score": 3
         },
         {
           "question_id": "axis_c2_1",
@@ -555,7 +555,8 @@
           "question_id": "axis_d_2",
           "score": 1
         }
-      ]
+      ],
+      "archetype_id": "back_to_basket_center"
     },
     {
       "id": "oscar_robertson",
@@ -634,7 +635,8 @@
           "question_id": "axis_d_2",
           "score": 4
         }
-      ]
+      ],
+      "archetype_id": "floor_general"
     },
     {
       "id": "elgin_baylor",
@@ -721,7 +723,7 @@
       "team": "1980",
       "coordinates": {
         "A": 75.0,
-        "B1": 75.0,
+        "B1": 37.5,
         "B2": 87.5,
         "C1": 87.5,
         "C2": 75.0,
@@ -754,11 +756,11 @@
         },
         {
           "question_id": "axis_b1_1",
-          "score": 4
+          "score": 3
         },
         {
           "question_id": "axis_b1_2",
-          "score": 4
+          "score": 2
         },
         {
           "question_id": "axis_b2_1",
@@ -1116,7 +1118,7 @@
       "team": "1993",
       "coordinates": {
         "A": 50.0,
-        "B1": 62.5,
+        "B1": 25.0,
         "B2": 100.0,
         "C1": 50.0,
         "C2": 75.0,
@@ -1149,11 +1151,11 @@
         },
         {
           "question_id": "axis_b1_1",
-          "score": 4
+          "score": 2
         },
         {
           "question_id": "axis_b1_2",
-          "score": 3
+          "score": 2
         },
         {
           "question_id": "axis_b2_1",
@@ -1187,7 +1189,8 @@
           "question_id": "axis_d_2",
           "score": 4
         }
-      ]
+      ],
+      "archetype_id": "back_to_basket_center"
     },
     {
       "id": "hakeem_olajuwon",
@@ -1345,7 +1348,8 @@
           "question_id": "axis_d_2",
           "score": 4
         }
-      ]
+      ],
+      "archetype_id": "back_to_basket_center"
     },
     {
       "id": "john_stockton",
@@ -1671,7 +1675,7 @@
       "team": "1992",
       "coordinates": {
         "A": 75.0,
-        "B1": 87.5,
+        "B1": 62.5,
         "B2": 75.0,
         "C1": 87.5,
         "C2": 62.5,
@@ -1704,11 +1708,11 @@
         },
         {
           "question_id": "axis_b1_1",
-          "score": 5
+          "score": 4
         },
         {
           "question_id": "axis_b1_2",
-          "score": 4
+          "score": 3
         },
         {
           "question_id": "axis_b2_1",
@@ -1911,7 +1915,7 @@
         "A": 12.5,
         "B1": 12.5,
         "B2": 62.5,
-        "C1": 37.5,
+        "C1": 75.0,
         "C2": 87.5,
         "D": 75.0
       },
@@ -1958,11 +1962,11 @@
         },
         {
           "question_id": "axis_c1_1",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_c1_2",
-          "score": 2
+          "score": 4
         },
         {
           "question_id": "axis_c2_1",
@@ -2059,7 +2063,8 @@
           "question_id": "axis_d_2",
           "score": 5
         }
-      ]
+      ],
+      "archetype_id": "playmaking_big"
     },
     {
       "id": "kevin_garnett",
@@ -2138,7 +2143,8 @@
           "question_id": "axis_d_2",
           "score": 5
         }
-      ]
+      ],
+      "archetype_id": "rim_protector"
     },
     {
       "id": "tim_duncan",
@@ -2217,7 +2223,8 @@
           "question_id": "axis_d_2",
           "score": 4
         }
-      ]
+      ],
+      "archetype_id": "back_to_basket_center"
     },
     {
       "id": "shaquille_oneal",
@@ -2467,7 +2474,7 @@
         "B1": 87.5,
         "B2": 50.0,
         "C1": 12.5,
-        "C2": 75.0,
+        "C2": 37.5,
         "D": 12.5
       },
       "body": {
@@ -2521,11 +2528,11 @@
         },
         {
           "question_id": "axis_c2_1",
-          "score": 4
+          "score": 3
         },
         {
           "question_id": "axis_c2_2",
-          "score": 4
+          "score": 2
         },
         {
           "question_id": "axis_d_1",
@@ -2625,7 +2632,7 @@
         "A": 87.5,
         "B1": 37.5,
         "B2": 37.5,
-        "C1": 87.5,
+        "C1": 50.0,
         "C2": 12.5,
         "D": 62.5
       },
@@ -2672,11 +2679,11 @@
         },
         {
           "question_id": "axis_c1_1",
-          "score": 5
+          "score": 3
         },
         {
           "question_id": "axis_c1_2",
-          "score": 4
+          "score": 3
         },
         {
           "question_id": "axis_c2_1",
@@ -2781,7 +2788,7 @@
       "team": "2003",
       "coordinates": {
         "A": 87.5,
-        "B1": 100.0,
+        "B1": 75.0,
         "B2": 50.0,
         "C1": 62.5,
         "C2": 50.0,
@@ -2814,11 +2821,11 @@
         },
         {
           "question_id": "axis_b1_1",
-          "score": 5
+          "score": 4
         },
         {
           "question_id": "axis_b1_2",
-          "score": 5
+          "score": 4
         },
         {
           "question_id": "axis_b2_1",
@@ -3090,7 +3097,8 @@
           "question_id": "axis_d_2",
           "score": 2
         }
-      ]
+      ],
+      "archetype_id": "do_it_all_forward"
     },
     {
       "id": "ray_allen",
@@ -3802,7 +3810,8 @@
           "question_id": "axis_d_2",
           "score": 2
         }
-      ]
+      ],
+      "archetype_id": "playmaking_big"
     },
     {
       "id": "carmelo_anthony",
@@ -4126,7 +4135,7 @@
       "team": "2004",
       "coordinates": {
         "A": 62.5,
-        "B1": 25.0,
+        "B1": 62.5,
         "B2": 50.0,
         "C1": 62.5,
         "C2": 12.5,
@@ -4159,11 +4168,11 @@
         },
         {
           "question_id": "axis_b1_1",
-          "score": 2
+          "score": 4
         },
         {
           "question_id": "axis_b1_2",
-          "score": 2
+          "score": 3
         },
         {
           "question_id": "axis_b2_1",
@@ -4197,7 +4206,8 @@
           "question_id": "axis_d_2",
           "score": 2
         }
-      ]
+      ],
+      "archetype_id": "offball_shooter"
     },
     {
       "id": "bill_walton",
@@ -4276,7 +4286,8 @@
           "question_id": "axis_d_2",
           "score": 1
         }
-      ]
+      ],
+      "archetype_id": "playmaking_big"
     },
     {
       "id": "willis_reed",
@@ -4355,7 +4366,8 @@
           "question_id": "axis_d_2",
           "score": 1
         }
-      ]
+      ],
+      "archetype_id": "back_to_basket_center"
     },
     {
       "id": "dwyane_wade",
@@ -4514,7 +4526,8 @@
           "question_id": "axis_d_2",
           "score": 2
         }
-      ]
+      ],
+      "archetype_id": "combo_scorer"
     },
     {
       "id": "james_worthy",
@@ -4830,7 +4843,8 @@
           "question_id": "axis_d_2",
           "score": 3
         }
-      ]
+      ],
+      "archetype_id": "lockdown_defender"
     },
     {
       "id": "jj_redick",

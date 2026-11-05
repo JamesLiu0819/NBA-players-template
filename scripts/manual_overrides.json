@@ -77,7 +77,8 @@
   },
   "brook_lopez": {
    "coordinates": {
-    "C2": 75
+    "C2": 75,
+    "B1": 75
    }
   },
   "jaren_jackson_jr": {
@@ -87,12 +88,14 @@
   },
   "chet_holmgren": {
    "coordinates": {
-    "C2": 87.5
+    "C2": 87.5,
+    "B1": 62.5
    }
   },
   "evan_mobley": {
    "coordinates": {
-    "C2": 75
+    "C2": 75,
+    "C1": 62.5
    }
   },
   "jrue_holiday": {
@@ -129,7 +132,8 @@
     "A": 100,
     "D": 87.5,
     "C1": 62.5,
-    "B1": 100
+    "B1": 100,
+    "B2": 50
    }
   },
   "chris_paul": {
@@ -144,7 +148,8 @@
   },
   "kyrie_irving": {
    "coordinates": {
-    "A": 100
+    "A": 100,
+    "B2": 62.5
    }
   },
   "klay_thompson": {
@@ -165,7 +170,8 @@
   },
   "karl_anthony_towns": {
    "coordinates": {
-    "B1": 75
+    "B1": 75,
+    "D": 50
    }
   },
   "shai_gilgeous_alexander": {
@@ -212,7 +218,8 @@
   },
   "draymond_green": {
    "coordinates": {
-    "C2": 87.5
+    "C2": 87.5,
+    "A": 50
    }
   },
   "aaron_gordon": {
@@ -250,7 +257,8 @@
    "coordinates": {
     "D": 25,
     "C2": 0,
-    "C1": 12.5
+    "C1": 12.5,
+    "B2": 50
    }
   },
   "robert_williams_iii": {
@@ -334,7 +342,8 @@
   "mike_conley": {
    "coordinates": {
     "B1": 87.5,
-    "B2": 0
+    "B2": 0,
+    "A": 62.5
    }
   },
   "keegan_murray": {
@@ -370,6 +379,31 @@
   "jakob_poeltl": {
    "coordinates": {
     "B2": 75
+   }
+  },
+  "jalen_williams": {
+   "coordinates": {
+    "B1": 62.5
+   }
+  },
+  "malcolm_brogdon": {
+   "coordinates": {
+    "B1": 62.5
+   }
+  },
+  "tyus_jones": {
+   "coordinates": {
+    "B1": 62.5
+   }
+  },
+  "james_harden": {
+   "coordinates": {
+    "B2": 50
+   }
+  },
+  "paul_george": {
+   "coordinates": {
+    "B2": 37.5
    }
   }
  },
@@ -411,7 +445,8 @@
   },
   "dennis_rodman": {
    "coordinates": {
-    "C2": 87.5
+    "C2": 87.5,
+    "C1": 75
    }
   },
   "alonzo_mourning": {
@@ -434,7 +469,8 @@
   "kobe_bryant": {
    "coordinates": {
     "C1": 87.5,
-    "A": 100
+    "A": 100,
+    "B2": 62.5
    }
   },
   "michael_jordan": {
@@ -444,7 +480,8 @@
   },
   "dirk_nowitzki": {
    "coordinates": {
-    "B1": 87.5
+    "B1": 87.5,
+    "C2": 37.5
    }
   },
   "shaquille_oneal": {
@@ -512,7 +549,38 @@
   },
   "charles_barkley": {
    "coordinates": {
-    "B2": 100
+    "B2": 100,
+    "B1": 25
+   }
+  },
+  "tracy_mcgrady": {
+   "coordinates": {
+    "B1": 75
+   }
+  },
+  "clyde_drexler": {
+   "coordinates": {
+    "B1": 62.5
+   }
+  },
+  "julius_erving": {
+   "coordinates": {
+    "B1": 37.5
+   }
+  },
+  "rip_hamilton": {
+   "coordinates": {
+    "B1": 62.5
+   }
+  },
+  "larry_bird": {
+   "coordinates": {
+    "C1": 50
+   }
+  },
+  "tony_parker": {
+   "coordinates": {
+    "C1": 50
    }
   }
  }
