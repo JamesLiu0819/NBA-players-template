@@ -582,6 +582,12 @@
    "coordinates": {
     "C1": 50
    }
+  },
+  "kareem_abdul_jabbar": {
+   "coordinates": {
+    "A": 50,
+    "D": 62.5
+   }
   }
  }
 }

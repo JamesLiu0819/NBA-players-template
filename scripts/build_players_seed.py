@@ -811,6 +811,7 @@ PLAYERS = [
         "body": {"height_cm": 213, "wingspan_cm": 224, "weight_kg": 109},
         "notable_traits": ["防守籃板卡位扎實", "護框補位不錯", "卡位意識好"],
         "signature_skill_id": "defensive_rebounding_boxout", "learnability_flag": "high",
+        "archetype_id": "back_to_basket_center",
         "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
     },
     {

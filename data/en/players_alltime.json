@@ -483,20 +483,20 @@
       "name": "Kareem Abdul-Jabbar",
       "team": "1977",
       "coordinates": {
-        "A": 12.5,
+        "A": 50.0,
         "B1": 12.5,
         "B2": 100.0,
         "C1": 37.5,
         "C2": 100.0,
-        "D": 12.5
+        "D": 62.5
       },
       "body": {
         "height_cm": 218,
         "wingspan_cm": 226,
         "weight_kg": 102,
         "standing_reach_cm": 258,
-        "running_vertical_reach_cm": 310,
-        "sprint_100m_seconds": 16.25
+        "running_vertical_reach_cm": 337,
+        "sprint_100m_seconds": 13.25
       },
       "notable_traits": [
         "Skyhook nearly impossible to defend",
@@ -509,11 +509,11 @@
       "mock_axis_answers": [
         {
           "question_id": "axis_a_1",
-          "score": 2
+          "score": 3
         },
         {
           "question_id": "axis_a_2",
-          "score": 1
+          "score": 3
         },
         {
           "question_id": "axis_b1_1",
@@ -549,11 +549,11 @@
         },
         {
           "question_id": "axis_d_1",
-          "score": 2
+          "score": 4
         },
         {
           "question_id": "axis_d_2",
-          "score": 1
+          "score": 3
         }
       ],
       "archetype_id": "back_to_basket_center"
@@ -873,7 +873,8 @@
           "question_id": "axis_d_2",
           "score": 3
         }
-      ]
+      ],
+      "archetype_id": "back_to_basket_center"
     },
     {
       "id": "isiah_thomas",
@@ -2938,7 +2939,8 @@
           "question_id": "axis_d_2",
           "score": 2
         }
-      ]
+      ],
+      "archetype_id": "back_to_basket_center"
     },
     {
       "id": "jason_kidd",
@@ -3652,7 +3654,8 @@
           "question_id": "axis_d_2",
           "score": 3
         }
-      ]
+      ],
+      "archetype_id": "back_to_basket_center"
     },
     {
       "id": "pau_gasol",
@@ -5081,7 +5084,8 @@
           "question_id": "axis_d_2",
           "score": 5
         }
-      ]
+      ],
+      "archetype_id": "rim_protector"
     },
     {
       "id": "deandre_jordan",

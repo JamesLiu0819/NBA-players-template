@@ -6540,6 +6540,7 @@
       ],
       "signature_skill_id": "defensive_rebounding_boxout",
       "learnability_flag": "high",
+      "archetype_id": "back_to_basket_center",
       "_estimate_basis": "公开球评印象,手动估算,非真实数据推导",
       "mock_axis_answers": [
         {

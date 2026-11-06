@@ -483,20 +483,20 @@
       "name": "Kareem Abdul-Jabbar",
       "team": "1977",
       "coordinates": {
-        "A": 12.5,
+        "A": 50.0,
         "B1": 12.5,
         "B2": 100.0,
         "C1": 37.5,
         "C2": 100.0,
-        "D": 12.5
+        "D": 62.5
       },
       "body": {
         "height_cm": 218,
         "wingspan_cm": 226,
         "weight_kg": 102,
         "standing_reach_cm": 258,
-        "running_vertical_reach_cm": 310,
-        "sprint_100m_seconds": 16.25
+        "running_vertical_reach_cm": 337,
+        "sprint_100m_seconds": 13.25
       },
       "notable_traits": [
         "天勾出手難以防守",
@@ -510,11 +510,11 @@
       "mock_axis_answers": [
         {
           "question_id": "axis_a_1",
-          "score": 2
+          "score": 3
         },
         {
           "question_id": "axis_a_2",
-          "score": 1
+          "score": 3
         },
         {
           "question_id": "axis_b1_1",
@@ -550,11 +550,11 @@
         },
         {
           "question_id": "axis_d_1",
-          "score": 2
+          "score": 4
         },
         {
           "question_id": "axis_d_2",
-          "score": 1
+          "score": 3
         }
       ]
     },
@@ -822,6 +822,7 @@
         "體能耐操"
       ],
       "signature_skill_id": "offensive_rebounding",
+      "archetype_id": "back_to_basket_center",
       "learnability_flag": "high",
       "_estimate_basis": "2K 公開歷史/All-Time 卡屬性數值換算百分位推算,非真實比賽數據推導",
       "mock_axis_answers": [
@@ -2887,6 +2888,7 @@
         "護框覆蓋範圍大"
       ],
       "signature_skill_id": "post_up",
+      "archetype_id": "back_to_basket_center",
       "learnability_flag": "high",
       "_estimate_basis": "2K 公開歷史/All-Time 卡屬性數值換算百分位推算,非真實比賽數據推導",
       "mock_axis_answers": [
@@ -3601,6 +3603,7 @@
         "轉換終結效率高"
       ],
       "signature_skill_id": "pick_and_roll_ball_handling",
+      "archetype_id": "back_to_basket_center",
       "learnability_flag": "low",
       "_estimate_basis": "2K 公開歷史/All-Time 卡屬性數值換算百分位推算,非真實比賽數據推導",
       "mock_axis_answers": [
@@ -5030,6 +5033,7 @@
         "扣籃終結爆發力強"
       ],
       "signature_skill_id": "rim_protection",
+      "archetype_id": "rim_protector",
       "learnability_flag": "high",
       "_estimate_basis": "依公開 2K All-Time 卡屬性數值,用錨點球員校準回歸換算出來的座標,非官方 2K 百分位,也非真實比賽數據推導",
       "mock_axis_answers": [
