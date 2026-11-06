@@ -728,15 +728,15 @@
         "B2": 25.0,
         "C1": 100.0,
         "C2": 12.5,
-        "D": 12.5
+        "D": 50.0
       },
       "body": {
         "height_cm": 193,
         "wingspan_cm": 196,
         "weight_kg": 100,
         "standing_reach_cm": 228,
-        "running_vertical_reach_cm": 280,
-        "sprint_100m_seconds": 16.25
+        "running_vertical_reach_cm": 300,
+        "sprint_100m_seconds": 14.0
       },
       "notable_traits": [
         "貼身跟防能力強",
@@ -790,11 +790,11 @@
         },
         {
           "question_id": "axis_d_1",
-          "score": 2
+          "score": 3
         },
         {
           "question_id": "axis_d_2",
-          "score": 1
+          "score": 3
         }
       ]
     },
@@ -803,7 +803,7 @@
       "name": "Domantas Sabonis",
       "team": "SAC",
       "coordinates": {
-        "A": 50.0,
+        "A": 75.0,
         "B1": 12.5,
         "B2": 87.5,
         "C1": 12.5,
@@ -830,11 +830,11 @@
       "mock_axis_answers": [
         {
           "question_id": "axis_a_1",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_a_2",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_b1_1",
@@ -1597,7 +1597,7 @@
       "team": "PHI",
       "coordinates": {
         "A": 50.0,
-        "B1": 37.5,
+        "B1": 50.0,
         "B2": 100.0,
         "C1": 12.5,
         "C2": 75.0,
@@ -1635,7 +1635,7 @@
         },
         {
           "question_id": "axis_b1_2",
-          "score": 2
+          "score": 3
         },
         {
           "question_id": "axis_b2_1",
@@ -2152,7 +2152,7 @@
       "team": "NOP",
       "coordinates": {
         "A": 25.0,
-        "B1": 25.0,
+        "B1": 50.0,
         "B2": 25.0,
         "C1": 100.0,
         "C2": 50.0,
@@ -2185,11 +2185,11 @@
         },
         {
           "question_id": "axis_b1_1",
-          "score": 2
+          "score": 3
         },
         {
           "question_id": "axis_b1_2",
-          "score": 2
+          "score": 3
         },
         {
           "question_id": "axis_b2_1",
@@ -2708,7 +2708,7 @@
       "team": "BOS",
       "coordinates": {
         "A": 62.5,
-        "B1": 62.5,
+        "B1": 75.0,
         "B2": 12.5,
         "C1": 87.5,
         "C2": 37.5,
@@ -2728,6 +2728,7 @@
         "外線出手穩定"
       ],
       "signature_skill_id": "help_defense_rotation",
+      "archetype_id": "lockdown_defender",
       "learnability_flag": "high",
       "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
       "mock_axis_answers": [
@@ -2745,7 +2746,7 @@
         },
         {
           "question_id": "axis_b1_2",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_b2_1",
@@ -3821,7 +3822,7 @@
       "team": "LAL",
       "coordinates": {
         "A": 100.0,
-        "B1": 12.5,
+        "B1": 62.5,
         "B2": 100.0,
         "C1": 87.5,
         "C2": 62.5,
@@ -3855,11 +3856,11 @@
         },
         {
           "question_id": "axis_b1_1",
-          "score": 2
+          "score": 4
         },
         {
           "question_id": "axis_b1_2",
-          "score": 1
+          "score": 3
         },
         {
           "question_id": "axis_b2_1",
@@ -5171,7 +5172,7 @@
       "team": "ORL",
       "coordinates": {
         "A": 75.0,
-        "B1": 12.5,
+        "B1": 37.5,
         "B2": 37.5,
         "C1": 12.5,
         "C2": 62.5,
@@ -5204,11 +5205,11 @@
         },
         {
           "question_id": "axis_b1_1",
-          "score": 2
+          "score": 3
         },
         {
           "question_id": "axis_b1_2",
-          "score": 1
+          "score": 2
         },
         {
           "question_id": "axis_b2_1",
@@ -5565,7 +5566,7 @@
       "name": "Zach LaVine",
       "team": "SAC",
       "coordinates": {
-        "A": 37.5,
+        "A": 62.5,
         "B1": 87.5,
         "B2": 25.0,
         "C1": 12.5,
@@ -5591,11 +5592,11 @@
       "mock_axis_answers": [
         {
           "question_id": "axis_a_1",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_a_2",
-          "score": 2
+          "score": 3
         },
         {
           "question_id": "axis_b1_1",
@@ -7628,7 +7629,7 @@
       "team": "DEN",
       "coordinates": {
         "A": 12.5,
-        "B1": 62.5,
+        "B1": 75.0,
         "B2": 50.0,
         "C1": 25.0,
         "C2": 25.0,
@@ -7665,7 +7666,7 @@
         },
         {
           "question_id": "axis_b1_2",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_b2_1",
@@ -8360,6 +8361,7 @@
       ],
       "signature_skill_id": "off_ball_movement",
       "learnability_flag": "medium",
+      "archetype_id": "stretch_big",
       "_estimate_basis": "公開球評印象,手動估算,非真實數據推導",
       "mock_axis_answers": [
         {
@@ -10082,7 +10084,7 @@
       "team": "DEN",
       "coordinates": {
         "A": 87.5,
-        "B1": 100.0,
+        "B1": 87.5,
         "B2": 12.5,
         "C1": 25.0,
         "C2": 12.5,
@@ -10119,7 +10121,7 @@
         },
         {
           "question_id": "axis_b1_2",
-          "score": 5
+          "score": 4
         },
         {
           "question_id": "axis_b2_1",

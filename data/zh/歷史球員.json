@@ -743,6 +743,7 @@
         "運動能力領先同時代"
       ],
       "signature_skill_id": "transition_finishing",
+      "archetype_id": "do_it_all_forward",
       "learnability_flag": "low",
       "_estimate_basis": "2K 公開歷史/All-Time 卡屬性數值換算百分位推算,非真實比賽數據推導",
       "mock_axis_answers": [
@@ -1442,15 +1443,15 @@
         "B2": 87.5,
         "C1": 37.5,
         "C2": 100.0,
-        "D": 62.5
+        "D": 87.5
       },
       "body": {
         "height_cm": 216,
         "wingspan_cm": 224,
         "weight_kg": 107,
         "standing_reach_cm": 256,
-        "running_vertical_reach_cm": 335,
-        "sprint_100m_seconds": 13.25
+        "running_vertical_reach_cm": 349,
+        "sprint_100m_seconds": 11.75
       },
       "notable_traits": [
         "護框覆蓋範圍大",
@@ -1503,11 +1504,11 @@
         },
         {
           "question_id": "axis_d_1",
-          "score": 4
+          "score": 5
         },
         {
           "question_id": "axis_d_2",
-          "score": 3
+          "score": 4
         }
       ]
     },
@@ -3207,6 +3208,7 @@
         "防守肯拚"
       ],
       "signature_skill_id": "transition_finishing",
+      "archetype_id": "do_it_all_forward",
       "learnability_flag": "medium",
       "_estimate_basis": "2K 公開歷史/All-Time 卡屬性數值換算百分位推算,非真實比賽數據推導",
       "mock_axis_answers": [
@@ -3902,7 +3904,7 @@
       "coordinates": {
         "A": 87.5,
         "B1": 100.0,
-        "B2": 0.0,
+        "B2": 37.5,
         "C1": 62.5,
         "C2": 12.5,
         "D": 50.0
@@ -3942,11 +3944,11 @@
         },
         {
           "question_id": "axis_b2_1",
-          "score": 1
+          "score": 3
         },
         {
           "question_id": "axis_b2_2",
-          "score": 1
+          "score": 2
         },
         {
           "question_id": "axis_c1_1",
@@ -4222,15 +4224,15 @@
         "B2": 100.0,
         "C1": 62.5,
         "C2": 100.0,
-        "D": 12.5
+        "D": 50.0
       },
       "body": {
         "height_cm": 211,
         "wingspan_cm": 218,
         "weight_kg": 95,
         "standing_reach_cm": 250,
-        "running_vertical_reach_cm": 302,
-        "sprint_100m_seconds": 16.25
+        "running_vertical_reach_cm": 322,
+        "sprint_100m_seconds": 14.0
       },
       "notable_traits": [
         "高位傳導視野出色",
@@ -4284,11 +4286,11 @@
         },
         {
           "question_id": "axis_d_1",
-          "score": 2
+          "score": 3
         },
         {
           "question_id": "axis_d_2",
-          "score": 1
+          "score": 3
         }
       ]
     },

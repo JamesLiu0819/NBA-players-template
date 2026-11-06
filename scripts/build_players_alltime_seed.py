@@ -152,6 +152,7 @@ PLAYERS = [
         "body": {"height_cm": 201, "wingspan_cm": 209, "weight_kg": 95},
         "notable_traits": ["滯空拉桿終結能力強", "轉換快攻觀賞性高", "運動能力領先同時代"],
         "signature_skill_id": "transition_finishing",
+        "archetype_id": "do_it_all_forward",
         "learnability_flag": "low",
         "_estimate_basis": _BASIS,
     },
@@ -233,7 +234,7 @@ PLAYERS = [
     },
     {
         "id": "david_robinson", "name": "David Robinson", "team": "1995",
-        "coordinates": {"A": 31, "B1": 12.5, "B2": 88, "C1": 42, "C2": 100, "D": 61},
+        "coordinates": {"A": 31, "B1": 12.5, "B2": 88, "C1": 42, "C2": 100, "D": 87.5},
         "body": {"height_cm": 216, "wingspan_cm": 224, "weight_kg": 107},
         "notable_traits": ["護框覆蓋範圍大", "運動能力領先同位置", "禁區得分效率高"],
         "signature_skill_id": "rim_protection",
@@ -446,6 +447,7 @@ PLAYERS = [
         "body": {"height_cm": 203, "wingspan_cm": 206, "weight_kg": 102},
         "notable_traits": ["持球推進全面", "轉換終結能力好", "防守肯拚"],
         "signature_skill_id": "transition_finishing",
+        "archetype_id": "do_it_all_forward",
         "learnability_flag": "medium",
         "_estimate_basis": _BASIS,
     },
@@ -526,7 +528,7 @@ PLAYERS = [
     },
     {
         "id": "chauncey_billups", "name": "Chauncey Billups", "team": "2004",
-        "coordinates": {"A": 85, "B1": 96, "B2": 6, "C1": 57, "C2": 8, "D": 52},
+        "coordinates": {"A": 85, "B1": 96, "B2": 37.5, "C1": 57, "C2": 8, "D": 52},
         "body": {"height_cm": 190, "wingspan_cm": 196, "weight_kg": 92},
         "notable_traits": ["關鍵時刻得分能力強", "擋拆持球判斷穩定", "三分出手可靠"],
         "signature_skill_id": "pick_and_roll_ball_handling",
@@ -563,7 +565,7 @@ PLAYERS = [
     },
     {
         "id": "bill_walton", "name": "Bill Walton", "team": "1977",
-        "coordinates": {"A": 23, "B1": 5, "B2": 96, "C1": 59, "C2": 99, "D": 8},
+        "coordinates": {"A": 23, "B1": 5, "B2": 96, "C1": 59, "C2": 99, "D": 50},
         "body": {"height_cm": 211, "wingspan_cm": 218, "weight_kg": 95},
         "notable_traits": ["高位傳導視野出色", "護框能力強", "團隊籃球核心"],
         "signature_skill_id": "high_post_playmaking",

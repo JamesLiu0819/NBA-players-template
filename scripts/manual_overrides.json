@@ -44,7 +44,8 @@
     "D": 100,
     "A": 100,
     "B2": 100,
-    "C1": 87.5
+    "C1": 87.5,
+    "B1": 62.5
    }
   },
   "victor_wembanyama": {
@@ -100,13 +101,15 @@
   },
   "jrue_holiday": {
    "coordinates": {
-    "C1": 100
+    "C1": 100,
+    "D": 50
    }
   },
   "derrick_white": {
    "coordinates": {
     "C1": 87.5,
-    "C2": 37.5
+    "C2": 37.5,
+    "B1": 75
    }
   },
   "jaden_mcdaniels": {
@@ -182,7 +185,8 @@
   "joel_embiid": {
    "coordinates": {
     "B2": 100,
-    "D": 37.5
+    "D": 37.5,
+    "B1": 50
    }
   },
   "alperen_sengun": {
@@ -198,7 +202,8 @@
   },
   "zach_lavine": {
    "coordinates": {
-    "D": 100
+    "D": 100,
+    "A": 62.5
    }
   },
   "jalen_green": {
@@ -405,6 +410,31 @@
    "coordinates": {
     "B2": 37.5
    }
+  },
+  "cam_johnson": {
+   "coordinates": {
+    "B1": 75
+   }
+  },
+  "herbert_jones": {
+   "coordinates": {
+    "B1": 50
+   }
+  },
+  "domantas_sabonis": {
+   "coordinates": {
+    "A": 75
+   }
+  },
+  "jamal_murray": {
+   "coordinates": {
+    "B1": 87.5
+   }
+  },
+  "paolo_banchero": {
+   "coordinates": {
+    "B1": 37.5
+   }
   }
  },
  "alltime": {
@@ -440,7 +470,8 @@
   "david_robinson": {
    "coordinates": {
     "C2": 100,
-    "B1": 12.5
+    "B1": 12.5,
+    "D": 87.5
    }
   },
   "dennis_rodman": {
@@ -587,6 +618,16 @@
    "coordinates": {
     "A": 50,
     "D": 62.5
+   }
+  },
+  "chauncey_billups": {
+   "coordinates": {
+    "B2": 37.5
+   }
+  },
+  "bill_walton": {
+   "coordinates": {
+    "D": 50
    }
   }
  }
