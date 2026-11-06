@@ -573,16 +573,6 @@ PLAYERS = [
         "learnability_flag": "high",
         "_estimate_basis": _BASIS,
     },
-    {
-        "id": "willis_reed", "name": "Willis Reed", "team": "1970",
-        "coordinates": {"A": 2, "B1": 15, "B2": 66, "C1": 14, "C2": 87, "D": 1},
-        "body": {"height_cm": 208, "wingspan_cm": 211, "weight_kg": 107},
-        "notable_traits": ["禁區對抗強悍", "中距離出手穩定", "團隊防守指揮官"],
-        "signature_skill_id": "post_up",
-        "archetype_id": "back_to_basket_center",
-        "learnability_flag": "medium",
-        "_estimate_basis": _BASIS,
-    },
     # 2026-10 球員庫擴充:以下 12 位用 _BASIS_CALIBRATED 方法換算座標(見上方
     # 常數定義),不是 _BASIS 的球員池內部百分位排名法。
     {

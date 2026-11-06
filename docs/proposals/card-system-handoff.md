@@ -27,7 +27,7 @@
 | `docs/proposals/card-pack-prototype.html` | **試玩版本體**。單一 HTML 檔，球員資料直接內嵌在 `const DATA = {...}`，雙擊就能在瀏覽器開。約 220 KB |
 | `docs/proposals/2026-11-02-logo-options.html` | logo 提案頁，已定案 A1d |
 | `docs/proposals/2026-10-23-mini-games.html` | 四個小遊戲的總提案（球員卡是其中之一），是 10/23 的快照，資料可能過時 |
-| `data/zh/球員.json`、`data/zh/歷史球員.json` | 球員庫（現役 143 + 歷史 67 = 210）。離線腳本產生，勿手改 |
+| `data/zh/球員.json`、`data/zh/歷史球員.json` | 球員庫（現役 143 + 歷史 66 = 209）。離線腳本產生，勿手改 |
 | `data/zh/原型.json` | 15 個球員原型，用來算每張卡的「原型」標籤 |
 | `src/ui/index.html` | 正式網站前端，導覽列和分頁圖示已換成 A1d logo |
 | `src/ui/silhouettes/` | CC0 球員剪影，卡包封面的灌籃剪影來自這裡 |
@@ -55,7 +55,7 @@
 | 等級 | 每張機率 | 張數 | 怎麼決定 |
 |---|---|---|---|
 | 傳奇 | 3% | 15 | 網站擁有者手選：Jordan、LeBron、Kareem、Magic、Bird、Kobe、Duncan、Shaq、Curry、Wilt、Russell、Hakeem、Jokic、Durant、Giannis |
-| 史詩 | 12% | 35 | 依單季獎項分數排名 |
+| 史詩 | 12% | 34 | 依單季獎項分數排名 |
 | 稀有 | 30% | 60 | 依單季獎項分數排名 |
 | 普通 | 55% | 100 | 其餘 |
 
@@ -173,7 +173,7 @@
 | `c` | 六軸座標，直接來自球員庫 |
 | `a` | 原型。有手動指定的 `archetype_id` 就用它，否則用 `engine.archetype.classify_archetype(座標, 原型清單, 體型)` 算，體型用 `compute_player_sizes(同一個球員池)` |
 | `s` | 招牌技能，`signature_skill_id` 對應到 `data/zh/技能.json` 的中文名 |
-| `no` | 卡號 1–210，傳奇在最前面 |
+| `no` | 卡號 1–209，傳奇在最前面 |
 | `ph` | 照片網址、攝影者、授權。沒有照片的球員沒有這個欄位 |
 
 ---
@@ -191,7 +191,7 @@
 3. 最好穿所屬球隊的球衣。
 4. 臉不能被右上角的等級標籤擋住。
 
-### 現況（210 張）
+### 現況（209 張）
 - 大約 125 張是看得清楚臉的比賽照。
 - 大約 85 張用維基百科條目的主照片，原因有兩種：找不到更好的免費比賽照，或比賽照太遠、只拍到背影。
 - 部分傳奇球員的照片是退休後拍的（例如 Magic、Kareem），但臉清楚。
