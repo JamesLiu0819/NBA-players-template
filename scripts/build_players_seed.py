@@ -71,7 +71,7 @@ PLAYERS = [
     },
     {
         "id": "nikola_jokic", "name": "Nikola Jokic", "team": "DEN",
-        "coordinates": {"A": 100, "B1": 49, "B2": 100, "C1": 12.5, "C2": 79, "D": 25},
+        "coordinates": {"A": 100, "B1": 75, "B2": 100, "C1": 12.5, "C2": 79, "D": 25},
         "body": {"height_cm": 211, "wingspan_cm": 213, "weight_kg": 129},
         "notable_traits": ["高位傳導視野極佳", "低位單打腳步細膩", "策應型中鋒"],
         "signature_skill_id": "high_post_playmaking",

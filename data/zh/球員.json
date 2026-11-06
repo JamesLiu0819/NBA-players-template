@@ -87,7 +87,7 @@
       "team": "DEN",
       "coordinates": {
         "A": 100.0,
-        "B1": 50.0,
+        "B1": 75.0,
         "B2": 100.0,
         "C1": 12.5,
         "C2": 75.0,
@@ -120,11 +120,11 @@
         },
         {
           "question_id": "axis_b1_1",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_b1_2",
-          "score": 3
+          "score": 4
         },
         {
           "question_id": "axis_b2_1",
